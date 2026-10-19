@@ -22,3 +22,7 @@
 - Seção `08` reescrita com o que é confirmado, o que foi observado em experimento, o que é derivado e a análise RISC ou CISC. Seções `06`, `07`, `09` e `12` ganharam os fatos novos.
 - Exemplo SAXPY compilado para `sm_120` em `harness/examples/saxpy/`.
 - Definidos no `CLAUDE.md` da raiz os tipos de modelo por skill e por agente (A fable, B opus, C sonnet, D haiku), com regras de escalada.
+
+## 2026-10-19 (auditoria das fontes de instruções)
+- O `fact-checker` reabriu as fontes e achou 2 erros que bloqueavam (largura da instrução declarada no apêndice do Binary Utilities; operando de constante em instruções aritméticas) e 13 ajustes. Todos corrigidos. Relatório em `harness/qa/fact-check-isa.md`.
+- Seção `08` agora com `status: revisar` (a classificação RISC ou CISC precisa de revisão humana). Notas de PTX, Binary Utilities, Volta e Blackwell (GB203) passaram a `status: pronto`; a nota da Ampere segue rascunho, sem auditoria.
