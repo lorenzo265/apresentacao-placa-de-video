@@ -1,0 +1,14 @@
+# Obsidian: estado local da interface
+vault/.obsidian/workspace.json
+vault/.obsidian/workspace-mobile.json
+vault/.obsidian/cache
+vault/.trash/
+
+# Harness: artefatos gerados
+harness/dist/
+harness/viewer/node_modules/
+harness/parts/**/__pycache__/
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
