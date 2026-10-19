@@ -12,6 +12,24 @@ Uma página web (Three.js) que:
 4. Cada explicação traz um selo de **procedência** (confirmado, derivado, provável ou ilustrativo), para o espectador saber o que é fato e o que é proposta de engenharia.
 5. Pode ser exportada em vídeo (Playwright + ffmpeg) e permite navegação livre depois do tour.
 
+### 1.1 Níveis do tour (roteiro v2)
+
+O trabalho é de Arquitetura (ver `vault/01-Briefing/Requisitos da disciplina.md`), então o tour desce em níveis, da placa até o interior do chip. Cada nível corresponde a um grupo de seções do roteiro (`vault/03-Roteiro/`).
+
+| Nível | O que se vê | Seções | Natureza da geometria |
+|---|---|---|---|
+| 0. Placa montada | a placa inteira | 01 | peça física modelada |
+| 1. Placa desmontada | cooler, placa de circuito, package, memória | 02, 03 | peça física modelada (interior `derived` ou `inferred`) |
+| 2. Chip | planta do GB202: GPCs, SMs, L2, controladores de memória | 04 | diagrama proporcional às contagens oficiais |
+| 3. SM | unidades dentro de um SM | 05 a 09, 12 | diagrama |
+| 4. Conceitos | fluxos animados: warp, caminho de uma instrução, tradução de endereço, interrupção | 08, 10, 11 | animação didática, sem geometria física |
+| Fechamento | placa remontada e comparação | 13, 14 | reaproveita os níveis anteriores |
+
+Regras:
+- Contagens e tamanhos do chip vêm do spec (`confirmed`). A forma e a posição desenhadas nos níveis 2 e 3 são `illustrative`, e o viewer diz isso.
+- Cada peça de `design/assembly.json` ganha o campo `level` (0 a 4). Os ids `chip.*` são os mesmos `part_id` das notas do vault.
+- A passagem entre níveis é um beat próprio, com zoom contínuo.
+
 ## 2. Placa escolhida: RTX PRO 6000 Blackwell
 
 Decidido em 2026-10-19: **RTX PRO 6000 Blackwell** (`card_id: rtx-pro-6000-blackwell-ws`). O harness continua parametrizado por `card_id`, então outra placa afetaria só `spec/` e o conteúdo. A tabela abaixo mantém a RTX 6000 Ada como contexto de comparação.
@@ -65,7 +83,7 @@ F0 Escopo ──► F1 Pesquisa ──► F2 Arquitetura ──► F3 Modelagem 
 | Fase | Entra | Sai | Gate |
 |---|---|---|---|
 | F0 | pedido | `card_id` escolhido | humano |
-| F1 | `card_id` | `spec/card.spec.json` + `spec/sources/` | `fact-checker` |
+| F1 | `card_id` | `spec/card.spec.json` + `spec/sources/` (hardware e arquitetura: ISA, memória, MMU, interrupções) | `fact-checker` |
 | F2 | spec | `design/assembly.json` + `design/proposal.md` | humano (revisa o que é "provável") |
 | F3 | assembly | `parts/<id>/part.py`, `.glb`, `.step` por peça | `ops-runner` (lint) + `visual-qa` |
 | F4 | partes | `build/card.glb` | interferência, bounding box vs. spec |
@@ -130,7 +148,7 @@ Este é um julgamento de projeto, não uma medição. Reavalie depois do piloto,
 {
   "units": "mm", "up": "+Z", "origin": "pcb.bottom_left_front",
   "parts": [
-    {"id": "cooler.heatsink", "parent": "cooler", "provenance": "derived",
+    {"id": "cooler.heatsink", "parent": "cooler", "level": 1, "provenance": "derived",
      "confidence": 0.7, "rationale": "design análogo ao da placa irmã (teardown)",
      "geometry": "parts/cooler.heatsink/part.py",
      "explode": {"dir": [0, 0, 1], "distance": 60, "order": 4},
@@ -195,6 +213,7 @@ O `vault/` é a camada **editorial** (o que a apresentação diz e em que ordem)
 |---|---|---|
 | `gpu-assembly-proposal` | **escrita (v0.1)** | architecture-inferencer, assembly-planner |
 | `build123d-gpu-parts` | a escrever | modeladores, instancer |
+| `chip-architecture-explainer` | a escrever | technical-writer, storyboard-director |
 | `cinematic-storyboard` | a escrever | storyboard-director |
 | `explainer-writing-ptbr` | a escrever | technical-writer |
 | `viewer-scaffold` | a escrever | viewer-engineer |
@@ -202,6 +221,8 @@ O `vault/` é a camada **editorial** (o que a apresentação diz e em que ordem)
 
 ## 10. Riscos e limites
 
+- O whitepaper da NVIDIA não cobre MMU, interrupções, conjunto de instruções, pipeline do SM nem política dos caches. Esses itens dependem de outras fontes (guia CUDA, PTX, SASS, driver aberto, microbenchmarks) e podem terminar como lacuna declarada.
+- O whitepaper tem inconsistências internas (192 contra 188 SMs, dois valores para a banda da RTX 6000 Ada). Toda conta é conferida entre tabelas e a tabela de origem é citada.
 - O layout interno do die, os esquemáticos e a lista exata de componentes são proprietários. Tudo isso será `inferred` ou `illustrative`, e o viewer diz isso.
 - Marcas e logos da NVIDIA: aceitável em uso educacional, e exige revisão antes de qualquer uso comercial.
 - Render sem GPU (SwiftShader) é lento. Vídeo em alta resolução pode exigir captura quadro a quadro.
@@ -209,7 +230,8 @@ O `vault/` é a camada **editorial** (o que a apresentação diz e em que ordem)
 
 ## 11. Próximos passos
 
-1. ~~Humano escolhe a placa~~ Feito: RTX PRO 6000 Blackwell. Pendente: variante (Workstation ou Max-Q) e os dados do briefing no vault (público, tempo de fala, prazo).
-2. `spec-researcher` monta o spec e as fontes, e o `fact-checker` valida.
-3. `architecture-inferencer` roda a skill `gpu-assembly-proposal` e o humano revisa a proposta.
-4. Piloto: PCB + cooler + shroud com explosão e uma única chamada funcionando no viewer, de ponta a ponta.
+1. Feito: placa (RTX PRO 6000 Blackwell Workstation), público, roteiro v2 e proposta de 2026-10-26.
+2. Em andamento (F1): fontes de arquitetura (guia CUDA, PTX, SASS, driver aberto, microbenchmarks) e teardown da placa. O `spec-researcher` registra e o `fact-checker` valida. Já lidas: whitepaper v1.1 e página do produto (`spec/sources/`).
+3. Texto antes do viewer: a documentação escrita (2026-11-09) e o seminário (2026-11-16) valem nota, e o viewer é o meio. Redigir primeiro as seções de chip.
+4. Piloto de viewer enxuto: níveis 0 a 2 (placa e chip) com uma única chamada, de ponta a ponta. O nível 3 e as animações do nível 4 vêm depois, se houver tempo.
+5. `architecture-inferencer` roda a `gpu-assembly-proposal` para o interior físico da placa (seção 02 do roteiro), com revisão humana.

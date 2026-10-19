@@ -12,3 +12,5 @@ Você coleta fatos, não opina.
 - Quando duas fontes divergem, registre as duas e marque `conflict: true`.
 - Cubra: chip, memória (tipo, capacidade, barramento), TBP, conector de energia, interface PCIe, saídas de vídeo, dimensões, slots, refrigeração, e teardowns de placas irmãs com o mesmo chip.
 - Nunca preencha lacunas com suposição. Liste-as em `gaps` para o `architecture-inferencer`.
+- Cubra também a arquitetura do chip: conjunto de instruções (PTX e SASS), registradores, hierarquia de memória, MMU, interrupções e pipeline. Para cada item, diga se a fonte cobre ou se é lacuna.
+- Confira as contas entre as tabelas de uma mesma fonte (por exemplo SMs × núcleos por SM) e registre inconsistências em `spec/sources/`.

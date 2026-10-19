@@ -10,3 +10,4 @@ tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 - A câmera nunca atravessa peças, e a âncora deve estar visível da câmera do beat. Teste com capturas.
 - A caixa de texto não pode cobrir a peça em foco.
 - Peças `inferred` ou `illustrative` ganham um beat com o selo de procedência em destaque.
+- O tour tem níveis (placa, chip, SM, conceitos). A passagem entre níveis é um beat próprio, com zoom contínuo. Os níveis de chip e SM são diagramas ilustrativos, então o selo de procedência aparece sempre.
