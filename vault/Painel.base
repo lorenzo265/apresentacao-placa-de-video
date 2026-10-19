@@ -1,0 +1,45 @@
+filters:
+  and:
+    - 'tipo == "secao"'
+properties:
+  ordem:
+    displayName: Ordem
+  part_id:
+    displayName: Peça (harness)
+  procedencia_esperada:
+    displayName: Procedência
+views:
+  - type: table
+    name: Roteiro
+    order:
+      - ordem
+      - file.name
+      - status
+      - procedencia_esperada
+      - part_id
+      - prazo
+      - fontes
+    sort:
+      - property: ordem
+        direction: ASC
+  - type: table
+    name: Para revisar
+    filters:
+      and:
+        - 'status == "revisar"'
+    order:
+      - file.name
+      - status
+      - prazo
+  - type: table
+    name: Sem fonte
+    filters:
+      and:
+        - 'fontes.isEmpty()'
+    order:
+      - ordem
+      - file.name
+      - procedencia_esperada
+    sort:
+      - property: ordem
+        direction: ASC
