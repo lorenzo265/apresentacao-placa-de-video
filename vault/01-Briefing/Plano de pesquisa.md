@@ -26,4 +26,6 @@ Nenhuma fonte foi coletada ainda. Os itens abaixo são **alvos**, não fatos.
 
 Essas lacunas alimentam a skill `gpu-assembly-proposal`, depois que o spec for validado.
 
+As fontes de arquitetura (whitepaper, PTX, SASS, código aberto dos módulos de kernel, artigos de microbenchmark) estão em [[Requisitos da disciplina]] e entram neste plano quando o roteiro v2 for confirmado.
+
 Ver também: [[Briefing]] e [[Decisões do projeto]].

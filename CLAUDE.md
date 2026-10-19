@@ -21,6 +21,7 @@ Apresentação cinematográfica e interativa de uma placa de vídeo NVIDIA RTX P
 
 ## Estado atual
 
-- Placa escolhida: RTX PRO 6000 Blackwell (variante a confirmar: Workstation ou Max-Q).
-- Fase atual: F0 concluída, falta F1 (pesquisa e spec).
-- Pendências de briefing (público, tempo de fala, prazo) estão em `vault/CLAUDE.md`.
+- Placa: RTX PRO 6000 Blackwell, Workstation Edition.
+- Contexto: trabalho de Arquitetura da disciplina de Organização e Arquitetura de Computadores, grupo de até 4. Entregas: proposta em 2026-10-26 (0,5), texto em 2026-11-09 (1,5), seminário em 2026-11-16 (2,0). Ver `vault/01-Briefing/Requisitos da disciplina.md`.
+- O enunciado cobra arquitetura (registradores, instruções, CISC/RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). O roteiro v1, focado em hardware físico, não cobre isso e está em revisão. O roteiro v2 está proposto e aguarda confirmação.
+- Fase atual: F0 concluída. F1 (pesquisa e spec) deve incluir as fontes de arquitetura.
