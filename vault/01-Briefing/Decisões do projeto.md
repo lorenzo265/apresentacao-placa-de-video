@@ -19,6 +19,7 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-10-19 | Tema do trabalho: **GPU Nvidia**, linha de Arquitetura | Enunciado da disciplina, ver [[Requisitos da disciplina]] |
 | 2026-10-19 | **Roteiro v2** confirmado: foco na arquitetura da GPU (14 seções, da placa ao chip). Roteiro v1 arquivado | O v1 não cobria nenhum item exigido pelo professor |
 | 2026-10-19 | Proposta formal de 2026-10-26 rascunhada em [[Proposta formal]] | Entrega de 0,5 ponto |
+| 2026-10-19 | Modelo por skill definido em quatro tipos (A fable, B opus, C sonnet, D haiku), no `CLAUDE.md` da raiz | Skill roda no modelo de quem a invoca; skills de julgamento nunca em D, gate de fatos sempre em A |
 
 ## Em aberto
 - Duração do seminário ([[Briefing]]).

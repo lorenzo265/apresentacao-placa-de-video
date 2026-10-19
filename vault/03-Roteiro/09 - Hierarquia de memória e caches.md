@@ -8,7 +8,7 @@ part_id: chip.memhier
 procedencia_esperada: derived
 itens_enunciado: [cache, gerenciamento de memória]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]]"]
 ---
 # 09 - Hierarquia de memória e caches
 
@@ -23,6 +23,7 @@ Percorrer a hierarquia de memória da GPU, dos registradores à GDDR7, com taman
 - Registradores: 256 KB por SM. L1/memória compartilhada: 128 KB por SM, configurável, 24.064 KB no total ([[NVIDIA - Whitepaper RTX PRO Blackwell v1.1|whitepaper]], p. 9 e Tab. 4).
 - L2: 131.072 KB (128 MB). Na RTX A6000 eram 6.144 KB e na RTX 6000 Ada, 98.304 KB ([[NVIDIA - Whitepaper RTX PRO Blackwell v1.1|whitepaper]], Tab. 4).
 - Memória principal: 96 GB de GDDR7 a 1.792 GB/s ([[NVIDIA - Whitepaper RTX PRO Blackwell v1.1|whitepaper]], Tab. 4).
+- Derivado (RTX 5080, chip GB203, não GB202): L1 entre 30 e 40 ciclos, acerto no L2 por volta de 358 ciclos e memória global por volta de 876,7 ciclos ([[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture|Jarmusch et al.]], seção VI). Os tamanhos de registradores e L1 por SM (256 KB e 128 KB) coincidem com os do whitepaper da GB202.
 
 ## A levantar
 - Qual a latência e a largura de banda de cada nível? (microbenchmarks de gerações anteriores)
@@ -32,6 +33,7 @@ Percorrer a hierarquia de memória da GPU, dos registradores à GDDR7, com taman
 
 ## Fontes
 - [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]
+- [[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]]
 
 ## No viewer
 - Nível: chip. Câmera e âncora: a definir pelo storyboard.

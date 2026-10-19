@@ -49,7 +49,7 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 | Item exigido | Seções | Fonte primária já lida | Risco de lacuna |
 |---|---|---|---|
 | Registradores | [[07 - Registradores]] | whitepaper: tamanho do banco | médio: limites por thread vêm do guia CUDA |
-| Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | nenhuma | **alto**: o SASS não tem documentação oficial completa |
+| Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | PTX e Binary Utilities (em parte) e experimento `sm_120` | médio: opcodes documentados, campos de controle só pela Volta |
 | CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | whitepaper: o AMP é RISC-V | médio: a classificação do SASS depende da lista de instruções |
 | MMU | [[10 - Memória virtual e MMU]] | nenhuma | **alto** |
 | Interrupções | [[11 - Escalonamento, CPU e interrupções]] | whitepaper: AMP e escalonamento | **alto**: o whitepaper não fala de interrupções |
@@ -58,23 +58,27 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 | Cache | [[09 - Hierarquia de memória e caches]] | whitepaper: tamanhos | médio: política e latências vêm de medições |
 
 ## Fontes
-Os links abaixo foram encontrados por busca e só as duas primeiras foram abertas e lidas.
+As fontes marcadas como lidas foram abertas. As demais foram encontradas por busca e ainda não foram abertas.
 
 | Fonte | Status | Cobre |
 |---|---|---|
 | [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]] | lida | chip, SM, memória, AMP, comparação com a Ada |
 | [[NVIDIA - Página da RTX PRO 6000 Blackwell]] | lida | ficha do produto |
 | Guia de programação CUDA (`docs.nvidia.com/cuda/cuda-c-programming-guide/`) | a ler | modelo de execução, ocupação, limites por thread |
-| Especificação do PTX (`docs.nvidia.com/cuda/parallel-thread-execution/`) | a ler | ISA virtual |
-| Ferramentas binárias do CUDA, referência de instruções (`docs.nvidia.com/cuda/cuda-binary-utilities/`) | a ler | SASS |
+| [[NVIDIA - PTX ISA]] | lida em parte (cerca de 300.000 dos 470.000 caracteres) | ISA virtual, registradores, predicação |
+| [[NVIDIA - CUDA Binary Utilities]] | lida em parte (primeiros 100.000 dos 112.000 caracteres) | SASS: opcodes da compute capability 12.0 |
+| [[NVIDIA - Compute capability das GPUs CUDA]] | lida | compute capability 12.0 da placa |
 | Código aberto dos módulos de kernel (`github.com/NVIDIA/open-gpu-kernel-modules`) | a ler | MMU, interrupções, comunicação com a CPU |
 | Documentação de hardware externo do projeto NVK do Mesa (`docs.mesa3d.org/drivers/nvk/external_hardware_docs.html`) | a ler | índice de documentação de hardware |
-| Artigos de microbenchmarking de GPUs NVIDIA de gerações anteriores | a localizar | pipeline, latências, caches |
+| [[Jia et al. - Dissecting the NVIDIA Volta GPU]] | lido em parte | codificação de 128 bits, registradores, escalonador (derivado) |
+| [[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]] | lido em parte | latências e pipeline na GB203 (derivado) |
+| Artigos de Ampere (arXiv 2208.11174), Hopper (arXiv 2501.12084) e B200 (arXiv 2512.02189) | a ler | mapeamento PTX para SASS, caches |
 | Teardown ou review com fotos da própria placa | a localizar | conector de energia, VRM, cooler |
 
 ## Achados da primeira rodada de pesquisa
 - O whitepaper cobre bem a estrutura do chip e os tamanhos de recurso, mas **não cobre** MMU, interrupções, conjunto de instruções, profundidade do pipeline e política dos caches. Esses são os itens de maior risco de lacuna.
 - O whitepaper tem duas inconsistências internas (192 contra 188 SMs, e dois valores para a banda da Ada). Detalhes em [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]].
-- O único processador da GPU que o whitepaper identifica pela ISA é o AMP, que é **RISC-V**. Isso entra em [[08 - Instruções PTX e SASS, RISC ou CISC]] e [[11 - Escalonamento, CPU e interrupções]].
+- O único processador da GPU que o whitepaper identifica pela ISA é o AMP, que é **RISC-V**.
+- **A largura da instrução em `sm_120` foi observada por experimento**: compilamos um kernel com as ferramentas oficiais e todas as instruções ocupam 16 bytes. A documentação do Binary Utilities não declara isso (ver `harness/examples/saxpy/`). Isso entra em [[08 - Instruções PTX e SASS, RISC ou CISC]] e [[11 - Escalonamento, CPU e interrupções]].
 
 Ver também: [[Briefing]], [[Plano de pesquisa]] e [[Decisões do projeto]].

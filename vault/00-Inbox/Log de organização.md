@@ -16,3 +16,9 @@
 - Novas propriedades nas seções: `nivel`, `itens_enunciado`. `Painel.base` filtra por `03-Roteiro/`, então o arquivo não aparece.
 - Duas fontes lidas e registradas em `02-Pesquisa/`. `Requisitos da disciplina` agora traz a cobertura do v2, o status das fontes e os achados da primeira rodada.
 - Proposta formal de 2026-10-26 rascunhada em `01-Briefing/Proposta formal.md`.
+
+## 2026-10-19 (fontes de instruções)
+- Cinco fontes novas em `02-Pesquisa/`: PTX ISA, CUDA Binary Utilities, compute capability, artigo da Volta e artigo da Blackwell (GB203).
+- Seção `08` reescrita com o que é confirmado, o que foi observado em experimento, o que é derivado e a análise RISC ou CISC. Seções `06`, `07`, `09` e `12` ganharam os fatos novos.
+- Exemplo SAXPY compilado para `sm_120` em `harness/examples/saxpy/`.
+- Definidos no `CLAUDE.md` da raiz os tipos de modelo por skill e por agente (A fable, B opus, C sonnet, D haiku), com regras de escalada.

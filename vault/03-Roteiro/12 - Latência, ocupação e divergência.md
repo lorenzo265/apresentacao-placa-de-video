@@ -8,7 +8,7 @@ part_id: chip.latency
 procedencia_esperada: derived
 itens_enunciado: [pipeline]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - PTX ISA]]"]
 ---
 # 12 - Latência, ocupação e divergência
 
@@ -20,6 +20,7 @@ Mostrar como a GPU esconde latência com muitos warps, o que limita a ocupação
 
 ## Já confirmado na fonte primária
 - Os recursos que limitam a ocupação por SM: 65.536 registradores de 32 bits (conta derivada de [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1|whitepaper]], p. 9) e 128 KB de L1/memória compartilhada.
+- Conta teórica: um kernel com 10 registradores por thread usa 320 registradores por warp (32 threads). Com 65.536 registradores por SM, sobrariam até 204 warps se só os registradores limitassem. Os limites reais de warps por SM e a granularidade de alocação ainda faltam (guia CUDA).
 
 ## A levantar
 - Quantos warps e threads cabem em um SM na Blackwell workstation? (tabela de capacidades do guia CUDA, a verificar)
@@ -28,6 +29,7 @@ Mostrar como a GPU esconde latência com muitos warps, o que limita a ocupação
 
 ## Fontes
 - [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]
+- [[NVIDIA - PTX ISA]]
 
 ## No viewer
 - Nível: chip. Câmera e âncora: a definir pelo storyboard.
