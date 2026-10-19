@@ -17,9 +17,8 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-10-19 | Público: estudante de computação e o professor, com rigor de engenharia | Escolha do autor |
 | 2026-10-19 | Conteúdo sem limite definido pelo grupo | Escolha do autor |
 | 2026-10-19 | Tema do trabalho: **GPU Nvidia**, linha de Arquitetura | Enunciado da disciplina, ver [[Requisitos da disciplina]] |
-
-## Proposta aguardando confirmação
-- Mudar o foco do roteiro de hardware físico para a arquitetura da GPU (registradores, instruções, MMU, interrupções, pipeline, cache), mantendo a placa como moldura. Roteiro v2 em [[Requisitos da disciplina]].
+| 2026-10-19 | **Roteiro v2** confirmado: foco na arquitetura da GPU (14 seções, da placa ao chip). Roteiro v1 arquivado | O v1 não cobria nenhum item exigido pelo professor |
+| 2026-10-19 | Proposta formal de 2026-10-26 rascunhada em [[Proposta formal]] | Entrega de 0,5 ponto |
 
 ## Em aberto
 - Duração do seminário ([[Briefing]]).

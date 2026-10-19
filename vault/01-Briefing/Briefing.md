@@ -31,7 +31,7 @@ Sem limite de conteúdo definido pelo grupo: falamos de tudo que for necessário
 
 ## Escopo
 - Placa: RTX PRO 6000 Blackwell, Workstation Edition. Ver [[Decisões do projeto]].
-- Roteiro: a versão 1 (12 seções, focada em hardware físico) está em revisão, porque não cobre os itens do enunciado. A proposta v2 está em [[Requisitos da disciplina]].
+- Roteiro v2 (14 seções, da placa ao interior do chip), confirmado em 2026-10-19. A v1, focada em hardware físico, está arquivada em `_arquivo/roteiro-v1/`. Ver [[Requisitos da disciplina]].
 - Peças sem documentação pública aparecem como arquitetura provável, com selo de procedência.
 
 ## Fora do escopo (por enquanto)
@@ -41,7 +41,6 @@ Sem limite de conteúdo definido pelo grupo: falamos de tudo que for necessário
 
 ## Perguntas abertas
 - Duração do seminário.
-- Confirmar o roteiro v2.
 - O vídeo exportado é necessário, ou o viewer basta?
 - Divisão de trabalho entre os integrantes do grupo.
 

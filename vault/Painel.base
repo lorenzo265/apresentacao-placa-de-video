@@ -1,23 +1,28 @@
 filters:
   and:
     - 'tipo == "secao"'
+    - 'file.inFolder("03-Roteiro")'
 properties:
   ordem:
     displayName: Ordem
+  nivel:
+    displayName: Nível
   part_id:
     displayName: Peça (harness)
   procedencia_esperada:
     displayName: Procedência
+  itens_enunciado:
+    displayName: Itens do enunciado
 views:
   - type: table
     name: Roteiro
     order:
       - ordem
       - file.name
+      - nivel
       - status
       - procedencia_esperada
-      - part_id
-      - prazo
+      - itens_enunciado
       - fontes
     sort:
       - property: ordem
@@ -39,7 +44,17 @@ views:
     order:
       - ordem
       - file.name
-      - procedencia_esperada
+      - itens_enunciado
+    sort:
+      - property: ordem
+        direction: ASC
+  - type: table
+    name: Ligação com o harness
+    order:
+      - ordem
+      - file.name
+      - part_id
+      - nivel
     sort:
       - property: ordem
         direction: ASC

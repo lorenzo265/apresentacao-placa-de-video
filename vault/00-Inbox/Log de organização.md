@@ -10,3 +10,9 @@
 - Preenchidos público, variante (Workstation Edition) e prazos no `CLAUDE.md` do vault e no briefing. Duração do seminário segue pendente.
 - Criada `01-Briefing/Requisitos da disciplina.md` com o enunciado resumido, datas, tabela de cobertura do roteiro v1 e proposta de roteiro v2.
 - Roteiro v1 não foi alterado. A reestruturação aguarda confirmação.
+
+## 2026-10-19 (roteiro v2)
+- Roteiro v2 confirmado. As 12 seções do v1 foram movidas para `_arquivo/roteiro-v1/` sem alteração. Criadas 14 seções novas em `03-Roteiro/`.
+- Novas propriedades nas seções: `nivel`, `itens_enunciado`. `Painel.base` filtra por `03-Roteiro/`, então o arquivo não aparece.
+- Duas fontes lidas e registradas em `02-Pesquisa/`. `Requisitos da disciplina` agora traz a cobertura do v2, o status das fontes e os achados da primeira rodada.
+- Proposta formal de 2026-10-26 rascunhada em `01-Briefing/Proposta formal.md`.

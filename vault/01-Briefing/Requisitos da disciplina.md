@@ -1,6 +1,6 @@
 ---
 tipo: briefing
-status: revisar
+status: pronto
 prazo: 2026-10-26
 ---
 # Requisitos da disciplina
@@ -36,47 +36,45 @@ Nem todo item existe em toda arquitetura. Quando um item não existir, ou não f
 
 Total em jogo: 4,0 pontos. A duração do seminário ainda não foi informada. Perguntar ao professor.
 
-## Cobertura do roteiro v1 contra o enunciado
-| Item exigido | Coberto hoje? | Onde |
+## Roteiro v2 (confirmado em 2026-10-19)
+O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardware físico) foi arquivado em `_arquivo/roteiro-v1/` e serve de material para a seção 02.
+
+| Parte | Seção |
+|---|---|
+| A. A placa como sistema | [[01 - Abertura e visão geral]], [[02 - Energia, dados e calor na placa]], [[03 - Memória e barramentos]] |
+| B. O chip | [[04 - Planta do chip]], [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[07 - Registradores]], [[08 - Instruções PTX e SASS, RISC ou CISC]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]], [[11 - Escalonamento, CPU e interrupções]], [[12 - Latência, ocupação e divergência]] |
+| C. Fechamento | [[13 - O que a Blackwell mudou]], [[14 - GPU contra CPU e encerramento]] |
+
+## Cobertura do roteiro v2 contra o enunciado
+| Item exigido | Seções | Fonte primária já lida | Risco de lacuna |
+|---|---|---|---|
+| Registradores | [[07 - Registradores]] | whitepaper: tamanho do banco | médio: limites por thread vêm do guia CUDA |
+| Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | nenhuma | **alto**: o SASS não tem documentação oficial completa |
+| CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | whitepaper: o AMP é RISC-V | médio: a classificação do SASS depende da lista de instruções |
+| MMU | [[10 - Memória virtual e MMU]] | nenhuma | **alto** |
+| Interrupções | [[11 - Escalonamento, CPU e interrupções]] | whitepaper: AMP e escalonamento | **alto**: o whitepaper não fala de interrupções |
+| Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]] | whitepaper: hierarquia e GDDR7 | médio |
+| Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper: parcial | médio |
+| Cache | [[09 - Hierarquia de memória e caches]] | whitepaper: tamanhos | médio: política e latências vêm de medições |
+
+## Fontes
+Os links abaixo foram encontrados por busca e só as duas primeiras foram abertas e lidas.
+
+| Fonte | Status | Cobre |
 |---|---|---|
-| Registradores | não | |
-| Conjunto de instruções | não | |
-| CISC ou RISC | não | |
-| MMU | não | |
-| Interrupções | não | |
-| Gerenciamento de memória | parcial | [[07 - Memória]], só o lado físico |
-| Pipeline | não | |
-| Cache | não | |
+| [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]] | lida | chip, SM, memória, AMP, comparação com a Ada |
+| [[NVIDIA - Página da RTX PRO 6000 Blackwell]] | lida | ficha do produto |
+| Guia de programação CUDA (`docs.nvidia.com/cuda/cuda-c-programming-guide/`) | a ler | modelo de execução, ocupação, limites por thread |
+| Especificação do PTX (`docs.nvidia.com/cuda/parallel-thread-execution/`) | a ler | ISA virtual |
+| Ferramentas binárias do CUDA, referência de instruções (`docs.nvidia.com/cuda/cuda-binary-utilities/`) | a ler | SASS |
+| Código aberto dos módulos de kernel (`github.com/NVIDIA/open-gpu-kernel-modules`) | a ler | MMU, interrupções, comunicação com a CPU |
+| Documentação de hardware externo do projeto NVK do Mesa (`docs.mesa3d.org/drivers/nvk/external_hardware_docs.html`) | a ler | índice de documentação de hardware |
+| Artigos de microbenchmarking de GPUs NVIDIA de gerações anteriores | a localizar | pipeline, latências, caches |
+| Teardown ou review com fotos da própria placa | a localizar | conector de energia, VRM, cooler |
 
-O roteiro v1 trata de hardware físico da placa (cooler, entrega de energia, PCB, pads). Isso não é o que o enunciado avalia. A placa deve virar a moldura do trabalho, e o centro precisa ser a arquitetura da GPU.
-
-## Proposta de roteiro v2 (aguardando confirmação)
-Ideia: o tour desce em níveis, da placa até o interior do chip, como uma sequência de zooms.
-
-| Parte | Seção | Item do enunciado |
-|---|---|---|
-| A. A placa como sistema | 1. Abertura e visão geral | contexto |
-| | 2. Energia, dados e calor na placa | organização física, resumida |
-| | 3. Memória e barramentos (GDDR, PCIe) | organização, gerenciamento de memória |
-| B. O chip | 4. Planta do chip: GPCs, SMs, L2, controladores de memória | visão geral |
-| | 5. Modelo de execução: SIMT, warps, blocos (CUDA) | pipeline, modelo de programação |
-| | 6. O SM por dentro: escalonadores e unidades de execução | pipeline |
-| | 7. Registradores | registradores |
-| | 8. Instruções: PTX e SASS, e a pergunta RISC ou CISC | conjunto de instruções, CISC/RISC |
-| | 9. Hierarquia de memória e caches | cache, gerenciamento de memória |
-| | 10. Memória virtual da GPU (MMU) | MMU, gerenciamento de memória |
-| | 11. Comunicação com a CPU e interrupções | interrupções |
-| | 12. Latência, ocupação e divergência | pipeline |
-| C. Fechamento | 13. O que a Blackwell mudou | contexto da geração |
-| | 14. GPU contra CPU: o que muda em cada item | síntese |
-
-## Fontes primárias prováveis
-Nenhuma foi coletada. A existência e o conteúdo de cada uma precisam ser verificados.
-- Whitepaper da arquitetura Blackwell (NVIDIA).
-- Guia de programação CUDA e especificação do PTX (NVIDIA).
-- Documentação das ferramentas binárias do CUDA, com a lista de instruções SASS por arquitetura.
-- Código aberto dos módulos de kernel da NVIDIA, que pode documentar MMU e interrupções no nível de registradores.
-- Artigos acadêmicos de microbenchmarking de GPUs NVIDIA de gerações anteriores.
-- Ficha oficial da RTX PRO 6000 Blackwell Workstation Edition.
+## Achados da primeira rodada de pesquisa
+- O whitepaper cobre bem a estrutura do chip e os tamanhos de recurso, mas **não cobre** MMU, interrupções, conjunto de instruções, profundidade do pipeline e política dos caches. Esses são os itens de maior risco de lacuna.
+- O whitepaper tem duas inconsistências internas (192 contra 188 SMs, e dois valores para a banda da Ada). Detalhes em [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]].
+- O único processador da GPU que o whitepaper identifica pela ISA é o AMP, que é **RISC-V**. Isso entra em [[08 - Instruções PTX e SASS, RISC ou CISC]] e [[11 - Escalonamento, CPU e interrupções]].
 
 Ver também: [[Briefing]], [[Plano de pesquisa]] e [[Decisões do projeto]].

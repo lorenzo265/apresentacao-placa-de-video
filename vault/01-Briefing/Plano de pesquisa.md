@@ -10,8 +10,8 @@ Nenhuma fonte foi coletada ainda. Os itens abaixo são **alvos**, não fatos.
 
 | # | Alvo | Para quê | Procedência que gera | Status |
 |---|---|---|---|---|
-| 1 | Ficha técnica oficial da NVIDIA para a placa (variante a definir) | Chip, memória, barramento, potência, conector, saídas, dimensões | `confirmed` | pendente |
-| 2 | Documentação do chip da família Blackwell usado na placa | Arquitetura, blocos do chip, recursos de workstation | `confirmed` | pendente |
+| 1 | Ficha técnica oficial da NVIDIA para a placa | Chip, memória, barramento, potência, conector, saídas, dimensões | `confirmed` | parcial: [[NVIDIA - Página da RTX PRO 6000 Blackwell]] lida, falta o conector de energia |
+| 2 | Documentação do chip da família Blackwell usado na placa | Arquitetura, blocos do chip, recursos de workstation | `confirmed` | lido: [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]] |
 | 3 | Reviews e fotos da própria placa | Aparência externa, cooler, bracket, saídas | `confirmed` | pendente |
 | 4 | Teardown da própria placa, se existir | Layout interno real | `confirmed` | pendente |
 | 5 | Teardown da placa de consumo irmã que usa o mesmo chip | Posição da memória, VRM, estrutura do cooler | `derived` | pendente |
@@ -26,6 +26,6 @@ Nenhuma fonte foi coletada ainda. Os itens abaixo são **alvos**, não fatos.
 
 Essas lacunas alimentam a skill `gpu-assembly-proposal`, depois que o spec for validado.
 
-As fontes de arquitetura (whitepaper, PTX, SASS, código aberto dos módulos de kernel, artigos de microbenchmark) estão em [[Requisitos da disciplina]] e entram neste plano quando o roteiro v2 for confirmado.
+As fontes de arquitetura (guia CUDA, PTX, SASS, código aberto dos módulos de kernel, artigos de microbenchmark), com status e o que cada uma cobre, estão em [[Requisitos da disciplina]].
 
 Ver também: [[Briefing]] e [[Decisões do projeto]].

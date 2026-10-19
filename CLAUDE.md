@@ -23,5 +23,5 @@ Apresentação cinematográfica e interativa de uma placa de vídeo NVIDIA RTX P
 
 - Placa: RTX PRO 6000 Blackwell, Workstation Edition.
 - Contexto: trabalho de Arquitetura da disciplina de Organização e Arquitetura de Computadores, grupo de até 4. Entregas: proposta em 2026-10-26 (0,5), texto em 2026-11-09 (1,5), seminário em 2026-11-16 (2,0). Ver `vault/01-Briefing/Requisitos da disciplina.md`.
-- O enunciado cobra arquitetura (registradores, instruções, CISC/RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). O roteiro v1, focado em hardware físico, não cobre isso e está em revisão. O roteiro v2 está proposto e aguarda confirmação.
-- Fase atual: F0 concluída. F1 (pesquisa e spec) deve incluir as fontes de arquitetura.
+- O enunciado cobra arquitetura (registradores, instruções, CISC/RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). Roteiro v2 (14 seções, da placa ao interior do chip) confirmado em 2026-10-19. O v1, focado em hardware físico, está arquivado em `vault/_arquivo/roteiro-v1/`.
+- Fase atual: F1 em andamento. Fontes lidas: whitepaper da arquitetura e página do produto (ver `harness/spec/sources/`). Pendentes: guia CUDA, PTX, SASS, código aberto do driver, microbenchmarks e o conector de energia.
