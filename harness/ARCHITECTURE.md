@@ -214,10 +214,14 @@ O `vault/` é a camada **editorial** (o que a apresentação diz e em que ordem)
 | `gpu-assembly-proposal` | **escrita (v0.1)** | architecture-inferencer, assembly-planner |
 | `build123d-gpu-parts` | a escrever | modeladores, instancer |
 | `chip-architecture-explainer` | a escrever | technical-writer, storyboard-director |
+| `source-registration` | a escrever | spec-researcher |
+| `sass-example-lab` | a escrever | spec-researcher |
 | `cinematic-storyboard` | a escrever | storyboard-director |
 | `explainer-writing-ptbr` | a escrever | technical-writer |
 | `viewer-scaffold` | a escrever | viewer-engineer |
 | `model-qa` | a escrever | ops-runner, visual-qa, integrator |
+
+O tipo de modelo de cada skill (A, B, C ou D) e as regras de escalada estão em `CLAUDE.md`, seção "Modelos por skill e por agente".
 
 ## 10. Riscos e limites
 
