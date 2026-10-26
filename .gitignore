@@ -15,3 +15,4 @@ node_modules/
 
 # Entregas: HTML intermediário do PDF
 entregas/**/proposta.html
+entregas/**/logo.png

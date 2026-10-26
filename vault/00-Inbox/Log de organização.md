@@ -32,3 +32,4 @@
 - Quatro fontes novas em `02-Pesquisa/`: guia CUDA, driver aberto (MMU), driver aberto (interrupções e GSP) e teardown com conector de energia. Todas `status: rascunho`, em auditoria. Autoria do artigo da Ampere conferida no arXiv.
 - Seções `02`, `03`, `05`, `07`, `09`, `10`, `11` e `12` ganharam as fontes novas em `fontes`. `10` e `11` têm um aviso de síntese pendente (tipo A: Fable ou Opus). Nenhum link quebrado.
 - `Requisitos da disciplina`, `Decisões do projeto`, `Plano de pesquisa` e `Briefing` atualizados. Pendências abertas: grupo de 5 contra o limite de 4 do enunciado, e divisão de tarefas.
+- Versão direta da proposta em .docx (2 páginas: dados do grupo, proposta, tarefas, cronograma e objetivo), gerada por `entregas/proposta-2026-10-26/build_docx.js` a partir de `grupo.json`. O PDF longo continua como versão detalhada.
