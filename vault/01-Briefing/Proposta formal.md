@@ -36,16 +36,14 @@ O grupo estudará a arquitetura da **GPU NVIDIA da família Blackwell, chip GB20
 - Entregar as três etapas (proposta, documentação e seminário) com qualidade, buscando os 4,0 pontos em jogo.
 
 ## 3. Escopo: itens do enunciado e tratamento
-| Item exigido | Como será tratado | Fonte principal prevista |
-|-----|----------|---------|
-| Conjunto de registradores | Banco de registradores por SM, registradores por thread, registradores especiais | Documento de arquitetura da NVIDIA, guia CUDA, especificação do PTX |
-| Conjunto de instruções | PTX (ISA virtual) e SASS (código de máquina), com exemplo de kernel compilado | Especificação do PTX, ferramentas binárias do CUDA |
-| CISC ou RISC | Classificação do SASS por critérios explícitos; o escalonador AMP da GPU usa um processador RISC-V | Ferramentas binárias do CUDA, documento de arquitetura |
-| MMU | Tradução de endereços, tabelas de página, TLB, falhas de página | Código aberto dos módulos de kernel da NVIDIA, guia CUDA |
-| Interrupções | Comunicação GPU-CPU, interrupções, firmware e escalonamento de contextos | Código aberto dos módulos de kernel, documento de arquitetura |
-| Gerenciamento de memória | GDDR7, hierarquia, memória unificada | Documento de arquitetura, guia CUDA |
-| Pipeline | Execução SIMT, warps, unidades do SM, latência e ocupação | Documento de arquitetura, guia CUDA, artigos de microbenchmark |
-| Cache | L1/memória compartilhada e L2: tamanhos, políticas e latências | Documento de arquitetura, artigos de microbenchmark |
+- **Conjunto de registradores.** Banco de registradores por SM, registradores por thread e registradores especiais. Fonte: documento de arquitetura da NVIDIA, guia CUDA e especificação do PTX.
+- **Conjunto de instruções.** PTX (ISA virtual) e SASS (código de máquina), com exemplo de kernel compilado. Fonte: especificação do PTX e ferramentas binárias do CUDA.
+- **CISC ou RISC.** Classificação do SASS por critérios explícitos; o escalonador AMP da GPU usa um processador RISC-V. Fonte: ferramentas binárias do CUDA e documento de arquitetura.
+- **MMU.** Tradução de endereços, tabelas de página, TLB e falhas de página. Fonte: código aberto dos módulos de kernel da NVIDIA e guia CUDA.
+- **Interrupções.** Comunicação GPU-CPU, interrupções, firmware e escalonamento de contextos. Fonte: código aberto dos módulos de kernel e documento de arquitetura.
+- **Gerenciamento de memória.** GDDR7, hierarquia de memória e memória unificada. Fonte: documento de arquitetura e guia CUDA.
+- **Pipeline.** Execução SIMT, warps, unidades do SM, latência e ocupação. Fonte: documento de arquitetura, guia CUDA e artigos de microbenchmark.
+- **Cache.** L1/memória compartilhada e L2: tamanhos, políticas e latências. Fonte: documento de arquitetura e artigos de microbenchmark.
 
 Fica **fora do escopo**: simulação física (térmica ou elétrica), comparação de desempenho com outras placas e programação de aplicações CUDA além de exemplos curtos para ilustrar as instruções.
 
@@ -67,12 +65,10 @@ O estudo é uma pesquisa documental em fontes primárias, com registro de cada f
 ## 5. Tratamento de informação não pública e produto da apresentação
 Parte da arquitetura de uma GPU comercial não é documentada. O grupo adotará quatro níveis de confiança, mostrados em todo o material:
 
-| Nível | Significado |
-|---|----------|
-| Confirmado | Documento oficial do fabricante, sobre esta GPU |
-| Derivado | Documentado para outra geração ou medido em microbenchmarks, e extrapolado |
-| Provável | Proposta de engenharia, sem evidência direta |
-| Ilustrativo | Apenas didático, sem pretensão de fidelidade (por exemplo, a posição dos blocos no die) |
+- **Confirmado.** Documento oficial do fabricante, sobre esta GPU.
+- **Derivado.** Documentado para outra geração ou medido em microbenchmarks, e extrapolado.
+- **Provável.** Proposta de engenharia, sem evidência direta.
+- **Ilustrativo.** Apenas didático, sem pretensão de fidelidade (por exemplo, a posição dos blocos no die).
 
 Quando um item exigido pelo professor não existir na GPU ou não for público, o trabalho dirá isso de forma explícita e explicará o motivo, em vez de preencher a lacuna com suposição.
 
@@ -86,26 +82,24 @@ O roteiro do tour tem 14 seções: três sobre a placa (visão geral; energia, d
 ## 6. Definição das tarefas
 Todo o grupo é responsável pelo trabalho e por todas as partes dele. Para que todos participem, cada integrante responde por uma parte, da pesquisa à explicação no seminário.
 
-| Integrante | Responsabilidade principal | Seções do roteiro |
-|----|----------|---|
-| {{I1}} | Registradores, conjunto de instruções (PTX e SASS), RISC ou CISC | 07 e 08 |
-| {{I2}} | Hierarquia de memória, caches e gerenciamento de memória | 03 e 09 |
-| {{I3}} | Memória virtual e MMU; interrupções, comunicação com a CPU e escalonamento | 10 e 11 |
-| {{I4}} | Pipeline: execução SIMT, SM, latência, ocupação e divergência | 05, 06 e 12 |
-| {{I5}} | Tour 3D, integração, abertura e fechamento, slides de reserva e condução do seminário | 01, 02, 04, 13 e 14 |
+- **{{I1}}.** Registradores, conjunto de instruções (PTX e SASS), RISC ou CISC. Seções do roteiro: 07 e 08.
+- **{{I2}}.** Hierarquia de memória, caches e gerenciamento de memória. Seções: 03 e 09.
+- **{{I3}}.** Memória virtual e MMU; interrupções, comunicação com a CPU e escalonamento. Seções: 10 e 11.
+- **{{I4}}.** Pipeline: execução SIMT, SM, latência, ocupação e divergência. Seções: 05, 06 e 12.
+- **{{I5}}.** Tour 3D, integração, abertura e fechamento, slides de reserva e condução do seminário. Seções: 01, 02, 04, 13 e 14.
 
 Todos revisam o texto uns dos outros e dominam o conjunto, porque qualquer integrante pode ser questionado no seminário.
 
 ## 7. Cronograma
-| Período | Atividade | Responsável | Entrega |
-|---|-----------|------|-----|
-| 19/10 a 26/10 | Formação do grupo, escolha do tema, leitura inicial das fontes de arquitetura, escopo e proposta | Todos | **26/10: proposta (0,5)** |
-| 27/10 a 01/11 | Leitura e registro das fontes restantes: guia CUDA, código aberto do driver, artigos de microbenchmark | Cada integrante, na sua área | |
-| 02/11 a 08/11 | Redação do documento por item, conferência dos números e primeira versão do tour | Cada integrante, na sua área; {{I5}} no tour | |
-| 09/11 | Revisão cruzada e fechamento do texto | Todos | **09/11: documentação escrita (1,5)** |
-| 10/11 a 14/11 | Tour completo, textos finais, slides de reserva e divisão das falas | {{I5}}, com todos | |
-| 15/11 | Ensaio geral com cronômetro | Todos | |
-| 16/11 | Seminário | Todos | **16/11: apresentação (2,0)** |
+- **19/10 a 26/10.** Formação do grupo, escolha do tema, leitura inicial das fontes de arquitetura, escopo e proposta. Responsável: todos. **Entrega em 26/10: proposta (0,5).**
+- **27/10 a 01/11.** Leitura e registro das fontes restantes: guia CUDA, código aberto do driver e artigos de microbenchmark. Responsável: cada integrante, na sua área.
+- **02/11 a 08/11.** Redação do documento por item, conferência dos números e primeira versão do tour. Responsável: cada integrante, na sua área; {{I5}} no tour.
+- **09/11.** Revisão cruzada e fechamento do texto. Responsável: todos. **Entrega em 09/11: documentação escrita (1,5).**
+- **10/11 a 14/11.** Tour completo, textos finais, slides de reserva e divisão das falas. Responsável: {{I5}}, com todos.
+- **15/11.** Ensaio geral com cronômetro. Responsável: todos.
+- **16/11.** Seminário. Responsável: todos. **Apresentação (2,0).**
+
+<!-- grafico-cronograma -->
 
 ## 8. Resultados esperados e critérios de sucesso
 - Todos os itens exigidos pelo professor tratados, ou com a ausência justificada.
@@ -114,12 +108,10 @@ Todos revisam o texto uns dos outros e dominam o conjunto, porque qualquer integ
 - Tour 3D funcionando no seminário, com plano de reserva (slides ou capturas) se algo falhar.
 
 ## 9. Riscos
-| Risco | Mitigação |
-|-----|--------|
-| Itens sem fonte pública (MMU, interrupções, SASS) | Declarar a lacuna, usar o driver aberto e microbenchmarks, rotular o nível de confiança |
-| Inconsistências nos documentos do fabricante | Conferir contas entre tabelas e citar a tabela de origem |
-| Pouco tempo para o tour 3D | Priorizar o texto, que vale nota, e fazer o tour em versão enxuta |
-| Falha técnica no seminário | Capturas e slides de reserva |
+- **Itens sem fonte pública (MMU, interrupções, SASS).** Declarar a lacuna, usar o driver aberto e microbenchmarks, e rotular o nível de confiança.
+- **Inconsistências nos documentos do fabricante.** Conferir contas entre tabelas e citar a tabela de origem.
+- **Pouco tempo para o tour 3D.** Priorizar o texto, que vale nota, e fazer o tour em versão enxuta.
+- **Falha técnica no seminário.** Capturas e slides de reserva.
 
 ## 10. Referências
 **Consultadas**

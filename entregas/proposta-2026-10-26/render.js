@@ -17,7 +17,7 @@ const path = require('path');
     displayHeaderFooter: true,
     headerTemplate: '<span></span>',
     footerTemplate:
-      '<div style="width:100%;font-family:Inter,Arial,sans-serif;font-size:7.5pt;color:#667085;' +
+      '<div style="width:100%;font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#000;' +
       'padding:0 18mm;display:flex;justify-content:space-between;">' +
       `<span>${esc(footer)}</span>` +
       '<span>Página <span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',

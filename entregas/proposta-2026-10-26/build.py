@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Gera o PDF da proposta a partir de vault/01-Briefing/Proposta formal.md e grupo.json.
 
+Estilo pedido pelo grupo: fundo branco, Arial 12, só tópicos, negrito e linhas divisórias,
+sem tabelas e sem cores no texto. As únicas exceções são o gráfico do cronograma (cores
+simples) e o logo.
+
 Uso: python3 build.py
 Requer: pandoc, node com o pacote playwright (Chromium).
 """
@@ -9,42 +13,50 @@ import json
 import re
 import subprocess
 import sys
+from datetime import date
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
 NOTA = AQUI.parents[1] / "vault" / "01-Briefing" / "Proposta formal.md"
 
 CSS = """
-:root { --navy:#0B1F3A; --teal:#0E7C86; --amber:#F2A900; --ink:#1B2433; --mute:#4A5B73; --line:#D5DCE6; --zebra:#F4F7FA; }
 @page { size: A4; }
 * { box-sizing: border-box; }
-html { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; font-size: 9.6pt; line-height: 1.5; color: var(--ink); }
-body { margin: 0; }
-header.topo { display:flex; align-items:center; gap:7mm; padding-bottom:5mm; border-bottom:2px solid var(--navy); margin-bottom:4mm; }
-header.topo .logo { width:62mm; flex:none; }
+html { font-family: Arial, 'Liberation Sans', Helvetica, sans-serif; font-size: 12pt; line-height: 1.4; color: #000; background: #fff; }
+body { margin: 0; background: #fff; }
+header.topo { display:flex; align-items:center; gap:7mm; padding-bottom:4mm; border-bottom:2px solid #000; margin-bottom:4mm; }
+header.topo .logo { width:58mm; flex:none; }
 header.topo .logo svg { width:100%; height:auto; display:block; }
-header.topo .kicker { margin:0; font-size:8pt; letter-spacing:.12em; text-transform:uppercase; color:var(--teal); font-weight:600; }
-header.topo h1 { margin:1mm 0 1.5mm; font-size:16.5pt; line-height:1.2; color:var(--navy); font-weight:800; letter-spacing:-.01em; }
-header.topo .meta { margin:0; color:var(--mute); font-size:8.8pt; }
-.rascunho { background:#FFF4E5; border:1.5px solid var(--amber); color:#7A4B00; padding:2mm 3mm; border-radius:2mm; font-weight:600; margin:0 0 4mm; font-size:8.8pt; }
-table.grupo { margin:0 0 3mm; }
-table.grupo th { width:30mm; background:var(--zebra); }
-table.grupo ol { margin:0; padding-left:5mm; }
-h2 { font-size:11.6pt; color:var(--navy); margin:5.5mm 0 1.8mm; padding-bottom:.8mm; border-bottom:1px solid var(--line); break-after:avoid; font-weight:700; }
-h2 .n { color:var(--teal); }
-p { margin:0 0 2mm; }
-ul, ol { margin:0 0 2.2mm; padding-left:5.5mm; }
-li { margin:0 0 .8mm; }
-strong { color:var(--navy); }
-a { color:var(--teal); text-decoration:none; overflow-wrap:anywhere; word-break:break-all; }
-code { font-family:'JetBrains Mono', 'DejaVu Sans Mono', monospace; font-size:.88em; background:var(--zebra); padding:0 .8mm; border-radius:1mm; }
-table { border-collapse:collapse; width:100%; margin:1mm 0 3mm; font-size:8.7pt; line-height:1.4; break-inside:auto; }
-th, td { border:1px solid var(--line); padding:1.3mm 2mm; text-align:left; vertical-align:top; }
-thead th { background:var(--navy); color:#fff; font-weight:600; border-color:var(--navy); }
-tbody tr:nth-child(even) td { background:var(--zebra); }
-tr { break-inside:avoid; }
-p:has(+ table), p:has(+ ul), p:has(+ ol) { break-after:avoid; }
+header.topo .kicker { margin:0; font-size:10pt; text-transform:uppercase; font-weight:bold; }
+header.topo h1 { margin:1mm 0 1.5mm; font-size:16pt; line-height:1.2; font-weight:bold; }
+header.topo .meta { margin:0; font-size:11pt; }
+.rascunho { border:2px solid #000; padding:2mm 3mm; font-weight:bold; margin:0 0 4mm; }
+h2 { font-size:13pt; font-weight:bold; margin:6mm 0 2mm; padding-top:3mm; border-top:1px solid #000; break-after:avoid; }
+p { margin:0 0 2.5mm; }
+ul, ol { margin:0 0 3mm; padding-left:6mm; }
+li { margin:0 0 1.6mm; break-inside:avoid; }
+strong { font-weight:bold; }
+a { color:#000; text-decoration:underline; overflow-wrap:anywhere; word-break:break-all; }
+code { font-family:'Liberation Mono', 'DejaVu Sans Mono', monospace; font-size:.9em; }
+p:has(+ ul), p:has(+ ol) { break-after:avoid; }
+figure.grafico { margin:3mm 0 3mm; break-inside:avoid; }
+figure.grafico figcaption { font-weight:bold; margin-bottom:1.5mm; }
+figure.grafico svg { width:100%; height:auto; display:block; }
 """
+
+# Gráfico do cronograma: (rótulo, início, fim). Mantenha igual aos tópicos da seção 7 da nota.
+ANO = 2026
+ETAPAS = [
+    ("Proposta e leitura inicial", (10, 19), (10, 26)),
+    ("Fontes restantes", (10, 27), (11, 1)),
+    ("Redação e 1ª versão do tour", (11, 2), (11, 8)),
+    ("Revisão e fechamento do texto", (11, 9), (11, 9)),
+    ("Tour, slides e falas", (11, 10), (11, 14)),
+    ("Ensaio geral", (11, 15), (11, 15)),
+    ("Seminário", (11, 16), (11, 16)),
+]
+ENTREGAS = [("Proposta (0,5)", (10, 26)), ("Texto (1,5)", (11, 9)), ("Seminário (2,0)", (11, 16))]
+SEMANAS = [(10, 19), (10, 26), (11, 2), (11, 9), (11, 16)]
 
 
 def ler_grupo():
@@ -52,19 +64,17 @@ def ler_grupo():
 
 
 def preparar_markdown(texto, nomes):
-    # frontmatter
-    texto = re.sub(r"\A---\n.*?\n---\n", "", texto, flags=re.S)
-    # título H1 (vai para o cabeçalho)
-    texto = re.sub(r"^# .*\n", "", texto, count=1, flags=re.M)
-    # callouts do Obsidian (linhas que começam com ">")
-    texto = re.sub(r"(?m)^>.*\n?", "", texto)
-    # linha de wikilinks
-    texto = re.sub(r"(?m)^Ver também:.*\n?", "", texto)
+    texto = re.sub(r"\A---\n.*?\n---\n", "", texto, flags=re.S)       # frontmatter
+    texto = re.sub(r"^# .*\n", "", texto, count=1, flags=re.M)       # título (vai ao cabeçalho)
+    texto = re.sub(r"(?m)^>.*\n?", "", texto)                         # callouts do Obsidian
+    texto = re.sub(r"(?m)^Ver também:.*\n?", "", texto)               # wikilinks
     for i, nome in enumerate(nomes, start=1):
         texto = texto.replace("{{I%d}}" % i, nome or "Integrante %d" % i)
     sobra = re.findall(r"\{\{[^}]*\}\}", texto)
     if sobra:
         sys.exit("Marcadores sem substituição: %s" % sobra)
+    if re.search(r"(?m)^\|", texto):
+        sys.exit("A nota tem tabela. O PDF não usa tabelas: converta em tópicos.")
     return texto.strip() + "\n"
 
 
@@ -74,10 +84,43 @@ def md_para_html(md):
          "-t", "html", "--wrap=none"],
         input=md, capture_output=True, text=True, check=True,
     )
-    corpo = r.stdout
-    # numera os títulos de seção já numerados no texto ("1. Tema ...") em destaque
-    corpo = re.sub(r"<h2([^>]*)>(\d+)\.\s", r'<h2\1><span class="n">\2.</span> ', corpo)
-    return corpo
+    return r.stdout
+
+
+def grafico_cronograma():
+    d0 = date(ANO, *ETAPAS[0][1])
+    d1 = date(ANO, *ETAPAS[-1][2])
+    ndias = (d1 - d0).days + 1
+    esq, larg, topo, alt_linha = 215, 460, 34, 26
+    w = esq + larg + 5
+    h = topo + alt_linha * len(ETAPAS) + 28
+    dw = larg / ndias
+
+    def x(m_d, fim=False):
+        return esq + ((date(ANO, *m_d) - d0).days + (1 if fim else 0)) * dw
+
+    f = 'font-family="Arial, Liberation Sans, sans-serif"'
+    o = [f'<svg viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg" role="img" '
+         f'aria-label="Cronograma de 19/10 a 16/11">']
+    for m_d in SEMANAS:  # grade semanal
+        gx = x(m_d)
+        o.append(f'<line x1="{gx:.1f}" y1="{topo - 6}" x2="{gx:.1f}" y2="{h - 22}" stroke="#bbb" stroke-width="1"/>')
+        o.append(f'<text x="{gx:.1f}" y="{h - 8}" font-size="11" {f} text-anchor="middle" fill="#000">'
+                 f'{m_d[1]:02d}/{m_d[0]:02d}</text>')
+    for i, (rot, ini, fim) in enumerate(ETAPAS):
+        y = topo + i * alt_linha
+        o.append(f'<text x="{esq - 8}" y="{y + 17}" font-size="12" {f} text-anchor="end" fill="#000">{html.escape(rot)}</text>')
+        bx, bw = x(ini), x(fim, fim=True) - x(ini)
+        o.append(f'<rect x="{bx:.1f}" y="{y + 4}" width="{bw:.1f}" height="17" fill="#1F5FBF"/>')
+    for rot, m_d in ENTREGAS:  # marcos de entrega
+        mx = x(m_d, fim=True)
+        o.append(f'<line x1="{mx:.1f}" y1="{topo - 6}" x2="{mx:.1f}" y2="{h - 22}" stroke="#F28C00" stroke-width="2.5"/>')
+        ancora = "end"  # rótulo à esquerda da linha, para os três não se sobreporem
+        o.append(f'<text x="{mx:.1f}" y="{topo - 12}" font-size="12" font-weight="bold" {f} '
+                 f'text-anchor="{ancora}" fill="#000">{html.escape(rot)}</text>')
+    o.append("</svg>")
+    return ('<figure class="grafico"><figcaption>Cronograma (barras azuis: etapas; linhas laranja: '
+            'entregas com nota)</figcaption>' + "".join(o) + "</figure>")
 
 
 def main():
@@ -86,10 +129,11 @@ def main():
     faltam = [i + 1 for i, n in enumerate(nomes) if not n]
     md = preparar_markdown(NOTA.read_text(encoding="utf-8"), nomes)
     corpo = md_para_html(md)
+    if "<!-- grafico-cronograma -->" not in corpo:
+        sys.exit("Faltou o marcador do gráfico do cronograma na nota.")
+    corpo = corpo.replace("<!-- grafico-cronograma -->", grafico_cronograma())
 
-    logo = (AQUI / "logo.svg").read_text(encoding="utf-8")
-    logo = re.sub(r"<\?xml.*?\?>", "", logo)
-
+    logo = re.sub(r"<\?xml.*?\?>", "", (AQUI / "logo.svg").read_text(encoding="utf-8"))
     lista = "".join("<li>%s</li>" % html.escape(n or "[preencher nome completo]") for n in nomes)
     aviso = ""
     if faltam:
@@ -109,11 +153,11 @@ def main():
   </div>
 </header>
 {aviso}
-<table class="grupo"><tbody>
-<tr><th>Nome do grupo</th><td><strong>{html.escape(g['nome_grupo'])}</strong></td></tr>
-<tr><th>Integrantes</th><td><ol>{lista}</ol></td></tr>
-<tr><th>Identidade visual</th><td>{g['identidade']}</td></tr>
-</tbody></table>
+<ul>
+<li><strong>Nome do grupo:</strong> {html.escape(g['nome_grupo'])}</li>
+<li><strong>Integrantes:</strong><ol>{lista}</ol></li>
+<li><strong>Identidade visual:</strong> {g['identidade']}</li>
+</ul>
 {corpo}
 </body></html>
 """
