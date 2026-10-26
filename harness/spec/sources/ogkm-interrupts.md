@@ -176,7 +176,7 @@ Procedência (coluna da direita):
 | 3.28 A CPU escreve os elementos, faz um "store fence" e só depois publica a cauda | "a store fence is needed here." e "nRet = msgqTxSubmitBuffers(pMQI->hQueue, nElements);" | `GPU/gsp/message_queue_cpu.c:603` e `:607` | confirmed |
 | 3.29 RPC síncrono = a CPU **faz polling** (laço com `osSpinLoop`) até a resposta chegar; não é por interrupção | "osSpinLoop();" | `GPU/gsp/kernel_gsp.c:3459` (laço em `:3366-3461`) | confirmed |
 | 3.30 Eventos assíncronos GSP → CPU são tratados no bottom half (DPC) | "This function is called from interrupt bottom-half handler (DPC) and" | `GPU/gsp/kernel_gsp.c:7078` | confirmed |
-| 3.31 **Interrupção GSP → CPU**: no serviço da GSP, o bit SWGEN0 do IRQSTAT (gerado por software na GSP) dispara a leitura das mensagens; é "edge triggered" e é limpo ANTES do serviço | "Clear edge triggered interrupt BEFORE (and never after)" e "kgspRpcRecvEvents(pGpu, pKernelGsp);" | `GPU/gsp/arch/turing/kernel_gsp_tu102.c:1036` e `:1042` | derived (TU102) |
+| 3.31 **Interrupção GSP → CPU**: no serviço da GSP, o bit SWGEN0 do IRQSTAT dispara a leitura das mensagens pendentes (o código não diz quem o aciona dentro da GSP); a interrupção é "edge triggered" e é limpa ANTES do serviço | "Clear edge triggered interrupt BEFORE (and never after)" e "kgspRpcRecvEvents(pGpu, pKernelGsp);" | `GPU/gsp/arch/turing/kernel_gsp_tu102.c:1036` e `:1042` | derived (TU102) |
 | 3.32 Outro bit do IRQSTAT, HALT, é usado pelo firmware no protocolo CrashCat para pedir atenção ao host | "signal the host that some handling is required. Clear the interrupt" | `GPU/gsp/arch/turing/kernel_gsp_tu102.c:1019` | derived (TU102) |
 | 3.33 Quem chama esse serviço é o serviço de interrupção do motor `MC_ENGINE_IDX_GSP` | "return kgspService_HAL(pGpu, pKernelGsp);" | `GPU/gsp/kernel_gsp.c:7262` | confirmed |
 | 3.34 Posição numérica dos bits HALT e SWGEN0 no IRQSTAT | **não encontrado** (só aparecem por nome; o cabeçalho GB100 de falcon define apenas `EXTIRQ7`) | `SWREF/gb100/dev_falcon_v4.h:27` | lacuna |
@@ -299,7 +299,7 @@ Estas frases são minhas, não do código. Quem for usar no texto final deve pas
 
 ## O que a fonte NÃO cobre
 
-Sim, o código cobre; não, o clone não traz ou o código não diz:
+Cobertura por pedido da tarefa (o que o código cobre, o que o clone não traz e o que o código não diz):
 
 | Pedido | Cobertura |
 |---|---|
