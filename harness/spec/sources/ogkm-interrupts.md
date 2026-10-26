@@ -14,6 +14,8 @@
 
 Lista literal de `.git/info/sparse-checkout`: `kernel-open/nvidia-uvm/`, `src/common/inc/swref/published/blackwell/`, `src/nvidia/src/kernel/gpu/gsp/`, `src/nvidia/src/kernel/gpu/intr/`, `src/nvidia/src/kernel/gpu/mmu/`, mais os arquivos soltos (sem subpasta) de cada diretório pai, por exemplo `src/nvidia/src/kernel/gpu/gpu.c`.
 
+Também presente: `kernel-open/nvidia-uvm/hwref/` (cabeçalhos `dev_fault.h`, `dev_mmu.h`, `dev_fb.h` de Turing a Rubin). Conferi com `Glob` que não há arquivos em `kernel-open/nvidia/`, `src/nvidia/inc/`, `src/nvidia/generated/`, `src/nvidia/arch/`, `src/nvidia/src/libraries/`, `.../gpu/fifo`, `.../gpu/ce`, `.../gpu/bif`, `.../gpu/disp` nem em `published/{turing,hopper,ampere}`.
+
 Consequências para a leitura:
 - **Ausentes**: `kernel-open/nvidia/` (onde ficaria `request_irq`/MSI), `src/nvidia/src/kernel/gpu/fifo`, `.../ce`, `.../bif`, `.../disp`, `.../gr`, os cabeçalhos `published/turing`, `published/hopper`, `published/ampere` de registradores, a biblioteca `msgq`, os arquivos gerados (`g_*`) da tabela HAL e os cabeçalhos `.h` de `src/nvidia/inc`. Portanto macros como `NV_CTRL_INTR_GPU_VECTOR_TO_LEAF_REG` e `NV_DOORBELL_NOTIFY_*` aparecem **usadas, mas não definidas**.
 - **Específicos do GB202**: só `GPU/intr/arch/blackwell/intr_gb202.c`, `GPU/gsp/arch/blackwell/kernel_gsp_gb202.c` e a pasta `SWREF/gb202/`. Essa pasta traz só "deltas" (por exemplo, o `dev_vm.h` do GB202 define apenas o registrador `DOORBELL`). Quase todos os registradores de interrupção estão em `SWREF/gb100/` (chip de data center da mesma geração).
