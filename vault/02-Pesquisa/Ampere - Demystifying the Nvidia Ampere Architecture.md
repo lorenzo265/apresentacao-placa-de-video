@@ -2,7 +2,7 @@
 tipo: fonte
 status: rascunho
 secao: Instruções
-autor: a conferir na ficha do arXiv
+autor: Abdelkhalik, Arafa, Santhi, Badawy
 link: https://arxiv.org/abs/2208.11174
 acessado: 2026-10-19
 procedencia: derived
@@ -11,7 +11,7 @@ procedencia: derived
 
 ## Dados da fonte
 - **Título:** Demystifying the Nvidia Ampere Architecture through Microbenchmarking and Instruction-level Analysis (arXiv 2208.11174, 2022).
-- **Autoria:** não conferida na ficha do arXiv. Preencher antes de citar nos slides e no texto.
+- **Autores:** Hamdy Abdelkhalik, Yehia Arafa, Nandakishore Santhi, Abdel-Hameed Badawy (conferido na ficha do arXiv em 2026-10-26).
 - **Link:** no frontmatter.
 - **Data de acesso:** 2026-10-19.
 - **Alcance da leitura:** versão ar5iv, por resumo automático. Ainda não auditada.
