@@ -55,12 +55,21 @@ O estudo é uma pesquisa documental em fontes primárias, com registro de cada f
 **Já consultadas.**
 - O documento *NVIDIA RTX PRO Blackwell GPU Architecture*, versão 1.1, e a página oficial do produto. Deles saíram os números de base, como 12 GPCs, 94 TPCs e 188 SMs na RTX PRO 6000, 128 núcleos CUDA por SM, 256 KB de registradores e 128 KB de L1/memória compartilhada por SM, 128 MB de L2, memória GDDR7 de 96 GB com barramento de 512 bits e 1.792 GB/s. As contas desses números foram conferidas entre si.
 - A especificação do PTX (versão 9.4), as ferramentas binárias do CUDA (versão 13.4) e a tabela de compute capability (a placa é 12.0). Deles saíram a definição do PTX como máquina load-store, a lista de instruções SASS desta geração e a largura de 16 bytes por instrução.
+- O guia de programação CUDA (versão 13.4), com os limites da compute capability 12.0, como 255 registradores por thread e 65.536 registradores por SM.
+- O código aberto dos módulos de kernel da NVIDIA (versão 615.78.08), lido por busca direta no código. Dele saíram o formato das tabelas de página da GPU, o tratamento de falhas de página e a invalidação do TLB, a árvore de interrupções e o firmware GSP.
+- O datasheet e o guia de início rápido da NVIDIA, que informam o conector de energia (16 pinos) e a potência de 600 W.
 - Três artigos de microbenchmarking de GPUs NVIDIA (Volta, Ampere e Blackwell GB203), usados como evidência de família, nunca como dado da nossa placa.
 - Dois exemplos curtos (SAXPY e multiplicação de matrizes com a instrução `mma`) compilados para o alvo da placa (`sm_120`) e desmontados com as ferramentas oficiais.
 
-**A consultar.** O guia de programação CUDA, o código aberto dos módulos de kernel da NVIDIA (MMU e interrupções), os artigos de microbenchmarking das gerações Hopper e Blackwell B200, e um teardown ou análise da própria placa (conector de energia).
+**A consultar.** Os artigos de microbenchmarking das gerações Hopper e Blackwell B200, uma segunda fonte de teardown da própria placa, e uma segunda leitura, por área, do guia CUDA e do código do driver.
 
-**Lacunas já identificadas.** O documento de arquitetura da NVIDIA não trata de MMU, interrupções, conjunto de instruções nem política dos caches, e tem duas inconsistências internas (192 contra 188 SMs, e dois valores para a banda de memória da geração anterior). Por isso, esses itens dependem das outras fontes listadas.
+**Lacunas e conflitos já identificados.**
+- O documento de arquitetura da NVIDIA não trata de MMU, interrupções, conjunto de instruções nem política dos caches, e tem duas inconsistências internas (192 contra 188 SMs, e dois valores para a banda de memória da geração anterior).
+- O código aberto do driver descreve a MMU e as interrupções, mas não dá tamanho, associatividade nem latência do TLB, e não menciona o AMP do documento de arquitetura. A relação entre o AMP e o GSP fica em aberto.
+- O guia CUDA e o documento de arquitetura divergem em alguns pontos, como a soma de L1 e memória compartilhada por SM (100 KB contra 128 KB).
+- Parte do código do driver que decide a MMU da GB202 não estava no trecho lido, então alguns detalhes dela vêm da família GB20x e ficam marcados como derivados.
+
+Esses itens serão declarados como lacuna ou conflito, com o motivo, e não preenchidos com suposição.
 
 ## 5. Tratamento de informação não pública e produto da apresentação
 Parte da arquitetura de uma GPU comercial não é documentada. O grupo adotará quatro níveis de confiança, mostrados em todo o material:
@@ -92,7 +101,7 @@ Todos revisam o texto uns dos outros e dominam o conjunto, porque qualquer integ
 
 ## 7. Cronograma
 - **19/10 a 26/10.** Formação do grupo, escolha do tema, leitura inicial das fontes de arquitetura, escopo e proposta. Responsável: todos. **Entrega em 26/10: proposta (0,5).**
-- **27/10 a 01/11.** Leitura e registro das fontes restantes: guia CUDA, código aberto do driver e artigos de microbenchmark. Responsável: cada integrante, na sua área.
+- **27/10 a 01/11.** Aprofundamento das fontes por área: segunda leitura do guia CUDA e do código aberto do driver (a primeira rodada já foi feita), artigos de microbenchmark e resolução dos conflitos entre fontes. Responsável: cada integrante, na sua área.
 - **02/11 a 08/11.** Redação do documento por item, conferência dos números e primeira versão do tour. Responsável: cada integrante, na sua área; {{I5}} no tour.
 - **09/11.** Revisão cruzada e fechamento do texto. Responsável: todos. **Entrega em 09/11: documentação escrita (1,5).**
 - **10/11 a 14/11.** Tour completo, textos finais, slides de reserva e divisão das falas. Responsável: {{I5}}, com todos.
@@ -120,13 +129,15 @@ Todos revisam o texto uns dos outros e dominam o conjunto, porque qualquer integ
 - NVIDIA. *Parallel Thread Execution ISA*, versão 9.4. Disponível em: https://docs.nvidia.com/cuda/parallel-thread-execution/index.html. Acesso em: 19 out. 2026.
 - NVIDIA. *CUDA Binary Utilities*, versão 13.4. Disponível em: https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html. Acesso em: 19 out. 2026.
 - NVIDIA. *CUDA GPUs: Compute Capability*. Disponível em: https://developer.nvidia.com/cuda-gpus. Acesso em: 19 out. 2026.
+- NVIDIA. *CUDA C++ Programming Guide* (edição Legacy), versão 13.4. Disponível em: https://docs.nvidia.com/cuda/cuda-c-programming-guide/. Acesso em: 26 out. 2026.
+- NVIDIA. *open-gpu-kernel-modules*, versão 615.78.08. Disponível em: https://github.com/NVIDIA/open-gpu-kernel-modules. Acesso em: 26 out. 2026.
+- NVIDIA. *NVIDIA RTX PRO 6000 Blackwell Workstation Edition*: datasheet. Disponível em: https://www.nvidia.com/content/dam/en-zz/Solutions/data-center/rtx-pro-6000-blackwell-workstation-edition/workstation-blackwell-rtx-pro-6000-workstation-edition-nvidia-us-3519208-web.pdf. Acesso em: 26 out. 2026.
+- NVIDIA. *NVIDIA RTX PRO Blackwell Architecture: Quick Start Guide*. Disponível em: https://images.nvidia.com/aem-dam/Solutions/design-visualization/quadro-product-literature/rtx-pro-blackwell-online-qsg-210x148mm-20250718-r14.pdf. Acesso em: 26 out. 2026.
 - JIA, Z.; MAGGIONI, M.; STAIGER, B.; SCARPAZZA, D. P. Dissecting the NVIDIA Volta GPU Architecture via Microbenchmarking. *arXiv*:1804.06826, 2018.
 - ABDELKHALIK, H.; ARAFA, Y.; SANTHI, N.; BADAWY, A.-H. Demystifying the Nvidia Ampere Architecture through Microbenchmarking and Instruction-level Analysis. *arXiv*:2208.11174, 2022.
 - JARMUSCH, A.; GRADDON, N.; CHANDRASEKARAN, S. Dissecting the NVIDIA Blackwell Architecture with Microbenchmarks. *arXiv*:2507.10789, 2025.
 
 **A consultar**
-- NVIDIA. *CUDA C++ Programming Guide*. Disponível em: https://docs.nvidia.com/cuda/cuda-c-programming-guide/.
-- NVIDIA. *open-gpu-kernel-modules*. Disponível em: https://github.com/NVIDIA/open-gpu-kernel-modules.
 - LUO, W. et al. Dissecting the NVIDIA Hopper Architecture through Microbenchmarking and Multiple Level Analysis. *arXiv*:2501.12084, 2025.
 - JARMUSCH, A.; CHANDRASEKARAN, S. Microbenchmarking NVIDIA's Blackwell Architecture: An in-depth Architectural Analysis. *arXiv*:2512.02189, 2025.
 

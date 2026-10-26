@@ -48,7 +48,7 @@ figure.grafico svg { width:100%; height:auto; display:block; }
 ANO = 2026
 ETAPAS = [
     ("Proposta e leitura inicial", (10, 19), (10, 26)),
-    ("Fontes restantes", (10, 27), (11, 1)),
+    ("Aprofundar as fontes", (10, 27), (11, 1)),
     ("Redação e 1ª versão do tour", (11, 2), (11, 8)),
     ("Revisão e fechamento do texto", (11, 9), (11, 9)),
     ("Tour, slides e falas", (11, 10), (11, 14)),
