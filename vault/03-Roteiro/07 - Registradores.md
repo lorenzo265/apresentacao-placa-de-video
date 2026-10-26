@@ -8,7 +8,7 @@ part_id: chip.regfile
 procedencia_esperada: derived
 itens_enunciado: [registradores]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - PTX ISA]]", "[[Jia et al. - Dissecting the NVIDIA Volta GPU]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - PTX ISA]]", "[[Jia et al. - Dissecting the NVIDIA Volta GPU]]", "[[NVIDIA - CUDA C++ Programming Guide]]"]
 ---
 # 07 - Registradores
 

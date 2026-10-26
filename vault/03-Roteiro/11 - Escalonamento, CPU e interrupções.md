@@ -8,9 +8,12 @@ part_id: chip.host-if
 procedencia_esperada: derived
 itens_enunciado: [interrupções, escalonamento]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - open-gpu-kernel-modules (interrupções e GSP)]]"]
 ---
 # 11 - Escalonamento, CPU e interrupções
+
+> [!todo] Fonte coletada em 2026-10-26, síntese pendente
+> O levantamento no código aberto do driver está em [[NVIDIA - open-gpu-kernel-modules (interrupções e GSP)]] (bruto em `harness/spec/sources/ogkm-interrupts.md`). Falta auditoria do `fact-checker` e a redação (tipo A: Fable ou Opus). Lacunas declaradas: o código não menciona o AMP, e MSI ou MSI-X não foram encontrados no trecho lido; o mapa de interrupções vem do GB100 (`derived`).
 
 ## Objetivo
 Explicar como a CPU entrega trabalho à GPU, quem escalona os contextos, e como a GPU avisa a CPU (interrupções).

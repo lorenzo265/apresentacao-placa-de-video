@@ -8,7 +8,7 @@ part_id: chip.exec-model
 procedencia_esperada: confirmed
 itens_enunciado: [pipeline, modelo de programação]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - CUDA C++ Programming Guide]]"]
 ---
 # 05 - Modelo de execução SIMT
 

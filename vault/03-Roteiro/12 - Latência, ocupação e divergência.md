@@ -8,7 +8,7 @@ part_id: chip.latency
 procedencia_esperada: derived
 itens_enunciado: [pipeline]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - PTX ISA]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - PTX ISA]]", "[[NVIDIA - CUDA C++ Programming Guide]]"]
 ---
 # 12 - Latência, ocupação e divergência
 

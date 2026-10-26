@@ -8,7 +8,7 @@ part_id: board.memory
 procedencia_esperada: confirmed
 itens_enunciado: [gerenciamento de memória, organização]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - Página da RTX PRO 6000 Blackwell]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - Página da RTX PRO 6000 Blackwell]]", "[[Teardown e conector de energia (RTX PRO 6000 e 5090)]]"]
 ---
 # 03 - Memória e barramentos
 

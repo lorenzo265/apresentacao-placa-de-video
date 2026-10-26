@@ -42,6 +42,6 @@ Sem limite de conteúdo definido pelo grupo: falamos de tudo que for necessário
 ## Perguntas abertas
 - Duração do seminário.
 - O vídeo exportado é necessário, ou o viewer basta?
-- Divisão de trabalho entre os integrantes do grupo.
+- Divisão de trabalho entre os integrantes do grupo: há uma sugestão em [[Proposta formal]], a confirmar.
 
 Próximo passo: [[Plano de pesquisa]].

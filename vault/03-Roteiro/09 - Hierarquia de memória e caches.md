@@ -8,7 +8,7 @@ part_id: chip.memhier
 procedencia_esperada: derived
 itens_enunciado: [cache, gerenciamento de memória]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]]", "[[NVIDIA - CUDA C++ Programming Guide]]"]
 ---
 # 09 - Hierarquia de memória e caches
 

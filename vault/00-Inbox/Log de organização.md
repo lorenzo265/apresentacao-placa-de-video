@@ -26,3 +26,9 @@
 ## 2026-10-19 (auditoria das fontes de instruções)
 - O `fact-checker` reabriu as fontes e achou 2 erros que bloqueavam (largura da instrução declarada no apêndice do Binary Utilities; operando de constante em instruções aritméticas) e 13 ajustes. Todos corrigidos. Relatório em `harness/qa/fact-check-isa.md`.
 - Seção `08` agora com `status: revisar` (a classificação RISC ou CISC precisa de revisão humana). Notas de PTX, Binary Utilities, Volta e Blackwell (GB203) passaram a `status: pronto`; a nota da Ampere segue rascunho, sem auditoria.
+
+## 2026-10-26 (proposta e rodada de fontes)
+- PDF da proposta gerado em `entregas/proposta-2026-10-26/` (grupo Warp 32, 5 integrantes) a partir de [[Proposta formal]]. Estilo pedido pelo grupo: Arial 12, fundo branco, só tópicos.
+- Quatro fontes novas em `02-Pesquisa/`: guia CUDA, driver aberto (MMU), driver aberto (interrupções e GSP) e teardown com conector de energia. Todas `status: rascunho`, em auditoria. Autoria do artigo da Ampere conferida no arXiv.
+- Seções `02`, `03`, `05`, `07`, `09`, `10`, `11` e `12` ganharam as fontes novas em `fontes`. `10` e `11` têm um aviso de síntese pendente (tipo A: Fable ou Opus). Nenhum link quebrado.
+- `Requisitos da disciplina`, `Decisões do projeto`, `Plano de pesquisa` e `Briefing` atualizados. Pendências abertas: grupo de 5 contra o limite de 4 do enunciado, e divisão de tarefas.

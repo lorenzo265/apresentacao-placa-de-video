@@ -8,9 +8,12 @@ part_id: chip.mmu
 procedencia_esperada: derived
 itens_enunciado: [MMU, gerenciamento de memória]
 prazo:
-fontes: []
+fontes: ["[[NVIDIA - open-gpu-kernel-modules (MMU)]]", "[[NVIDIA - CUDA C++ Programming Guide]]"]
 ---
 # 10 - Memória virtual e MMU
+
+> [!todo] Fonte coletada em 2026-10-26, síntese pendente
+> O levantamento no código aberto do driver está em [[NVIDIA - open-gpu-kernel-modules (MMU)]] (bruto em `harness/spec/sources/ogkm-mmu.md`) e o guia CUDA em [[NVIDIA - CUDA C++ Programming Guide]]. Falta auditoria do `fact-checker` e a redação, que é raciocínio de alto risco (tipo A): fazer em sessão Fable ou Opus. Atenção: o formato de 57 bits e os tamanhos de página da GB202 vêm da família GB20x (`derived`), e o valor de 256 GB **não** vale para a GB202.
 
 ## Objetivo
 Explicar como a GPU traduz endereços: se há MMU própria, como são as tabelas de página, o TLB, o tratamento de falhas de página e a relação com a memória da CPU.

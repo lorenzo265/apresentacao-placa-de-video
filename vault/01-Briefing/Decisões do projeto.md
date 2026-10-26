@@ -20,7 +20,11 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-10-19 | **Roteiro v2** confirmado: foco na arquitetura da GPU (14 seções, da placa ao chip). Roteiro v1 arquivado | O v1 não cobria nenhum item exigido pelo professor |
 | 2026-10-19 | Proposta formal de 2026-10-26 rascunhada em [[Proposta formal]] | Entrega de 0,5 ponto |
 | 2026-10-19 | Modelo por skill definido em quatro tipos (A fable, B opus, C sonnet, D haiku), no `CLAUDE.md` da raiz | Skill roda no modelo de quem a invoca; skills de julgamento nunca em D, gate de fatos sempre em A |
+| 2026-10-26 | Grupo **Warp 32**, com 5 integrantes (Lorenzo Ruggini, Arthur Lincke, Thiago Karwinski, João Zamora, Vitor Amora) | Nome e logo propostos pelo assistente e aceitos; o enunciado diz "até 4", conferir com o professor |
+| 2026-10-26 | Divisão de tarefas em 5 partes, na ordem dos nomes: instruções; memória e caches; MMU e interrupções; pipeline; tour 3D e seminário | Sugestão do assistente, ainda a confirmar pelo grupo |
+| 2026-10-26 | PDF da proposta: fundo branco, Arial 12, só tópicos e negrito, sem tabelas; cores só no logo e no gráfico do cronograma | Pedido do grupo. Gerado por `entregas/proposta-2026-10-26/build.py` a partir de [[Proposta formal]] |
 
 ## Em aberto
 - Duração do seminário ([[Briefing]]).
-- Divisão de trabalho entre os integrantes.
+- Confirmar com o professor o grupo de 5 (enunciado: até 4).
+- Confirmar a divisão de tarefas entre os integrantes.

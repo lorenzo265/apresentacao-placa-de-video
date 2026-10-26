@@ -8,7 +8,7 @@ part_id: board.overview
 procedencia_esperada: inferred
 itens_enunciado: [organização física]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - Página da RTX PRO 6000 Blackwell]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - Página da RTX PRO 6000 Blackwell]]", "[[Teardown e conector de energia (RTX PRO 6000 e 5090)]]"]
 ---
 # 02 - Energia, dados e calor na placa
 
