@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 84" role="img" aria-labelledby="t">
+  <title id="t">Warp 32: grade de 32 threads, 28 em teal e 4 em âmbar (divergentes)</title>
+  <!-- 32 quadrados (8 colunas x 4 linhas) = as 32 threads de um warp. Os 4 âmbar são threads divergentes. -->
+  <g id="warp">
+    <!-- linha 0 -->
+    <rect x="0"   y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="20"  y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="40"  y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="60"  y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="80"  y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="100" y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="120" y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="140" y="0"  width="16" height="16" rx="3" fill="#0E7C86"/>
+    <!-- linha 1 -->
+    <rect x="0"   y="22" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="20"  y="22" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="40"  y="22" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="60"  y="22" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="80"  y="22" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="100" y="22" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="120" y="22" width="16" height="16" rx="3" fill="#F2A900"/>
+    <rect x="140" y="22" width="16" height="16" rx="3" fill="#F2A900"/>
+    <!-- linha 2 -->
+    <rect x="0"   y="44" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="20"  y="44" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="40"  y="44" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="60"  y="44" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="80"  y="44" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="100" y="44" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="120" y="44" width="16" height="16" rx="3" fill="#F2A900"/>
+    <rect x="140" y="44" width="16" height="16" rx="3" fill="#F2A900"/>
+    <!-- linha 3 -->
+    <rect x="0"   y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="20"  y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="40"  y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="60"  y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="80"  y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="100" y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="120" y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+    <rect x="140" y="66" width="16" height="16" rx="3" fill="#0E7C86"/>
+  </g>
+  <text x="180" y="50" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="800" fill="#0B1F3A" letter-spacing="-1">Warp <tspan fill="#F2A900">32</tspan></text>
+  <text x="182" y="72" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="500" fill="#4A5B73" letter-spacing="1.2">GPU BLACKWELL</text>
+</svg>

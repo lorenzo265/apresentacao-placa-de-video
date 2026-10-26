@@ -1,0 +1,15 @@
+{
+  "nome_grupo": "Warp 32",
+  "disciplina": "Organização e Arquitetura de Computadores",
+  "linha": "Arquitetura",
+  "entrega": "26/10/2026",
+  "titulo": "Arquitetura da GPU NVIDIA RTX PRO 6000 Blackwell",
+  "integrantes": [
+    "Lorenzo Ruggini",
+    "Arthur Lincke",
+    "Thiago Karwinski",
+    "João Zamora",
+    "Vitor Amora"
+  ],
+  "identidade": "O nome vem do <em>warp</em>, o grupo de 32 threads que a GPU executa em conjunto (a especificação do PTX, seção 4.5.1, diz que o tamanho do warp é 32 em todas as arquiteturas-alvo). O logo é um warp: 32 quadrados em grade 8 × 4, cada um uma thread. Os quatro quadrados âmbar são threads que tomaram outro caminho do programa, a <em>divergência</em>, tema do estudo sobre latência, ocupação e divergência. O logo é original e não usa marca nem cor da NVIDIA."
+}
