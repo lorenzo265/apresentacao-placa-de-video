@@ -143,7 +143,7 @@ O orquestrador é a sessão principal. Os demais são subagentes em `.claude/age
 
 Regra de escalada: se um agente de modelo menor falhar duas vezes na mesma peça, a tarefa sobe um nível.
 
-Na v0.2 os agentes `assembly-planner`, `modeler-complex`, `pcb-layout-modeler`, `storyboard-director`, `technical-writer`, `viewer-engineer`, `ops-runner` e `visual-qa` foram ajustados à placa real e aos contratos novos. O tipo de modelo do `diagram-designer` (B) é proposta do orquestrador e aguarda confirmação humana.
+Na v0.2 os agentes `assembly-planner`, `modeler-complex`, `pcb-layout-modeler`, `storyboard-director`, `technical-writer`, `viewer-engineer`, `ops-runner` e `visual-qa` foram ajustados à placa real e aos contratos novos. O tipo de modelo do `diagram-designer` (B) foi confirmado pelo humano em 2026-11-09.
 
 ### 6.1 Orquestrador
 

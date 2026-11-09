@@ -39,7 +39,7 @@ Uma skill carrega suas instruções no contexto de quem a invoca, então **o mod
 | `source-registration` | a escrever | **C** | `spec-researcher` | Rotina de registrar fonte: nota no vault, excertos em `harness/spec/sources/`, contas conferidas |
 | `sass-example-lab` | a escrever | **C**, **A** para a interpretação | `spec-researcher` | Escrever PTX, compilar com `ptxas`, desmontar com `nvdisasm`. Interpretar o SASS e classificar é com A |
 | `build123d-gpu-parts` | a escrever | **B** peças complexas, **C** simples, **D** repetitivas | `modeler-complex`, `modeler-standard`, `instancer` | Segue o agente |
-| `chip-diagram-kit` | a escrever | **B** (a confirmar) | `diagram-designer` | Transforma os números do spec em diagramas dos níveis 2 a 4. Erro de desenho vira erro de conteúdo |
+| `chip-diagram-kit` | a escrever | **B** | `diagram-designer` | Transforma os números do spec em diagramas dos níveis 2 a 4. Erro de desenho vira erro de conteúdo |
 | `cinematic-storyboard` | a escrever | **B** | `storyboard-director` | Ritmo, câmera e enquadramento exigem julgamento visual |
 | `explainer-writing-ptbr` | a escrever | **C** | `technical-writer` | Escrita didática em volume, sempre seguida de auditoria |
 | `viewer-scaffold` | a escrever | **C** | `viewer-engineer` | Código web padrão com teste automatizado |

@@ -34,7 +34,7 @@ Nem todo item existe em toda arquitetura. Quando um item não existir, ou não f
 | 2026-11-09 | Documentação escrita | 1,5 |
 | 2026-11-16 | Apresentação em seminário | 2,0 |
 
-Total em jogo: 4,0 pontos. A duração do seminário ainda não foi informada. Perguntar ao professor.
+Total em jogo: 4,0 pontos. O seminário tem de 15 a 20 minutos, no máximo (informado pelo grupo em 2026-11-09).
 
 ## Roteiro v2 (confirmado em 2026-10-19)
 O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardware físico) foi arquivado em `_arquivo/roteiro-v1/` e serve de material para a seção 02.
