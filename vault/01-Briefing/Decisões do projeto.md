@@ -24,7 +24,9 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-11-09 | Agente `diagram-designer` em tipo B (opus) confirmado | Os diagramas do chip cobrem os itens do enunciado e não tinham responsável |
 | 2026-11-09 | Artigo entregue como documentação escrita. O seminário usa o mesmo exemplo SAXPY do artigo (`harness/examples/saxpy-cu/`) | O que aparece na tela precisa bater com o texto entregue |
 | 2026-11-09 | Todo o trabalho técnico passa a ser feito neste repositório | Decisão do autor |
+| 2026-11-09 | A divisão da fala no seminário segue a definição de tarefas da [[Proposta formal]] entregue em 26/10 | É a divisão que o professor já recebeu |
+| 2026-11-09 | Proposta entregue arquivada (PDF e transcrição); o rascunho de 19/10 foi para `_arquivo/` | O repositório só tinha o rascunho, que não foi a versão entregue |
 
 ## Em aberto
-- Divisão da fala entre os cinco integrantes (proposta em `harness/story/video-plan.md`, seção 6).
+- Três ajustes na divisão da fala (`harness/story/video-plan.md`, seção 6).
 - Aprovar a conclusão RISC ou CISC revisada ([[08 - Instruções PTX e SASS, RISC ou CISC]]).

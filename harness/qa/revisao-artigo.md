@@ -9,11 +9,11 @@
 
 O artigo cumpre o enunciado: trata os nove itens, tem um experimento real e reproduzível e admite o que não é público. Para uma entrega de graduação é um bom texto.
 
-Ele fica abaixo do que o projeto se propôs em quatro pontos:
+Ele fica abaixo do nível que o projeto quer em quatro pontos:
 
 1. **Dois erros de conteúdo em itens que o professor cobra** (MMU e RISC ou CISC).
 2. **Seis afirmações mais fortes do que a fonte sustenta**, quase sempre um dado de outra geração ou uma dedução do grupo escrita como fato da Blackwell.
-3. **Não usa os quatro níveis de confiança** que a proposta prometeu "em todo o material".
+3. **Não separa fato desta placa de dado de outra geração.** O artigo cumpre o que a proposta entregue prometeu (dizer quando um item não é público), mas não distingue o que vale para a Blackwell do que vem da Pascal, da Ampere ou da RTX 5080. Os quatro níveis de confiança do harness resolvem isso no seminário. (Correção de 2026-11-09: uma versão anterior desta revisão dizia que a proposta prometia os níveis de confiança. Isso estava só no rascunho de 19/10, não na proposta entregue.)
 4. **Cache e pipeline ficaram rasos**: só tamanhos, sem latência, política ou a divisão real do L1.
 
 Nada disso exige retratação. O seminário pode apresentar as correções como avanço sobre o artigo ("depois da entrega, fomos ao código aberto do driver e à lista oficial de instruções"), o que conta a favor do grupo.
@@ -55,24 +55,25 @@ Nada disso exige retratação. O seminário pode apresentar as correções como 
 | E13 | incompleto | 4.8 | Na memória unificada "o driver copia as páginas" | O P100 descreve migração sob demanda **ou** mapeamento pelo barramento | Detalhe; só se perguntarem |
 | E14 | fonte fraca | 1, 3 | "a GPU mais potente da NVIDIA para computadores de mesa"; dados de concorrentes | Fontes secundárias (VRLA Tech, Guru3D). Não conferidas por nós | Não repetir superlativos no seminário |
 
-## 4. O que falta em relação à proposta e ao enunciado
+## 4. O que falta em relação ao enunciado e ao nível que queremos
 
 | Item | Situação no artigo | O que o seminário acrescenta |
 |---|---|---|
-| Níveis de confiança (proposta, seção 5) | ausentes | selo em todo beat |
+| Níveis de confiança | ausentes (não eram promessa da proposta entregue) | selo em todo beat |
 | Mecanismo de cache | só tamanhos | latências medidas na RTX 5080 (`derived`): L1 de 30 a 40 ciclos, L2 perto de 358, memória global perto de 877; L1 e memória compartilhada no mesmo bloco de 128 KB |
 | Pipeline | "não divulgado" | 4 partições, 4 ciclos em INT32 e FP32, estágios citados por Huerta et al. (`derived`) |
 | MMU | 49 bits (Pascal) | 57 bits, 6 níveis, 4 tamanhos de página, pelo driver aberto |
 | Interrupções | "manda uma interrupção pelo PCIe" | o caminho no driver: MSI ou MSI-X, metade de cima (`nvidia_isr`), metade de baixo em thread do kernel; falha de página gravada em buffer, tratada em lote e reexecutada |
 | Instruções de Tensor Core | ausentes | `HMMA` e `QMMA` compilados em `harness/examples/mma/` |
-| Comparação GPU contra CPU item a item (objetivo 6 da proposta) | só na conclusão | tabela-síntese no fechamento |
+| Comparação GPU contra CPU item a item | só na conclusão | tabela-síntese no fechamento |
+| Código aberto do driver (a proposta entregue lista entre o que seria usado) | não citado; o artigo usa o README do GSP e o documento da Pascal | MMU e interrupções pelo código do driver |
 | Tamanho do conjunto de instruções | ausente | cerca de 257 mnemônicos em 13 categorias (a reconferir) |
 
 ## 5. Observações de forma
 
-- O artigo tem cinco autores. O resumo do enunciado guardado em `vault/01-Briefing/Requisitos da disciplina.md` fala em grupo de até quatro. Conferir com o professor ou corrigir a nota.
-- A seção 4.11 atribui o tour 3D a um integrante. O repositório não registra autoria por pessoa.
-- A proposta de 26/10 que está no repositório é o rascunho com campos "[nome 1]". A versão entregue não está aqui.
+- O artigo e a proposta entregue têm cinco integrantes. O resumo do enunciado guardado em `vault/01-Briefing/Requisitos da disciplina.md` fala em grupo de até quatro: a nota do vault provavelmente está errada, ou o professor autorizou.
+- A seção 4.11 atribui o tour 3D ao integrante que a proposta entregue indica como responsável por ele. É coerente com a proposta.
+- A proposta entregue em 26/10 foi arquivada em 2026-11-09 (`vault/01-Briefing/Proposta formal.md`, com o PDF). O artigo cumpre os itens que ela lista.
 - Referências ausentes para conteúdo usado: CUDA Binary Utilities (lista de instruções SASS) e Jia et al. (bits de controle na Volta).
 
 ## 6. O que não foi verificado

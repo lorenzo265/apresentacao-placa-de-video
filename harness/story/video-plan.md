@@ -85,7 +85,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
-| a0.1 | 01 | tela escura; a contraluz revela a silhueta; entra o logotipo do grupo (32 quadrados, 4 em laranja) | título do trabalho, disciplina, grupo Warp 32 | não se aplica | | 1 |
+| a0.1 | 01 | tela escura; a contraluz revela a silhueta; entra o logotipo do grupo (32 quadrados em grade 8 × 4, 4 em laranja) | título do trabalho, disciplina, grupo Warp 32 | não se aplica | | 1 |
 | a0.2 | 01 | giro lento da placa montada | RTX PRO 6000 Blackwell Workstation Edition | confirmed | datasheet | 1 |
 | a0.3 | 01 | ficha entra linha a linha | 96 GB GDDR7 com ECC, 600 W, 24.064 núcleos CUDA, PCIe 5.0 x16 | confirmed | datasheet, p. 3 | 1 |
 | a0.4 | 01 | mapa do tour | cinco níveis, três caminhos, quatro selos | não se aplica | | 1 |
@@ -197,17 +197,26 @@ Cada beat tem quatro campos de texto, todos auditados pelo `fact-checker`:
 
 Regra de tempo de leitura: `hold` ≥ 0,4 s por palavra do `caption` + 2 s. O teste automatizado falha se um beat violar a regra. É uma regra do projeto, a calibrar no primeiro ensaio com cronômetro.
 
-Quem fala o quê: a coluna `speaker` do storyboard recebe o nome do integrante. O grupo (Warp 32) tem cinco pessoas. Proposta de divisão da fala, a confirmar pelo grupo:
+Quem fala o quê: a coluna `speaker` do storyboard recebe o nome do integrante. A divisão segue a **definição de tarefas da proposta entregue em 26/10** (`vault/01-Briefing/Proposta formal.md`), em que cada integrante "responde por uma parte". Em ordem de apresentação:
 
-| Bloco | Atos | Tempo | Quem apresenta |
-|---|---|---|---|
-| A placa e a desmontagem | 0, 1, 2 | 4:00 | Vitor |
-| Memória, barramentos e a planta do chip | 3, T1, 4 | 3:10 | João |
-| Registradores, instruções, RISC ou CISC | 5 (seções 06 a 08) | 3:20 | Lorenzo |
-| Caches, MMU e memória virtual | 5 (seção 09), 6 (seção 10) | 3:10 | Arthur |
-| Interrupções, escalonamento e fechamento | 6 (seção 11), 7 | 3:20 | Thiago |
+| Ordem | Quem | Parte na proposta | Beats do corte | Tempo |
+|---|---|---|---|---|
+| 1 | Vitor | tour 3D, integração e condução | atos 0, 1 e 2: abertura, a placa por fora, desmontagem e os três caminhos | 4:00 |
+| 2 | Arthur | hierarquia de memória, caches e gerenciamento | ato 3: memória e barramentos | 1:10 |
+| 3 | João | pipeline, SIMT, latência e ocupação | T1 e ato 4 (planta do chip, SIMT); T2, a5.4 e a5.5 (o SM e as partições); a5.16 (divergência, com o logotipo) | 3:20 |
+| 4 | Lorenzo | registradores, instruções, RISC ou CISC | a5.6, a5.7, a5.9, a5.10, a5.12 | 3:00 |
+| 5 | Arthur | (continuação) | a5.13: escada de memória e latências | 0:40 |
+| 6 | Thiago | MMU, interrupções e escalonamento | ato 6 | 3:00 |
+| 7 | Vitor | condução | ato 7: Ada contra Blackwell, GPU contra CPU, lacunas, remontagem | 1:50 |
 
-A divisão é de **quem apresenta e responde por cada bloco no seminário**. Cada apresentador revisa as notas de fala e as fontes do seu bloco antes do ensaio. O projeto não registra autoria de trabalho que a pessoa não fez.
+Totais: Vitor 5:50, João 3:20, Lorenzo 3:00, Thiago 3:00, Arthur 1:50. Soma: 17:00.
+
+Ajustes a decidir pelo grupo:
+- A planta do chip (seção 04) não tem dono na proposta. Ficou com o João porque leva direto ao SIMT.
+- O beat da divergência (a5.16, seção 12) foi puxado para logo depois do SM, para o João falar de uma vez só. No roteiro escrito a seção 12 continua onde está.
+- O Arthur tem o menor tempo. Se quiser equilibrar, a tabela GPU contra CPU do fechamento (a7.3) pode ser dividida: cada um lê a linha do seu item.
+
+Cada apresentador revisa as notas de fala e as fontes do seu bloco antes do ensaio de 15/11, porque é quem responde às perguntas daquela parte. O projeto não registra autoria de trabalho que a pessoa não fez.
 
 ## 7. Especificação técnica do vídeo
 

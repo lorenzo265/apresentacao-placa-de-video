@@ -14,7 +14,7 @@ Data: **2026-11-09**, segunda atualização do dia. Substitui a versão da manh�
 
 | Data | Entrega | Pontos | Situação |
 |---|---|---|---|
-| 2026-10-26 | proposta formal | 0,5 | o repositório só tem o rascunho com "[nome 1]". A versão entregue não está aqui |
+| 2026-10-26 | proposta formal | 0,5 | entregue. PDF e transcrição arquivados em 2026-11-09 (`vault/01-Briefing/Proposta formal.md`). Ela compromete o tour 3D como apoio do seminário e já define a parte de cada integrante |
 | 2026-11-09 | documentação escrita | 1,5 | entregue (artigo). Revisão em `qa/revisao-artigo.md`. O PDF não está versionado |
 | 2026-11-16 | seminário, 15 a 20 minutos | 2,0 | plano de vídeo pronto; sem viewer, sem slides, sem ensaio |
 
@@ -56,7 +56,7 @@ Apoio: 16 agentes, 1 skill escrita de 10, 5 schemas com validador testado (`tool
 | 3 | Dono dos diagramas do chip | resolvido: `diagram-designer`, tipo B, confirmado |
 | 4 a 8 | Vídeo, texto por beat, atos, fidelidade, contratos | resolvidos nos planos |
 | 9 | Duração do seminário | resolvido: 15 a 20 minutos |
-| 10 | Quem apresenta cada bloco | proposta em `story/video-plan.md`, seção 6. **Aguarda o grupo** |
+| 10 | Quem apresenta cada bloco | resolvido: segue a definição de tarefas da proposta entregue (`story/video-plan.md`, seção 6). Três ajustes pequenos aguardam o grupo |
 | 11 | Schemas dos contratos | resolvido: `schemas/` e `tools/validate.py` |
 | 12 | Skills a escrever | aberto: nesta semana só `viewer-scaffold`, `chip-diagram-kit` e `build123d-gpu-parts` |
 | 13 | Normas | resolvido em parte: `spec/sources/standards-sources.md`. A norma PCIe aberta é a revisão 3.0; a bracket de dois slots e o receptáculo DisplayPort não têm desenho de fonte forte |
@@ -99,10 +99,10 @@ Linhas de corte: se a proposta de engenharia não for aprovada na terça, o inte
 ## 8. Decisões que são suas
 
 1. **Aprovar a conclusão RISC ou CISC** revisada (`vault/03-Roteiro/08`).
-2. **Divisão da fala** entre os cinco (`story/video-plan.md`, seção 6).
+2. **Divisão da fala:** já segue a proposta entregue. Faltam três ajustes pequenos (`story/video-plan.md`, seção 6): dono da planta do chip, posição do beat da divergência e o tempo do Arthur.
 3. **Como tratar as correções ao artigo** no seminário: apresentar como avanço (recomendado) ou não mencionar.
-4. **Tamanho do grupo:** o artigo tem cinco autores e a nota do enunciado no vault diz até quatro. Qual está certo?
-5. **Versionar o PDF do artigo e a proposta entregue?** O artigo traz nomes completos; depende de o repositório ser público.
+4. **Tamanho do grupo:** a proposta entregue e o artigo têm cinco integrantes; a nota do enunciado no vault diz até quatro. Corrigir a nota?
+5. **Versionar o PDF do artigo?** A proposta entregue já foi versionada a seu pedido. O artigo traz os mesmos nomes completos; depende de o repositório ser público.
 6. Viewer ao vivo ou vídeo corrido (recomendado: ao vivo, com MP4 de reserva).
 7. Logos da NVIDIA no modelo (recomendado: não).
 8. Regra de procedência para observação direta por terceiro.

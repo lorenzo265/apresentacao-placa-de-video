@@ -44,3 +44,8 @@
 - Duração do seminário registrada no `CLAUDE.md` do vault, no briefing e nas decisões: 15 a 20 minutos.
 - Pendências que seguem abertas: aprovação da conclusão da seção `08`, divisão da fala, auditoria da segunda leva de fontes.
 
+## 2026-11-09 (proposta entregue)
+- Recebido o PDF da proposta entregue em 26/10 (2 páginas). Arquivado em `01-Briefing/Proposta entregue 2026-10-26.pdf` e transcrito em `01-Briefing/Proposta formal.md`, com `status: pronto`.
+- O rascunho longo de 19/10 foi movido para `_arquivo/Proposta formal - rascunho de 2026-10-19.md`, sem apagar nada. Os links `[[Proposta formal]]` continuam valendo e agora apontam para a versão entregue.
+- A divisão da fala do seminário passou a seguir a definição de tarefas da proposta.
+

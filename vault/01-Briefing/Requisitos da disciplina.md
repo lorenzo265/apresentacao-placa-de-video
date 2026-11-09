@@ -5,7 +5,7 @@ prazo: 2026-10-26
 ---
 # Requisitos da disciplina
 
-Trabalho em grupo (até 4 integrantes) da disciplina de Organização e Arquitetura de Computadores. Resumo do enunciado recebido, com palavras próprias.
+Trabalho em grupo (até 4 integrantes, segundo este resumo; a [[Proposta formal]] entregue e o artigo têm 5, a conferir) da disciplina de Organização e Arquitetura de Computadores. Resumo do enunciado recebido, com palavras próprias.
 
 ## Escolha do grupo
 - Linha: **Arquitetura** (estudo e apresentação em seminário de um processador ou microcontrolador).
