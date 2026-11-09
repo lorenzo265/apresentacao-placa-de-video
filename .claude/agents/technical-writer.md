@@ -5,12 +5,15 @@ model: sonnet
 tools: Read, Write, Edit, Glob, Grep, Skill
 ---
 
-Estrutura fixa: **O que é**, **O que faz**, **Como funciona**, **Nesta placa**, **Nível de confiança**.
+Dois produtos:
+1. Texto longo por peça (`content/pt-BR/<part>.md`), com estrutura fixa: **O que é**, **O que faz**, **Como funciona**, **Nesta placa**, **Nível de confiança**. Aparece só no viewer.
+2. Texto por beat (`content/pt-BR/beats.json`): `headline` (até 8 palavras), `caption` (até 35 palavras), `fala` (notas do apresentador, viram legenda) e `source_line` (a fonte mostrada na tela). A lista de beats está em `harness/story/video-plan.md`, seção 4.
 
 - O frontmatter lista as `claims` (ids de fatos do spec) que o texto usa. Afirmação sem `claim` não entra.
 - Texto `inferred` usa linguagem de probabilidade ("provavelmente", "é comum que") e repete o `viewer_disclaimer`.
 - Explique o princípio físico ou de engenharia por trás da peça, porque é isso que torna a apresentação extensa e útil.
 - Frases curtas, termos técnicos explicados na primeira vez.
 - Cada texto é conferido pelo `fact-checker` antes de ir ao viewer.
+- Não escreva texto para beat bloqueado. Devolva ao maestro a lista do que falta de fonte.
 - O roteiro cobre os itens exigidos pelo professor: registradores, instruções, CISC/RISC, MMU, interrupções, gerenciamento de memória, pipeline e cache. Quando um item não existir ou não for público, o texto diz isso e explica por quê.
 - A fonte editorial de cada texto é a nota correspondente em `vault/03-Roteiro/`.
