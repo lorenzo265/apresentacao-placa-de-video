@@ -19,11 +19,30 @@ Estado: **proposta para o gate humano da F6**. Nada aqui foi implementado. Compl
 
 | Corte | Para quê | Beats | Duração |
 |---|---|---|---|
-| `seminario` | apoio visual da fala ao vivo, em 16/11 | prioridade 1 e 2 | **depende da duração que o professor informar** (pendente desde 19/10) |
-| `completo` | tour inteiro no viewer e vídeo de arquivo | todos | sem limite |
+| `seminario` | apoio visual da fala ao vivo, em 16/11 | só prioridade 1 (43 beats) | **alvo de 17 min, teto de 20 min** (o seminário tem de 15 a 20 minutos) |
+| `completo` | tour inteiro no viewer e vídeo de arquivo | todos (63 beats) | sem limite |
 | `teaser` | abertura do seminário, sem fala | lista fixa de 6 a 8 beats | 30 a 45 s |
 
-Regra: existe **um** `storyboard.json`. Cada beat tem `priority` (1 essencial, 2 seminário, 3 só no completo). O corte é um filtro, não um segundo roteiro. Quando a duração do seminário chegar, ajusta-se o limite de prioridade e os tempos de `hold`, sem refazer câmeras.
+Regra: existe **um** `storyboard.json`. Cada beat tem `priority` (1 essencial, 2 reserva, 3 só no completo). O corte é um filtro, não um segundo roteiro.
+
+### 2.1 Orçamento de tempo do corte do seminário
+
+Duração informada pelo grupo em 2026-11-09: de 15 a 20 minutos, no máximo. O alvo é 17 minutos, para sobrar margem de fala e de troca de apresentador. São 43 beats de prioridade 1, em média 24 segundos cada.
+
+| Ato | Seções | Beats (prio 1) | Tempo | Acumulado |
+|---|---|---|---|---|
+| 0. Abertura | 01 | 4 | 0:40 | 0:40 |
+| 1. A placa por fora | 01 | 3 | 1:00 | 1:40 |
+| 2. Desmontagem e os três caminhos | 02 | 8 | 2:20 | 4:00 |
+| 3. Memória e barramentos | 03 | 3 | 1:10 | 5:10 |
+| T1 e 4. O chip e SIMT | 04, 05 | 6 | 2:00 | 7:10 |
+| T2 e 5. Dentro do SM | 06 a 09, 12 | 10 | 5:00 | 12:10 |
+| 6. A GPU no sistema | 10, 11 | 5 | 3:00 | 15:10 |
+| 7. Fechamento | 13, 14 | 4 | 1:50 | 17:00 |
+
+Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 12 minutos para os itens que o enunciado cobra. Se o ensaio passar de 18 minutos, o corte sai primeiro dos atos 1 e 2, nunca dos atos 5 e 6.
+
+Os beats de prioridade 2 ficam prontos como reserva: entram no viewer ao vivo se alguém perguntar, sem contar no tempo.
 
 Formato do seminário (decisão humana pendente): a recomendação é **viewer ao vivo, avançando beat a beat pelo teclado**, com o MP4 do mesmo corte como plano de reserva. Vídeo corrido com fala gravada só se o grupo preferir.
 
@@ -66,7 +85,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
-| a0.1 | 01 | tela escura; a contraluz revela a silhueta | título do trabalho, disciplina, grupo | não se aplica | | 1 |
+| a0.1 | 01 | tela escura; a contraluz revela a silhueta; entra o logotipo do grupo (32 quadrados, 4 em laranja) | título do trabalho, disciplina, grupo Warp 32 | não se aplica | | 1 |
 | a0.2 | 01 | giro lento da placa montada | RTX PRO 6000 Blackwell Workstation Edition | confirmed | datasheet | 1 |
 | a0.3 | 01 | ficha entra linha a linha | 96 GB GDDR7 com ECC, 600 W, 24.064 núcleos CUDA, PCIe 5.0 x16 | confirmed | datasheet, p. 3 | 1 |
 | a0.4 | 01 | mapa do tour | cinco níveis, três caminhos, quatro selos | não se aplica | | 1 |
@@ -118,16 +137,16 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a5.4 | 06 | unidades do SM em blocos | 128 núcleos CUDA FP32, 4 Tensor Cores, 1 RT Core, 4 unidades de textura, 2 núcleos FP64 | confirmed | whitepaper, p. 8 e 9 | 1 |
 | a5.5 | 06 | SM dividido em 4 partições | 4 partições, INT32 e FP32 unificadas; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | derived (GB203, RTX 5080) | Jarmusch et al., IV e Tab. III | 1 |
 | a5.6 | 07 | banco de registradores como grade | 256 KB por SM; 256 KB ÷ 4 B = 65.536 registradores de 32 bits | confirmed (256 KB), derived (conta) | whitepaper, p. 9 | 1 |
-| a5.7 | 07 | listagem SASS real com `R`, `UR` e `P` coloridos | três famílias de registradores; SAXPY usa 10 por thread, 0 de spill | confirmed (medido) | `harness/examples/saxpy/` | 1 |
+| a5.7 | 07 | listagem SASS real com `R`, `UR`, `P` e `SR` coloridos | famílias de registradores; SAXPY usa 10 por thread, 0 de spill | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
 | a5.8 | 07 | limite por thread | quantos registradores uma thread pode ter | **bloqueado** | guia CUDA (a ler) | 2 |
-| a5.9 | 08 | PTX à esquerda, SASS à direita, linhas ligando instruções | 20 instruções PTX viram 19 úteis em SASS | confirmed (medido) | `harness/examples/saxpy/` | 1 |
+| a5.9 | 08 | código CUDA, PTX e SASS lado a lado, linhas ligando instruções (a mesma listagem da Figura 4 do artigo) | 20 instruções PTX viram 19 úteis em SASS | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
 | a5.10 | 08 | uma instrução vira uma palavra de 128 bits; campos aparecem | 16 bytes fixos; opcode, operandos, predicado e controle | confirmed (largura), derived da Volta (campos) | Binary Utilities, ap. 7.1; Jia et al., cap. 2 | 1 |
 | a5.11 | 08 | `HMMA.16816.F32` dispara uma grade de multiplicações | uma instrução, 2.048 multiplicações-acumulações | confirmed (a instrução gerada), derived (2.048 é conta nossa) | `harness/examples/mma/` | 2 |
-| a5.12 | 08 | tabela de critérios preenchendo linha a linha | RISC ou CISC: largura fixa, load-store com exceção, controle exposto | inferred (análise do grupo) | seção 08; aguarda revisão humana | 1 |
+| a5.12 | 08 | tabela de critérios preenchendo linha a linha; ao lado, `LDGSTS`, `UBLKCP` e `HMMA` com a descrição oficial | RISC no formato, com instruções de acelerador: a resposta tem ressalvas | inferred (análise do grupo sobre fatos `confirmed`) | seção 08; Binary Utilities 13.5; aguarda aprovação humana | 1 |
 | a5.13 | 09 | escada de memória com tamanho e latência por degrau | registradores, L1 de 128 KB, L2 de 128 MB, GDDR7 de 96 GB | confirmed (tamanhos), derived (latências da GB203) | whitepaper, Tab. 4; Jarmusch et al., VI | 1 |
 | a5.14 | 09 | L1 dividida entre cache e memória compartilhada | divisão configurável | confirmed (existe), **bloqueado** (como) | guia CUDA (a ler) | 3 |
 | a5.15 | 12 | SM enchendo de warps até faltar registrador | 10 registradores × 32 threads = 320 por warp | derived (conta teórica) | seção 12 | 2 |
-| a5.16 | 12 | warp dividido por um desvio | divergência: parte do warp espera | **bloqueado** | guia CUDA ou artigo (a ler) | 2 |
+| a5.16 | 12 | um warp de 32 threads; 4 ficam laranja e seguem outro caminho; a imagem vira o logotipo do grupo | divergência: enquanto 4 threads executam o seu caminho, 28 esperam | **bloqueado** até registrar a fonte (o artigo cita Lindholm et al., 2008, e Hennessy e Patterson) | a registrar | 1 |
 
 ### Ato 6: a GPU no sistema (seções 10 e 11)
 
@@ -178,7 +197,17 @@ Cada beat tem quatro campos de texto, todos auditados pelo `fact-checker`:
 
 Regra de tempo de leitura: `hold` ≥ 0,4 s por palavra do `caption` + 2 s. O teste automatizado falha se um beat violar a regra. É uma regra do projeto, a calibrar no primeiro ensaio com cronômetro.
 
-Quem fala o quê: a coluna `speaker` do storyboard recebe o nome do integrante. Hoje está vazia porque a divisão de tarefas do grupo não foi decidida.
+Quem fala o quê: a coluna `speaker` do storyboard recebe o nome do integrante. O grupo (Warp 32) tem cinco pessoas. Proposta de divisão da fala, a confirmar pelo grupo:
+
+| Bloco | Atos | Tempo | Quem apresenta |
+|---|---|---|---|
+| A placa e a desmontagem | 0, 1, 2 | 4:00 | Vitor |
+| Memória, barramentos e a planta do chip | 3, T1, 4 | 3:10 | João |
+| Registradores, instruções, RISC ou CISC | 5 (seções 06 a 08) | 3:20 | Lorenzo |
+| Caches, MMU e memória virtual | 5 (seção 09), 6 (seção 10) | 3:10 | Arthur |
+| Interrupções, escalonamento e fechamento | 6 (seção 11), 7 | 3:20 | Thiago |
+
+A divisão é de **quem apresenta e responde por cada bloco no seminário**. Cada apresentador revisa as notas de fala e as fontes do seu bloco antes do ensaio. O projeto não registra autoria de trabalho que a pessoa não fez.
 
 ## 7. Especificação técnica do vídeo
 
@@ -239,10 +268,10 @@ Os atos 4 a 6 valem a nota e hoje não têm dono no roster (os modeladores cuida
 
 ## 10. Pendências deste plano
 
-- Duração do seminário (professor).
+- Confirmar com o professor a duração de 15 a 20 minutos e se ela inclui perguntas.
+- Confirmar a divisão da fala (seção 6).
 - Viewer ao vivo ou vídeo corrido (grupo).
 - Narração gravada e trilha: sim ou não (grupo).
-- `speaker` de cada ato (grupo).
 - Uso de logos da NVIDIA (grupo).
 - Fontes para os beats bloqueados dos atos 3, 4, 5 e 6.
 - Segunda passada do `fact-checker` sobre a seção 4 (a primeira não aprovou; correções em `harness/qa/fact-check-fisico.md`).

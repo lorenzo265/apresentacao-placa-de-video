@@ -39,6 +39,32 @@ URL: https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html (acessado em 
 | **Operando de constante em aritmética** | `IMAD R0, R0, c[0x0][0x0], R3 ;` e `ISETP.GE.AND P0, PT, R0, c[0x0][0x170], PT ;` (arquitetura do exemplo não declarada) | 3.1.1 [auditado e conferido pelo grupo] |
 | Definição de SASS | **não declarada**; só aparece "CUDA assembly" e a opção `-sass` | opções |
 
+### 2.1 Releitura em 2026-11-09 (CUDA Binary Utilities 13.5), **não auditada**
+URL: a mesma. O título da página é "cuda-binary-utilities 13.5 documentation". Leitura direta: HTML baixado com `curl` e tabela extraída por script. A seção se chama "Blackwell and Rubin Instruction Set".
+
+| Dado | Descrição literal na tabela | Categoria |
+|---|---|---|
+| `LDGSTS` | "Asynchronous Global to Shared Memcopy" | Load/Store |
+| `UBLKCP` | "Bulk Data Copy" | Uniform Datapath |
+| `UMEMSETS` | "Initialize Shared Memory" | Uniform Datapath |
+| `ATOMG` / `ATOMS` | "Atomic Operation on Global Memory" / "Atomic Operation on Shared Memory" | Load/Store |
+| `REDG` | "Reduction Operation on Generic Memory" | Load/Store |
+| `UTMALDG` / `UTMASTG` | "Tensor Load from Global to Shared Memory" / "Tensor Store from Shared to Global Memory" | Tensor Memory Access |
+| `HMMA` | "Matrix Multiply and Accumulate" | Floating Point |
+| `QMMA` / `OMMA` | "FP8 Matrix Multiply and Accumulate Across a Warp" / "FP4 Matrix Multiply and Accumulate Across a Warp" | Floating Point |
+| `TEX` | "Texture Fetch" | Texture |
+| `MUFU` | "FP32 Multi Function Operation" | Floating Point |
+| `DECOMPRESS` / `SPARSIFY` | "Decompress a vector" / "Generate metadata and compress a vector" | (a conferir) |
+| `LEA` | "LOAD Effective Address" | Integer |
+| `R2UR` | "Move from Vector Register to a Uniform Register" | Uniform Datapath |
+| `REDUX` | "Reduction of a Vector Register into a Uniform Register" | Uniform Datapath |
+| `BPT` | "BreakPoint/Trap" | Control |
+| `USETMAXREG` | "Release, Deallocate and Allocate Registers" | Uniform Datapath |
+
+- Categorias da tabela (13): Floating Point, Integer, Conversion, Movement, Predicate, Load/Store, Uniform Datapath, Tensor Memory Access, Tensor Core Memory, Texture, Surface, Control, Miscellaneous.
+- Contagem: cerca de **257 mnemônicos** distintos (script; pode errar por um ou dois por quebra de linha na tabela). Reconferir à mão antes de citar o número.
+- A documentação chama os registradores por thread de "vector register" e os `UR` de "uniform register" (descrições de `R2UR` e `REDUX`). Isso sustenta o nome, não o funcionamento.
+
 ## 3. NVIDIA, CUDA GPUs (compute capability)
 URL: https://developer.nvidia.com/cuda-gpus (acessado em 2026-10-19; `confirmed`)
 - RTX PRO 6000 Blackwell Workstation Edition: **12.0**. Max-Q Workstation Edition e Server Edition: 12.0. GeForce RTX 5090: 12.0. RTX 6000 Ada: 8.9. [auditado]
@@ -77,6 +103,6 @@ URL: https://arxiv.org/abs/2507.10789 (`derived`: RTX 5080, GB203, não GB202)
 
 ## Lacunas desta rodada
 - Limite de registradores por thread (guia CUDA).
-- Lista completa e contagem dos opcodes de `sm_120`.
+- Lista completa e contagem dos opcodes de `sm_120`: levantada em 2026-11-09 (seção 2.1), falta reconferir.
 - Funções de `LDC R1, c[0x0][0x37c]` e `LDCU.64 UR4, c[0x0][0x358]` no SAXPY (não documentadas).
 - Hopper (arXiv 2501.12084) e B200 (arXiv 2512.02189) não foram lidos.
