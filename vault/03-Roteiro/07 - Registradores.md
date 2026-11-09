@@ -25,7 +25,7 @@ Explicar o banco de registradores da GPU: tamanho, organização, quanto cada th
 - Medido: o kernel SAXPY compilado para `sm_120` usa **10 registradores por thread** e 0 bytes de spill (`ptxas -v`). O SASS usa registradores `R` (por thread), `UR` (caminho uniforme) e `P` (predicados). Ver `harness/examples/saxpy/`.
 - Derivado (Volta): registradores em dois bancos de 64 bits, e conflito de banco quando os três fontes de uma FFMA caem no mesmo banco ([[Jia et al. - Dissecting the NVIDIA Volta GPU|Jia et al.]], capítulo 1). A confirmar na Blackwell.
 
-- **Limites oficiais:** "The register file size is 64K 32-bit registers per SM. The maximum number of registers per thread is 255." ([[NVIDIA - Blackwell Tuning Guide|Blackwell Tuning Guide]] 13.5, 1.4.1.1, leitura direta em 2026-11-09). Os 65.536 registradores deixam de ser só conta nossa.
+- **Limites oficiais:** "The register file size is 64K 32-bit registers per SM. The maximum number of registers per thread is 255." ([[NVIDIA - Blackwell Tuning Guide|Blackwell Tuning Guide]] 13.5, 1.4.1.1, leitura direta em 2026-11-09). Os 65.536 registradores deixam de ser só conta nossa. A Fig. 5 do whitepaper (p. 10) mostra a organização: quatro bancos de "16,384 x 32-bit", um por bloco do SM.
 - O exemplo do artigo, reproduzido em `harness/examples/saxpy-cu/`, usa 10 registradores e as famílias `R`, `UR`, `P` e `SR`.
 
 ## A levantar

@@ -1,11 +1,11 @@
 # Acompanhamento do projeto
 
-Data: **2026-11-09**, segunda atualização do dia. Substitui a versão da manhã.
+Data: **2026-11-09**, terceira atualização do dia.
 
 ## 1. Resumo
 
-1. **A documentação escrita foi entregue** (artigo de 13 páginas, grupo Warp 32). A revisão está em `qa/revisao-artigo.md`: o artigo cumpre o enunciado, tem dois erros de conteúdo (MMU e RISC ou CISC) e seis afirmações acima da fonte. O seminário corrige.
-2. **A pesquisa (F1) está quase fechada.** Todos os itens do enunciado têm fonte, inclusive MMU e interrupções, que estavam em branco. Falta consolidar `spec/card.spec.json` e fechar a auditoria da segunda leva.
+1. **A documentação escrita foi entregue** (artigo de 13 páginas, grupo Warp 32). A revisão está em `qa/revisao-artigo.md` (segunda versão): o artigo cumpre a proposta e quase tudo tem fonte oficial. Sobram um dado desatualizado (49 bits na MMU), uma generalização na análise RISC ou CISC e cinco afirmações sem fonte ou com a fonte errada. **A primeira versão da revisão acusava o artigo de quatro erros que não eram erros**; a auditoria pegou e foi corrigido.
+2. **A pesquisa (F1) está quase fechada.** Todos os itens do enunciado têm fonte, inclusive MMU e interrupções, que estavam em branco. Falta consolidar `spec/card.spec.json`. As duas auditorias do dia reprovaram a primeira passada e tiveram as correções aplicadas; falta a segunda passada de cada uma.
 3. **A placa física agora tem base real:** teardown, datasheet, normas dos conectores e 75 fotos catalogadas. O plano de montagem está na v0.3 e mudou bastante em relação à manhã.
 4. **O seminário tem de 15 a 20 minutos.** O corte do seminário tem 42 beats e alvo de 17 minutos.
 5. **Nada das fases F2 a F8 existe ainda**, além de planos, schemas e do validador. O seminário é em 7 dias.
@@ -23,7 +23,7 @@ Data: **2026-11-09**, segunda atualização do dia. Substitui a versão da manh�
 | Fase | Existe | Falta | Estado |
 |---|---|---|---|
 | F0 Escopo | placa, público, duração | | feito |
-| F1 Pesquisa | 6 arquivos de fontes, 43 notas no vault, 3 exemplos `sm_120`, catálogo de 88 imagens, 3 auditorias | `spec/card.spec.json`; segunda passada das auditorias; guia CUDA lido por inteiro | quase fechada |
+| F1 Pesquisa | 6 arquivos de fontes, 43 notas no vault, 3 exemplos `sm_120`, catálogo de 88 imagens, 3 auditorias e 1 revisão | `spec/card.spec.json`; segunda passada das auditorias; guia CUDA lido por inteiro | quase fechada |
 | F2 Arquitetura | `design/assembly-plan.md` v0.3, `design/measurements.csv` (33 medidas) | `proposal.json` (9 itens na fila), gate humano, `assembly.json` | não iniciada |
 | F3 Modelagem | | tudo | não iniciada |
 | F4 Integração | | tudo | não iniciada |
@@ -38,13 +38,13 @@ Apoio: 16 agentes, 1 skill escrita de 10, 5 schemas com validador testado (`tool
 
 | Item | Seção | Fonte | O que o seminário mostra | Pendência |
 |---|---|---|---|---|
-| Registradores | 07 | Tuning Guide (leitura direta), whitepaper, experimento | 64K por SM, até 255 por thread, famílias `R`, `UR`, `P`, `SR` no código real | |
-| Conjunto de instruções | 08 | PTX 9.5, Binary Utilities 13.5, experimento reproduzido | CUDA, PTX e SASS lado a lado; palavra de 128 bits; cerca de 257 mnemônicos | reconferir a contagem |
-| CISC ou RISC | 08 | lista oficial de instruções | "RISC no formato, com instruções de acelerador" | **aprovação humana da conclusão** |
-| MMU | 10 | código aberto do driver (leitura direta), documento da Pascal | 57 bits, 6 níveis, páginas de 4 KB a 512 MB; comparação com a Pascal | TLB é lacuna declarada; auditoria |
-| Interrupções | 11 | driver, PTX, catálogo de Xid | três mecanismos: MSI ou MSI-X para a CPU, `trap`, preempção | como a CPU envia comandos (falta ler) |
+| Registradores | 07 | Tuning Guide, whitepaper (Fig. 5), experimento | 4 bancos de 16.384 por SM (65.536), até 255 por thread, famílias `R`, `UR`, `P`, `SR` no código real | |
+| Conjunto de instruções | 08 | PTX 9.5, Binary Utilities 13.5, experimento reproduzido | CUDA, PTX e SASS lado a lado; palavra de 128 bits; 258 mnemônicos em 13 categorias | |
+| CISC ou RISC | 08 | lista oficial de instruções | "RISC no formato, com instruções próprias de acelerador" (análise do grupo) | **aprovação humana da conclusão** |
+| MMU | 10 | código oficial do driver (leitura direta), documento da Pascal | 57 bits, 6 níveis, páginas de 4 KB a 512 MB; comparação com a Pascal | TLB é lacuna declarada; espaço de endereços por programa sem trecho de fonte |
+| Interrupções | 11 | driver, PTX, catálogo de Xid | três mecanismos documentados: interrupção para a CPU, `trap`, preempção. Que o SM não trata interrupções é leitura do grupo (`inferred`) | como a CPU envia comandos (falta ler) |
 | Gerenciamento de memória | 03, 09, 10 | whitepaper, driver, normas | GDDR7, hierarquia, falha de página em lote | memória unificada no guia CUDA |
-| Pipeline | 05, 06, 12 | Tuning Guide, guia CUDA, artigos | 48 warps por SM, 4 partições (`derived`), divergência com o logotipo do grupo | profundidade do pipeline é lacuna declarada |
+| Pipeline | 05, 06, 12 | whitepaper (Fig. 5), Tuning Guide, guia CUDA, artigos | 4 blocos com escalonador de warp (`confirmed`), 48 warps por SM, divergência com o logotipo do grupo | profundidade do pipeline é lacuna declarada |
 | Cache | 09 | whitepaper, artigo da RTX 5080 | tamanhos (`confirmed`) e latências (`derived`) | política e associatividade: lacuna |
 
 ## 5. Pendências de planejamento
@@ -66,7 +66,8 @@ Apoio: 16 agentes, 1 skill escrita de 10, 5 schemas com validador testado (`tool
 | 17 | Regra de procedência para observação de terceiro | aberto: por ora `derived` |
 | 18 | Memória: 32 posições ou 32 chips | a norma permite 32 chips de 3 GB; a frente do PCB nunca foi fotografada sem pads. Fila da F2 |
 | 19 | Altura da placa | aberto: 137,2 mm oficiais contra 122 mm de carcaça medidos em foto de terceiro |
-| 20 | Auditoria da segunda leva (MMU, normas, revisão do artigo, RISC ou CISC) | em andamento |
+| 20 | Auditoria da segunda leva (MMU, normas, revisão do artigo, RISC ou CISC) | feita: `qa/fact-check-segunda-leva.md`, 29 achados, correções aplicadas. Falta a segunda passada |
+| 21 | Auditoria visual das fotos e das medidas tiradas delas | aberto (`visual-qa`) |
 
 ## 6. O que falta implementar
 
@@ -100,7 +101,7 @@ Linhas de corte: se a proposta de engenharia não for aprovada na terça, o inte
 
 1. **Aprovar a conclusão RISC ou CISC** revisada (`vault/03-Roteiro/08`).
 2. **Divisão da fala:** já segue a proposta entregue. Faltam três ajustes pequenos (`story/video-plan.md`, seção 6): dono da planta do chip, posição do beat da divergência e o tempo do Arthur.
-3. **Como tratar as correções ao artigo** no seminário: apresentar como avanço (recomendado) ou não mencionar.
+3. **Como tratar o artigo no seminário:** recomendo citar só a MMU como atualização ("o formato mudou na Hopper") e apresentar RISC ou CISC como aprofundamento. O resto se resolve na fala.
 4. **Tamanho do grupo:** a proposta entregue e o artigo têm cinco integrantes; a nota do enunciado no vault diz até quatro. Corrigir a nota?
 5. **Versionar o PDF do artigo?** A proposta entregue já foi versionada a seu pedido. O artigo traz os mesmos nomes completos; depende de o repositório ser público.
 6. Viewer ao vivo ou vídeo corrido (recomendado: ao vivo, com MP4 de reserva).
@@ -121,3 +122,7 @@ Tarde:
 - Catálogo das 75 fotos do teardown e dos renders oficiais (`spec/references/index.md`); plano de montagem v0.3.
 - Schemas dos cinco contratos e validador (`schemas/`, `tools/validate.py`).
 - Orçamento de tempo para 15 a 20 minutos e proposta de divisão da fala.
+
+Noite:
+- Proposta entregue em 26/10 arquivada e transcrita; divisão da fala alinhada a ela.
+- Auditoria da segunda leva (`qa/fact-check-segunda-leva.md`): reprovou a primeira passada. Revisão do artigo reescrita; seções `06`, `07`, `08`, `10` e `11`, os beats e os planos corrigidos.

@@ -39,13 +39,13 @@ URL: https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html (acessado em 
 | **Operando de constante em aritmética** | `IMAD R0, R0, c[0x0][0x0], R3 ;` e `ISETP.GE.AND P0, PT, R0, c[0x0][0x170], PT ;` (arquitetura do exemplo não declarada) | 3.1.1 [auditado e conferido pelo grupo] |
 | Definição de SASS | **não declarada**; só aparece "CUDA assembly" e a opção `-sass` | opções |
 
-### 2.1 Releitura em 2026-11-09 (CUDA Binary Utilities 13.5), **não auditada**
+### 2.1 Releitura em 2026-11-09 (CUDA Binary Utilities 13.5), auditada (`harness/qa/fact-check-segunda-leva.md`)
 URL: a mesma. O título da página é "cuda-binary-utilities 13.5 documentation". Leitura direta: HTML baixado com `curl` e tabela extraída por script. A seção se chama "Blackwell and Rubin Instruction Set".
 
 | Dado | Descrição literal na tabela | Categoria |
 |---|---|---|
 | `LDGSTS` | "Asynchronous Global to Shared Memcopy" | Load/Store |
-| `UBLKCP` | "Bulk Data Copy" | Uniform Datapath |
+| `UBLKCP` | "Bulk Data Copy" | Tensor Memory Access |
 | `UMEMSETS` | "Initialize Shared Memory" | Uniform Datapath |
 | `ATOMG` / `ATOMS` | "Atomic Operation on Global Memory" / "Atomic Operation on Shared Memory" | Load/Store |
 | `REDG` | "Reduction Operation on Generic Memory" | Load/Store |
@@ -54,7 +54,7 @@ URL: a mesma. O título da página é "cuda-binary-utilities 13.5 documentation"
 | `QMMA` / `OMMA` | "FP8 Matrix Multiply and Accumulate Across a Warp" / "FP4 Matrix Multiply and Accumulate Across a Warp" | Floating Point |
 | `TEX` | "Texture Fetch" | Texture |
 | `MUFU` | "FP32 Multi Function Operation" | Floating Point |
-| `DECOMPRESS` / `SPARSIFY` | "Decompress a vector" / "Generate metadata and compress a vector" | (a conferir) |
+| `DECOMPRESS` / `SPARSIFY` | "Decompress a vector" / "Generate metadata and compress a vector" | Integer |
 | `LEA` | "LOAD Effective Address" | Integer |
 | `R2UR` | "Move from Vector Register to a Uniform Register" | Uniform Datapath |
 | `REDUX` | "Reduction of a Vector Register into a Uniform Register" | Uniform Datapath |
@@ -62,7 +62,7 @@ URL: a mesma. O título da página é "cuda-binary-utilities 13.5 documentation"
 | `USETMAXREG` | "Release, Deallocate and Allocate Registers" | Uniform Datapath |
 
 - Categorias da tabela (13): Floating Point, Integer, Conversion, Movement, Predicate, Load/Store, Uniform Datapath, Tensor Memory Access, Tensor Core Memory, Texture, Surface, Control, Miscellaneous.
-- Contagem: cerca de **257 mnemônicos** distintos (script; pode errar por um ou dois por quebra de linha na tabela). Reconferir à mão antes de citar o número.
+- Contagem: **258 mnemônicos** em 13 categorias (39 + 34 + 8 + 8 + 4 + 32 + 62 + 11 + 12 + 6 + 4 + 25 + 13). O `fact-checker` contou 258 de forma independente e o script da sessão principal, corrigido, deu o mesmo. A primeira contagem, de 257, tinha partido um mnemônico em dois.
 - A documentação chama os registradores por thread de "vector register" e os `UR` de "uniform register" (descrições de `R2UR` e `REDUX`). Isso sustenta o nome, não o funcionamento.
 
 ## 3. NVIDIA, CUDA GPUs (compute capability)

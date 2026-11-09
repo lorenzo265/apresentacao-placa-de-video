@@ -48,9 +48,9 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 ## Cobertura do roteiro v2 contra o enunciado
 | Item exigido | Seções | Fonte primária já lida | Risco de lacuna |
 |---|---|---|---|
-| Registradores | [[07 - Registradores]] | whitepaper: tamanho do banco | médio: limites por thread vêm do guia CUDA |
+| Registradores | [[07 - Registradores]] | whitepaper (256 KB e Fig. 5: quatro bancos de 16.384), Tuning Guide (255 por thread), experimento | baixo |
 | Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | PTX e Binary Utilities (auditados) e experimento `sm_120` | médio: opcodes documentados, campos de controle só pela Volta |
-| CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | whitepaper: o AMP é RISC-V | médio: a classificação do SASS depende da lista de instruções |
+| CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | lista oficial de 258 mnemônicos; whitepaper (o AMP é RISC-V) | médio: é análise do grupo e aguarda aprovação |
 | MMU | [[10 - Memória virtual e MMU]] | código aberto do driver (57 bits, 6 níveis), documento da Pascal | médio: TLB é lacuna declarada; auditoria pendente |
 | Interrupções | [[11 - Escalonamento, CPU e interrupções]] | driver aberto (MSI, duas metades), PTX (`trap`), catálogo de Xid, whitepaper (AMP) | médio: envio de comandos pela CPU ainda não lido |
 | Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]] | whitepaper: hierarquia e GDDR7 | médio |

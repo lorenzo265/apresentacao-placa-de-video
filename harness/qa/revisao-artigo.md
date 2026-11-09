@@ -1,85 +1,96 @@
-# Revisão do artigo entregue em 2026-11-09
+# Revisão do artigo entregue em 2026-11-09 (segunda versão)
 
 - Documento: "Estudo da arquitetura da GPU NVIDIA RTX PRO 6000 Blackwell (chip GB202)", 13 páginas, grupo Warp 32. Entregue como documentação escrita (1,5 ponto).
-- Revisor: sessão principal (Fable), em 2026-11-09. Quem escreveu o artigo foi outro integrante, fora deste repositório.
-- Método: cada afirmação foi comparada com as fontes registradas em `harness/spec/sources/`. As fontes novas que o artigo cita foram abertas nesta data (`mmu-interrupts-sources.md`). O que está marcado **leitura direta** foi conferido pelo revisor no documento ou no código-fonte baixado; o resto veio por resumo automático e ainda pede auditoria do `fact-checker`.
-- O experimento da seção 4.4 foi refeito do zero: `harness/examples/saxpy-cu/`.
+- Revisor: sessão principal (Fable). Quem escreveu o artigo foi outro integrante, fora deste repositório.
+- **Esta versão substitui a primeira, do mesmo dia.** A auditoria independente (`fact-check-segunda-leva.md`) mostrou que a primeira versão acusava o artigo de quatro erros que não eram erros. A seção 6 lista o que foi retirado.
+- Método: cada afirmação comparada com as fontes de `harness/spec/sources/`. "Leitura direta" quer dizer que o revisor abriu o documento, a figura ou o código-fonte baixado. O experimento da seção 4.4 foi refeito: `harness/examples/saxpy-cu/`.
 
 ## 1. Veredito
 
-O artigo cumpre o enunciado: trata os nove itens, tem um experimento real e reproduzível e admite o que não é público. Para uma entrega de graduação é um bom texto.
+O artigo é melhor do que a primeira versão desta revisão dizia. Cumpre a proposta entregue em 26/10, trata os nove itens, tem um experimento real e reproduzível, e quase todas as afirmações técnicas têm fonte oficial.
 
-Ele fica abaixo do nível que o projeto quer em quatro pontos:
+O que sobra de problema:
 
-1. **Dois erros de conteúdo em itens que o professor cobra** (MMU e RISC ou CISC).
-2. **Seis afirmações mais fortes do que a fonte sustenta**, quase sempre um dado de outra geração ou uma dedução do grupo escrita como fato da Blackwell.
-3. **Não separa fato desta placa de dado de outra geração.** O artigo cumpre o que a proposta entregue prometeu (dizer quando um item não é público), mas não distingue o que vale para a Blackwell do que vem da Pascal, da Ampere ou da RTX 5080. Os quatro níveis de confiança do harness resolvem isso no seminário. (Correção de 2026-11-09: uma versão anterior desta revisão dizia que a proposta prometia os níveis de confiança. Isso estava só no rascunho de 19/10, não na proposta entregue.)
-4. **Cache e pipeline ficaram rasos**: só tamanhos, sem latência, política ou a divisão real do L1.
+1. **Um dado desatualizado em item que o professor cobra:** os 49 bits de endereço virtual são da Pascal; o driver atual usa 57 bits para a família desta placa.
+2. **Uma generalização na análise RISC ou CISC:** a tabela conclui "só carga e armazenamento acessam a memória" a partir de um único exemplo.
+3. **Cinco afirmações sem fonte ou com a fonte errada** (seção 3).
+4. **Profundidade:** cache e pipeline só com tamanhos; nenhuma separação entre o que é desta placa e o que vem de outra geração.
 
-Nada disso exige retratação. O seminário pode apresentar as correções como avanço sobre o artigo ("depois da entrega, fomos ao código aberto do driver e à lista oficial de instruções"), o que conta a favor do grupo.
+Recomendação para o seminário: apresentar **só o item 1 como atualização** ("fomos ao código do driver e o formato mudou"), e a análise RISC ou CISC como **aprofundamento**, não como correção. O resto se resolve na fala, sem mencionar o artigo.
 
 ## 2. O que confere
 
 | Afirmação do artigo | Fonte | Como foi conferido |
 |---|---|---|
-| Listagem SASS da Figura 4, 10 registradores, 0 de spill, 16 bytes por instrução | `nvcc` e `cuobjdump` 13.5.37 | **refeito**: saída idêntica, instrução por instrução |
-| PTX versão 9.5 | PTX gerado pelo `nvcc`; página do PTX ISA | leitura direta |
-| 65.536 registradores de 32 bits por SM; até 255 por thread; até 48 warps por SM na compute capability 12.0 | Blackwell Tuning Guide 13.5, 1.4.1.1: "64K 32-bit registers per SM", "maximum number of registers per thread is 255", "48 for compute capability 12.0" | leitura direta |
-| `trap` para a execução e gera interrupção para a CPU | PTX ISA 9.5, 9.7.21.4: "Abort execution and generate an interrupt to the host CPU" | leitura direta |
-| Xid 31 em acesso a endereço inválido | catálogo de Xid: "GPU memory page fault ... logged when a fault is reported by the MMU" | leitura direta |
-| Xid 13 em acesso fora do vetor | catálogo de Xid: "Graphics Engine Exception ... Typically this is an out-of-bounds error where the user has walked past the end of an array" | leitura direta |
-| 126 TFLOPS; MIG com até 4 instâncias de 24 GB; processo "4 nm" | whitepaper, Tab. 4, p. 44 e 45, p. 48 ("TSMC 4nm 4N NVIDIA Custom Process") | resumo de leitura de página |
-| Tabela 1, linha da RTX 6000 Ada | whitepaper, Tab. 4 | idem |
-| Pascal: 49 bits, falhas de página, memória unificada, preempção no nível de instrução | whitepaper do Tesla P100, p. 27 e 30 | idem |
-| Pascal: páginas de 4 KB, 64 KB e 2 MB | "Pascal MMU Format Changes", p. 2 | idem. Vale **para a Pascal** (ver E1) |
-| Bits de controle gravados pelo compilador em cada instrução | Huerta et al., seção 4 | idem. Medido em Ampere e Turing, não na Blackwell |
-| AMP é um processador RISC-V que escalona contextos | whitepaper, p. 25 | já auditado |
-| 512 × 28 ÷ 8 = 1.792 GB/s; 188 SMs; 24.064 núcleos; L2 de 128 MB | whitepaper | já auditado |
+| Listagem SASS da Figura 4, 10 registradores, 0 de spill, 16 bytes por instrução | `nvcc` e `cuobjdump` 13.5.37 | refeito: saída idêntica (comparação do revisor contra a imagem do PDF; o auditor não viu a figura) |
+| 65.536 registradores de 32 bits por SM; até 255 por thread; até 48 warps por SM | Blackwell Tuning Guide 13.5, 1.4.1.1 | leitura direta. O artigo cita a versão 13.4.1; a conferência foi na 13.5 |
+| **Quatro escalonadores de warp por SM** | whitepaper, Fig. 5, p. 10: quatro blocos, cada um com "L0 i-Cache + Warp Scheduler + Dispatch (32 thread/clk)" e "Register File (16,384 x 32-bit)" | leitura direta da figura |
+| **Divergência: o warp executa um caminho e depois o outro** | guia CUDA 13.5, 3.2.2.1: "the warp executes each branch path taken, disabling threads that are not on that path" | leitura direta |
+| **O driver compila o PTX na hora em GPU mais nova** | guia CUDA C++ 12.9.1, 6.1.1.2: "Any PTX code loaded by an application at runtime is compiled further to binary code by the device driver. This is called just-in-time compilation." | leitura direta. Não achamos o trecho equivalente no guia 13.5 |
+| **O GSP é um processador RISC-V** | código do driver, `kernel_gsp_tu102.c`: "prepares RISCV core to run GSP-RM", "RISC-V core is not enabled." | leitura direta. O arquivo é da família Turing; para o GB202 é `derived`. **A referência do artigo está errada** (ver F2) |
+| `trap` para a execução e gera interrupção para a CPU | PTX ISA 9.5, 9.7.21.4 | leitura direta |
+| Xid 31 em endereço inválido; Xid 13 em acesso fora do vetor | catálogo de Xid | leitura direta |
+| 126 TFLOPS; MIG com 4 instâncias de 24 GB; "4 nm"; linha da RTX 6000 Ada na Tabela 1 | whitepaper, Tab. 4, p. 44 a 48 | leitura direta do auditor |
+| Pascal: 49 bits, falhas de página, memória unificada, preempção no nível de instrução; páginas de 4 KB, 64 KB e 2 MB | whitepaper do P100, p. 27 e 30; "Pascal MMU Format Changes" | P100 por leitura direta do auditor; o documento da Pascal por outro agente |
+| Páginas de 4 KB, 64 KB e 2 MB | continuam valendo na geração atual (`page_sizes_ampere`, herdada) | leitura direta |
+| Núcleos unificados para inteiro e ponto flutuante | whitepaper, p. 11 e Fig. 5 ("FP32 / INT32") | leitura direta. Ver F5 para a ressalva |
+| Bits de controle gravados pelo compilador | Huerta et al., seção 4 | leitura direta do auditor |
+| AMP é RISC-V e escalona contextos | whitepaper, p. 25 | já auditado |
 
-## 3. Erros e afirmações acima da fonte
+## 3. O que não confere ou não tem fonte
 
-| # | Gravidade | Onde | O que o artigo diz | O que a fonte diz | Como corrigir no seminário |
+| # | Tipo | Onde | O que o artigo diz | O que a fonte diz | No seminário |
 |---|---|---|---|---|---|
-| E1 | **erro** | 4.8 MMU | "Desde a arquitetura Pascal, a GPU usa endereços virtuais de 49 bits"; páginas de 4 KB, 64 KB e 2 MB | Isso é a Pascal (2016). No código aberto do driver, a família GB20x usa a MMU da Hopper: `uvm_hal.c` diz "GB20x MMU behaves as Hopper MMU", e `uvm_hopper_mmu.c` define **57 bits** de endereço virtual (`num_va_bits_hopper` retorna 57) e **6 níveis** (PDE4, PDE3, PDE2, PDE1, PDE0, PTE), com páginas de 4 KB, 64 KB, 2 MB e 512 MB. **Leitura direta do código** | Mostrar a tabela de 6 níveis e dizer: "o artigo usou o documento da Pascal; o driver atual mostra que a Blackwell foi além" |
-| E2 | **erro** | 4.5 RISC ou CISC, Tabela 4 | "só as instruções de carga e armazenamento acessam a memória" | A lista oficial de instruções da Blackwell (Binary Utilities 13.5) tem `LDGSTS` "Asynchronous Global to Shared Memcopy", `UBLKCP` "Bulk Data Copy", `UMEMSETS` "Initialize Shared Memory", `ATOMG` "Atomic Operation on Global Memory". A seção 3.1.1 mostra aritmética com operando direto de constante. **Leitura direta** | Conclusão refinada: RISC no formato, com instruções de acelerador. Ver `vault/03-Roteiro/08` |
-| E3 | sem fonte | 4.1 | A placa tem 188 de 192 SMs porque "as partes com problema são desligadas" | O whitepaper não dá motivo. A p. 8 diz até que a placa usa o GB202 completo, e as tabelas dão 188 | "A NVIDIA não explica a diferença, e o documento se contradiz" |
-| E4 | fonte não sustenta | 4.9 | "pequenos processadores RISC-V dentro dela, como o GSP (NVIDIA, 2026d)" | O README citado não menciona RISC-V. Diz que o GSP serve para "offload GPU initialization and management tasks". **Leitura direta.** RISC-V só está documentado para o AMP | Dizer RISC-V só do AMP |
-| E5 | não confere com o exemplo | 4.2 | "encontramos ... um registrador que sempre vale zero (RZ)" | `RZ` não aparece na listagem da Figura 4 nem na reprodução | Tirar `RZ` da lista ou mostrar outro código em que ele apareça |
-| E6 | simplificação | 4.6 | Na Blackwell os 128 núcleos fazem inteiro ou ponto flutuante | O whitepaper (p. 11) diz que são unificados, mas "only operate as either FP32 or INT32 ... in any given clock cycle" e que nem toda operação inteira dobra de vazão | Acrescentar "um tipo por ciclo" |
-| E7 | derivado como fato | 4.10 | "quatro escalonadores escolhem, a cada ciclo, qual warp vai executar" | Vem de medições em outras GPUs: Volta (Jia), Ampere e Turing (Huerta), RTX 5080 (Jarmusch). O whitepaper desta placa não escreve "quatro" | Selo "derivado" |
-| E8 | derivado como fato | 4.6 | Divergência: "executa primeiro um caminho e depois o outro"; pesquisadores "fazem testes na placa" | O guia CUDA diz que as threads fora do desvio "will be masked off". Huerta et al. não mediram nenhuma Blackwell | Usar a frase do guia; dizer em que GPUs foi medido |
-| E9 | acima da fonte | 4.3 | "o driver compila o PTX na hora"; o PTX "é igual para todas as gerações" | O PTX ISA diz "translated at install time"; o guia CUDA fala em código "PTX-only, GPU forward compatible". O PTX é versionado (9.5) | "O PTX é estável e versionado; a tradução para SASS acontece depois" |
-| E10 | termo | Tabela 2 | "Frequência máxima: 2.617 MHz" | A Tab. 4 chama de "GPU Boost Clock" | Usar o nome da fonte |
-| E11 | conflito não declarado | Tabela 1 | RTX 6000 Ada com 960 GB/s | O whitepaper dá 1.008 GB/s na Tab. 1 e 960 GB/s na Tab. 4 | Citar a tabela usada |
-| E12 | contradição interna | 4.2 e 4.9 | 4.2: na GPU os registradores não são salvos na troca. 4.9: a preempção salva o estado na memória | As duas coisas valem, em níveis diferentes: entre warps do mesmo programa nada é salvo; entre programas, o contexto vai para a memória da GPU (P100, p. 30) | Separar os dois níveis na fala |
-| E13 | incompleto | 4.8 | Na memória unificada "o driver copia as páginas" | O P100 descreve migração sob demanda **ou** mapeamento pelo barramento | Detalhe; só se perguntarem |
-| E14 | fonte fraca | 1, 3 | "a GPU mais potente da NVIDIA para computadores de mesa"; dados de concorrentes | Fontes secundárias (VRLA Tech, Guru3D). Não conferidas por nós | Não repetir superlativos no seminário |
+| F1 | **desatualizado** | 4.8 MMU | "Desde a arquitetura Pascal, a GPU usa endereços virtuais de 49 bits" | O driver oficial lista o GB202 na família GB20x (`ctrl2080mc.h`) e diz "GB20x MMU behaves as Hopper MMU" (`uvm_hal.c`). O formato da Hopper tem **57 bits** e **6 níveis** (`uvm_hopper_mmu.c`). A Ampere ainda tinha 49 bits. Leitura direta | Mostrar a tabela de 6 níveis: "o formato mudou na Hopper, e a família desta placa usa o novo" |
+| F2 | referência errada | 4.9 | GSP é RISC-V "(NVIDIA, 2026d)" | O fato confere, mas o README citado não contém a palavra RISC. A fonte é o código do driver | Citar o código |
+| F3 | sem fonte | 4.1 | 188 de 192 SMs porque "as partes com problema são desligadas" | O whitepaper não dá motivo. A p. 8 diz "The RTX PRO 6000 GPUs use the full GB202 GPU" e as tabelas dão 188 | "A NVIDIA não explica, e o documento se contradiz" |
+| F4 | não confere com o exemplo | 4.2 | "encontramos ... um registrador que sempre vale zero (RZ)" | `RZ` não aparece na listagem da Figura 4 nem na reprodução | Não citar `RZ`, ou mostrar outro código |
+| F5 | simplificação | 4.6 | os 128 núcleos fazem inteiro ou ponto flutuante | p. 11: "only operate as either FP32 or INT32 ... in any given clock cycle"; nem toda operação inteira dobra | Acrescentar "um tipo por ciclo" |
+| F6 | generalização | 4.5, Tabela 4 | "Acesso à memória: só LDG, STG, LDC e parecidas"; conclusão "RISC" | Vale para o exemplo. No conjunto inteiro há `LDGSTS`, "Asynchronous Global to Shared Memcopy", que a própria NVIDIA lista entre as instruções de carga e armazenamento, e instruções de textura e de matriz. É uma tabela montada sobre um exemplo de 20 instruções | Aprofundar com a lista oficial de 258 mnemônicos. Ver `vault/03-Roteiro/08` |
+| F7 | derivado sem aviso | 4.6 | pesquisadores "fazem testes na placa" | Huerta et al. mediram Ampere e uma Turing, nenhuma Blackwell | Dizer em que GPUs foi medido |
+| F8 | impreciso | 4.3 | o PTX "é igual para todas as gerações" | É estável e versionado (9.5) | "Estável entre gerações" |
+| F9 | contradição interna | 4.2 e 4.9 | 4.2: os registradores não são salvos na troca. 4.9: a preempção salva o estado | Valem em níveis diferentes: entre warps nada é salvo; entre programas o contexto vai para a memória (P100, p. 30) | Separar os dois níveis |
+| F10 | sem fonte | 4.8, 4.9, 4.10 | cada programa tem "o seu próprio espaço de endereços"; os SMs "não funcionam assim" quanto a interrupções; interrupção "quando termina um trabalho"; blocos "distribuídos entre os SMs que têm espaço livre" | Nenhuma das fontes abertas diz isso com essas palavras. São leituras razoáveis, mas são do grupo | Tratar como análise do grupo, com linguagem de probabilidade |
+| F11 | termo | Tabela 2 | "Frequência máxima" | A Tab. 4 chama de "GPU Boost Clock" | Usar o nome da fonte |
 
-## 4. O que falta em relação ao enunciado e ao nível que queremos
+Observações menores: a Tabela 1 usa 960 GB/s para a RTX 6000 Ada, que é o valor da Tab. 4 do whitepaper (a Tab. 1 do mesmo documento dá 1.008); na memória unificada o P100 descreve migração **ou** mapeamento pelo barramento; os superlativos e os dados de concorrentes vêm de fontes secundárias que não conferimos.
 
-| Item | Situação no artigo | O que o seminário acrescenta |
+## 4. O que o seminário acrescenta
+
+| Item | No artigo | No seminário |
 |---|---|---|
-| Níveis de confiança | ausentes (não eram promessa da proposta entregue) | selo em todo beat |
-| Mecanismo de cache | só tamanhos | latências medidas na RTX 5080 (`derived`): L1 de 30 a 40 ciclos, L2 perto de 358, memória global perto de 877; L1 e memória compartilhada no mesmo bloco de 128 KB |
-| Pipeline | "não divulgado" | 4 partições, 4 ciclos em INT32 e FP32, estágios citados por Huerta et al. (`derived`) |
-| MMU | 49 bits (Pascal) | 57 bits, 6 níveis, 4 tamanhos de página, pelo driver aberto |
-| Interrupções | "manda uma interrupção pelo PCIe" | o caminho no driver: MSI ou MSI-X, metade de cima (`nvidia_isr`), metade de baixo em thread do kernel; falha de página gravada em buffer, tratada em lote e reexecutada |
-| Instruções de Tensor Core | ausentes | `HMMA` e `QMMA` compilados em `harness/examples/mma/` |
-| Comparação GPU contra CPU item a item | só na conclusão | tabela-síntese no fechamento |
-| Código aberto do driver (a proposta entregue lista entre o que seria usado) | não citado; o artigo usa o README do GSP e o documento da Pascal | MMU e interrupções pelo código do driver |
-| Tamanho do conjunto de instruções | ausente | cerca de 257 mnemônicos em 13 categorias (a reconferir) |
+| MMU | 49 bits (Pascal) | 57 bits, 6 níveis, 4 KB a 512 MB, pelo driver oficial |
+| Interrupções | "manda uma interrupção pelo PCIe" | o caminho no driver: MSI-X, MSI ou linha legada; duas metades; falha de página gravada em buffer, com o canal parado até o driver resolver |
+| Mecanismo de cache | só tamanhos | latências medidas na RTX 5080 (`derived`); L1 e memória compartilhada no mesmo bloco de 128 KB |
+| Pipeline | "não divulgado" | os quatro blocos da Fig. 5 (`confirmed`); 4 ciclos em INT32 e FP32 (`derived`) |
+| Registradores | 65.536 por SM | 4 bancos de 16.384 (Fig. 5); 4 × 16.384 = 65.536 |
+| Conjunto de instruções | o exemplo | 258 mnemônicos em 13 categorias; instruções de Tensor Core compiladas (`harness/examples/mma/`) |
+| Código aberto do driver | não citado (a proposta entregue lista entre o que seria usado) | base de MMU e interrupções |
+| O que é desta placa e o que é de outra geração | não separado | selo de procedência em todo beat |
 
 ## 5. Observações de forma
 
-- O artigo e a proposta entregue têm cinco integrantes. O resumo do enunciado guardado em `vault/01-Briefing/Requisitos da disciplina.md` fala em grupo de até quatro: a nota do vault provavelmente está errada, ou o professor autorizou.
-- A seção 4.11 atribui o tour 3D ao integrante que a proposta entregue indica como responsável por ele. É coerente com a proposta.
-- A proposta entregue em 26/10 foi arquivada em 2026-11-09 (`vault/01-Briefing/Proposta formal.md`, com o PDF). O artigo cumpre os itens que ela lista.
-- Referências ausentes para conteúdo usado: CUDA Binary Utilities (lista de instruções SASS) e Jia et al. (bits de controle na Volta).
+- A proposta entregue e o artigo têm cinco integrantes; a nota do enunciado no vault diz até quatro.
+- A seção 4.11 atribui o tour 3D ao integrante que a proposta indica como responsável por ele.
+- Referências ausentes para conteúdo usado: CUDA Binary Utilities (lista de instruções SASS) e o código do driver (GSP).
 
-## 6. O que não foi verificado
+## 6. Erros da primeira versão desta revisão
 
-- Dados de concorrentes da Tabela 1 e da seção 3 (AMD, Intel, Apple) e as datas das gerações.
-- Lindholm et al. (2008) e Hennessy e Patterson (2019), citados para SIMT: não abertos.
-- A lista exata de tamanhos de página da HAL Hopper (`page_sizes`). Os quatro tamanhos acima saem da função de profundidade da tabela.
-- Que o GB202 é tratado pelo driver como "GB20x": é pelo nome da família, não por uma linha do código que cite o GB202.
-- As seções do whitepaper, do P100, de Huerta et al. e do guia CUDA foram lidas por outro agente, parte por resumo automático. Auditoria formal pendente.
+Registrado para não repetir. A primeira versão marcava como erro ou "acima da fonte" quatro afirmações do artigo que têm fonte oficial. A causa foi a mesma nas quatro: a coleta não tinha aberto a página certa, e a revisão tratou "não achei" como "não existe".
+
+| Item retirado | O que a primeira versão dizia | O que a fonte diz |
+|---|---|---|
+| Quatro escalonadores (antigo E7) | "derivado de outras GPUs; o whitepaper não escreve quatro" | Fig. 5, p. 10, mostra os quatro. A página não tinha sido lida |
+| Divergência (antigo E8, primeira metade) | "a frase não aparece no guia" | guia CUDA 13.5, 3.2.2.1. Só a seção 1.2.2.2 tinha sido aberta |
+| JIT pelo driver (antigo E9, primeira metade) | "acima da fonte" | guia CUDA C++ 12.9.1, 6.1.1.2 |
+| GSP RISC-V (antigo E4) | "RISC-V só está documentado para o AMP" | o código do driver trata o núcleo do GSP como RISC-V. Só a referência do artigo está errada |
+
+Também foram rebaixados: a acusação sobre os tamanhos de página (os três tamanhos do artigo continuam valendo) e a gravidade do item RISC ou CISC (de "erro" para "generalização").
+
+## 7. O que não foi verificado
+
+- Dados de concorrentes da Tabela 1 e da seção 3, e as datas das gerações.
+- Lindholm et al. (2008), Hennessy e Patterson (2019) e Stallings (2017): não abertos.
+- O documento "Pascal MMU Format Changes": lido por outro agente, não reaberto.
+- Jarmusch et al. além do resumo: o artigo diz que a unificação "ajuda principalmente programas que misturam os dois tipos de conta", e o resumo não diz isso.
+- Tabela 4 do artigo, "modos de endereçamento: poucos": apoiada em um exemplo.

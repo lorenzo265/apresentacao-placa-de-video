@@ -326,3 +326,21 @@ Ressalvas: (1) nenhuma linha lida cita o GB202 pelo nome; ele entra em "GB20x" p
 
 Conta nossa (`derived`): 48 warps × 32 threads = 1.536 threads por SM; × 188 SMs = 288.768 threads residentes na placa.
 
+## Conferência direta, segunda rodada (sessão principal, 2026-11-09, depois da auditoria)
+
+A auditoria (`harness/qa/fact-check-segunda-leva.md`) apontou trechos que precisavam de busca literal. Todos conferidos com `grep` nos arquivos baixados ou vendo a página. **Onde este bloco contradiz a tabela A1 a A10 acima, vale este bloco.**
+
+| Dado | Trecho literal | Onde |
+|---|---|---|
+| O GB202 pertence à família GB20x | "/* valid ARCHITECTURE_GB20x implementation values */" seguido de `NV2080_CTRL_MC_ARCH_INFO_IMPLEMENTATION_GB202 (0x00000002)`, junto de GB200, GB203, GB205, GB206, GB207 e GB20B | `src/common/sdk/nvidia/inc/ctrl/ctrl2080/ctrl2080mc.h` |
+| Tamanhos de página (lacuna fechada) | `static NvU64 page_sizes_ampere(void) { return UVM_PAGE_SIZE_512M \| UVM_PAGE_SIZE_2M \| UVM_PAGE_SIZE_64K \| UVM_PAGE_SIZE_4K; }`; a HAL da Hopper começa copiando a da Ampere (`hopper_mmu_mode_hal = *ampere_mmu_mode_hal;`) e não troca `page_sizes` | `uvm_ampere_mmu.c`, `uvm_hopper_mmu.c` |
+| Bits de índice por nível | `static const NvU32 bit_widths[] = {1, 9, 9, 9, 8};` | `uvm_hopper_mmu.c`, `index_bits_hopper` |
+| GSP é RISC-V (corrige A7) | "prepares RISCV core to run GSP-RM"; `NV_PRINTF(LEVEL_ERROR, "RISC-V core is not enabled.\n");` | `src/nvidia/src/kernel/gpu/gsp/arch/turing/kernel_gsp_tu102.c` (família Turing; para o GB202 é `derived`) |
+| Falhas não reproduzíveis | "Non-replayable faults originated in other engines are considered fatal, and"; "replayable faults block preemption of the channel until" | `uvm_gpu_non_replayable_faults.c`, comentário do topo |
+| Recuo de MSI | "falling back to PCIe virtual-wire interrupts." | `nv-msi.c` |
+| Quatro escalonadores por SM (corrige A9) | Fig. 5, p. 10: quatro blocos, cada um com "L0 i-Cache + Warp Scheduler + Dispatch (32 thread/clk)" e "Register File (16,384 x 32-bit)", núcleos "FP32 / INT32", "5TH GENERATION TENSOR CORE", quatro "LD/ST" e "SFU"; embaixo "128 KB L1 Data Cache / Shared Memory", quatro "Tex" e "4TH GENERATION RT CORE" | whitepaper RTX PRO Blackwell v1.1, página renderizada e vista |
+| Divergência (corrige A9) | "If threads of a warp diverge via a data-dependent conditional branch, the warp executes each branch path taken, disabling threads that are not on that path." | guia CUDA 13.5, 3.2.2.1 |
+| JIT pelo driver (corrige A6) | "Any PTX code loaded by an application at runtime is compiled further to binary code by the device driver. This is called just-in-time compilation." | guia CUDA C++ 12.9.1, 6.1.1.2 |
+
+Contas (`derived`): 4 × 16.384 = 65.536 registradores por SM; índices de 1 + 9 + 9 + 9 + 8 bits, mais 9 (4 KB) ou 5 (64 KB) no último nível; 4 KB: 45 + 12; 64 KB: 41 + 16; 2 MB: 36 + 21; 512 MB: 28 + 29; sempre 57.
+

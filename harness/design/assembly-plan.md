@@ -36,6 +36,8 @@ O catálogo `spec/references/index.md` olhou as 75 imagens do teardown (38 mostr
 
 Continuam sem foto: a frente do PCB sem os pads (as outras 16 posições de memória), a placa das saídas de vídeo, o interior do cooler e qualquer vista ortogonal oficial.
 
+As procedências "confirmed (foto)" desta versão são leitura de foto por um agente, reconferida em quatro imagens pela sessão principal. Até a passada do `visual-qa`, valem como `derived` sempre que a identificação depender só da imagem (forma, disposição, contagem). O que também está no texto do teardown continua `confirmed`.
+
 ## 2. Árvore de peças
 
 Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** é a procedência que a geometria terá. "A derivar de fotos" é intenção: as fotos ainda não foram catalogadas nem vistas por ninguém (seção 6.1). **Fid.** é o nível de fidelidade (seção 4). "5090 FE" quer dizer derivado da GeForce RTX 5090 Founders Edition, que usa o mesmo chip e, segundo a Puget Systems, uma carcaça "quase idêntica".
@@ -118,12 +120,12 @@ O estágio E8 é didático. O vídeo diz isso na tela.
 | Conta | Resultado | Estado |
 |---|---|---|
 | Memória: 32 posições × 3 GB = 96 GB | fecha, **se** as 32 posições estiverem ocupadas | 32 posições e 96 GB `confirmed`. "32 chips" e "3 GB por chip" são `derived` (a própria Gamers Nexus faz a dedução, sem ler a marcação). As fontes não excluem 24 chips de 4 GB |
-| Barramento: 16 controladores × 32 bits = 512 bits; 32 chips ÷ 16 controladores = 2 chips por controlador | fecha como média, com a mesma condição. A norma torna o arranjo possível: o comunicado da JEDEC sobre o GDDR7 cita um "modo de 2 canais para dobrar a capacidade", e existe chip de 24 Gbit (3 GB) | 512 bits e 16 controladores `confirmed`. A razão 2:1 é `derived` condicional. **Como** dois chips dividem um controlador (16 bits cada, um por face) é `inferred`: nenhuma fonte descreve, e a 5090 FE usa um chip por controlador. Vai para a proposta de engenharia |
+| Barramento: 16 controladores × 32 bits = 512 bits; 32 chips ÷ 16 controladores = 2 chips por controlador | fecha como média, com a mesma condição. O comunicado da JEDEC sobre o GDDR7 cita "support for 2-Channel mode to double system capacity", e existe chip de 24 Gbit (3 GB). Ligar esse modo a "dois chips por controlador de 32 bits" é leitura nossa: o comunicado não diz, e a norma em si não foi aberta | 512 bits e 16 controladores `confirmed`. A razão 2:1 é `derived` condicional. **Como** dois chips dividem um controlador (16 bits cada, um por face) é `inferred`: nenhuma fonte descreve, e a 5090 FE usa um chip por controlador. Vai para a proposta de engenharia |
 | Banda: 28 Gbps × 512 ÷ 8 = 1.792 GB/s | fecha | `confirmed` (whitepaper e datasheet) |
 | Envelope: 5,4" × 12,0" = 137,2 × 304,8 mm | conversão | polegadas `confirmed`, milímetros `derived` |
 | Espessura em mm de "dois slots" | fecha em parte | passo entre slots de 20,32 mm; placa de dois slots pode ter componentes até 34,80 mm de altura sobre o PCB (CEM 3.0; conferir na 5.x). A espessura real da carcaça continua sem fonte: a 5090 FE tem 42 mm segundo a Puget |
-| Altura: 5,4" contra a norma | declarada | a altura padrão de uma placa é 111,15 mm; esta tem 137,16 mm, cerca de 26 mm a mais. O datasheet chama isso de "extended height"; o termo não aparece nas páginas lidas da norma |
-| Energia: 600 W de potência total | fecha | conector de 16 pinos: até 600 W, 12 pinos de potência (6 de +12 V, 6 de retorno) e 4 de sinal; 600 ÷ 12 = 50 A nominais, e a norma tabela 55 A para 600 W (guia Intel ATX12VO 2.11, que cita a CEM 5.1). Por pino: 8,3 A nominais contra 9,5 A do contato (Molex). O slot fornece até 75 W (CEM 3.0). **Como a placa reparte a carga entre slot e conector é lacuna.** Rodada de normas não auditada |
+| Altura: 5,4" contra a norma | declarada | a altura padrão de uma placa é 111,15 mm; esta tem 137,16 mm, cerca de 26 mm a mais (supondo a mesma referência de medida da norma, e adotando 111,15 entre os três valores que a cópia da norma traz). O datasheet chama isso de "extended height"; o termo não aparece nas páginas lidas da norma |
+| Energia: 600 W de potência total | fecha | conector de 16 pinos: até 600 W, 12 pinos de potência (6 de +12 V, 6 de retorno) e 4 de sinal; 600 ÷ 12 = 50 A nominais; o guia Intel ATX12VO 2.11, que reproduz a CEM 5.1, tabela 55 A para 600 W (não reaberto pela auditoria). Por pino, a folga depende da conta: 8,3 A (50 A em 6 pinos) contra 9,5 A do contato da Molex dá 14%; 9,17 A (55 A em 6 pinos) dá 3,6%. As duas contas supõem três coisas sem fonte: que o conector da placa tem a especificação do da Molex, que os 600 W passam todos pelo conector e que a corrente se divide igualmente. O slot fornece até 75 W (CEM 3.0). **Como a placa reparte a carga entre slot e conector é lacuna** |
 | Térmica: área de aletas e vazão para 600 W | **não fechada** | depende da proposta do interior do cooler |
 
 ## 6. Como medir sem ter a placa na mão

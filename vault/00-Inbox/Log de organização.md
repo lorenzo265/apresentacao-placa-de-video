@@ -49,3 +49,8 @@
 - O rascunho longo de 19/10 foi movido para `_arquivo/Proposta formal - rascunho de 2026-10-19.md`, sem apagar nada. Os links `[[Proposta formal]]` continuam valendo e agora apontam para a versão entregue.
 - A divisão da fala do seminário passou a seguir a definição de tarefas da proposta.
 
+## 2026-11-09 (auditoria da segunda leva)
+- O `fact-checker` não aprovou na primeira passada: 7 achados que bloqueavam, 13 ajustes e 9 notas. Relatório em `harness/qa/fact-check-segunda-leva.md`.
+- O principal: a revisão do artigo acusava quatro afirmações que têm fonte oficial (quatro escalonadores por SM, divergência, compilação do PTX pelo driver, GSP em RISC-V). Revisão reescrita.
+- Notas do roteiro corrigidas: `06` e `07` (Fig. 5 do whitepaper: quatro blocos por SM, quatro bancos de 16.384 registradores), `08` (evidências e frase do seminário), `10` (conta dos bits por tamanho de página, GB202 listado na família GB20x), `11` (interrupção legada, falhas de página, GSP, e a leitura sobre os SMs marcada como análise do grupo).
+

@@ -89,14 +89,14 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a0.2 | 01 | giro lento da placa montada | RTX PRO 6000 Blackwell Workstation Edition | confirmed | datasheet | 1 |
 | a0.3 | 01 | ficha entra linha a linha | 96 GB GDDR7 com ECC, 600 W, 24.064 núcleos CUDA, PCIe 5.0 x16 | confirmed | datasheet, p. 3 | 1 |
 | a0.4 | 01 | mapa do tour | cinco níveis, três caminhos, quatro selos | não se aplica | | 1 |
-| a1.1 | 01 | face A: dois ventiladores de 7 pás e o X central | dois ventiladores na mesma face | confirmed (dois, na face A, pás contadas em foto); derived (axiais) | GN, foto gn-02; datasheet | 1 |
+| a1.1 | 01 | face A: dois ventiladores de 7 pás e o X central | dois ventiladores na mesma face | confirmed (dois, na frente, texto da GN); derived (7 pás contadas em foto, faixa de 7 a 8; axiais) | GN, foto gn-02; datasheet | 1 |
 | a1.2 | 01 | réguas no comprimento e na altura | 5,4" × 12,0" (137,2 × 304,8 mm), dois slots | confirmed (polegadas), derived (mm) | datasheet, p. 3 | 2 |
 | a1.3 | 01 | a placa gira para a face B (duas grades e o X com "RTX PRO 6000"); o ar entra pela face A e sai pela face B nas duas pontas | "double-flow-through": o ar atravessa a placa em vez de bater no PCB | confirmed (atravessa a placa; grades na face B); derived (sentido da face A para a B) | datasheet, p. 1 e 3; GN ("pushes air straight through the card rather than into a PCB"), fotos gn-03 e gn-08 | 1 |
-| a1.4 | 01 | topo, conector de energia: 12 pinos de potência e 4 de sinal | um conector de 16 pinos (PCIe CEM5); a placa inteira consome até 600 W, ou 50 A em 12 V | confirmed (tipo; 600 W de potência total da placa); derived (posição no topo, JPR) | datasheet, p. 3; JPR | 1 |
+| a1.4 | 01 | topo, conector de energia: 12 pinos de potência e 4 de sinal | um conector de 16 pinos (PCIe CEM5); a placa inteira consome até 600 W, cerca de 50 A se tudo viesse em 12 V (conta nossa) | confirmed (tipo; 600 W de potência total da placa); derived (posição no topo, JPR) | datasheet, p. 3; JPR | 1 |
 | a1.5 | 01 | bracket de chapa lisa com 4 portas em fileira | 4 DisplayPort 2.1b | confirmed | datasheet, p. 3; foto gn-16 | 2 |
 | a1.6 | 01 | placa ao lado do contorno da 5090 FE | carcaça quase idêntica, segundo a Puget; outro propósito: 96 GB com ECC | derived | Puget Systems | 3 |
-| a2.1 | 02 | E1: sai o bracket | a desmontagem segue a ordem de um teardown real | confirmed | GN, fotos gn-14 a gn-16 | 1 |
-| a2.2 | 02 | E2: um parafuso, sai o aro da face B | | confirmed | GN, foto gn-17 | 1 |
+| a2.1 | 02 | E1: sai o bracket | a desmontagem segue a ordem de um teardown real | confirmed (ordem); derived (a peça é o bracket: o texto diz "back plate", a identificação vem das fotos) | GN, fotos gn-14 a gn-16 | 1 |
+| a2.2 | 02 | E2: um parafuso, sai o aro da face B | | confirmed (ordem); derived (forma do aro, por foto) | GN, foto gn-17 | 1 |
 | a2.3 | 02 | E3: parafusos e tampas centrais | | confirmed | GN | 2 |
 | a2.4 | 02 | E4: grampo e adaptador PCIe | o conector PCIe é uma peça separada | confirmed | GN | 1 |
 | a2.5 | 02 | E5: placa que cobre o PCB | | confirmed (existe); função é lacuna | GN | 2 |
@@ -106,13 +106,13 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a2.9 | 02 | caminho da energia em âmbar: conector, indutores, die | 600 W de potência total da placa; não achamos fonte com o número de fases | confirmed (conector, 600 W totais), **inferred** (fases, a propor na F2) | datasheet; lacuna | 1 |
 | a2.10 | 02 | caminho dos dados em ciano: contatos PCIe, adaptador, cabo flat, GPU, memória, saídas | o trajeto pelos cabos é o da placa irmã | confirmed (as peças existem), derived (o que os cabos ligam e as três placas, 5090 FE) | GN; NVIDIA (5090 FE) | 1 |
 | a2.11 | 02 | E8 e caminho do calor em vermelho: die, pasta, câmara de vapor, aletas, ar | não achamos fonte que mostre o interior do cooler desta placa | confirmed (pasta, aletas), derived (câmara de vapor), inferred (E8: ordem e interior) | GN; 5090 FE | 1 |
-| a2.12 | 02 | close no package | GB202-870-A1 | confirmed (lido na foto) | GN, fotos gn-35 e gn-42 | 2 |
-| a3.1 | 03 | verso do PCB: 16 chips em U em volta do chip (5, 5, 4 e 2) | 16 chips GDDR7 no verso | confirmed | GN, foto gn-29 | 1 |
+| a2.12 | 02 | close no package | GB202-870-A1 | confirmed (texto da GN: "GB 202-870-A1"); na foto a marcação é legível só em parte | GN, foto gn-42 | 2 |
+| a3.1 | 03 | verso do PCB: 16 chips em U em volta do chip (5, 5, 4 e 2) | 16 chips GDDR7 no verso | confirmed (16 no verso, texto da GN); derived (disposição 5, 5, 4 e 2, de foto oblíqua) | GN, foto gn-29 | 1 |
 | a3.2 | 03 | contador sobre as 32 posições | 32 posições; se todas ocupadas, 32 × 3 GB = 96 GB | confirmed (32 posições, 96 GB), derived (32 chips de 3 GB, dedução da GN) | GN; datasheet | 1 |
 | a3.3 | 03 | linhas ciano dos chips até os 16 controladores | 16 controladores × 32 bits = 512 bits; em média dois chips por controlador, e como eles dividem o controlador é proposta | confirmed (512, 16), derived (razão 2:1, se as 32 posições estiverem ocupadas), **inferred** (arranjo em pares, selo "provável") | whitepaper, p. 8 (só 16 × 32); GN (32 posições) | 1 |
 | a3.4 | 03 | sinal de três níveis | 28 Gbps × 512 ÷ 8 = 1.792 GB/s; PAM3 | confirmed | whitepaper, Tab. 4 e p. 12 | 2 |
 | a3.5 | 03 | um bit trocado sendo corrigido | ECC de correção simples, sempre ligado | confirmed | whitepaper, p. 13 | 2 |
-| a3.6 | 03 | barra do PCIe ao lado da barra da memória | por que os dados moram na placa: a memória local é cerca de 28 vezes mais larga que o PCIe 5.0 x16 (1.792 contra cerca de 63 GB/s) | confirmed (32 GT/s por pista, PCI-SIG); derived (63 GB/s é conta, e a codificação 128b/130b só tem fonte secundária) | `standards-sources.md`, não auditado | 2 |
+| a3.6 | 03 | barra do PCIe ao lado da barra da memória | por que os dados moram na placa: a memória local é cerca de 28 vezes mais larga que o PCIe 5.0 x16 (1.792 contra no máximo 63 GB/s por direção) | confirmed (32 GT/s por pista, PCI-SIG); derived (63 GB/s é conta, e a codificação 128b/130b só tem fonte secundária) | `standards-sources.md`, não auditado | 2 |
 | a3.7 | 03 | saídas de vídeo | DisplayPort 2.1b, até 80 Gbps | confirmed | whitepaper, p. 30 | 3 |
 
 ### Transição T1 e ato 4: o chip (seções 04 e 05)
@@ -126,7 +126,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a4.4 | 04 | L2 no centro, 16 controladores na borda, linhas ciano até os chips de memória | L2 de 128 MB; 16 controladores × 32 bits = 512 bits | confirmed (tamanhos), illustrative (posição) | whitepaper, p. 8 e 9 | 1 |
 | a4.5 | 04 | blocos fora dos GPCs: AMP, vídeo, PCIe | o AMP é um processador RISC-V que escalona contextos | confirmed (existência), illustrative (posição) | whitepaper, p. 25 | 2 |
 | a5.1 | 05 | grade de threads vira blocos, blocos viram warps de 32 | grid, bloco, warp; `WARP_SZ` = 32 | confirmed | PTX ISA, 4.5.1 | 1 |
-| a5.2 | 05 | um warp recebe uma instrução, 32 threads executam juntas | SIMT: uma instrução, 32 threads, cada uma com seus registradores; até 48 warps por SM | confirmed (48 warps, Tuning Guide); SIMT pelo guia CUDA, lido por resumo, a auditar | Blackwell Tuning Guide 13.5, 1.4.1.1; guia CUDA | 1 |
+| a5.2 | 05 | um warp recebe uma instrução, 32 threads executam juntas | SIMT: uma instrução, 32 threads, cada uma com seu contador de instrução e seus registradores; até 48 warps por SM | confirmed | Blackwell Tuning Guide 13.5, 1.4.1.1; guia CUDA 13.5, 3.2.2.1 | 1 |
 | a5.3 | 05 | blocos sendo distribuídos pelos 188 SMs | como um bloco é atribuído a um SM | **bloqueado** | guia CUDA (a ler) | 3 |
 
 ### Transição T2 e ato 5: dentro do SM (seções 06 a 09 e 12)
@@ -134,31 +134,31 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
 | t2.1 | 06 | zoom de um SM entre os 188 | "Um dos 188" | illustrative | regra do harness | 1 |
-| a5.4 | 06 | unidades do SM em blocos | 128 núcleos CUDA FP32, 4 Tensor Cores, 1 RT Core, 4 unidades de textura, 2 núcleos FP64 | confirmed | whitepaper, p. 8 e 9 | 1 |
-| a5.5 | 06 | SM dividido em 4 partições | 4 partições, INT32 e FP32 unificadas; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | derived (GB203, RTX 5080) | Jarmusch et al., IV e Tab. III | 1 |
-| a5.6 | 07 | banco de registradores como grade | 256 KB por SM; 256 KB ÷ 4 B = 65.536 registradores de 32 bits | confirmed (256 KB), derived (conta) | whitepaper, p. 9 | 1 |
+| a5.4 | 06 | o SM redesenhado a partir da Fig. 5 do whitepaper: quatro blocos e as unidades comuns | 128 núcleos CUDA, 4 Tensor Cores, 1 RT Core, 4 unidades de textura, 2 núcleos FP64 | confirmed | whitepaper, p. 8 e 9 e Fig. 5, p. 10 | 1 |
+| a5.5 | 06 | cada bloco acende: escalonador de warp, banco de registradores, núcleos, Tensor Core | 4 blocos, cada um com escalonador de warp e despacho de 32 threads por ciclo; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | confirmed (4 blocos, escalonador, 32 threads por ciclo); derived (latências, GB203) | whitepaper, Fig. 5, p. 10; Jarmusch et al., Tab. III | 1 |
+| a5.6 | 07 | quatro bancos de registradores, um por bloco | 4 × 16.384 = 65.536 registradores de 32 bits, 256 KB por SM | confirmed | whitepaper, p. 9 e Fig. 5; Tuning Guide 13.5 | 1 |
 | a5.7 | 07 | listagem SASS real com `R`, `UR`, `P` e `SR` coloridos | famílias de registradores; SAXPY usa 10 por thread, 0 de spill | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
 | a5.8 | 07 | uma thread pedindo registradores até o teto | até 255 registradores por thread; 64K por SM | confirmed | Blackwell Tuning Guide 13.5, 1.4.1.1 | 2 |
 | a5.9 | 08 | código CUDA, PTX e SASS lado a lado, linhas ligando instruções (a mesma listagem da Figura 4 do artigo) | 20 instruções PTX viram 19 úteis em SASS | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
 | a5.10 | 08 | uma instrução vira uma palavra de 128 bits; campos aparecem | 16 bytes fixos; opcode, operandos, predicado e controle | confirmed (largura), derived da Volta (campos) | Binary Utilities, ap. 7.1; Jia et al., cap. 2 | 1 |
 | a5.11 | 08 | `HMMA.16816.F32` dispara uma grade de multiplicações | uma instrução, 2.048 multiplicações-acumulações | confirmed (a instrução gerada), derived (2.048 é conta nossa) | `harness/examples/mma/` | 2 |
-| a5.12 | 08 | tabela de critérios preenchendo linha a linha; ao lado, `LDGSTS`, `UBLKCP` e `HMMA` com a descrição oficial | RISC no formato, com instruções de acelerador: a resposta tem ressalvas | inferred (análise do grupo sobre fatos `confirmed`) | seção 08; Binary Utilities 13.5; aguarda aprovação humana | 1 |
+| a5.12 | 08 | tabela de critérios preenchendo linha a linha; ao lado, `LDGSTS`, `TEX` e `HMMA` com a descrição oficial; selo "análise do grupo" na tela | RISC no formato, com instruções próprias de acelerador | inferred (análise do grupo sobre fatos `confirmed`) | seção 08; Binary Utilities 13.5; aguarda aprovação humana | 1 |
 | a5.13 | 09 | escada de memória com tamanho e latência por degrau | registradores, L1 de 128 KB, L2 de 128 MB, GDDR7 de 96 GB | confirmed (tamanhos), derived (latências da GB203) | whitepaper, Tab. 4; Jarmusch et al., VI | 1 |
 | a5.14 | 09 | L1 dividida entre cache e memória compartilhada | divisão configurável | confirmed (existe), **bloqueado** (como) | guia CUDA (a ler) | 3 |
 | a5.15 | 12 | SM enchendo de warps até o teto de 48 | 48 warps × 32 threads = 1.536 threads por SM; 288.768 na placa | confirmed (48), derived (contas) | Blackwell Tuning Guide 13.5, 1.4.1.1 | 2 |
-| a5.16 | 12 | um warp de 32 threads; 4 ficam laranja e seguem outro caminho; a imagem vira o logotipo do grupo | divergência: as threads que não seguem o desvio ficam mascaradas | guia CUDA ("will be masked off"), lido por resumo, a auditar | guia CUDA, 1.2.2.2 | 1 |
+| a5.16 | 12 | um warp de 32 threads; 4 ficam laranja e seguem outro caminho; a imagem vira o logotipo do grupo | divergência: o warp executa cada caminho, com as threads do outro caminho desabilitadas | confirmed. Ressalva do guia: o hardware pode diferir | guia CUDA 13.5, 3.2.2.1 | 1 |
 
 ### Ato 6: a GPU no sistema (seções 10 e 11)
 
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
-| a6.1 | 10 | um endereço de 57 bits fatiado em 6 campos, descendo PDE4, PDE3, PDE2, PDE1, PDE0 e PTE até a GDDR7; páginas de 2 MB e 512 MB param antes | 57 bits, 6 níveis, páginas de 4 KB a 512 MB | confirmed (família GB20x, código oficial do driver); o GB202 entra pelo nome da família | driver aberto, `uvm_hal.c` e `uvm_hopper_mmu.c` | 1 |
-| a6.2 | 10 | a tradução falha; a falha vai para um buffer; a CPU resolve um lote e a GPU repete o acesso. Ao lado, a Pascal (49 bits, 5 níveis) para comparar | falha de página: grava, interrompe, resolve em lote, repete | confirmed (driver); derived (Pascal); TLB é lacuna declarada | driver aberto; documento da Pascal; Xid 31 | 1 |
+| a6.1 | 10 | um endereço de 57 bits fatiado em seis índices mais o deslocamento, descendo PDE4, PDE3, PDE2, PDE1, PDE0 e PTE até a GDDR7; páginas de 2 MB e 512 MB param antes | 57 bits, 6 níveis, páginas de 4 KB a 512 MB | confirmed, com o escopo "segundo o driver oficial" | driver aberto: `ctrl2080mc.h`, `uvm_hal.c`, `uvm_hopper_mmu.c`, `uvm_ampere_mmu.c` | 1 |
+| a6.2 | 10 | a tradução falha; a falha vai para um buffer e o canal fica parado; a CPU resolve um lote e a GPU repete o acesso. Ao lado, a Pascal (49 bits, 5 níveis) para comparar | falha de página: grava, para o canal, interrompe a CPU, resolve em lote, repete | confirmed (driver); derived (Pascal); TLB é lacuna declarada | driver aberto; documento da Pascal; Xid 31 | 1 |
 | a6.3 | 11 | CPU, PCIe, canal de comandos, GPU | como o trabalho chega | **bloqueado**: o driver cita canais e GPFIFO, falta ler | driver aberto (a ler) | 2 |
-| a6.4 | 11 | sinal MSI-X da GPU para a CPU; metade de cima, metade de baixo; ao lado, `trap` e os códigos Xid 13 e 31 | os SMs não têm interrupção como uma CPU: a GPU interrompe a CPU, o programa aborta com `trap`, ou é preemptado | confirmed (driver, PTX, Xid); derived (preempção, Pascal) | driver aberto, `nv.c`; PTX ISA 9.5, 9.7.21.4; catálogo de Xid | 1 |
+| a6.4 | 11 | sinal de interrupção da GPU para a CPU; metade de cima, metade de baixo; ao lado, `trap` e os códigos Xid 13 e 31 | três mecanismos documentados: a GPU interrompe a CPU, o programa aborta com `trap`, ou é preemptado. Não achamos rotina de interrupção executada pelo próprio SM | confirmed (os três mecanismos: driver, PTX, Xid); derived (preempção, Pascal); **inferred** (a leitura de que o SM não trata interrupções, selo "provável") | driver aberto, `nv.c` e `nv-msi.c`; PTX ISA 9.5, 9.7.21.4; catálogo de Xid | 1 |
 | a6.5 | 11 | AMP na frente do pipeline; chip dividido em 4 | AMP RISC-V escalona contextos; MIG com até 4 instâncias | confirmed | whitepaper, p. 25 e 44 | 1 |
 
-O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupções). Em 2026-11-09 as fontes foram levantadas (`harness/spec/sources/mmu-interrupts-sources.md`) e os pontos centrais conferidos por leitura direta do código do driver. Falta a auditoria formal do `fact-checker`. O beat a6.3 continua bloqueado e saiu do corte do seminário. Se a fonte não aparecer, cada beat bloqueado vira um beat de **lacuna declarada**: mostra o que se sabe, o que não é público e por quê. Isso atende o enunciado, mas precisa ser decidido, não acontecer por falta de tempo.
+O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupções). Em 2026-11-09 as fontes foram levantadas (`harness/spec/sources/mmu-interrupts-sources.md`) e os pontos centrais conferidos por leitura direta do código do driver. A auditoria (`harness/qa/fact-check-segunda-leva.md`) não aprovou na primeira passada; as correções estão aplicadas e falta a segunda. O beat a6.3 continua bloqueado e saiu do corte do seminário. Se a fonte não aparecer, cada beat bloqueado vira um beat de **lacuna declarada**: mostra o que se sabe, o que não é público e por quê. Isso atende o enunciado, mas precisa ser decidido, não acontecer por falta de tempo.
 
 ### Ato 7: fechamento (seções 13 e 14)
 
