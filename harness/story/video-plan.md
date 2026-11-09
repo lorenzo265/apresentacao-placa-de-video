@@ -19,7 +19,7 @@ Estado: **proposta para o gate humano da F6**. Nada aqui foi implementado. Compl
 
 | Corte | Para quê | Beats | Duração |
 |---|---|---|---|
-| `seminario` | apoio visual da fala ao vivo, em 16/11 | só prioridade 1 (43 beats) | **alvo de 17 min, teto de 20 min** (o seminário tem de 15 a 20 minutos) |
+| `seminario` | apoio visual da fala ao vivo, em 16/11 | só prioridade 1 (42 beats) | **alvo de 17 min, teto de 20 min** (o seminário tem de 15 a 20 minutos) |
 | `completo` | tour inteiro no viewer e vídeo de arquivo | todos (63 beats) | sem limite |
 | `teaser` | abertura do seminário, sem fala | lista fixa de 6 a 8 beats | 30 a 45 s |
 
@@ -27,7 +27,7 @@ Regra: existe **um** `storyboard.json`. Cada beat tem `priority` (1 essencial, 2
 
 ### 2.1 Orçamento de tempo do corte do seminário
 
-Duração informada pelo grupo em 2026-11-09: de 15 a 20 minutos, no máximo. O alvo é 17 minutos, para sobrar margem de fala e de troca de apresentador. São 43 beats de prioridade 1, em média 24 segundos cada.
+Duração informada pelo grupo em 2026-11-09: de 15 a 20 minutos, no máximo. O alvo é 17 minutos, para sobrar margem de fala e de troca de apresentador. São 42 beats de prioridade 1, em média 24 segundos cada.
 
 | Ato | Seções | Beats (prio 1) | Tempo | Acumulado |
 |---|---|---|---|---|
@@ -37,7 +37,7 @@ Duração informada pelo grupo em 2026-11-09: de 15 a 20 minutos, no máximo. O 
 | 3. Memória e barramentos | 03 | 3 | 1:10 | 5:10 |
 | T1 e 4. O chip e SIMT | 04, 05 | 6 | 2:00 | 7:10 |
 | T2 e 5. Dentro do SM | 06 a 09, 12 | 10 | 5:00 | 12:10 |
-| 6. A GPU no sistema | 10, 11 | 5 | 3:00 | 15:10 |
+| 6. A GPU no sistema | 10, 11 | 4 | 3:00 | 15:10 |
 | 7. Fechamento | 13, 14 | 4 | 1:50 | 17:00 |
 
 Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 12 minutos para os itens que o enunciado cobra. Se o ensaio passar de 18 minutos, o corte sai primeiro dos atos 1 e 2, nunca dos atos 5 e 6.
@@ -60,7 +60,7 @@ As 14 seções do roteiro v2 não mudam (a tabela de cobertura do enunciado cont
 | 4. O chip | 2 | 04, 05 | GPC, TPC, SM, L2, controladores, SIMT | confirmado (contagens), ilustrativo (forma) |
 | T2. Mergulho no SM | 2 para 3 | 06 | zoom em um SM | ilustrativo |
 | 5. Dentro do SM | 3 e 4 | 06 a 09, 12 | unidades, registradores, instruções, RISC ou CISC, caches, ocupação | confirmado, derivado, análise do grupo |
-| 6. A GPU no sistema | 4 | 10, 11 | MMU, CPU, interrupções, AMP, MIG | **bloqueado: sem fonte ainda** |
+| 6. A GPU no sistema | 4 | 10, 11 | MMU, CPU, interrupções, AMP, MIG | confirmado (driver aberto) e derivado (Pascal); auditoria pendente |
 | 7. Fechamento | 0 | 13, 14 | Ada contra Blackwell, GPU contra CPU, lacunas, remontagem, fontes | confirmado e derivado |
 
 ### 3.1 Os três caminhos como fio condutor
@@ -126,7 +126,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a4.4 | 04 | L2 no centro, 16 controladores na borda, linhas ciano até os chips de memória | L2 de 128 MB; 16 controladores × 32 bits = 512 bits | confirmed (tamanhos), illustrative (posição) | whitepaper, p. 8 e 9 | 1 |
 | a4.5 | 04 | blocos fora dos GPCs: AMP, vídeo, PCIe | o AMP é um processador RISC-V que escalona contextos | confirmed (existência), illustrative (posição) | whitepaper, p. 25 | 2 |
 | a5.1 | 05 | grade de threads vira blocos, blocos viram warps de 32 | grid, bloco, warp; `WARP_SZ` = 32 | confirmed | PTX ISA, 4.5.1 | 1 |
-| a5.2 | 05 | um warp recebe uma instrução, 32 threads executam juntas; SIMT contra SIMD | SIMT: uma instrução, muitas threads, cada uma com seus registradores | **bloqueado** | guia CUDA (a ler) | 1 |
+| a5.2 | 05 | um warp recebe uma instrução, 32 threads executam juntas | SIMT: uma instrução, 32 threads, cada uma com seus registradores; até 48 warps por SM | confirmed (48 warps, Tuning Guide); SIMT pelo guia CUDA, lido por resumo, a auditar | Blackwell Tuning Guide 13.5, 1.4.1.1; guia CUDA | 1 |
 | a5.3 | 05 | blocos sendo distribuídos pelos 188 SMs | como um bloco é atribuído a um SM | **bloqueado** | guia CUDA (a ler) | 3 |
 
 ### Transição T2 e ato 5: dentro do SM (seções 06 a 09 e 12)
@@ -138,27 +138,27 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a5.5 | 06 | SM dividido em 4 partições | 4 partições, INT32 e FP32 unificadas; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | derived (GB203, RTX 5080) | Jarmusch et al., IV e Tab. III | 1 |
 | a5.6 | 07 | banco de registradores como grade | 256 KB por SM; 256 KB ÷ 4 B = 65.536 registradores de 32 bits | confirmed (256 KB), derived (conta) | whitepaper, p. 9 | 1 |
 | a5.7 | 07 | listagem SASS real com `R`, `UR`, `P` e `SR` coloridos | famílias de registradores; SAXPY usa 10 por thread, 0 de spill | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
-| a5.8 | 07 | limite por thread | quantos registradores uma thread pode ter | **bloqueado** | guia CUDA (a ler) | 2 |
+| a5.8 | 07 | uma thread pedindo registradores até o teto | até 255 registradores por thread; 64K por SM | confirmed | Blackwell Tuning Guide 13.5, 1.4.1.1 | 2 |
 | a5.9 | 08 | código CUDA, PTX e SASS lado a lado, linhas ligando instruções (a mesma listagem da Figura 4 do artigo) | 20 instruções PTX viram 19 úteis em SASS | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
 | a5.10 | 08 | uma instrução vira uma palavra de 128 bits; campos aparecem | 16 bytes fixos; opcode, operandos, predicado e controle | confirmed (largura), derived da Volta (campos) | Binary Utilities, ap. 7.1; Jia et al., cap. 2 | 1 |
 | a5.11 | 08 | `HMMA.16816.F32` dispara uma grade de multiplicações | uma instrução, 2.048 multiplicações-acumulações | confirmed (a instrução gerada), derived (2.048 é conta nossa) | `harness/examples/mma/` | 2 |
 | a5.12 | 08 | tabela de critérios preenchendo linha a linha; ao lado, `LDGSTS`, `UBLKCP` e `HMMA` com a descrição oficial | RISC no formato, com instruções de acelerador: a resposta tem ressalvas | inferred (análise do grupo sobre fatos `confirmed`) | seção 08; Binary Utilities 13.5; aguarda aprovação humana | 1 |
 | a5.13 | 09 | escada de memória com tamanho e latência por degrau | registradores, L1 de 128 KB, L2 de 128 MB, GDDR7 de 96 GB | confirmed (tamanhos), derived (latências da GB203) | whitepaper, Tab. 4; Jarmusch et al., VI | 1 |
 | a5.14 | 09 | L1 dividida entre cache e memória compartilhada | divisão configurável | confirmed (existe), **bloqueado** (como) | guia CUDA (a ler) | 3 |
-| a5.15 | 12 | SM enchendo de warps até faltar registrador | 10 registradores × 32 threads = 320 por warp | derived (conta teórica) | seção 12 | 2 |
-| a5.16 | 12 | um warp de 32 threads; 4 ficam laranja e seguem outro caminho; a imagem vira o logotipo do grupo | divergência: enquanto 4 threads executam o seu caminho, 28 esperam | **bloqueado** até registrar a fonte (o artigo cita Lindholm et al., 2008, e Hennessy e Patterson) | a registrar | 1 |
+| a5.15 | 12 | SM enchendo de warps até o teto de 48 | 48 warps × 32 threads = 1.536 threads por SM; 288.768 na placa | confirmed (48), derived (contas) | Blackwell Tuning Guide 13.5, 1.4.1.1 | 2 |
+| a5.16 | 12 | um warp de 32 threads; 4 ficam laranja e seguem outro caminho; a imagem vira o logotipo do grupo | divergência: as threads que não seguem o desvio ficam mascaradas | guia CUDA ("will be masked off"), lido por resumo, a auditar | guia CUDA, 1.2.2.2 | 1 |
 
 ### Ato 6: a GPU no sistema (seções 10 e 11)
 
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
-| a6.1 | 10 | endereço virtual atravessando tabelas até a GDDR7 | tradução de endereço na GPU | **bloqueado** | driver aberto (a ler) | 1 |
-| a6.2 | 10 | falha de página e memória unificada | o que acontece quando a página não está na GPU | **bloqueado** | driver aberto e guia CUDA (a ler) | 1 |
-| a6.3 | 11 | CPU, PCIe, fila de comandos, GPU | como o trabalho chega | **bloqueado** | driver aberto (a ler) | 1 |
-| a6.4 | 11 | sinal voltando da GPU para a CPU | interrupção: como a GPU avisa | **bloqueado** | driver aberto (a ler) | 1 |
+| a6.1 | 10 | um endereço de 57 bits fatiado em 6 campos, descendo PDE4, PDE3, PDE2, PDE1, PDE0 e PTE até a GDDR7; páginas de 2 MB e 512 MB param antes | 57 bits, 6 níveis, páginas de 4 KB a 512 MB | confirmed (família GB20x, código oficial do driver); o GB202 entra pelo nome da família | driver aberto, `uvm_hal.c` e `uvm_hopper_mmu.c` | 1 |
+| a6.2 | 10 | a tradução falha; a falha vai para um buffer; a CPU resolve um lote e a GPU repete o acesso. Ao lado, a Pascal (49 bits, 5 níveis) para comparar | falha de página: grava, interrompe, resolve em lote, repete | confirmed (driver); derived (Pascal); TLB é lacuna declarada | driver aberto; documento da Pascal; Xid 31 | 1 |
+| a6.3 | 11 | CPU, PCIe, canal de comandos, GPU | como o trabalho chega | **bloqueado**: o driver cita canais e GPFIFO, falta ler | driver aberto (a ler) | 2 |
+| a6.4 | 11 | sinal MSI-X da GPU para a CPU; metade de cima, metade de baixo; ao lado, `trap` e os códigos Xid 13 e 31 | os SMs não têm interrupção como uma CPU: a GPU interrompe a CPU, o programa aborta com `trap`, ou é preemptado | confirmed (driver, PTX, Xid); derived (preempção, Pascal) | driver aberto, `nv.c`; PTX ISA 9.5, 9.7.21.4; catálogo de Xid | 1 |
 | a6.5 | 11 | AMP na frente do pipeline; chip dividido em 4 | AMP RISC-V escalona contextos; MIG com até 4 instâncias | confirmed | whitepaper, p. 25 e 44 | 1 |
 
-O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupções) e é o único ato sem nenhuma fonte lida. A auditoria apontou que esses dois itens hoje só têm beats bloqueados: enquanto isso durar, a cobertura do enunciado não fecha. Se a fonte não aparecer, cada beat bloqueado vira um beat de **lacuna declarada**: mostra o que se sabe, o que não é público e por quê. Isso atende o enunciado, mas precisa ser decidido, não acontecer por falta de tempo.
+O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupções). Em 2026-11-09 as fontes foram levantadas (`harness/spec/sources/mmu-interrupts-sources.md`) e os pontos centrais conferidos por leitura direta do código do driver. Falta a auditoria formal do `fact-checker`. O beat a6.3 continua bloqueado e saiu do corte do seminário. Se a fonte não aparecer, cada beat bloqueado vira um beat de **lacuna declarada**: mostra o que se sabe, o que não é público e por quê. Isso atende o enunciado, mas precisa ser decidido, não acontecer por falta de tempo.
 
 ### Ato 7: fechamento (seções 13 e 14)
 

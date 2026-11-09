@@ -8,7 +8,7 @@ part_id: chip.regfile
 procedencia_esperada: derived
 itens_enunciado: [registradores]
 prazo:
-fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - PTX ISA]]", "[[Jia et al. - Dissecting the NVIDIA Volta GPU]]"]
+fontes: ["[[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]]", "[[NVIDIA - Blackwell Tuning Guide]]", "[[NVIDIA - PTX ISA]]", "[[Jia et al. - Dissecting the NVIDIA Volta GPU]]"]
 ---
 # 07 - Registradores
 
@@ -25,8 +25,10 @@ Explicar o banco de registradores da GPU: tamanho, organização, quanto cada th
 - Medido: o kernel SAXPY compilado para `sm_120` usa **10 registradores por thread** e 0 bytes de spill (`ptxas -v`). O SASS usa registradores `R` (por thread), `UR` (caminho uniforme) e `P` (predicados). Ver `harness/examples/saxpy/`.
 - Derivado (Volta): registradores em dois bancos de 64 bits, e conflito de banco quando os três fontes de uma FFMA caem no mesmo banco ([[Jia et al. - Dissecting the NVIDIA Volta GPU|Jia et al.]], capítulo 1). A confirmar na Blackwell.
 
+- **Limites oficiais:** "The register file size is 64K 32-bit registers per SM. The maximum number of registers per thread is 255." ([[NVIDIA - Blackwell Tuning Guide|Blackwell Tuning Guide]] 13.5, 1.4.1.1, leitura direta em 2026-11-09). Os 65.536 registradores deixam de ser só conta nossa.
+- O exemplo do artigo, reproduzido em `harness/examples/saxpy-cu/`, usa 10 registradores e as famílias `R`, `UR`, `P` e `SR`.
+
 ## A levantar
-- Quantos registradores uma thread pode usar no máximo? (guia CUDA, a verificar)
 - Quais são os registradores arquiteturais e especiais (predicados, ids de thread)? (PTX e ferramentas binárias, a verificar)
 - Como o compilador aloca registradores e o que acontece quando faltam (spill)?
 - Como o banco de registradores se compara ao de uma CPU?
