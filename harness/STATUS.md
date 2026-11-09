@@ -59,11 +59,13 @@ Achados da revisão da v0.1. Os que têm "resolvido" foram tratados hoje nos pla
 | # | Lacuna | Situação |
 |---|---|---|
 | 1 | O plano de montagem descrevia uma placa genérica (um ventilador, heatpipes, um PCB no comprimento da placa). A placa real tem cooler de fluxo duplo, dois ventiladores, adaptador PCIe separado e cabos flat | resolvido em `design/assembly-plan.md` |
-| 2 | Não havia nenhuma fonte física: sem teardown, sem datasheet, sem conector | resolvido em parte: `spec/sources/physical-card-sources.md` e auditoria em `qa/fact-check-fisico.md` |
+| 2 | Não havia nenhuma fonte física: sem teardown, sem datasheet, sem conector | resolvido em parte: `spec/sources/physical-card-sources.md`. A auditoria (`qa/fact-check-fisico.md`) não aprovou na primeira passada; as 26 correções estão aplicadas e falta a segunda passada |
 | 3 | Os níveis 2 a 4 do tour (chip, SM, conceitos), que cobrem todos os itens do enunciado, não tinham dono no roster | resolvido no plano: agente `diagram-designer` e contrato `diagrams/<id>.json`. Tipo de modelo aguarda confirmação |
 | 4 | O vídeo era "opcional", sem resolução, fps, método de captura, cortes nem QA | resolvido em `story/video-plan.md` |
 | 5 | O texto de 5 seções por peça não cabe em um quadro de vídeo | resolvido no plano: `headline`, `caption`, `body` e `fala` |
 | 6 | "Uma peça por beat" não comporta o roteiro v2, em que a maior parte dos beats é conceito, não peça | resolvido no plano: atos e 63 beats |
+| 17 | Regra de procedência não cobre "observação direta desta placa por terceiro" (peso, posição do conector) | **aberto** (grupo): por ora esses dados são `derived` |
+| 18 | Memória: as fontes dão 32 posições, não 32 chips. O arranjo em pares por controlador é proposta | aberto: fila da F2 |
 | 7 | Sem critério de fidelidade nem método de medida | resolvido no plano: níveis A, B e C, `measurements.csv`, pacote de referências |
 | 8 | Contratos errados para a pilha escolhida (GLB em metros e Y para cima; teste de malha fechada falha) | achado em teste, corrigido nos contratos e nos agentes |
 | 9 | **Duração do seminário** desconhecida desde 19/10 | **aberto** (professor) |
@@ -103,7 +105,7 @@ Por trilha (definidas em `ARCHITECTURE.md`, seção 5.1), em ordem de dependênc
 2. Esqueleto do viewer com timeline única, `seek` e modo de captura.
 3. Script de captura por beat com cache, e montagem com `ffmpeg`.
 4. Linha de chamada, caixa de texto, selo, cabeçalho de nível, três caminhos.
-5. `storyboard.json` (63 beats; 41 de prioridade 1) e `beats.json`.
+5. `storyboard.json` (63 beats; 42 de prioridade 1) e `beats.json`.
 6. Checagens automáticas e QA visual.
 7. Corte do seminário, MP4 e PDF de reserva.
 
@@ -142,11 +144,13 @@ Linhas de corte, decididas de antemão:
 8. **Tipo de modelo do `diagram-designer`:** proposto B (opus).
 9. **Logos da NVIDIA** no modelo: proposto não usar.
 10. **Narração gravada e trilha:** proposto nenhuma no corte do seminário.
+11. **Regra de procedência:** `confirmed` inclui observação direta desta placa por terceiro identificado (peso, posição do conector)? Hoje esses dados estão como `derived`.
+12. **Beats de MMU e interrupções:** se a fonte não vier, viram beats de lacuna declarada. Hoje estão só bloqueados, e a cobertura do enunciado não fecha.
 
 ## 9. Feito em 2026-11-09
 
 - Pesquisa do hardware físico: datasheet oficial, teardown da própria placa e análises de terceiros, em `spec/sources/physical-card-sources.md`, com 8 notas novas no vault.
-- Auditoria independente dessa rodada: `qa/fact-check-fisico.md`.
+- Auditoria independente dessa rodada: `qa/fact-check-fisico.md`. Resultado: não aprovado na primeira passada (3 achados que bloqueavam, 16 ajustes). Correções aplicadas; segunda passada pendente.
 - `design/assembly-plan.md`: plano de montagem sobre a placa real.
 - `story/video-plan.md`: plano da apresentação em vídeo, com 63 beats.
 - `ARCHITECTURE.md` v0.2, 8 agentes ajustados e 1 agente novo.

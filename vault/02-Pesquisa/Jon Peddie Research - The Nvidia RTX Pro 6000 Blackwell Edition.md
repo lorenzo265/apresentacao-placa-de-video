@@ -5,7 +5,7 @@ secao: Placa
 autor: Jon Peddie Research
 link: https://www.jonpeddie.com/reviews/the-nvidia-rtx-pro-6000-blackwell-edition/
 acessado: 2026-11-09
-procedencia: confirmed
+procedencia: derived
 ---
 # Jon Peddie Research - The Nvidia RTX Pro 6000 Blackwell Edition
 

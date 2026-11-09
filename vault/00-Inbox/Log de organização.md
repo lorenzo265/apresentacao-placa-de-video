@@ -33,3 +33,7 @@
 - Fora do vault: `harness/STATUS.md` (acompanhamento), `harness/design/assembly-plan.md` e `harness/story/video-plan.md`.
 - Nenhuma nota do roteiro foi alterada. Pendências que seguem abertas: duração do seminário, divisão de trabalho, revisão da seção `08`, fontes das seções `10` e `11`.
 
+## 2026-11-09 (auditoria do hardware físico)
+- O `fact-checker` reabriu as fontes principais e não aprovou na primeira passada: 3 achados que bloqueavam e 16 ajustes. Relatório em `harness/qa/fact-check-fisico.md`.
+- Notas de Jon Peddie, Puget e sabareesh passaram de `procedencia: confirmed` para `derived` (revisores que não são fonte oficial nem teardown). A decisão de ampliar `confirmed` ficou para o grupo.
+

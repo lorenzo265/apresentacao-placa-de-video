@@ -5,7 +5,7 @@ secao: Placa
 autor: Puget Systems
 link: https://www.pugetsystems.com/labs/articles/nvidia-rtx-pro-6000-blackwell-workstation-content-creation-review/
 acessado: 2026-11-09
-procedencia: confirmed
+procedencia: derived
 ---
 # Puget Systems - Review da RTX PRO 6000 Blackwell Workstation
 

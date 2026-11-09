@@ -1,11 +1,11 @@
 # Fontes do hardware físico (rodada de 2026-11-09)
 
-> **STATUS: AINDA NÃO AUDITADA pelo `fact-checker`.** Nada aqui foi reaberto de forma independente.
+> **STATUS: auditada com ressalvas em 2026-11-09** (`harness/qa/fact-check-fisico.md`). O `fact-checker` reabriu o datasheet (leitura direta), a Gamers Nexus, a Jon Peddie, a Puget e as duas páginas NVIDIA da RTX 5090. As demais fontes **não foram reabertas**. Ninguém viu as imagens nem o vídeo do teardown.
 
 Convenções desta rodada:
 - Todas as páginas foram lidas por resumo automático (WebFetch). O resumo extrai trechos, mas não é leitura humana da página. Os dois PDFs da NVIDIA foram lidos como imagem de página (ferramenta Read), e a tabela de especificações foi lida visualmente.
 - "**só snippet**" = apareceu apenas no resumo da busca, a página não foi aberta ou veio bloqueada. **Não vale como fato.** Fica registrado para o `fact-checker` ou o grupo reabrir.
-- Procedência: `confirmed` = fonte oficial NVIDIA sobre esta placa ou teardown/foto desta placa. `derived` = placa irmã (RTX 5090 Founders Edition, mesmo GB202) ou geração anterior. Revisões de terceiros sobre esta placa (Jon Peddie, Puget) estão marcadas `confirmed (terceiro)`: não são oficiais nem teardown, a decisão final de classe fica para o `fact-checker`.
+- Procedência: `confirmed` = fonte oficial NVIDIA sobre esta placa ou teardown/foto desta placa. `derived` = placa irmã (RTX 5090 Founders Edition, mesmo GB202) ou geração anterior. Revisões de terceiros sobre esta placa (Jon Peddie, Puget, sabareesh) ficam como `derived`, com a fonte nomeada, por recomendação do `fact-checker`: a classe "confirmed (terceiro)" usada na coleta não existe na regra do projeto. Está aberta para o humano a decisão de `confirmed` incluir "observação direta desta placa por terceiro identificado".
 - Acesso: 2026-11-09 para tudo.
 - Variante: "Workstation Edition" (600 W, 2 ventiladores). Max-Q (300 W, blower) e Server são outros coolers e não entram.
 
@@ -25,7 +25,7 @@ Aberto e lido como imagem (3 páginas). Rodapé: "5349469. JUN26" (revisão de j
 | Interface | "System Interface: PCIe 5.0 x16" | p. 3 |
 | Memória | "GPU Memory: 96 GB GDDR7 with ECC"; "Memory Interface: 512-bit"; "Memory Bandwidth: 1792 GB/s" | p. 3 |
 | Núcleos CUDA | "NVIDIA CUDA Cores: 24,064" | p. 3 |
-| Capa | render da placa: shroud preto com dois recortes de ventilador de grade fina, texto "RTX PRO 6000" na face superior e logotipo NVIDIA na lateral | p. 1 (observação visual) |
+| Capa | render da placa: shroud preto com duas áreas de grade fina (o auditor não distinguiu pás; **face não identificada**, pode ser a de saída do ar), texto "RTX PRO 6000" na face superior e logotipo NVIDIA na lateral | p. 1 (observação visual) |
 
 Não consta no datasheet: peso, dimensões em mm, conteúdo da caixa (adaptador), ventiladores (quantidade, diâmetro), material.
 Há uma cópia equivalente no PNY (https://www.pny.com/File%20Library/Company/Support/Product%20Brochures/NVIDIA%20RTX/English/NVIDIA-RTX-PRO-6000-Blackwell-Workstation-Edition.pdf), com o mesmo texto da p. 1 e o código PNY VCNRTXPRO6000B-PB. Só a p. 1 foi lida.
@@ -44,12 +44,15 @@ Página aberta (resumo automático da seção de teardown). A página é texto d
 | Formato | "The RTX Pro 6000 we tested is a 2-slot card with 2 large fans on the front" | teardown |
 | Ordem de desmontagem | 1) tira a placa traseira (back plate); 2) um parafuso e puxa a moldura externa; 3) parafusos ao redor do centro e as tampas centrais; 4) solta o grampo (clamp) do suporte do slot PCIe e retira o adaptador PCIe; 5) descola uma placa (plate) para expor o PCB; 6) retira cabos flat (ribbon) e parafusos da mola de pressão (leaf spring) para chegar à GPU; 7) puxa o PCB e limpa a pasta da GPU | teardown |
 | Parafusos | só "um parafuso" da moldura e "parafusos ao redor do centro". Tipos e contagem: **não informados** | teardown |
-| Memória (verso) | 16 módulos no verso do PCB, sobre "clay type" thermal pads; "32 total memory locations" contadas | teardown |
+| Memória (verso) | "16 memory modules on the back", sobre "clay type" thermal pads; "32 total memory locations". A fonte conclui na mesma frase: "which means that they are 3GB memory modules as that totals 96GB" (dedução da fonte, sem leitura de marcação do chip). A fonte não diz "16 na frente" nem que as 32 posições estão ocupadas | teardown |
 | Interface térmica | "we were expecting to see liquid metal, but we saw thermal paste instead" | teardown |
 | Densidade | PCB "crazy dense", "lots of little tiny components" | teardown |
-| Pads | cerca de metade dos indutores cobertos por pad; um pad passou da borda do PCB | teardown |
+| Pads | "half of the inductors are actually covered by a thermal pad. One of them only had about a third of the inductor covered." Frase ambígua (metade dos indutores ou metade de cada indutor): **não usar como contagem**. Um pad passou da borda do PCB | teardown |
+| Posição do PCB | "The PCB is in the center of the card" | teardown |
+| Fluxo | "The design is full flow-through, which pushes air straight through the card rather than into a PCB" | teardown |
+| Substrato | "We also saw a massive GPU substrate" | teardown |
 | Aletas | ficam mais altas onde termina a placa do PCB; leve depressão para reduzir perda de pressão. Material e contagem: não informados | teardown |
-| Die | "GB 202-870-A1", descrito como o die da 5090 "just a fuller version of it" | teardown |
+| Die | "GB 202-870-A1" (grafia da fonte, que chama de "SKU"; a marcação não foi lida em foto por nós), "This is a 5090 die, just a fuller version of it" | teardown |
 | PCIe | "a customized pinout adapter" | teardown |
 | Energia | "Like the 5090, the card uses a 12VHPWR cable" | teardown |
 | Saída de ar | aberturas ("vented slats") anguladas para cima e para longe da placa | teardown |
@@ -57,18 +60,18 @@ Página aberta (resumo automático da seção de teardown). A página é texto d
 Não consta: diâmetro dos ventiladores, câmara de vapor e heatpipes, fabricante e código dos chips de memória, fases do VRM, dimensões do package, material do shroud, peso.
 
 ## 4. Jon Peddie Research, "The Nvidia RTX Pro 6000 Blackwell Edition" (2025-11-17)
-URL: https://www.jonpeddie.com/reviews/the-nvidia-rtx-pro-6000-blackwell-edition/ (`confirmed (terceiro)`: avalia a variante Workstation 600 W)
+URL: https://www.jonpeddie.com/reviews/the-nvidia-rtx-pro-6000-blackwell-edition/ (`derived`: revisor que avalia a variante Workstation de 600 W, sem abrir a placa)
 
 | Dado | Trecho ou valor | Observação |
 |---|---|---|
 | Peso | "tops out at a monstrous 4 pounds, 3 ounces", cerca de 60% mais pesada que a RTX Pro 6000 Ada (cerca de 2 lb 10 oz) | 4 lb 3 oz = 1.899 g (`derived`, conversão nossa). Ada: 2 lb 10 oz = 1.191 g |
-| Cooler | "bilateral 3D vapor chambers sandwiched between dual heatsinks and fans"; legenda "double-flow through active cooling" | não é teardown, é descrição do revisor |
+| Cooler | "bilateral 3D vapor chambers sandwiched between dual heatsinks and fans"; legenda "double-flow through active cooling" | não é teardown, é descrição do revisor. A figura 3 é creditada "Source: Nvidia": pode existir ilustração oficial do cooler, **a localizar** |
 | Energia | quatro cabos auxiliares de 150 W unidos por "Nvidia's 4-to-1 adapter" ligado à "central, topside interface" | indica adaptador 4x8 pinos para 16 pinos |
 | Posição do conector | "this one connects from the top middle of the card" (não pela traseira) | |
 | Tamanho | "notably thicker, longer, and wider" que a Ada | sem números |
 
 ## 5. Puget Systems, "NVIDIA RTX PRO 6000 Blackwell Workstation Content Creation Review"
-URL: https://www.pugetsystems.com/labs/articles/nvidia-rtx-pro-6000-blackwell-workstation-content-creation-review/ (`confirmed (terceiro)`; o texto parece repetir a descrição da NVIDIA)
+URL: https://www.pugetsystems.com/labs/articles/nvidia-rtx-pro-6000-blackwell-workstation-content-creation-review/ (`derived`: juízo comparativo de revisor)
 - "a two-fan, two-slot, blow-through cooler designed for use in desktop workstations"; "a housing nearly identical to the GeForce RTX 5090"; "configured to draw up to 600 Watts". A Max-Q é descrita como "a two-slot cooler in a blower-fan configuration" de 300 W.
 
 ## 6. NVIDIA, anúncio da GeForce RTX 50 (Founders Edition da RTX 5090)
@@ -105,8 +108,8 @@ URLs: https://en.gamegpu.com/iron/The-disassembly-of-the-RTX-5090-Founders-Editi
 - Projeto dividido em várias placas; o PCIe fica em módulo separado, ligado por um "thin flexible printed circuit (FPC) connector", frágil (um pino torto e outro quebrado). "a labyrinth of screws, brackets, and shields" (gsmgotech). Sem ordem de desmontagem, sem tipos de parafuso.
 
 ## 12. sabareesh.com, "4x RTX PRO 6000 Blackwell on Water" (conserto e water block)
-URL: https://sabareesh.com/posts/blackwell-waterblock/ (`confirmed (terceiro)`: blog pessoal sobre esta placa, "GB202, 96 GB GDDR7, 600 W")
-- Pads sobre memória e VRM; os GDDR7 do verso "also need cooling"; indutores (choke) marcados "85N" entre os MOSFETs do VRM e o núcleo; "multi-layer GPU PCB"; um choke saiu junto com o pad. Aquece a placa a cerca de 90 °C antes de abrir. Sem tipos de parafuso nem contagem de fases. Fonte de baixa autoridade.
+URL: https://sabareesh.com/posts/blackwell-waterblock/ (`derived`: blog pessoal de quem abriu esta placa, "GB202, 96 GB GDDR7, 600 W"; baixa autoridade, uma passagem de leitura)
+- Pads sobre memória e VRM; os GDDR7 do verso "also need cooling"; indutores (choke) marcados "85N" entre os MOSFETs do VRM e o núcleo; "multi-layer GPU PCB"; um choke saiu junto com o pad, descrito como "identical to the 23 still on the board" (pista de 24 indutores desse tipo, **não usar como contagem**). Aquece a placa a cerca de 90 °C antes de abrir. Sem tipos de parafuso nem contagem de fases. Fonte de baixa autoridade.
 
 ## 13. Só snippet (páginas não abertas; não valem como fato)
 | Fonte | O que o snippet diz | Por que não abriu |
@@ -130,10 +133,10 @@ URL: https://sabareesh.com/posts/blackwell-waterblock/ (`confirmed (terceiro)`: 
 7. **Resolução de "fluxo".** NVIDIA: "dual axial pathways"; Puget: "blow-through"; Jon Peddie: "double-flow through active cooling"; Notebookcheck (5090 FE): "two-thirds blow-through". Termos diferentes para o mesmo cooler, sem contradição numérica.
 
 ## Respostas por item (resumo)
-1. Exterior: 5,4" x 12,0" = 137,2 x 304,8 mm (`derived`, conversão do datasheet; a 5090 FE tem 137 x 304 x 42 mm). Peso 1,9 kg (JPR). Dois ventiladores axiais na face frontal (GN, Puget). Dois caminhos de ar axiais, "double flow through". Traseira com placa traseira (GN) mais pilha de aletas. Conector 16 pinos no topo, posição "top middle" (JPR). Disposição dos DP e grade da bracket: lacuna.
+1. Exterior: 5,4" x 12,0" = 137,2 x 304,8 mm (`derived`, conversão do datasheet; a 5090 FE tem 137 x 304 x 42 mm). Peso 1,9 kg (JPR, `derived`). Dois ventiladores na frente (GN, `confirmed`); "axiais" vem do datasheet ("dual axial pathways") e é `derived`. Dois caminhos de ar axiais, "double flow through". Traseira com placa traseira (GN) mais pilha de aletas. Conector 16 pinos no topo, posição "top middle" (JPR). Disposição dos DP e grade da bracket: lacuna.
 2. Energia: 1x PCIe CEM5 16-pin, 600 W (datasheet). Adaptador: 4 x 150 W para 1 (JPR); a caixa não foi vista.
 3. PCB: teardown da GN mostra adaptador PCIe separado, cabos flat e placa principal; três partes é comprovado só na 5090 FE (NVIDIA). Medidas do PCB: lacuna.
-4. Memória: 16 módulos no verso, 32 posições (GN); 96 GB / 32 = 3 GB por chip (`derived`). Clamshell: 32 chips x 16 bits = 16 controladores x 32 bits = 512 bits (`derived`; a 5090 FE usa 16 x 2 GB x 32 bits). Fabricante: lacuna na PRO 6000.
+4. Memória: 16 módulos no verso e 32 posições (GN, `confirmed`). 3 GB por chip é dedução da própria GN (`derived`); 16 chips na frente e 32 chips montados também são `derived`. As fontes não excluem 24 chips de 4 GB. O arranjo em duas faces com 16 bits por chip (clamshell) é `inferred`: nenhuma fonte o descreve, e a 5090 FE usa um chip de 32 bits por controlador. Fabricante: lacuna na PRO 6000.
 5. VRM: lacuna na PRO 6000. Apenas indutores "85N" (blog).
 6. Térmica: pasta (GN), pads de argila sobre a memória, 3D vapor chambers bilaterais (JPR, descrição), aletas com depressão (GN). Diâmetro do ventilador, heatpipes: lacuna.
 7. Package: "GB 202-870-A1" (GN). Dimensões do package/stiffener: lacuna.

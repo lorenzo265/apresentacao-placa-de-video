@@ -2,45 +2,45 @@
 
 Estado: **plano para a F2**, ainda sem `assembly.json`. Substitui a visão genérica da v0.1 ("backplate, shroud, ventilador, cooler, PCB") pela estrutura que as fontes mostram para a RTX PRO 6000 Blackwell Workstation Edition.
 
-Base de fatos: `harness/spec/sources/physical-card-sources.md` (rodada de 2026-11-09) e as fontes já auditadas. A auditoria desta rodada está em `harness/qa/fact-check-fisico.md`. Este documento **não é a proposta de engenharia**: o que é lacuna fica marcado "a propor" e vai para o `architecture-inferencer` com a skill `gpu-assembly-proposal`, com gate humano.
+Base de fatos: `harness/spec/sources/physical-card-sources.md` (rodada de 2026-11-09) e as fontes já auditadas. A auditoria desta rodada está em `harness/qa/fact-check-fisico.md`: não aprovou na primeira passada, e as 26 correções estão aplicadas aqui. Falta a segunda passada. Este documento **não é a proposta de engenharia**: o que é lacuna fica marcado "a propor" e vai para o `architecture-inferencer` com a skill `gpu-assembly-proposal`, com gate humano.
 
 ## 1. O que a v0.1 supunha e o que as fontes mostram
 
 | Tema | Suposição da v0.1 | O que as fontes mostram | Efeito no projeto |
 |---|---|---|---|
-| Cooler | "dual-slot, active", com heatpipes e aletas, um ventilador | "Double-flow-through", dois ventiladores na mesma face, ar por "dual axial pathways" (datasheet; Gamers Nexus) | o cooler é a estrutura da placa, não uma peça apoiada sobre o PCB |
-| PCB | uma placa de circuito no comprimento da placa | adaptador PCIe separado e cabos flat (Gamers Nexus). Arranjo em três placas é oficial só para a RTX 5090 FE | `pcb-layout-modeler` deixa de modelar "o PCB" e passa a modelar um conjunto de placas |
+| Cooler | "dual-slot, active", com heatpipes e aletas, um ventilador | "Double-flow-through", "2 large fans on the front", ar por "dual axial pathways" que atravessa a placa "rather than into a PCB" (datasheet; Gamers Nexus) | o cooler é a estrutura da placa, não uma peça apoiada sobre o PCB |
+| PCB | uma placa de circuito no comprimento da placa | "The PCB is in the center of the card", com adaptador PCIe separado e cabos flat (Gamers Nexus). Arranjo em três placas é oficial só para a RTX 5090 FE | `pcb-layout-modeler` deixa de modelar "o PCB" e passa a modelar um conjunto de placas |
 | Origem das coordenadas | canto do PCB | o PCB principal não define o contorno da placa | origem passa a ser um canto do **envelope** da placa |
 | Ordem de desmontagem | backplate, shroud, ventilador, cooler, PCB | sete passos do teardown desta placa, em que o PCB sai por último (seção 3) | `assembly-planner` segue a ordem real |
 | Interface térmica | não definida | pasta térmica no die desta placa; a RTX 5090 FE usa metal líquido | exemplo real de que "derivar da placa irmã" pode errar: entra no vídeo |
-| Memória | "chips em volta do die" | 32 posições, 16 no verso (Gamers Nexus) | conta fecha com 96 GB e 512 bits (seção 5) |
-| Conector | "16 pinos (12V-2x6)" de memória | "1x PCIe CEM5 16-pin" (datasheet). O nome 12V-2x6 vem de revisores | usar o nome do datasheet no texto |
+| Memória | "chips em volta do die" | 32 posições, 16 módulos no verso (Gamers Nexus) | a conta fecha com 96 GB se as 32 estiverem ocupadas (seção 5) |
+| Conector | "16 pinos (12V-2x6)" de memória | "1x PCIe CEM5 16-pin" (datasheet; CEM5 é a especificação, não o nome do conector). A Gamers Nexus chama de "12VHPWR". A equivalência entre os nomes não está provada | usar o texto do datasheet |
 
 ## 2. Árvore de peças
 
-Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** é a procedência da geometria que vamos modelar. **Fid.** é o nível de fidelidade (seção 4). "5090 FE" quer dizer derivado da GeForce RTX 5090 Founders Edition, que usa o mesmo chip e, segundo a Puget Systems, uma carcaça "quase idêntica".
+Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** é a procedência que a geometria terá. "A derivar de fotos" é intenção: as fotos ainda não foram catalogadas nem vistas por ninguém (seção 6.1). **Fid.** é o nível de fidelidade (seção 4). "5090 FE" quer dizer derivado da GeForce RTX 5090 Founders Edition, que usa o mesmo chip e, segundo a Puget Systems, uma carcaça "quase idêntica".
 
 ### 2.1 Estrutura e exterior
 
 | id | Peça | Existe | Forma | Fid. | Fonte | Lacuna |
 |---|---|---|---|---|---|---|
 | `card` | conjunto montado | confirmed | derived | A | datasheet: 5,4" x 12", dois slots | espessura em mm |
-| `frame.backplate` | placa traseira | confirmed | derived (fotos) | A | Gamers Nexus, passo 1 | material, textura, aberturas |
-| `frame.shroud` | moldura externa | confirmed | derived (fotos) | A | Gamers Nexus, passo 2; capa do datasheet | material, acabamento |
-| `frame.center_covers` | tampas centrais | confirmed | derived (fotos) | B | Gamers Nexus, passo 3 | quantidade, forma |
-| `io.bracket` | bracket com 4 DisplayPort 2.1b | confirmed | derived (norma e fotos) | A | datasheet, p. 3 | disposição das portas, grade |
+| `frame.backplate` | placa traseira | confirmed | a derivar de fotos | A | Gamers Nexus, passo 1 | material, textura, aberturas |
+| `frame.shroud` | moldura externa | confirmed | a derivar de fotos | A | Gamers Nexus, passo 2; capa do datasheet | material, acabamento |
+| `frame.center_covers` | tampas centrais | confirmed | a derivar de fotos | B | Gamers Nexus, passo 3 | quantidade, forma |
+| `io.bracket` | bracket com 4 DisplayPort 2.1b | confirmed | a derivar de norma e fotos | A | datasheet, p. 3 | disposição das portas, grade |
 | `fasteners.*` | parafusos | confirmed | a propor | C | Gamers Nexus (sem tipos) | tipos e quantidades |
 
 ### 2.2 Refrigeração
 
 | id | Peça | Existe | Forma | Fid. | Fonte | Lacuna |
 |---|---|---|---|---|---|---|
-| `cooler.fan.1`, `cooler.fan.2` | dois ventiladores axiais na mesma face | confirmed | derived (fotos) | A | Gamers Nexus; datasheet ("dual axial pathways") | diâmetro, número de pás |
-| `cooler.fins.1`, `cooler.fins.2` | pilhas de aletas atravessadas pelo ar | confirmed | derived (fotos) | A | Gamers Nexus (aletas mais altas onde termina a placa do PCB, com depressão) | contagem, passo, material |
-| `cooler.vapor_chamber` | câmara de vapor | derived | a propor | B | 5090 FE (página NVIDIA: "3D Vapor Chamber with integrated heat pipes"); Jon Peddie descreve, sem abrir a placa | nenhum teardown desta placa mostra o interior |
+| `cooler.fan.1`, `cooler.fan.2` | dois ventiladores na frente | confirmed (dois, na frente); derived (axiais) | a derivar de fotos | A | Gamers Nexus ("2 large fans on the front"); datasheet ("dual axial pathways") | diâmetro, número de pás |
+| `cooler.fins.1`, `cooler.fins.2` | pilhas de aletas atravessadas pelo ar | confirmed | a derivar de fotos | A | Gamers Nexus (aletas mais altas onde termina a placa do PCB, com depressão) | contagem, passo, material |
+| `cooler.vapor_chamber` | câmara de vapor | derived | a propor | B | 5090 FE (página NVIDIA: "3D Vapor Chamber with integrated heat pipes"); Jon Peddie descreve "bilateral 3D vapor chambers", sem abrir a placa | não achamos teardown que mostre o interior. Pista: a figura 3 da Jon Peddie é creditada à NVIDIA |
 | `cooler.leaf_spring` | mola de pressão sobre a GPU | confirmed | a propor | B | Gamers Nexus, passo 6 | forma |
 | `gpu.tim` | pasta térmica | confirmed | illustrative | C | Gamers Nexus | |
-| `mem.pads` | pads térmicos sobre a memória e parte dos indutores | confirmed | a propor | C | Gamers Nexus | espessura, contorno |
+| `mem.pads` | pads térmicos sobre a memória e sobre indutores | confirmed | a propor | C | Gamers Nexus | espessura, contorno |
 
 ### 2.3 Eletrônica
 
@@ -48,15 +48,15 @@ Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** 
 |---|---|---|---|---|---|---|
 | `pcb.main` | PCB principal | confirmed | a propor | A | Gamers Nexus, passo 7 | dimensões, contorno, posição do chip |
 | `pcb.plate` | placa que cobre o PCB | confirmed | a propor | B | Gamers Nexus, passo 5 | função e forma |
-| `pcie.adapter` | adaptador PCIe com pinagem própria | confirmed | derived (norma e fotos) | A | Gamers Nexus, passo 4 | dimensões |
+| `pcie.adapter` | adaptador PCIe com pinagem própria | confirmed | a derivar de norma e fotos | A | Gamers Nexus, passo 4 | dimensões |
 | `pcie.clamp` | grampo do suporte do slot | confirmed | a propor | C | Gamers Nexus, passo 4 | forma |
-| `flex.*` | cabos flat entre as placas | confirmed | a propor | B | Gamers Nexus, passo 6 | quantidade e trajeto |
+| `flex.*` | cabos flat | confirmed (existem); derived (o que ligam, pela 5090 FE) | a propor | B | Gamers Nexus, passo 6 ("remove ribbon cables", sem dizer o que ligam) | quantidade e trajeto |
 | `io.board` | placa das saídas de vídeo | derived | a propor | B | 5090 FE ("3-piece PCB", NVIDIA) | não confirmada nesta placa |
-| `gpu.package` | GB202 (marcação "GB202-870-A1") | confirmed | a propor | A | Gamers Nexus; whitepaper (die de 750 mm²) | dimensões do package e do die visível |
-| `mem.back.1..16` | 16 chips GDDR7 no verso | confirmed | derived (norma) | A | Gamers Nexus | fabricante, posição exata |
-| `mem.front.1..16` | 16 posições na frente (32 no total) | confirmed (contagem) | derived (norma) | A | Gamers Nexus ("32 total memory locations") | posição exata |
-| `power.connector` | um conector "PCIe CEM5 16-pin" | confirmed | derived (norma) | A | datasheet, p. 3. Posição "no topo, no meio": Jon Peddie | ângulo, posição exata |
-| `power.inductors` | indutores | confirmed | a propor | B | Gamers Nexus (metade coberta por pad) | quantidade |
+| `gpu.package` | GB202 ("GB 202-870-A1" na grafia da Gamers Nexus, que chama de SKU) | confirmed | a propor | A | Gamers Nexus ("massive GPU substrate"); whitepaper (die de 750 mm²) | dimensões do package e do die visível; marcação não lida em foto |
+| `mem.back.1..16` | 16 chips GDDR7 no verso | confirmed | a derivar de norma | A | Gamers Nexus | fabricante, posição exata |
+| `mem.front.1..16` | 16 posições na frente | derived (32 posições no total menos 16 no verso; a fonte não diz "na frente" nem que estão ocupadas) | a derivar de norma | A | Gamers Nexus ("32 total memory locations") | ocupação e posição exata |
+| `power.connector` | um conector de 16 pinos ("1x PCIe CEM5 16-pin") | confirmed (tipo); derived (posição) | a derivar de norma | A | datasheet, p. 3. Posição "top middle of the card": Jon Peddie | ângulo, posição exata, norma |
+| `power.inductors` | indutores | confirmed | a propor | B | Gamers Nexus (cita indutores sob pad, sem contar) | quantidade. Pista de baixa autoridade: um blog fala em 24 de um mesmo tipo |
 | `power.vrm.gpu`, `power.vrm.mem` | fases de energia | inferred | a propor | B | nenhuma fonte desta placa. Para a 5090 FE as fontes divergem (30, 27 ou 34) | **tudo** |
 | `pcb.smd` | componentes pequenos (capacitores, resistores) | confirmed ("PCB muito denso") | illustrative | C | Gamers Nexus | não serão contados |
 
@@ -93,8 +93,8 @@ O estágio E8 é didático. O vídeo diz isso na tela.
 
 | Conta | Resultado | Estado |
 |---|---|---|
-| Memória: 32 posições × 3 GB = 96 GB | fecha | 32 e 96 GB `confirmed`; 3 GB por chip é `derived` (divisão) |
-| Barramento: 16 controladores × 32 bits = 512 bits; 32 chips ÷ 16 controladores = 2 chips por controlador | fecha, e indica dois chips por canal (um em cada face) | 512 bits e 16 controladores `confirmed`; o arranjo em duas faces é `derived` |
+| Memória: 32 posições × 3 GB = 96 GB | fecha, **se** as 32 posições estiverem ocupadas | 32 posições e 96 GB `confirmed`. "32 chips" e "3 GB por chip" são `derived` (a própria Gamers Nexus faz a dedução, sem ler a marcação). As fontes não excluem 24 chips de 4 GB |
+| Barramento: 16 controladores × 32 bits = 512 bits; 32 chips ÷ 16 controladores = 2 chips por controlador | fecha como média, com a mesma condição | 512 bits e 16 controladores `confirmed`. A razão 2:1 é `derived` condicional. **Como** dois chips dividem um controlador (16 bits cada, um por face) é `inferred`: nenhuma fonte descreve, e a 5090 FE usa um chip por controlador. Vai para a proposta de engenharia |
 | Banda: 28 Gbps × 512 ÷ 8 = 1.792 GB/s | fecha | `confirmed` (whitepaper e datasheet) |
 | Envelope: 5,4" × 12,0" = 137,2 × 304,8 mm | conversão | polegadas `confirmed`, milímetros `derived` |
 | Espessura em mm de "dois slots" | **não fecha ainda** | as fontes da 5090 FE divergem (2 slots, 42 mm, 61 mm de folga). Registrar a norma de slot antes de modelar |
@@ -121,13 +121,13 @@ Tudo vai para `design/measurements.csv`: `feature, value_mm, tolerance_mm, metho
 | face dos ventiladores, traseira, topo com o conector, bracket, extremidade | **não catalogado** |
 | cada um dos estágios E1 a E7 | 35 capturas do teardown da Gamers Nexus, **sem catálogo**: ninguém olhou ainda o que cada uma mostra |
 | PCB frente e verso | provavelmente entre as 35 capturas, a conferir |
-| cooler aberto | **não existe** fonte para esta placa |
+| cooler aberto | não achamos fonte para esta placa. Pista a seguir: figura 3 da Jon Peddie, creditada à NVIDIA |
 
 Primeira tarefa da F2: catalogar as 35 capturas e achar fotos de produto das vistas que faltam. Sem isso o `visual-qa` não tem com o que comparar.
 
 ### 6.2 Critério de aceite da fidelidade
 
-- Envelope do GLB igual ao oficial, com erro de até 0,5 mm.
+- Envelope do GLB igual à **convenção do projeto** (137,2 × 304,8 mm, conversão exata das polegadas do datasheet), com erro de até 0,5 mm. A fonte oficial tem resolução de 0,1", ou seja, a placa real pode diferir da convenção em mais de 1 mm. A NVIDIA dá 304 × 137 mm para a 5090 FE.
 - Toda contagem visível em peça de nível A igual à da fonte, ou marcada "representativa" na tela.
 - Para cada vista padrão com foto de referência, o `visual-qa` recebe o render na mesma vista ao lado da foto e aprova contorno, proporção e posição relativa.
 - Toda diferença conhecida entra na lista "desvios conhecidos" do `assembly.json`, com o motivo.
@@ -138,7 +138,7 @@ Testado neste ambiente com `build123d` 0.13.0 e `trimesh` 5.2.0 em Python 3.13: 
 
 | Achado | Contrato da v0.1 | Correção |
 |---|---|---|
-| O GLB sai em **metros** e com **Y para cima** (padrão glTF): a caixa de 304,8 × 137,2 × 40,64 mm saiu com 0,30 × 0,04 × 0,14 | "unidades em mm, Z para cima" para tudo | CAD, `assembly.json` e `storyboard.json` em mm e Z para cima. A conversão para o referencial do GLB acontece em um único lugar, no `integrator`, e o viewer lê âncoras e câmeras já convertidas |
+| O GLB sai em **metros** e com **Y para cima** (padrão glTF): uma caixa de teste de 304,8 × 137,2 × 40,64 mm saiu com 0,30 × 0,04 × 0,14. A espessura de 40,64 mm é valor de teste, sem fonte | "unidades em mm, Z para cima" para tudo | CAD, `assembly.json` e `storyboard.json` em mm e Z para cima. A conversão para o referencial do GLB acontece em um único lugar, no `integrator`, e o viewer lê âncoras e câmeras já convertidas |
 | A caixa exportada **não passa** no teste de malha fechada do `trimesh` (24 vértices, faces soltas). Depois de unir vértices, passa (8 vértices) | `ops-runner` exige "malha fechada" | validar o sólido no CAD (`is_valid`, volume maior que zero) e, no GLB, unir vértices antes do teste |
 | `build123d` e `trimesh` não estão instalados nem declarados | "stack" só descrita em texto | versionar `harness/requirements.txt` e `harness/viewer/package.json` com versões fixas |
 | Origem `pcb.bottom_left_front` | o PCB define o contorno | origem `card.envelope_min`: canto do envelope do lado da bracket e do lado dos contatos PCIe |
@@ -150,7 +150,7 @@ Campos novos por peça em `assembly.json`: `stage` (E1 a E8), `fidelity` (A, B o
 Por ordem de impacto no vídeo:
 
 1. Interior do cooler: câmara de vapor, ligação com as duas pilhas de aletas, caminho do calor.
-2. PCB principal: contorno, dimensões, posição do GB202, das 32 posições de memória e do conector.
+2. PCB principal: contorno, dimensões, posição do GB202, das 32 posições de memória e do conector. Inclui a pergunta de memória: 32 chips de 3 GB em pares por controlador, ou outra ocupação.
 3. Quantas placas são e como os cabos flat as ligam (três, como na 5090 FE?).
 4. Fases de energia da GPU e da memória, com a conta de potência.
 5. Package do GB202: dimensões e moldura.

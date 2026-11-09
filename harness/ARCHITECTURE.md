@@ -44,11 +44,11 @@ Decidido em 2026-10-19: **RTX PRO 6000 Blackwell** (`card_id: rtx-pro-6000-black
 | GPU | AD102 (de memória, não verificado) | GB202, 188 SMs, 24.064 núcleos CUDA | whitepaper, Tab. 4; datasheet |
 | Memória | 48 GB GDDR6 | 96 GB GDDR7 com ECC, 512 bits, 1.792 GB/s | whitepaper, Tab. 4; datasheet |
 | Potência | 300 W | 600 W | whitepaper, Tab. 4; datasheet |
-| Cooler | não levantado | "double-flow-through", dois ventiladores axiais na mesma face | datasheet; teardown da Gamers Nexus |
+| Cooler | não levantado | "double-flow-through", dois ventiladores na frente | datasheet; teardown da Gamers Nexus |
 | Conector | não levantado | um "PCIe CEM5 16-pin" | datasheet |
 | Formato | não levantado | 5,4" × 12,0", dois slots | datasheet |
 
-Os valores da Blackwell estão registrados em `spec/sources/`. A parte física (cooler, conector, placas de circuito, memória) foi levantada em 2026-11-09 e está em `spec/sources/physical-card-sources.md`, com auditoria em `qa/fact-check-fisico.md`. A estrutura real da placa difere bastante do que a v0.1 supunha: ver `design/assembly-plan.md`, seção 1.
+Os valores da Blackwell estão registrados em `spec/sources/`. Os da Ada (48 GB, 300 W) vêm da nota da seção 13 do roteiro, que cita a Tab. 4 do whitepaper, mas a coluna da Ada ainda não está no excerto local. A parte física (cooler, conector, placas de circuito, memória) foi levantada em 2026-11-09 e está em `spec/sources/physical-card-sources.md`, com auditoria em `qa/fact-check-fisico.md`. A estrutura real da placa difere bastante do que a v0.1 supunha: ver `design/assembly-plan.md`, seção 1.
 Variante: Workstation Edition (600 W). A Max-Q (300 W) e a Server Edition têm outro cooler e não entram.
 
 ## 3. Princípios

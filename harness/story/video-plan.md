@@ -34,9 +34,9 @@ As 14 seções do roteiro v2 não mudam (a tabela de cobertura do enunciado cont
 | Ato | Nível | Seções | Conteúdo | Selo dominante |
 |---|---|---|---|---|
 | 0. Abertura | 0 | 01 | placa montada, título, ficha, mapa do tour | confirmado |
-| 1. A placa por fora | 0 | 01 | volta externa: frente, topo, conector, bracket, traseira | confirmado (fotos e ficha) |
+| 1. A placa por fora | 0 | 01 | volta externa: frente, topo, conector, bracket, traseira | confirmado (ficha); forma a derivar de fotos ainda não catalogadas |
 | 2. Desmontagem e os três caminhos | 1 | 02 | teardown na ordem real; energia, dados e calor destacados por cor | derivado e provável |
-| 3. Memória e barramentos | 1 | 03 | chips GDDR7, 16 canais de 32 bits, PCIe, saídas | confirmado (números), derivado (posição) |
+| 3. Memória e barramentos | 1 | 03 | chips GDDR7, 16 controladores de 32 bits, PCIe, saídas | confirmado (números), derivado (posição) |
 | T1. Mergulho no chip | 1 para 2 | 04 | zoom contínuo: package, die, planta | muda para ilustrativo |
 | 4. O chip | 2 | 04, 05 | GPC, TPC, SM, L2, controladores, SIMT | confirmado (contagens), ilustrativo (forma) |
 | T2. Mergulho no SM | 2 para 3 | 06 | zoom em um SM | ilustrativo |
@@ -50,7 +50,7 @@ A mensagem central do briefing (energia, dados e calor) vira um recurso visual f
 
 | Caminho | Cor | Na placa (nível 1) | No chip (níveis 2 a 4) |
 |---|---|---|---|
-| Energia | âmbar | conector, filtros, fases, die | não se aplica |
+| Energia | âmbar | conector, indutores, fases, die | não se aplica |
 | Dados | ciano | contatos PCIe, GPU, memória, saídas de vídeo | controladores de memória, L2, SM, instrução |
 | Calor | vermelho-alaranjado | die, interface térmica, câmara de vapor, aletas, ar | não se aplica |
 
@@ -70,12 +70,12 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a0.2 | 01 | giro lento da placa montada | RTX PRO 6000 Blackwell Workstation Edition | confirmed | datasheet | 1 |
 | a0.3 | 01 | ficha entra linha a linha | 96 GB GDDR7 com ECC, 600 W, 24.064 núcleos CUDA, PCIe 5.0 x16 | confirmed | datasheet, p. 3 | 1 |
 | a0.4 | 01 | mapa do tour | cinco níveis, três caminhos, quatro selos | não se aplica | | 1 |
-| a1.1 | 01 | face dos ventiladores | dois ventiladores axiais na mesma face | confirmed | GN | 1 |
+| a1.1 | 01 | face dos ventiladores | dois ventiladores grandes na frente | confirmed (dois, na frente); derived (axiais) | GN; datasheet | 1 |
 | a1.2 | 01 | réguas no comprimento e na altura | 5,4" × 12,0" (137,2 × 304,8 mm), dois slots | confirmed (polegadas), derived (mm) | datasheet, p. 3 | 2 |
 | a1.3 | 01 | ar entrando pelos ventiladores e atravessando a placa | "double-flow-through": dois caminhos de ar | confirmed | datasheet, p. 1 e 3 | 1 |
-| a1.4 | 01 | topo, conector de energia | um conector PCIe CEM5 de 16 pinos, 600 W | confirmed (tipo e potência), posição pela JPR | datasheet, p. 3; JPR | 1 |
+| a1.4 | 01 | topo, conector de energia | um conector de 16 pinos (PCIe CEM5); a placa inteira consome até 600 W | confirmed (tipo; 600 W de potência total da placa); derived (posição no topo, JPR) | datasheet, p. 3; JPR | 1 |
 | a1.5 | 01 | bracket | 4 DisplayPort 2.1b | confirmed (contagem); disposição é lacuna | datasheet, p. 3 | 2 |
-| a1.6 | 01 | placa ao lado do contorno da 5090 FE | mesma carcaça, outro propósito: 96 GB com ECC | derived | Puget Systems | 3 |
+| a1.6 | 01 | placa ao lado do contorno da 5090 FE | carcaça quase idêntica, segundo a Puget; outro propósito: 96 GB com ECC | derived | Puget Systems | 3 |
 | a2.1 | 02 | E1: sai a placa traseira | a desmontagem segue a ordem de um teardown real | confirmed | GN | 1 |
 | a2.2 | 02 | E2: um parafuso, a moldura desliza | | confirmed | GN | 1 |
 | a2.3 | 02 | E3: parafusos e tampas centrais | | confirmed | GN | 2 |
@@ -84,13 +84,13 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a2.6 | 02 | E6: cabos flat e mola de pressão | | confirmed | GN | 2 |
 | a2.7 | 02 | E7: sai o PCB; close na pasta sobre o die | pasta térmica, não metal líquido como na 5090 FE: derivar da placa irmã pode errar | confirmed | GN; 5090 FE (NVIDIA) | 1 |
 | a2.8 | 02 | vista explodida inteira, pausa | os três caminhos | não se aplica | | 1 |
-| a2.9 | 02 | caminho da energia em âmbar: conector, indutores, die | 600 W entram por aqui; o número de fases não é público | confirmed (conector), **inferred** (fases, a propor na F2) | datasheet; lacuna | 1 |
-| a2.10 | 02 | caminho dos dados em ciano: contatos PCIe, adaptador, cabo flat, GPU, memória, saídas | | confirmed (peças), derived (três placas, 5090 FE) | GN; NVIDIA (5090 FE) | 1 |
-| a2.11 | 02 | E8 e caminho do calor em vermelho: die, pasta, câmara de vapor, aletas, ar | o interior do cooler desta placa nunca foi mostrado em teardown | confirmed (pasta, aletas), derived (câmara de vapor) | GN; 5090 FE | 1 |
-| a2.12 | 02 | close no package | marcação GB202-870-A1 | confirmed | GN | 2 |
+| a2.9 | 02 | caminho da energia em âmbar: conector, indutores, die | 600 W de potência total da placa; não achamos fonte com o número de fases | confirmed (conector, 600 W totais), **inferred** (fases, a propor na F2) | datasheet; lacuna | 1 |
+| a2.10 | 02 | caminho dos dados em ciano: contatos PCIe, adaptador, cabo flat, GPU, memória, saídas | o trajeto pelos cabos é o da placa irmã | confirmed (as peças existem), derived (o que os cabos ligam e as três placas, 5090 FE) | GN; NVIDIA (5090 FE) | 1 |
+| a2.11 | 02 | E8 e caminho do calor em vermelho: die, pasta, câmara de vapor, aletas, ar | não achamos fonte que mostre o interior do cooler desta placa | confirmed (pasta, aletas), derived (câmara de vapor), inferred (E8: ordem e interior) | GN; 5090 FE | 1 |
+| a2.12 | 02 | close no package | GB 202-870-A1 | confirmed (texto da GN; marcação a conferir na foto) | GN | 2 |
 | a3.1 | 03 | verso do PCB, chips com pads | 16 chips GDDR7 no verso | confirmed | GN | 1 |
-| a3.2 | 03 | contador sobre as 32 posições | 32 × 3 GB = 96 GB | confirmed (32 e 96 GB), derived (3 GB) | GN; datasheet | 1 |
-| a3.3 | 03 | linhas ciano dos chips até a GPU, em pares | 16 controladores × 32 bits = 512 bits; dois chips por controlador | confirmed (512, 16), derived (pares) | whitepaper, p. 8 | 1 |
+| a3.2 | 03 | contador sobre as 32 posições | 32 posições; se todas ocupadas, 32 × 3 GB = 96 GB | confirmed (32 posições, 96 GB), derived (32 chips de 3 GB, dedução da GN) | GN; datasheet | 1 |
+| a3.3 | 03 | linhas ciano dos chips até os 16 controladores | 16 controladores × 32 bits = 512 bits; em média dois chips por controlador, e como eles dividem o controlador é proposta | confirmed (512, 16), derived (razão 2:1, se as 32 posições estiverem ocupadas), **inferred** (arranjo em pares, selo "provável") | whitepaper, p. 8 (só 16 × 32); GN (32 posições) | 1 |
 | a3.4 | 03 | sinal de três níveis | 28 Gbps × 512 ÷ 8 = 1.792 GB/s; PAM3 | confirmed | whitepaper, Tab. 4 e p. 12 | 2 |
 | a3.5 | 03 | um bit trocado sendo corrigido | ECC de correção simples, sempre ligado | confirmed | whitepaper, p. 13 | 2 |
 | a3.6 | 03 | barra do PCIe ao lado da barra da memória | por que os dados moram na placa | **bloqueado** | banda do PCIe 5.0 x16 sem fonte registrada | 2 |
@@ -104,7 +104,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a4.1 | 04 | die com régua e contador | 750 mm², 92,2 bilhões de transistores, TSMC 4N | confirmed | whitepaper, Tab. 4 | 1 |
 | a4.2 | 04 | 12 GPCs acendem; um GPC abre em TPCs; um TPC abre em 2 SMs | 12 GPCs, 94 TPCs, 188 SMs; conta animada 94 × 2 = 188 e 188 × 128 = 24.064 | confirmed (contagem) | whitepaper, Tab. 4 e p. 9 | 1 |
 | a4.3 | 04 | nota lateral sobre o chip completo | o GB202 completo tem 96 TPCs e 192 SMs; nesta placa a tabela dá 94 e 188; o próprio documento se contradiz na p. 8 | confirmed (com conflito declarado) | whitepaper, p. 8 contra Tab. 4 | 2 |
-| a4.4 | 04 | L2 no centro, 16 controladores na borda, linhas ciano até os chips de memória | L2 de 128 MB; 16 controladores × 32 bits = 512 bits | confirmed | whitepaper, p. 8 e 9 | 1 |
+| a4.4 | 04 | L2 no centro, 16 controladores na borda, linhas ciano até os chips de memória | L2 de 128 MB; 16 controladores × 32 bits = 512 bits | confirmed (tamanhos), illustrative (posição) | whitepaper, p. 8 e 9 | 1 |
 | a4.5 | 04 | blocos fora dos GPCs: AMP, vídeo, PCIe | o AMP é um processador RISC-V que escalona contextos | confirmed (existência), illustrative (posição) | whitepaper, p. 25 | 2 |
 | a5.1 | 05 | grade de threads vira blocos, blocos viram warps de 32 | grid, bloco, warp; `WARP_SZ` = 32 | confirmed | PTX ISA, 4.5.1 | 1 |
 | a5.2 | 05 | um warp recebe uma instrução, 32 threads executam juntas; SIMT contra SIMD | SIMT: uma instrução, muitas threads, cada uma com seus registradores | **bloqueado** | guia CUDA (a ler) | 1 |
@@ -116,13 +116,13 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 |---|---|---|---|---|---|---|
 | t2.1 | 06 | zoom de um SM entre os 188 | "Um dos 188" | illustrative | regra do harness | 1 |
 | a5.4 | 06 | unidades do SM em blocos | 128 núcleos CUDA FP32, 4 Tensor Cores, 1 RT Core, 4 unidades de textura, 2 núcleos FP64 | confirmed | whitepaper, p. 8 e 9 | 1 |
-| a5.5 | 06 | SM dividido em 4 partições | 4 partições, INT32 e FP32 unificadas, 4 ciclos por instrução | derived (GB203, RTX 5080) | Jarmusch et al., IV e Tab. III | 2 |
+| a5.5 | 06 | SM dividido em 4 partições | 4 partições, INT32 e FP32 unificadas; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | derived (GB203, RTX 5080) | Jarmusch et al., IV e Tab. III | 1 |
 | a5.6 | 07 | banco de registradores como grade | 256 KB por SM; 256 KB ÷ 4 B = 65.536 registradores de 32 bits | confirmed (256 KB), derived (conta) | whitepaper, p. 9 | 1 |
 | a5.7 | 07 | listagem SASS real com `R`, `UR` e `P` coloridos | três famílias de registradores; SAXPY usa 10 por thread, 0 de spill | confirmed (medido) | `harness/examples/saxpy/` | 1 |
 | a5.8 | 07 | limite por thread | quantos registradores uma thread pode ter | **bloqueado** | guia CUDA (a ler) | 2 |
-| a5.9 | 08 | PTX à esquerda, SASS à direita, linhas ligando instruções | 20 instruções PTX viram 19 em SASS | confirmed (medido) | `harness/examples/saxpy/` | 1 |
+| a5.9 | 08 | PTX à esquerda, SASS à direita, linhas ligando instruções | 20 instruções PTX viram 19 úteis em SASS | confirmed (medido) | `harness/examples/saxpy/` | 1 |
 | a5.10 | 08 | uma instrução vira uma palavra de 128 bits; campos aparecem | 16 bytes fixos; opcode, operandos, predicado e controle | confirmed (largura), derived da Volta (campos) | Binary Utilities, ap. 7.1; Jia et al., cap. 2 | 1 |
-| a5.11 | 08 | `HMMA.16816.F32` dispara uma grade de multiplicações | uma instrução, 2.048 multiplicações-acumulações | confirmed (medido) | `harness/examples/mma/` | 2 |
+| a5.11 | 08 | `HMMA.16816.F32` dispara uma grade de multiplicações | uma instrução, 2.048 multiplicações-acumulações | confirmed (a instrução gerada), derived (2.048 é conta nossa) | `harness/examples/mma/` | 2 |
 | a5.12 | 08 | tabela de critérios preenchendo linha a linha | RISC ou CISC: largura fixa, load-store com exceção, controle exposto | inferred (análise do grupo) | seção 08; aguarda revisão humana | 1 |
 | a5.13 | 09 | escada de memória com tamanho e latência por degrau | registradores, L1 de 128 KB, L2 de 128 MB, GDDR7 de 96 GB | confirmed (tamanhos), derived (latências da GB203) | whitepaper, Tab. 4; Jarmusch et al., VI | 1 |
 | a5.14 | 09 | L1 dividida entre cache e memória compartilhada | divisão configurável | confirmed (existe), **bloqueado** (como) | guia CUDA (a ler) | 3 |
@@ -139,13 +139,13 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a6.4 | 11 | sinal voltando da GPU para a CPU | interrupção: como a GPU avisa | **bloqueado** | driver aberto (a ler) | 1 |
 | a6.5 | 11 | AMP na frente do pipeline; chip dividido em 4 | AMP RISC-V escalona contextos; MIG com até 4 instâncias | confirmed | whitepaper, p. 25 e 44 | 1 |
 
-O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupções) e é o único ato sem nenhuma fonte lida. Se a fonte não aparecer, cada beat bloqueado vira um beat de **lacuna declarada**: mostra o que se sabe, o que não é público e por quê. Isso atende o enunciado, mas precisa ser decidido, não acontecer por falta de tempo.
+O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupções) e é o único ato sem nenhuma fonte lida. A auditoria apontou que esses dois itens hoje só têm beats bloqueados: enquanto isso durar, a cobertura do enunciado não fecha. Se a fonte não aparecer, cada beat bloqueado vira um beat de **lacuna declarada**: mostra o que se sabe, o que não é público e por quê. Isso atende o enunciado, mas precisa ser decidido, não acontecer por falta de tempo.
 
 ### Ato 7: fechamento (seções 13 e 14)
 
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
-| a7.1 | 13 | barras Ada contra Blackwell | 142 para 188 SMs; L2 de 98.304 para 131.072 KB; 48 para 96 GB; 300 para 600 W | confirmed | whitepaper, Tab. 4 | 1 |
+| a7.1 | 13 | barras Ada contra Blackwell | 142 para 188 SMs; L2 de 98.304 para 131.072 KB; 48 para 96 GB; 300 para 600 W | confirmed (Blackwell); **a registrar** (a coluna da Ada não está no excerto local do whitepaper) | whitepaper, Tab. 4 | 1 |
 | a7.2 | 13 | nota sobre a banda da Ada | 1.008 GB/s na Tab. 1 e 960 GB/s na Tab. 4: a razão cita a tabela usada | confirmed (com conflito declarado) | whitepaper, Tab. 1 e 4 | 3 |
 | a7.3 | 14 | tabela-síntese GPU contra CPU, um item do enunciado por linha | registradores, instruções, RISC ou CISC, MMU, interrupções, memória, pipeline, cache | derived | todas as seções | 1 |
 | a7.4 | 14 | lista de lacunas declaradas | o que não é público e por quê | não se aplica | todas as seções | 1 |
@@ -244,4 +244,6 @@ Os atos 4 a 6 valem a nota e hoje não têm dono no roster (os modeladores cuida
 - Narração gravada e trilha: sim ou não (grupo).
 - `speaker` de cada ato (grupo).
 - Uso de logos da NVIDIA (grupo).
-- Fontes para os beats bloqueados dos atos 4, 5 e 6.
+- Fontes para os beats bloqueados dos atos 3, 4, 5 e 6.
+- Segunda passada do `fact-checker` sobre a seção 4 (a primeira não aprovou; correções em `harness/qa/fact-check-fisico.md`).
+- Registrar no excerto local do whitepaper a coluna da RTX 6000 Ada (beat a7.1).

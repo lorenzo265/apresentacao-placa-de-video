@@ -5,7 +5,7 @@ secao: Placa
 autor: sabareesh (blog pessoal)
 link: https://sabareesh.com/posts/blackwell-waterblock/
 acessado: 2026-11-09
-procedencia: confirmed
+procedencia: derived
 ---
 # sabareesh - 4x RTX PRO 6000 Blackwell com water block
 
