@@ -94,17 +94,18 @@ O estágio E8 é didático. O vídeo diz isso na tela.
 | Conta | Resultado | Estado |
 |---|---|---|
 | Memória: 32 posições × 3 GB = 96 GB | fecha, **se** as 32 posições estiverem ocupadas | 32 posições e 96 GB `confirmed`. "32 chips" e "3 GB por chip" são `derived` (a própria Gamers Nexus faz a dedução, sem ler a marcação). As fontes não excluem 24 chips de 4 GB |
-| Barramento: 16 controladores × 32 bits = 512 bits; 32 chips ÷ 16 controladores = 2 chips por controlador | fecha como média, com a mesma condição | 512 bits e 16 controladores `confirmed`. A razão 2:1 é `derived` condicional. **Como** dois chips dividem um controlador (16 bits cada, um por face) é `inferred`: nenhuma fonte descreve, e a 5090 FE usa um chip por controlador. Vai para a proposta de engenharia |
+| Barramento: 16 controladores × 32 bits = 512 bits; 32 chips ÷ 16 controladores = 2 chips por controlador | fecha como média, com a mesma condição. A norma torna o arranjo possível: o comunicado da JEDEC sobre o GDDR7 cita um "modo de 2 canais para dobrar a capacidade", e existe chip de 24 Gbit (3 GB) | 512 bits e 16 controladores `confirmed`. A razão 2:1 é `derived` condicional. **Como** dois chips dividem um controlador (16 bits cada, um por face) é `inferred`: nenhuma fonte descreve, e a 5090 FE usa um chip por controlador. Vai para a proposta de engenharia |
 | Banda: 28 Gbps × 512 ÷ 8 = 1.792 GB/s | fecha | `confirmed` (whitepaper e datasheet) |
 | Envelope: 5,4" × 12,0" = 137,2 × 304,8 mm | conversão | polegadas `confirmed`, milímetros `derived` |
-| Espessura em mm de "dois slots" | **não fecha ainda** | as fontes da 5090 FE divergem (2 slots, 42 mm, 61 mm de folga). Registrar a norma de slot antes de modelar |
-| Energia: 600 W pelo conector e pelo slot | **não fechada** | falta registrar a norma do conector de 16 pinos e a potência do slot. Sem isso, nenhuma corrente entra no texto |
+| Espessura em mm de "dois slots" | fecha em parte | passo entre slots de 20,32 mm; placa de dois slots pode ter componentes até 34,80 mm de altura sobre o PCB (CEM 3.0; conferir na 5.x). A espessura real da carcaça continua sem fonte: a 5090 FE tem 42 mm segundo a Puget |
+| Altura: 5,4" contra a norma | declarada | a altura padrão de uma placa é 111,15 mm; esta tem 137,16 mm, cerca de 26 mm a mais. O datasheet chama isso de "extended height"; o termo não aparece nas páginas lidas da norma |
+| Energia: 600 W de potência total | fecha | conector de 16 pinos: até 600 W, 12 pinos de potência (6 de +12 V, 6 de retorno) e 4 de sinal; 600 ÷ 12 = 50 A nominais, e a norma tabela 55 A para 600 W (guia Intel ATX12VO 2.11, que cita a CEM 5.1). Por pino: 8,3 A nominais contra 9,5 A do contato (Molex). O slot fornece até 75 W (CEM 3.0). **Como a placa reparte a carga entre slot e conector é lacuna.** Rodada de normas não auditada |
 | Térmica: área de aletas e vazão para 600 W | **não fechada** | depende da proposta do interior do cooler |
 
 ## 6. Como medir sem ter a placa na mão
 
 1. **Envelope oficial** como escala: 137,2 × 304,8 mm.
-2. **Normas** para o que é padronizado: bracket e contatos PCIe, conector de 16 pinos, conector DisplayPort, encapsulamento GDDR7. As normas ainda **não estão registradas** em `spec/sources/`. Nenhuma medida de norma entra antes disso.
+2. **Normas** para o que é padronizado: bracket e contatos PCIe, conector de 16 pinos, conector DisplayPort, encapsulamento GDDR7. Registradas em 2026-11-09 em `spec/sources/standards-sources.md` (rodada **não auditada**) e já lançadas em `design/measurements.csv`. Limites: a única cópia aberta da norma PCIe CEM é a revisão 3.0, de 2013; o desenho do receptáculo DisplayPort só veio de fonte de baixa autoridade; a bracket de dois slots não tem desenho.
 3. **Proporção em foto**: em vista quase ortogonal, mede-se em pixels contra o envelope conhecido. O resultado é `derived`, com tolerância declarada, e a foto usada fica citada.
 4. **Análogo** (5090 FE) só para o que não aparece em nenhuma foto desta placa. Resultado `derived`.
 5. **Proposta de engenharia** para o resto. Resultado `inferred`.

@@ -92,7 +92,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a1.1 | 01 | face dos ventiladores | dois ventiladores grandes na frente | confirmed (dois, na frente); derived (axiais) | GN; datasheet | 1 |
 | a1.2 | 01 | réguas no comprimento e na altura | 5,4" × 12,0" (137,2 × 304,8 mm), dois slots | confirmed (polegadas), derived (mm) | datasheet, p. 3 | 2 |
 | a1.3 | 01 | ar entrando pelos ventiladores e atravessando a placa | "double-flow-through": dois caminhos de ar | confirmed | datasheet, p. 1 e 3 | 1 |
-| a1.4 | 01 | topo, conector de energia | um conector de 16 pinos (PCIe CEM5); a placa inteira consome até 600 W | confirmed (tipo; 600 W de potência total da placa); derived (posição no topo, JPR) | datasheet, p. 3; JPR | 1 |
+| a1.4 | 01 | topo, conector de energia: 12 pinos de potência e 4 de sinal | um conector de 16 pinos (PCIe CEM5); a placa inteira consome até 600 W, ou 50 A em 12 V | confirmed (tipo; 600 W de potência total da placa); derived (posição no topo, JPR) | datasheet, p. 3; JPR | 1 |
 | a1.5 | 01 | bracket | 4 DisplayPort 2.1b | confirmed (contagem); disposição é lacuna | datasheet, p. 3 | 2 |
 | a1.6 | 01 | placa ao lado do contorno da 5090 FE | carcaça quase idêntica, segundo a Puget; outro propósito: 96 GB com ECC | derived | Puget Systems | 3 |
 | a2.1 | 02 | E1: sai a placa traseira | a desmontagem segue a ordem de um teardown real | confirmed | GN | 1 |
@@ -112,7 +112,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a3.3 | 03 | linhas ciano dos chips até os 16 controladores | 16 controladores × 32 bits = 512 bits; em média dois chips por controlador, e como eles dividem o controlador é proposta | confirmed (512, 16), derived (razão 2:1, se as 32 posições estiverem ocupadas), **inferred** (arranjo em pares, selo "provável") | whitepaper, p. 8 (só 16 × 32); GN (32 posições) | 1 |
 | a3.4 | 03 | sinal de três níveis | 28 Gbps × 512 ÷ 8 = 1.792 GB/s; PAM3 | confirmed | whitepaper, Tab. 4 e p. 12 | 2 |
 | a3.5 | 03 | um bit trocado sendo corrigido | ECC de correção simples, sempre ligado | confirmed | whitepaper, p. 13 | 2 |
-| a3.6 | 03 | barra do PCIe ao lado da barra da memória | por que os dados moram na placa | **bloqueado** | banda do PCIe 5.0 x16 sem fonte registrada | 2 |
+| a3.6 | 03 | barra do PCIe ao lado da barra da memória | por que os dados moram na placa: a memória local é cerca de 28 vezes mais larga que o PCIe 5.0 x16 (1.792 contra cerca de 63 GB/s) | confirmed (32 GT/s por pista, PCI-SIG); derived (63 GB/s é conta, e a codificação 128b/130b só tem fonte secundária) | `standards-sources.md`, não auditado | 2 |
 | a3.7 | 03 | saídas de vídeo | DisplayPort 2.1b, até 80 Gbps | confirmed | whitepaper, p. 30 | 3 |
 
 ### Transição T1 e ato 4: o chip (seções 04 e 05)
