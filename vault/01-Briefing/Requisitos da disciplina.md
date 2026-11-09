@@ -74,7 +74,11 @@ As fontes marcadas como lidas foram abertas. As demais foram encontradas por bus
 | [[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]] | lido em parte, auditado | latências e pipeline na GB203 (derivado) |
 | [[Ampere - Demystifying the Nvidia Ampere Architecture]] | lido por resumo, não auditado | mapeamento PTX para SASS |
 | Artigos da Hopper (arXiv 2501.12084) e do B200 (arXiv 2512.02189) | a ler | caches e pipeline |
-| Teardown ou review com fotos da própria placa | a localizar | conector de energia, VRM, cooler |
+| [[NVIDIA - Datasheet da RTX PRO 6000 Workstation Edition]] | lida | conector de energia, formato, cooler, saídas |
+| [[Gamers Nexus - Teardown da RTX PRO 6000 Blackwell]] | lida por resumo | ordem de desmontagem, memória, interface térmica |
+| [[Jon Peddie Research - The Nvidia RTX Pro 6000 Blackwell Edition]], [[Puget Systems - Review da RTX PRO 6000 Blackwell Workstation]], [[sabareesh - 4x RTX PRO 6000 Blackwell com water block]] | lidas por resumo | peso, posição do conector, carcaça (terceiros) |
+| [[NVIDIA - Anúncio da GeForce RTX 50 e Founders Edition da RTX 5090]], [[wccftech e Notebookcheck - RTX 5090 Founders Edition (PCB e cooler)]], [[Northridge Fix - Teardown da RTX 5090 Founders Edition (via imprensa)]] | lidas por resumo | placa irmã: três placas de circuito, câmara de vapor (derivado) |
+| Fases de energia e interior do cooler desta placa | **sem fonte** | viram proposta de engenharia |
 
 ## Achados da primeira rodada de pesquisa
 - O whitepaper cobre bem a estrutura do chip e os tamanhos de recurso, mas **não cobre** MMU, interrupções, conjunto de instruções, profundidade do pipeline e política dos caches. Esses são os itens de maior risco de lacuna.
