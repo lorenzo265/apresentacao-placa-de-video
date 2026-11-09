@@ -59,6 +59,8 @@ Página aberta (resumo automático da seção de teardown). A página é texto d
 
 Não consta: diâmetro dos ventiladores, câmara de vapor e heatpipes, fabricante e código dos chips de memória, fases do VRM, dimensões do package, material do shroud, peso.
 
+> **Correção de 2026-11-09 (catálogo de fotos).** O artigo tem 75 imagens no corpo, não 35; 38 mostram esta placa e uma (PCB) é da RTX 5090 FE. As fotos mostram que a peça retirada no passo 1 é o **bracket**: a fonte diz "back plate", mas não existe placa traseira lisa nesta placa. O passo 2 retira um aro fino. Catálogo em `harness/spec/references/index.md`.
+
 ## 4. Jon Peddie Research, "The Nvidia RTX Pro 6000 Blackwell Edition" (2025-11-17)
 URL: https://www.jonpeddie.com/reviews/the-nvidia-rtx-pro-6000-blackwell-edition/ (`derived`: revisor que avalia a variante Workstation de 600 W, sem abrir a placa)
 

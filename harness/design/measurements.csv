@@ -24,3 +24,11 @@ dp_contact_pitch,1.00,,página de produto,standards-sources.md: Molex 472720001,
 gddr7_package_width,12.0,,tabela da Micron citada por terceiro,standards-sources.md: JPR/Micron,derived,não auditado
 gddr7_package_length,14.0,,tabela da Micron citada por terceiro,standards-sources.md: JPR/Micron,derived,não auditado
 gddr7_package_thickness,1.1,,tabela da Micron citada por terceiro,standards-sources.md: JPR/Micron,derived,não auditado
+fan_ring_outer_diameter,115,6,proporção em foto quase ortogonal de terceiro (gn-05); escala pelo comprimento de 304.8,references/index.md: Proporções medidas em foto,derived,não auditado; altura não fecha com a oficial
+fan_hub_diameter,40,3,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
+fan_centers_distance,182,8,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
+fan1_center_from_bracket_end,61,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
+fan2_center_from_bracket_end,244,10,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
+pcie_fingers_start_from_bracket_end,48,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
+pcie_fingers_end_from_bracket_end,131,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
+shroud_height_without_fingers,122,6,proporção em foto (gn-05); conflita com a altura oficial de 137.16,references/index.md: Proporções medidas em foto,derived,não auditado; conflito aberto

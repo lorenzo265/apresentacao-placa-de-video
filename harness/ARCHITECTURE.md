@@ -76,7 +76,7 @@ Variante: Workstation Edition (600 W). A Max-Q (300 W) e a Server Edition têm o
 | QA visual e vídeo | Playwright + Chromium headless + ffmpeg (já instalados) | Capturas e render da tour sem GPU |
 | Blender | **opcional**, não instalado | Só entra se precisarmos de render offline de alta qualidade |
 
-Verificado em 2026-11-09: `build123d` 0.13.0 e `trimesh` 5.2.0 instalam em Python 3.13 e exportam STEP e GLB; Node 22, Playwright 1.63 e ffmpeg 6.1 estão no ambiente. Nenhuma dessas dependências está declarada no repositório ainda (`requirements.txt` e `package.json` são pendência). Achados do teste em `design/assembly-plan.md`, seção 7, e custo de captura em `story/video-plan.md`, seção 7.1.
+Verificado em 2026-11-09: `build123d` 0.13.0 e `trimesh` 5.2.0 instalam em Python 3.13 e exportam STEP e GLB; Node 22, Playwright 1.63 e ffmpeg 6.1 estão no ambiente. As dependências Python estão em `requirements.txt`; o `package.json` do viewer é pendência. Achados do teste em `design/assembly-plan.md`, seção 7, e custo de captura em `story/video-plan.md`, seção 7.1.
 
 ## 5. Pipeline em fases (com gates)
 
@@ -127,7 +127,7 @@ O orquestrador é a sessão principal. Os demais são subagentes em `.claude/age
 | `spec-researcher` | sonnet | Pesquisa web e extrai fatos com fonte para o spec | Volume de leitura e extração estruturada |
 | `architecture-inferencer` | fable | Propõe a arquitetura provável do que é privado | Raciocínio de engenharia por analogia; erro aqui contamina tudo |
 | `assembly-planner` | opus | Árvore de montagem, ordem de explosão, interfaces | Planejamento estrutural com muitas restrições |
-| `modeler-complex` | opus | Cooler de fluxo duplo (pilhas de aletas, câmara de vapor proposta), moldura, placa traseira | Geometria difícil e paramétrica |
+| `modeler-complex` | opus | Cooler de fluxo duplo (pilhas de aletas, câmara de vapor proposta), carcaça, face B com grades e X central | Geometria difícil e paramétrica |
 | `pcb-layout-modeler` | opus | Conjunto de placas (PCB principal, adaptador PCIe, cabos flat), tabela de posicionamento de componentes | Layout denso e coerente com a engenharia |
 | `modeler-standard` | sonnet | Bracket, ventilador, conectores, die, módulos de memória | Peças bem definidas |
 | `instancer` | haiku | Parafusos, MLCCs, aletas: instanciamento a partir de tabelas | Mecânico e repetitivo |
@@ -215,7 +215,7 @@ Esse é o texto longo (`body`), que aparece só no viewer. O texto de cada beat 
 | `story/storyboard.json` | campos `id`, `act`, `section`, `level`, `priority`, `overlay`, `speaker`; bloco `cuts`; `fps` | `story/video-plan.md`, seções 2 e 4 |
 | `diagrams/<id>.json` | novo: cena declarativa dos níveis 2 a 4 | `story/video-plan.md`, seção 7.2 |
 | Unidades | CAD, assembly e storyboard em mm e Z para cima. O GLB sai em metros e Y para cima (padrão glTF). A conversão é feita só no `integrator` | `design/assembly-plan.md`, seção 7 |
-| `schemas/*.schema.json` | novo: o `ops-runner` valida contra schemas que ainda não existem | pendência |
+| `schemas/*.schema.json` | novo: cinco schemas e o validador `tools/validate.py`, que também confere limite de palavras, tempo de leitura, referências entre arquivos e as contas dos diagramas | feito em 2026-11-09 |
 
 ## 8. Estrutura de diretórios
 

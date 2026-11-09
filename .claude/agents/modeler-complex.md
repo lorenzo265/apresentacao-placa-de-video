@@ -1,6 +1,6 @@
 ---
 name: modeler-complex
-description: Modela peças de geometria difícil em build123d (cooler de fluxo duplo com pilhas de aletas e câmara de vapor, moldura, placa traseira). Use na fase F3 para as peças marcadas complexas no assembly.json.
+description: Modela peças de geometria difícil em build123d (cooler de fluxo duplo com pilhas de aletas e câmara de vapor, carcaça, face B com grades e X central). Use na fase F3 para as peças marcadas complexas no assembly.json.
 model: opus
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---

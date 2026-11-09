@@ -1,8 +1,8 @@
-# Plano de montagem da placa real (v0.2)
+# Plano de montagem da placa real (v0.3)
 
 Estado: **plano para a F2**, ainda sem `assembly.json`. Substitui a visão genérica da v0.1 ("backplate, shroud, ventilador, cooler, PCB") pela estrutura que as fontes mostram para a RTX PRO 6000 Blackwell Workstation Edition.
 
-Base de fatos: `harness/spec/sources/physical-card-sources.md` (rodada de 2026-11-09) e as fontes já auditadas. A auditoria desta rodada está em `harness/qa/fact-check-fisico.md`: não aprovou na primeira passada, e as 26 correções estão aplicadas aqui. Falta a segunda passada. Este documento **não é a proposta de engenharia**: o que é lacuna fica marcado "a propor" e vai para o `architecture-inferencer` com a skill `gpu-assembly-proposal`, com gate humano.
+Base de fatos: `harness/spec/sources/physical-card-sources.md`, `harness/spec/sources/standards-sources.md`, o catálogo de fotos `harness/spec/references/index.md` (todos de 2026-11-09) e as fontes já auditadas. A v0.3 incorpora as fotos e as normas, que ainda não passaram pelo `fact-checker`. A auditoria desta rodada está em `harness/qa/fact-check-fisico.md`: não aprovou na primeira passada, e as 26 correções estão aplicadas aqui. Falta a segunda passada. Este documento **não é a proposta de engenharia**: o que é lacuna fica marcado "a propor" e vai para o `architecture-inferencer` com a skill `gpu-assembly-proposal`, com gate humano.
 
 ## 1. O que a v0.1 supunha e o que as fontes mostram
 
@@ -16,6 +16,26 @@ Base de fatos: `harness/spec/sources/physical-card-sources.md` (rodada de 2026-1
 | Memória | "chips em volta do die" | 32 posições, 16 módulos no verso (Gamers Nexus) | a conta fecha com 96 GB se as 32 estiverem ocupadas (seção 5) |
 | Conector | "16 pinos (12V-2x6)" de memória | "1x PCIe CEM5 16-pin" (datasheet; CEM5 é a especificação, não o nome do conector). A Gamers Nexus chama de "12VHPWR". A equivalência entre os nomes não está provada | usar o texto do datasheet |
 
+### 1.1 O que as fotos mostraram (2026-11-09)
+
+O catálogo `spec/references/index.md` olhou as 75 imagens do teardown (38 mostram esta placa) e os renders oficiais. Quatro fotos decisivas foram reconferidas pela sessão principal (gn-02, gn-03, gn-16, gn-29). Convenção: **face A** é a dos ventiladores, **face B** é a oposta, **borda superior** é a oposta aos contatos PCIe.
+
+| O plano v0.2 dizia | O que as fotos mostram | Imagens |
+|---|---|---|
+| E1: sai a "placa traseira" | A primeira peça a sair é o **bracket**. O texto do teardown diz "back plate" nesse ponto. Não existe placa traseira lisa | gn-14 a gn-16 |
+| Face oposta aos ventiladores: placa traseira | A face B é feita de duas áreas de grade com um X central brilhante, com o texto "RTX PRO 6000". O ar atravessa a placa da face A para a face B nas duas pontas | gn-03, gn-08 |
+| E2: sai a "moldura externa" | Sai um aro fino que contorna a face B | gn-17 |
+| Duas pilhas de aletas | Pelo menos três regiões: uma sob cada ventilador e outra junto à borda superior do PCB | gn-21, gn-26, gn-29 |
+| Ventiladores: contagem de pás desconhecida | 7 pás em cada um (faixa de 7 a 8), os dois iguais | gn-02 |
+| Memória: 16 no verso, posição desconhecida | 16 chips em U em volta do chip: 5 de cada lado, 4 junto à borda do conector de energia e 2 do lado oposto. Nenhuma posição vazia no verso | gn-29 |
+| Bracket: disposição desconhecida | 4 DisplayPort em uma fileira; bracket de chapa lisa, sem grade | gn-11, gn-16 |
+| Conector: "no topo, no meio" | Borda superior, na seção central, entre 55% e 70% do comprimento a partir do bracket, inclinado. 12 cavidades de potência visíveis | gn-13, gn-29 |
+| PCB: contorno desconhecido | Quase quadrado, com um degrau no canto do conector, ocupando só a seção central da placa | gn-29 |
+| Capa do datasheet: face não identificada | É a face B | nv-01 |
+| Marcação do chip: só no texto | "GB202-870-A1" lido na foto do package | gn-35, gn-42 |
+
+Continuam sem foto: a frente do PCB sem os pads (as outras 16 posições de memória), a placa das saídas de vídeo, o interior do cooler e qualquer vista ortogonal oficial.
+
 ## 2. Árvore de peças
 
 Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** é a procedência que a geometria terá. "A derivar de fotos" é intenção: as fotos ainda não foram catalogadas nem vistas por ninguém (seção 6.1). **Fid.** é o nível de fidelidade (seção 4). "5090 FE" quer dizer derivado da GeForce RTX 5090 Founders Edition, que usa o mesmo chip e, segundo a Puget Systems, uma carcaça "quase idêntica".
@@ -25,18 +45,21 @@ Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** 
 | id | Peça | Existe | Forma | Fid. | Fonte | Lacuna |
 |---|---|---|---|---|---|---|
 | `card` | conjunto montado | confirmed | derived | A | datasheet: 5,4" x 12", dois slots | espessura em mm |
-| `frame.backplate` | placa traseira | confirmed | a derivar de fotos | A | Gamers Nexus, passo 1 | material, textura, aberturas |
-| `frame.shroud` | moldura externa | confirmed | a derivar de fotos | A | Gamers Nexus, passo 2; capa do datasheet | material, acabamento |
-| `frame.center_covers` | tampas centrais | confirmed | a derivar de fotos | B | Gamers Nexus, passo 3 | quantidade, forma |
-| `io.bracket` | bracket com 4 DisplayPort 2.1b | confirmed | a derivar de norma e fotos | A | datasheet, p. 3 | disposição das portas, grade |
-| `fasteners.*` | parafusos | confirmed | a propor | C | Gamers Nexus (sem tipos) | tipos e quantidades |
+| `frame.face_b` | face B: duas grades e X central com o texto "RTX PRO 6000" | confirmed (foto) | a derivar de fotos | A | gn-03, gn-08, nv-01 | material; o que há atrás da grade |
+| `frame.rim` | aro fino que contorna a face B | confirmed (foto) | a derivar de fotos | B | gn-17; teardown, passo 2 | o parafuso que o prende não aparece |
+| `frame.shroud` | carcaça: laterais e face A com os dois recortes de ventilador, em preto e grafite fosco | confirmed (foto) | a derivar de fotos | A | gn-02, gn-29 | material; espessura da placa; a ponta oposta ao bracket não aparece em foto |
+| `frame.center_covers` | tampas centrais (o X) | confirmed | a derivar de fotos | A | teardown, passo 3; gn-19 a gn-21 | quantidade exata |
+| `io.bracket` | bracket de chapa lisa, sem grade, com 4 DisplayPort 2.1b em uma fileira | confirmed (datasheet e foto) | a derivar de norma e fotos | A | datasheet, p. 3; gn-11, gn-16 | bracket de dois slots sem desenho de norma |
+| `fasteners.*` | parafusos | confirmed | a propor | C | fotos: 4 no bracket; sob ele, 4 com arruela clara e 9 pequenos; 4 na placa central; 4 na mola em X | tipos de cabeça; parafuso do aro |
 
 ### 2.2 Refrigeração
 
 | id | Peça | Existe | Forma | Fid. | Fonte | Lacuna |
 |---|---|---|---|---|---|---|
-| `cooler.fan.1`, `cooler.fan.2` | dois ventiladores na frente | confirmed (dois, na frente); derived (axiais) | a derivar de fotos | A | Gamers Nexus ("2 large fans on the front"); datasheet ("dual axial pathways") | diâmetro, número de pás |
-| `cooler.fins.1`, `cooler.fins.2` | pilhas de aletas atravessadas pelo ar | confirmed | a derivar de fotos | A | Gamers Nexus (aletas mais altas onde termina a placa do PCB, com depressão) | contagem, passo, material |
+| `cooler.fan.1`, `cooler.fan.2` | dois ventiladores iguais na face A, 7 pás cada (faixa de 7 a 8, contagem em foto) | confirmed (dois, na face A, pás contadas em foto); derived (axiais) | a derivar de fotos | A | teardown ("2 large fans on the front"); gn-02; datasheet ("dual axial pathways") | diâmetro: 115 ± 6 mm medido em foto de terceiro (`derived`, ver `measurements.csv`) |
+| `cooler.fins.1`, `cooler.fins.2` | pilhas de aletas pretas nas duas pontas, atravessadas pelo ar | confirmed (foto) | a derivar de fotos | A | gn-29; teardown (aletas mais altas onde termina a placa do PCB, com depressão) | contagem, passo, material |
+| `cooler.fins.3` | aletas junto à borda superior do PCB, na seção central | confirmed (foto) | a propor | B | gn-21, gn-26 | extensão e ligação com as outras pilhas |
+| `cooler.base` | base de contato de tom acobreado | confirmed (foto) | a propor | B | gn-32, gn-34 | dimensões |
 | `cooler.vapor_chamber` | câmara de vapor | derived | a propor | B | 5090 FE (página NVIDIA: "3D Vapor Chamber with integrated heat pipes"); Jon Peddie descreve "bilateral 3D vapor chambers", sem abrir a placa | não achamos teardown que mostre o interior. Pista: a figura 3 da Jon Peddie é creditada à NVIDIA |
 | `cooler.leaf_spring` | mola de pressão sobre a GPU | confirmed | a propor | B | Gamers Nexus, passo 6 | forma |
 | `gpu.tim` | pasta térmica | confirmed | illustrative | C | Gamers Nexus | |
@@ -46,17 +69,17 @@ Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** 
 
 | id | Peça | Existe | Forma | Fid. | Fonte | Lacuna |
 |---|---|---|---|---|---|---|
-| `pcb.main` | PCB principal | confirmed | a propor | A | Gamers Nexus, passo 7 | dimensões, contorno, posição do chip |
+| `pcb.main` | PCB principal, quase quadrado, com degrau no canto do conector, só na seção central | confirmed (foto) | a derivar de fotos | A | teardown, passo 7; gn-29 | dimensões: não há foto ortogonal. Estimativa grosseira de 0,28 a 0,33 do comprimento da placa, que não vale como medida |
 | `pcb.plate` | placa que cobre o PCB | confirmed | a propor | B | Gamers Nexus, passo 5 | função e forma |
-| `pcie.adapter` | adaptador PCIe com pinagem própria | confirmed | a derivar de norma e fotos | A | Gamers Nexus, passo 4 | dimensões |
+| `pcie.adapter` | adaptador PCIe com pinagem própria, ligado ao PCB por um conector fino | confirmed (texto e foto) | a derivar de norma e fotos | A | teardown, passo 4; gn-25 | dimensões |
 | `pcie.clamp` | grampo do suporte do slot | confirmed | a propor | C | Gamers Nexus, passo 4 | forma |
-| `flex.*` | cabos flat | confirmed (existem); derived (o que ligam, pela 5090 FE) | a propor | B | Gamers Nexus, passo 6 ("remove ribbon cables", sem dizer o que ligam) | quantidade e trajeto |
-| `io.board` | placa das saídas de vídeo | derived | a propor | B | 5090 FE ("3-piece PCB", NVIDIA) | não confirmada nesta placa |
+| `flex.*` | cabos flat | confirmed (existem); derived (o que ligam, pela 5090 FE) | a propor | B | teardown, passo 6; gn-29 (um cabo sai do PCB e entra no cooler) | a outra ponta não aparece |
+| `io.board` | placa das saídas de vídeo | derived | a propor | B | 5090 FE ("3-piece PCB", NVIDIA). Reforço: as saídas ficam na ponta da placa e o PCB só ocupa o centro | não aparece em nenhuma foto |
 | `gpu.package` | GB202 ("GB 202-870-A1" na grafia da Gamers Nexus, que chama de SKU) | confirmed | a propor | A | Gamers Nexus ("massive GPU substrate"); whitepaper (die de 750 mm²) | dimensões do package e do die visível; marcação não lida em foto |
-| `mem.back.1..16` | 16 chips GDDR7 no verso | confirmed | a derivar de norma | A | Gamers Nexus | fabricante, posição exata |
+| `mem.back.1..16` | 16 chips GDDR7 no verso, em U em volta do chip: 5 + 5 nos lados, 4 junto ao conector de energia, 2 do lado oposto | confirmed (texto e foto) | a derivar de norma (12 × 14 mm, `derived`) e fotos | A | teardown; gn-29 | fabricante; coordenadas |
 | `mem.front.1..16` | 16 posições na frente | derived (32 posições no total menos 16 no verso; a fonte não diz "na frente" nem que estão ocupadas) | a derivar de norma | A | Gamers Nexus ("32 total memory locations") | ocupação e posição exata |
-| `power.connector` | um conector de 16 pinos ("1x PCIe CEM5 16-pin") | confirmed (tipo); derived (posição) | a derivar de norma | A | datasheet, p. 3. Posição "top middle of the card": Jon Peddie | ângulo, posição exata, norma |
-| `power.inductors` | indutores | confirmed | a propor | B | Gamers Nexus (cita indutores sob pad, sem contar) | quantidade. Pista de baixa autoridade: um blog fala em 24 de um mesmo tipo |
+| `power.connector` | um conector de 16 pinos ("1x PCIe CEM5 16-pin") na borda superior, seção central, inclinado | confirmed (tipo; posição em foto) | a derivar de norma | A | datasheet, p. 3; gn-13, gn-29; norma em `standards-sources.md` | ângulo; se é 12VHPWR ou 12V-2x6 |
+| `power.inductors` | indutores em fileiras junto à borda do conector e no canto em degrau | confirmed (foto) | a propor | B | gn-33, gn-38, gn-40 | quantidade: entre 10 e 20 visíveis, sem total seguro. Pista de baixa autoridade: um blog fala em 24 de um mesmo tipo |
 | `power.vrm.gpu`, `power.vrm.mem` | fases de energia | inferred | a propor | B | nenhuma fonte desta placa. Para a 5090 FE as fontes divergem (30, 27 ou 34) | **tudo** |
 | `pcb.smd` | componentes pequenos (capacitores, resistores) | confirmed ("PCB muito denso") | illustrative | C | Gamers Nexus | não serão contados |
 
@@ -68,14 +91,15 @@ A ordem vem do teardown desta placa (Gamers Nexus). Os estágios E1 a E7 são `c
 
 | Estágio | O que sai | Peças | Procedência da ordem |
 |---|---|---|---|
-| E1 | placa traseira | `frame.backplate` | confirmed |
-| E2 | um parafuso, depois a moldura externa | `frame.shroud` | confirmed |
-| E3 | parafusos em volta do centro e tampas centrais | `frame.center_covers` | confirmed |
+| E1 | bracket (o teardown diz "back plate") | `io.bracket` | confirmed (ordem); a identificação da peça vem das fotos |
+| E2 | um parafuso, depois o aro da face B | `frame.rim` | confirmed |
+| E3 | parafusos em volta do centro e tampas centrais (o X) | `frame.center_covers` | confirmed |
 | E4 | grampo do slot e adaptador PCIe | `pcie.clamp`, `pcie.adapter` | confirmed |
 | E5 | placa que cobre o PCB | `pcb.plate` | confirmed |
 | E6 | cabos flat e parafusos da mola de pressão | `flex.*`, `cooler.leaf_spring` | confirmed |
 | E7 | PCB principal, com a pasta térmica à vista | `pcb.main`, `gpu.package`, `mem.*`, `power.*` | confirmed |
-| E8 | cooler aberto: ventiladores, aletas, câmara de vapor | `cooler.*` | **inferred**: nenhum teardown desta placa abre o cooler |
+| (não sai) | carcaça, ventiladores e aletas ficam montados no teardown | `frame.shroud`, `frame.face_b`, `cooler.*` | confirmed (foto gn-29) |
+| E8 | cooler aberto: ventiladores, aletas, câmara de vapor | `cooler.*` | **inferred**: os ventiladores nunca saem nas fotos, e não há imagem do interior |
 
 O estágio E8 é didático. O vídeo diz isso na tela.
 
@@ -114,17 +138,19 @@ Tudo vai para `design/measurements.csv`: `feature, value_mm, tolerance_mm, metho
 
 ### 6.1 Pacote de referências visuais
 
-`spec/references/index.md` lista, por vista, a URL da imagem e o que ela mostra. Imagens não são versionadas (direitos de terceiros); ficam em cache local ignorado pelo git.
+`spec/references/index.md` cataloga 75 imagens do teardown e 13 da NVIDIA: uma linha por imagem, as vistas que cada uma serve e o que se vê em cada pergunta do modelo. As imagens não são versionadas (direitos de terceiros); ficam em `spec/references/cache/`, ignorado pelo git.
 
-| Vista necessária | Temos hoje |
+| Vista necessária | Situação |
 |---|---|
-| três quartos da placa montada | capa do datasheet (render oficial) |
-| face dos ventiladores, traseira, topo com o conector, bracket, extremidade | **não catalogado** |
-| cada um dos estágios E1 a E7 | 35 capturas do teardown da Gamers Nexus, **sem catálogo**: ninguém olhou ainda o que cada uma mostra |
-| PCB frente e verso | provavelmente entre as 35 capturas, a conferir |
-| cooler aberto | não achamos fonte para esta placa. Pista a seguir: figura 3 da Jon Peddie, creditada à NVIDIA |
+| três quartos, face A e face B | temos (gn-02, gn-46; render oficial nv-01) |
+| face A, face B, topo, bracket | temos fotos oblíquas, boas para forma e disposição. **Falta vista ortogonal oficial** |
+| extremidade oposta ao bracket; borda dos contatos PCIe | **falta** |
+| estágios E1 a E7 | temos, de 2 a 11 imagens por estágio |
+| PCB, verso | temos (gn-29, oblíqua) |
+| PCB, frente sem pads | **falta** |
+| cooler aberto | **falta**: só a base de contato aparece |
 
-Primeira tarefa da F2: catalogar as 35 capturas e achar fotos de produto das vistas que faltam. Sem isso o `visual-qa` não tem com o que comparar.
+Medidas por proporção: nenhuma foto do teardown nem da NVIDIA é ortogonal. A única quase ortogonal é uma foto de banco de dados de terceiro que aparece dentro do vídeo. As medidas tiradas dela estão em `measurements.csv` como `derived`, com ±4% de escala, e a altura medida (122 mm de carcaça) **não fecha** com os 137,2 mm oficiais. Usar com essa ressalva.
 
 ### 6.2 Critério de aceite da fidelidade
 
@@ -156,4 +182,6 @@ Por ordem de impacto no vídeo:
 4. Fases de energia da GPU e da memória, com a conta de potência.
 5. Package do GB202: dimensões e moldura.
 6. Parafusos: tipos e quantidades por estágio.
-7. Ventiladores: diâmetro e número de pás (primeiro tentar medir por foto).
+7. Ventiladores: resolvido em parte pelas fotos (7 pás, cerca de 115 mm). Falta a forma da pá.
+8. O que as 16 posições de memória da frente contêm e onde ficam (não há foto da frente sem pads).
+9. Espessura da carcaça e o que a cota oficial de 5,4" de altura inclui (a foto de terceiro dá 122 mm de carcaça e 133 mm com os contatos).
