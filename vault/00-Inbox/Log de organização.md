@@ -26,3 +26,10 @@
 ## 2026-10-19 (auditoria das fontes de instruções)
 - O `fact-checker` reabriu as fontes e achou 2 erros que bloqueavam (largura da instrução declarada no apêndice do Binary Utilities; operando de constante em instruções aritméticas) e 13 ajustes. Todos corrigidos. Relatório em `harness/qa/fact-check-isa.md`.
 - Seção `08` agora com `status: revisar` (a classificação RISC ou CISC precisa de revisão humana). Notas de PTX, Binary Utilities, Volta e Blackwell (GB203) passaram a `status: pronto`; a nota da Ampere segue rascunho, sem auditoria.
+
+## 2026-11-09 (hardware físico e planos v0.2)
+- Oito fontes novas em `02-Pesquisa/` sobre a placa física: datasheet oficial, teardown da própria placa (Gamers Nexus), três análises de terceiros e três fontes da RTX 5090 Founders Edition. Todas com `status: rascunho`, lidas por resumo automático.
+- `Plano de pesquisa` e `Requisitos da disciplina` atualizados com o status dessas fontes. Novo alvo 8 (normas de conectores).
+- Fora do vault: `harness/STATUS.md` (acompanhamento), `harness/design/assembly-plan.md` e `harness/story/video-plan.md`.
+- Nenhuma nota do roteiro foi alterada. Pendências que seguem abertas: duração do seminário, divisão de trabalho, revisão da seção `08`, fontes das seções `10` e `11`.
+
