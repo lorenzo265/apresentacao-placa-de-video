@@ -1,0 +1,43 @@
+{
+  "id": "chip.floorplan",
+  "level": 2,
+  "title": "Planta do GB202",
+  "disclaimer": "Diagrama ilustrativo: as contagens são oficiais, as posições não.",
+  "nodes": [
+    {
+      "id": "chip.tpc",
+      "label": "TPC",
+      "kind": "group",
+      "parent": null,
+      "count": {
+        "value": 94,
+        "claim": "chip.tpc_count",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.sm",
+      "label": "SM",
+      "kind": "unit",
+      "parent": "chip.tpc",
+      "count": {
+        "value": 188,
+        "claim": "chip.sm_count",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    }
+  ],
+  "flows": [],
+  "checks": [
+    {
+      "expr": "chip.tpc * 2",
+      "expect": 188
+    },
+    {
+      "expr": "chip.sm * 128",
+      "expect": 24064
+    }
+  ]
+}

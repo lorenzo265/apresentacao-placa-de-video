@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "content/pt-BR/beats.json: texto de cada beat",
+  "type": "object",
+  "required": [
+    "beats"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "beats": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^(a|t)[0-9]+\\.[0-9]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "headline",
+          "caption",
+          "fala",
+          "source_line",
+          "claims"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "headline": {
+            "type": "string",
+            "minLength": 1,
+            "description": "até 8 palavras (conferido por tools/validate.py)"
+          },
+          "caption": {
+            "type": "string",
+            "description": "até 35 palavras (conferido por tools/validate.py)"
+          },
+          "fala": {
+            "type": "string"
+          },
+          "source_line": {
+            "type": "string",
+            "description": "a fonte mostrada na tela; vazio só em beat sem número"
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+            },
+            "description": "ids de fatos do spec usados no texto"
+          },
+          "body": {
+            "type": "string",
+            "description": "caminho do texto longo em content/pt-BR/"
+          }
+        }
+      }
+    }
+  }
+}

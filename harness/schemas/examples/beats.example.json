@@ -1,0 +1,15 @@
+{
+  "beats": {
+    "a4.2": {
+      "headline": "12 GPCs, 94 TPCs, 188 SMs",
+      "caption": "O chip se organiza em três níveis. Nesta placa são 94 TPCs com 2 SMs cada: 188 SMs e 24.064 núcleos CUDA.",
+      "fala": "",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4",
+      "claims": [
+        "chip.tpc_count",
+        "chip.sm_count",
+        "chip.cuda_cores"
+      ]
+    }
+  }
+}

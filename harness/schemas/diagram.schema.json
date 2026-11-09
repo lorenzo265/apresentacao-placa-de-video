@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "diagrams/<id>.json: cena declarativa dos níveis 2 a 4",
+  "type": "object",
+  "required": [
+    "id",
+    "level",
+    "title",
+    "disclaimer",
+    "nodes",
+    "flows",
+    "checks"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 4
+    },
+    "title": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 10,
+      "description": "aviso mostrado no viewer: contagens oficiais, posições ilustrativas"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "kind",
+          "shape_provenance"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "count": {
+            "type": "object",
+            "required": [
+              "value",
+              "claim",
+              "provenance"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "claim": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+              },
+              "provenance": {
+                "enum": [
+                  "confirmed",
+                  "derived"
+                ]
+              }
+            }
+          },
+          "shape_provenance": {
+            "enum": [
+              "illustrative",
+              "inferred"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "label",
+          "provenance"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "path": {
+            "enum": [
+              "energy",
+              "data",
+              "heat",
+              "control"
+            ]
+          },
+          "provenance": {
+            "enum": [
+              "confirmed",
+              "derived",
+              "inferred",
+              "illustrative"
+            ]
+          },
+          "claim": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "expr",
+          "expect"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "expr": {
+            "type": "string",
+            "description": "conta com ids de nós, por exemplo chip.tpc * 2"
+          },
+          "expect": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,265 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "design/assembly.json: árvore de montagem",
+  "type": "object",
+  "required": [
+    "units",
+    "up",
+    "origin",
+    "parts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "units": {
+      "const": "mm"
+    },
+    "up": {
+      "const": "+Z"
+    },
+    "origin": {
+      "const": "card.envelope_min"
+    },
+    "parts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "parent",
+          "level",
+          "fidelity",
+          "exists_provenance",
+          "shape_provenance",
+          "confidence",
+          "rationale",
+          "explode",
+          "anchors"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "stage": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^E[1-8]$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fidelity": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "exists_provenance": {
+            "enum": [
+              "confirmed",
+              "derived",
+              "inferred",
+              "illustrative"
+            ]
+          },
+          "shape_provenance": {
+            "enum": [
+              "confirmed",
+              "derived",
+              "inferred",
+              "illustrative"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 10
+          },
+          "geometry": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "count": {
+            "type": "object",
+            "required": [
+              "value",
+              "provenance"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "provenance": {
+                "enum": [
+                  "confirmed",
+                  "derived",
+                  "inferred",
+                  "illustrative"
+                ]
+              },
+              "representative": {
+                "type": "boolean"
+              }
+            }
+          },
+          "measurements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "explode": {
+            "type": "object",
+            "required": [
+              "dir",
+              "distance",
+              "order"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "dir": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "distance": {
+                "type": "number",
+                "minimum": 0
+              },
+              "order": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "anchors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "pos"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^anchor\\."
+                },
+                "pos": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              }
+            }
+          },
+          "fasteners": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+            }
+          },
+          "viewer_disclaimer": {
+            "type": "string",
+            "minLength": 10
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "exists_provenance": {
+                      "enum": [
+                        "inferred",
+                        "illustrative"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "shape_provenance": {
+                      "enum": [
+                        "inferred",
+                        "illustrative"
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "then": {
+              "required": [
+                "viewer_disclaimer"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "known_deviations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "part",
+          "description",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "part": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

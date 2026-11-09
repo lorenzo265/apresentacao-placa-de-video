@@ -1,0 +1,80 @@
+{
+  "version": "0.2",
+  "fps": 30,
+  "cuts": {
+    "seminario": {
+      "max_priority": 1
+    },
+    "completo": {
+      "max_priority": 3
+    },
+    "teaser": {
+      "beats": [
+        "a0.2",
+        "a4.2"
+      ]
+    }
+  },
+  "beats": [
+    {
+      "id": "a0.2",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "explode_state": "assembled",
+      "hold": 6,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": null
+    },
+    {
+      "id": "a4.2",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "camera": {
+        "pos": [
+          0,
+          -200,
+          120
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power3.inOut"
+      },
+      "hold": 18,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": null
+    },
+    {
+      "id": "a6.1",
+      "act": 6,
+      "section": "10",
+      "level": 4,
+      "priority": 1,
+      "status": "blocked",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": null
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "card_id": "rtx-pro-6000-blackwell-ws",
+  "facts": [
+    {
+      "id": "chip.sm_count",
+      "value": 188,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Tab. 4; o texto da p. 8 diz 192"
+    },
+    {
+      "id": "chip.tpc_count",
+      "value": 94,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos"
+    },
+    {
+      "id": "chip.cuda_cores",
+      "value": 24064,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos"
+    },
+    {
+      "id": "mem.positions",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#3"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "power.vrm.phases",
+      "description": "nenhuma fonte desta placa conta as fases de energia"
+    }
+  ]
+}
