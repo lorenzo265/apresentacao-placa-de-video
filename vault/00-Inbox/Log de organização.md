@@ -37,3 +37,10 @@
 - O `fact-checker` reabriu as fontes principais e não aprovou na primeira passada: 3 achados que bloqueavam e 16 ajustes. Relatório em `harness/qa/fact-check-fisico.md`.
 - Notas de Jon Peddie, Puget e sabareesh passaram de `procedencia: confirmed` para `derived` (revisores que não são fonte oficial nem teardown). A decisão de ampliar `confirmed` ficou para o grupo.
 
+## 2026-11-09 (artigo entregue, MMU, interrupções, normas e fotos)
+- Artigo do grupo (Warp 32) entregue como documentação escrita. Revisão em `harness/qa/revisao-artigo.md`.
+- 27 fontes novas em `02-Pesquisa/`: 10 de MMU, interrupções e limites (as que o artigo cita e o código aberto do driver) e 17 de normas (conector de 16 pinos, slot PCIe, DisplayPort, GDDR7). Todas com `status: rascunho`.
+- Seções `10` e `11` deixaram de estar sem fonte. Seção `08` ganhou a evidência da lista oficial de instruções e uma conclusão revisada, ainda em `status: revisar`. Seções `07` e `12` ganharam os limites oficiais (255 registradores por thread, 48 warps por SM).
+- Duração do seminário registrada no `CLAUDE.md` do vault, no briefing e nas decisões: 15 a 20 minutos.
+- Pendências que seguem abertas: aprovação da conclusão da seção `08`, divisão da fala, auditoria da segunda leva de fontes.
+

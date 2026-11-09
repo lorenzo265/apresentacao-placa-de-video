@@ -51,8 +51,8 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 | Registradores | [[07 - Registradores]] | whitepaper: tamanho do banco | médio: limites por thread vêm do guia CUDA |
 | Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | PTX e Binary Utilities (auditados) e experimento `sm_120` | médio: opcodes documentados, campos de controle só pela Volta |
 | CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | whitepaper: o AMP é RISC-V | médio: a classificação do SASS depende da lista de instruções |
-| MMU | [[10 - Memória virtual e MMU]] | nenhuma | **alto** |
-| Interrupções | [[11 - Escalonamento, CPU e interrupções]] | whitepaper: AMP e escalonamento | **alto**: o whitepaper não fala de interrupções |
+| MMU | [[10 - Memória virtual e MMU]] | código aberto do driver (57 bits, 6 níveis), documento da Pascal | médio: TLB é lacuna declarada; auditoria pendente |
+| Interrupções | [[11 - Escalonamento, CPU e interrupções]] | driver aberto (MSI, duas metades), PTX (`trap`), catálogo de Xid, whitepaper (AMP) | médio: envio de comandos pela CPU ainda não lido |
 | Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]] | whitepaper: hierarquia e GDDR7 | médio |
 | Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper: parcial | médio |
 | Cache | [[09 - Hierarquia de memória e caches]] | whitepaper: tamanhos | médio: política e latências vêm de medições |
@@ -64,11 +64,13 @@ As fontes marcadas como lidas foram abertas. As demais foram encontradas por bus
 |---|---|---|
 | [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]] | lida | chip, SM, memória, AMP, comparação com a Ada |
 | [[NVIDIA - Página da RTX PRO 6000 Blackwell]] | lida | ficha do produto |
-| Guia de programação CUDA (`docs.nvidia.com/cuda/cuda-c-programming-guide/`) | a ler | modelo de execução, ocupação, limites por thread |
+| [[NVIDIA - Guia de programação CUDA]] | lido em parte, por resumo | SIMT, divergência, limites |
+| [[NVIDIA - Blackwell Tuning Guide]] | lido (trecho de ocupação por leitura direta) | 64K registradores, 255 por thread, 48 warps por SM |
 | [[NVIDIA - PTX ISA]] | lida em parte (cerca de 300.000 dos 470.000 caracteres), auditada | ISA virtual, registradores, predicação |
 | [[NVIDIA - CUDA Binary Utilities]] | lida (inclusive o apêndice final), auditada | SASS: opcodes da compute capability 12.0 |
 | [[NVIDIA - Compute capability das GPUs CUDA]] | lida | compute capability 12.0 da placa |
-| Código aberto dos módulos de kernel (`github.com/NVIDIA/open-gpu-kernel-modules`) | a ler | MMU, interrupções, comunicação com a CPU |
+| [[NVIDIA - open-gpu-kernel-modules, UVM e MMU]] e [[NVIDIA - open-gpu-kernel-modules, interrupções e falhas]] | lidos em parte (pontos centrais por leitura direta) | MMU de 6 níveis, falhas de página, MSI e MSI-X |
+| [[NVIDIA - Pascal MMU Format Changes]], [[NVIDIA - Whitepaper Tesla P100 (Pascal GP100)]], [[NVIDIA - Catálogo de Xid]], [[NVIDIA - README do GSP (driver 595.80)]], [[NVIDIA - PTX ISA, versão 9.5 e instrução trap]], [[Huerta et al. - Analyzing Modern NVIDIA GPU Cores]] | lidos (fontes citadas pelo artigo entregue) | MMU da Pascal, preempção, erros, GSP, `trap`, bits de controle |
 | Documentação de hardware externo do projeto NVK do Mesa (`docs.mesa3d.org/drivers/nvk/external_hardware_docs.html`) | a ler | índice de documentação de hardware |
 | [[Jia et al. - Dissecting the NVIDIA Volta GPU]] | lido em parte, auditado | codificação de 128 bits, registradores, escalonador (derivado) |
 | [[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]] | lido em parte, auditado | latências e pipeline na GB203 (derivado) |
