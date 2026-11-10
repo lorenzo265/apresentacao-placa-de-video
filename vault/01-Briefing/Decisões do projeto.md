@@ -26,7 +26,9 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-11-09 | Todo o trabalho técnico passa a ser feito neste repositório | Decisão do autor |
 | 2026-11-09 | A divisão da fala no seminário segue a definição de tarefas da [[Proposta formal]] entregue em 26/10 | É a divisão que o professor já recebeu |
 | 2026-11-09 | Proposta entregue arquivada (PDF e transcrição); o rascunho de 19/10 foi para `_arquivo/` | O repositório só tinha o rascunho, que não foi a versão entregue |
+| 2026-11-10 | Conclusão RISC ou CISC aprovada: "RISC no formato, com instruções próprias de acelerador", apresentada como análise do grupo | Aprovação do autor depois da auditoria de 2026-11-09 |
+| 2026-11-10 | Início da implementação do viewer e dos diagramas do chip | Decisão do autor |
+| 2026-11-10 | Os diagramas dos níveis 2 a 4 são desenhados em uma camada SVG com um espaço de coordenadas único, e não no canvas 3D | Texto nítido em qualquer zoom, captura determinística e muito menos código; o zoom continua contínuo do chip ao detalhe |
 
 ## Em aberto
 - Três ajustes na divisão da fala (`harness/story/video-plan.md`, seção 6).
-- Aprovar a conclusão RISC ou CISC revisada ([[08 - Instruções PTX e SASS, RISC ou CISC]]).

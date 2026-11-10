@@ -1,5 +1,5 @@
 {
-  "version": "0.2",
+  "version": "0.3",
   "fps": 30,
   "cuts": {
     "seminario": {
@@ -15,6 +15,17 @@
       ]
     }
   },
+  "world": [
+    {
+      "diagram": "chip.floorplan",
+      "rect": [
+        0,
+        0,
+        1600,
+        900
+      ]
+    }
+  ],
   "beats": [
     {
       "id": "a0.2",
@@ -22,15 +33,54 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
       "explode_state": "assembled",
-      "hold": 6,
+      "camera": {
+        "pos": [
+          520,
+          -380,
+          260
+        ],
+        "target": [
+          152,
+          68,
+          20
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "hold": 7,
       "provenance": [
         "confirmed"
       ],
-      "speaker": null
+      "speaker": "Vitor"
+    },
+    {
+      "id": "t1.1",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.die"
+        ],
+        "padding": 0.08,
+        "duration": 3.0,
+        "ease": "power2.inOut"
+      },
+      "hold": 7,
+      "provenance": [
+        "illustrative"
+      ],
+      "speaker": "João"
     },
     {
       "id": "a4.2",
@@ -41,27 +91,93 @@
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
-      "camera": {
-        "pos": [
-          0,
-          -200,
-          120
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.gpc.0"
         ],
-        "target": [
-          0,
-          0,
-          0
-        ],
-        "fov": 30,
-        "duration": 2.5,
-        "ease": "power3.inOut"
+        "padding": 0.2,
+        "duration": 2.0,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:tpc",
+        "tag:sm"
+      ],
+      "flows": [
+        "chip.flow.l2_mc0"
+      ],
+      "callout": {
+        "anchor": "chip.gpc.0.tpc.0",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
       },
       "hold": 18,
       "provenance": [
         "confirmed",
         "illustrative"
       ],
-      "speaker": null
+      "speaker": "João"
+    },
+    {
+      "id": "t2.1",
+      "act": 5,
+      "section": "06",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.box"
+        ],
+        "padding": 0.08,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "hold": 8,
+      "provenance": [
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.5",
+      "act": 5,
+      "section": "06",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.block.0"
+        ],
+        "padding": 0.15,
+        "duration": 1.6,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:sched",
+        "tag:regfile"
+      ],
+      "callout": {
+        "anchor": "sm.block.0.sched",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 14,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
     },
     {
       "id": "a6.1",

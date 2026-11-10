@@ -1,6 +1,6 @@
 ---
 tipo: secao
-status: revisar
+status: pronto
 secao: Instruções PTX e SASS, RISC ou CISC
 ordem: 8
 nivel: chip
@@ -61,7 +61,7 @@ A NVIDIA não classifica o SASS como RISC ou CISC. A classificação abaixo vale
 | Escalonamento exposto ao compilador | Na Volta, ao menos 23 bits por instrução são de controle (esperas, barreiras, reuso). O compilador decide parte do escalonamento | afasta do RISC clássico e lembra VLIW (observação nossa) |
 | Microcódigo | nenhuma informação pública | não determinado |
 
-**Conclusão proposta na revisão de 2026-11-09 (`inferred`, aguarda aprovação humana):** o SASS é **RISC no formato e na regra geral, com extensões de acelerador**. Não é RISC puro nem CISC.
+**Conclusão (`inferred`, análise do grupo; aprovada pelo humano em 2026-11-10):** o SASS é **RISC no formato e na regra geral, com extensões de acelerador**. Não é RISC puro nem CISC.
 
 - A favor de RISC: instrução de largura fixa (128 bits), acesso à memória global e compartilhada por carga e armazenamento como regra, muitos registradores, poucos modos de endereçamento visíveis.
 - Contra o RISC clássico: cópia assíncrona de memória para memória (`LDGSTS`, `UTMALDG`); instruções que fazem muito trabalho de uma vez (`HMMA` e `QMMA` multiplicam um bloco de matriz por warp; `TEX` busca e filtra textura).

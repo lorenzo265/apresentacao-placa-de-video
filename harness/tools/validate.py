@@ -30,7 +30,7 @@ REAL = {
     "beats": [HARNESS / "content" / "pt-BR" / "beats.json"],
     "diagram": sorted((HARNESS / "diagrams").glob("*.json")),
 }
-EXAMPLES = {name: [SCHEMAS / "examples" / f"{name}.example.json"] for name in REAL}
+EXAMPLES = {name: sorted((SCHEMAS / "examples").glob(f"{name}.*example.json")) for name in REAL}
 
 
 def words(text):
@@ -56,6 +56,45 @@ def check_beats_text(beats):
             yield f"{beat_id}: caption com mais de {MAX_CAPTION_WORDS} palavras"
         if re.search(r"\d", text["headline"] + text["caption"]) and not text["source_line"].strip():
             yield f"{beat_id}: texto com número e sem source_line"
+
+
+def resolve(selector, diagram):
+    """Nós de um diagrama que um seletor (id ou tag:<nome>) alcança."""
+    if selector.startswith("tag:"):
+        tag = selector[4:]
+        return [n for n in diagram["nodes"] if tag in n.get("tags", [])]
+    return [n for n in diagram["nodes"] if n["id"] == selector]
+
+
+def check_beat_view(b, diagrams):
+    view = b.get("view")
+    if not view:
+        return
+    diagram = diagrams.get(view["diagram"])
+    if diagram is None:
+        yield f"{b['id']}: view aponta para o diagrama {view['diagram']}, que não existe"
+        return
+    for selector in view["focus"] + b.get("highlight", []):
+        if not resolve(selector, diagram):
+            yield f"{b['id']}: {selector} não existe em {view['diagram']}"
+    flow_ids = {f["id"] for f in diagram["flows"]}
+    for flow in b.get("flows", []):
+        if flow not in flow_ids:
+            yield f"{b['id']}: fluxo {flow} não existe em {view['diagram']}"
+    anchor = b.get("callout", {}).get("anchor")
+    if anchor and not anchor.startswith("anchor.") and not resolve(anchor, diagram):
+        yield f"{b['id']}: âncora {anchor} não existe em {view['diagram']}"
+
+
+def check_world(story, diagrams):
+    embedded = {n["embed"] for d in diagrams.values() for n in d["nodes"] if "embed" in n}
+    placed = {w["diagram"] for w in story.get("world", [])}
+    for name in sorted(placed - set(diagrams)):
+        yield f"world: diagrama {name} não existe"
+    for b in story["beats"]:
+        name = b.get("view", {}).get("diagram")
+        if name and name in diagrams and name not in placed | embedded:
+            yield f"{b['id']}: diagrama {name} não está no world nem embutido em outro"
 
 
 def check_storyboard(story, beats, spec, diagram_ids):
@@ -87,6 +126,30 @@ def check_storyboard(story, beats, spec, diagram_ids):
             yield f"{b['id']}: diagrama {b['diagram']} não existe"
 
 
+def check_diagram_structure(diagram, diagram_ids):
+    ids = [n["id"] for n in diagram["nodes"]]
+    for dup in sorted({i for i in ids if ids.count(i) > 1}):
+        yield f"nó repetido: {dup}"
+    width, height = diagram["size"]
+    for node in diagram["nodes"]:
+        x, y, w, h = node["rect"]
+        if w <= 0 or h <= 0 or x < 0 or y < 0 or x + w > width + 1e-6 or y + h > height + 1e-6:
+            yield f"{node['id']}: retângulo fora do diagrama ou vazio"
+        if node.get("parent") and node["parent"] not in ids:
+            yield f"{node['id']}: parent {node['parent']} não existe"
+        if "embed" in node and node["embed"] not in diagram_ids:
+            yield f"{node['id']}: embed {node['embed']} não existe"
+        if "embed" in node and node["embed"] == diagram["id"]:
+            yield f"{node['id']}: diagrama embutido em si mesmo"
+    flow_ids = [f["id"] for f in diagram["flows"]]
+    for dup in sorted({i for i in flow_ids if flow_ids.count(i) > 1}):
+        yield f"fluxo repetido: {dup}"
+    for flow in diagram["flows"]:
+        for end in (flow["from"], flow["to"]):
+            if end not in ids:
+                yield f"fluxo {flow['id']}: nó {end} não existe"
+
+
 def check_diagram(diagram, spec):
     counts = {n["id"]: n["count"]["value"] for n in diagram["nodes"] if "count" in n}
     facts = {f["id"]: f["value"] for f in spec["facts"]} if spec else None
@@ -97,6 +160,10 @@ def check_diagram(diagram, spec):
                 yield f"{node['id']}: claim {claim} não está em card.spec.json"
             elif facts[claim] != node["count"]["value"]:
                 yield f"{node['id']}: desenha {node['count']['value']}, o spec diz {facts[claim]}"
+        if facts is not None:
+            for extra in node.get("claims", []):
+                if extra not in facts:
+                    yield f"{node['id']}: claim {extra} não está em card.spec.json"
     for check in diagram["checks"]:
         expr = check["expr"]
         if not re.fullmatch(r"[a-z0-9_. +\-*/()]+", expr):
@@ -135,9 +202,14 @@ def main():
     diagram_ids = {d["id"] for d in loaded["diagram"]} if loaded["diagram"] else None
     if beats:
         errors += [f"beats: {e}" for e in check_beats_text(beats)]
+    diagrams = {d["id"]: d for d in loaded["diagram"]}
     if story:
         errors += [f"storyboard: {e}" for e in check_storyboard(story, beats, spec, diagram_ids)]
+        errors += [f"storyboard: {e}" for e in check_world(story, diagrams)]
+        for b in story["beats"]:
+            errors += [f"storyboard: {e}" for e in check_beat_view(b, diagrams)]
     for diagram in loaded["diagram"]:
+        errors += [f"diagrama {diagram['id']}: {e}" for e in check_diagram_structure(diagram, set(diagrams))]
         errors += [f"diagrama {diagram['id']}: {e}" for e in check_diagram(diagram, spec)]
 
     print("\n".join(errors) if errors else f"ok: {seen} arquivo(s) válido(s)")
