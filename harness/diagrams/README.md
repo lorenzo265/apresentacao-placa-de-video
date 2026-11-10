@@ -13,6 +13,7 @@ Os níveis de chip, SM e conceito não são geometria 3D. São **cenas declarati
 ## Geometria
 
 - Cada diagrama tem o seu próprio sistema de coordenadas: `size` é `[largura, altura]`, a origem fica no canto superior esquerdo e o y cresce para baixo. Use 1600 × 900 como padrão.
+- Os ids de nó e de fluxo são **únicos no projeto inteiro**, não só dentro do diagrama: cada diagrama usa um prefixo próprio (`chip.`, `sm.`, `warp.`, `isa.`, `risc.`, `memh.`, `mmu.`, `irq.`).
 - Todo nó tem `rect: [x, y, largura, altura]` **absoluto dentro do diagrama** (não relativo ao pai). `parent` é a hierarquia lógica, usada para destaque, e não muda a geometria.
 - A ordem do array `nodes` é a ordem de desenho: o que vem depois fica por cima. Liste o contêiner antes do conteúdo.
 - `embed`: o nó contém outro diagrama. O viewer desenha o diagrama filho ajustado ao `rect` do nó, mantendo a proporção e centralizando. É assim que o zoom contínuo funciona: o diagrama do SM mora dentro de uma das células de SM da planta do chip. Um diagrama pode ser embutido em um só lugar.
@@ -39,9 +40,13 @@ Os níveis de chip, SM e conceito não são geometria 3D. São **cenas declarati
 | `field` | campo de bits (palavra de instrução, endereço virtual) |
 | `table`, `cell`, `header` | tabelas (tabela de páginas, critérios) |
 | `codeline` | uma linha de código (use `mono` e `align: left`) |
-| `actor` | CPU, driver, GPU nos diagramas de sistema |
+| `actor`, `lane` | CPU, driver, GPU nos diagramas de sistema; `lane` é a faixa horizontal de um ator |
+| `step` | passo numerado de um fluxo (tratador de interrupção, percurso da tabela de páginas) |
+| `thread`, `thread-alt` | uma thread de um warp; `thread-alt` é a thread que seguiu outro caminho (laranja, como no logotipo do grupo) |
 | `counter` | número em destaque |
 | `note`, `gap` | observação; `gap` é lacuna declarada ("não é público") |
+
+Um `kind` que o viewer não conhece recebe o estilo neutro de `frame`, sem erro.
 
 `state: "disabled"` desenha o nó apagado e hachurado (posição não habilitada). `tags` são livres e servem para o storyboard selecionar grupos (`tag:sm`).
 
