@@ -7,7 +7,7 @@ Data: **2026-11-10**.
 1. **A documentação escrita foi entregue** (artigo de 13 páginas, grupo Warp 32). A revisão está em `qa/revisao-artigo.md` (segunda versão): o artigo cumpre a proposta e quase tudo tem fonte oficial. Sobram um dado desatualizado (49 bits na MMU), uma generalização na análise RISC ou CISC e cinco afirmações sem fonte ou com a fonte errada. **A primeira versão da revisão acusava o artigo de quatro erros que não eram erros**; a auditoria pegou e foi corrigido.
 2. **A pesquisa (F1) está quase fechada.** Todos os itens do enunciado têm fonte, inclusive MMU e interrupções, que estavam em branco. Falta consolidar `spec/card.spec.json`. As duas auditorias do dia reprovaram a primeira passada e tiveram as correções aplicadas; falta a segunda passada de cada uma.
 3. **A placa física agora tem base real:** teardown, datasheet, normas dos conectores e 75 fotos catalogadas. O plano de montagem está na v0.3 e mudou bastante em relação à manhã.
-4. **O seminário tem de 15 a 20 minutos.** O corte do seminário tem 42 beats e alvo de 17 minutos.
+4. **O seminário tem 22 minutos** (informado em 2026-11-10; antes, de 15 a 20). O corte do seminário tem 48 beats, alvo de 20 minutos e 19:24 de tela no orçamento atual.
 5. **Nada das fases F2 a F8 existe ainda**, além de planos, schemas e do validador. O seminário é em 7 dias.
 
 ## 2. Prazos
@@ -16,7 +16,7 @@ Data: **2026-11-10**.
 |---|---|---|---|
 | 2026-10-26 | proposta formal | 0,5 | entregue. PDF e transcrição arquivados em 2026-11-09 (`vault/01-Briefing/Proposta formal.md`). Ela compromete o tour 3D como apoio do seminário e já define a parte de cada integrante |
 | 2026-11-09 | documentação escrita | 1,5 | entregue (artigo). Revisão em `qa/revisao-artigo.md`. O PDF não está versionado |
-| 2026-11-16 | seminário, 15 a 20 minutos | 2,0 | plano de vídeo pronto; sem viewer, sem slides, sem ensaio |
+| 2026-11-16 | seminário, 22 minutos | 2,0 | plano de vídeo pronto; sem viewer, sem slides, sem ensaio |
 
 ## 3. Estado por fase
 
@@ -55,7 +55,7 @@ Apoio: 16 agentes, 1 skill escrita de 10, 5 schemas com validador testado (`tool
 | 2 | Fontes físicas | resolvido, com auditoria aplicada (`qa/fact-check-fisico.md`) |
 | 3 | Dono dos diagramas do chip | resolvido: `diagram-designer`, tipo B, confirmado |
 | 4 a 8 | Vídeo, texto por beat, atos, fidelidade, contratos | resolvidos nos planos |
-| 9 | Duração do seminário | resolvido: 15 a 20 minutos |
+| 9 | Duração do seminário | resolvido: 22 minutos (2026-11-10) |
 | 10 | Quem apresenta cada bloco | resolvido: segue a definição de tarefas da proposta entregue (`story/video-plan.md`, seção 6). Três ajustes pequenos aguardam o grupo |
 | 11 | Schemas dos contratos | resolvido: `schemas/` e `tools/validate.py`. Em 2026-11-10 o contrato dos diagramas ganhou geometria e a decisão da camada SVG (`diagrams/README.md`) |
 | 12 | Skills a escrever | aberto: nesta semana só `viewer-scaffold`, `chip-diagram-kit` e `build123d-gpu-parts` |
@@ -107,7 +107,7 @@ Linhas de corte: se a proposta de engenharia não for aprovada na terça, o inte
 6. Viewer ao vivo ou vídeo corrido (recomendado: ao vivo, com MP4 de reserva).
 7. Logos da NVIDIA no modelo (recomendado: não).
 8. Regra de procedência para observação direta por terceiro.
-9. Os 15 a 20 minutos incluem perguntas?
+9. Os 22 minutos incluem perguntas?
 
 ## 8.1 Animatic dos atos de chip (2026-11-10)
 
@@ -119,10 +119,10 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
 | Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | os 11 passaram pelo gate de fatos |
 | Textos | `content/pt-BR/beats.json` (31 beats) | os 31 passaram pelo gate de fatos |
-| Storyboard | `story/storyboard.json` (63 beats: 31 prontos, 32 rascunho, nenhum bloqueado) | validado; o teste roda os 31 |
+| Storyboard | `story/storyboard.json` (62 beats: 31 prontos, 31 rascunho, nenhum bloqueado; 29 dos prontos estão no corte do seminário, 13:45) | validado; o teste roda os 31 |
 | Auditoria | `qa/fact-check-f6*.md` (quatro passadas) | **aprovado com ressalvas, todas aplicadas**. Gate humano do animatic: **aprovado em 2026-11-10** |
 | Proposta da placa física | `design/proposal.md`, `design/proposal.json` | **aprovada no gate humano da F2 em 2026-11-10** (oito decisões, conforme recomendado) |
-| Entrega | um `.html` único, navegado ao vivo; sem vídeo por enquanto. Gerado por `npm run build:single` (`harness/dist/tour.html`, 1,3 MB), testado por `tools/smoke-single.cjs` nos dois cortes | decisão de 2026-11-10; o seminário terá mais tempo do que 15 a 20 minutos (valor a confirmar) |
+| Entrega | um `.html` único, navegado ao vivo; sem vídeo por enquanto. Gerado por `npm run build:single` (`harness/dist/tour.html`, 1,3 MB), testado por `tools/smoke-single.cjs` nos dois cortes | decisão de 2026-11-10; o seminário tem 22 minutos |
 
 Tempo do corte do seminário: ato 4 com 1:56, ato 5 com 4:57, ato 6 com 2:59, ato 7 com 1:09 (só dois dos quatro beats essenciais existem). Atos 4 a 7: 11:03, para um orçamento de 11:50. O corte completo desses atos dá 15:17.
 
@@ -141,7 +141,7 @@ Combinado com o autor em 2026-11-10: design e visualização vêm depois de a es
 6. Teaser: seis beats dão quase 3 minutos; a meta é de 30 a 45 s. Falta `hold` por corte ou um teaser de 3 beats.
 7. Falas: a do ato 4 passa do tempo de tela (cerca de 168 s de fala para 116 s); as do ato 6 sobram.
 8. Placa 3D real, explosão e os três caminhos coloridos (dependem da F2 e da F3).
-9. Atos 0 a 3 (dependem da placa 3D) e a tabela GPU contra CPU do fechamento, que precisa de fonte registrada para o lado da CPU.
+9. Atos 0 a 3 (dependem da placa 3D). A tabela GPU contra CPU (a7.3) foi retirada em 2026-11-10: o enunciado não pede comparação com CPU.
 10. Viewer: o texto do aviso do diagrama quebra em duas linhas e sai da faixa em alguns beats.
 
 ## 9. Feito em 2026-11-09
