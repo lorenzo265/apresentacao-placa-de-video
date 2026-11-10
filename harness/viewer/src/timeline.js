@@ -41,7 +41,7 @@ export function constroiTimeline({ storyboard, corte, world }) {
   const S = {
     cam: { px: 0, py: 0, pz: 0, tx: 0, ty: 0, tz: 0, fov: 30 },
     vb: { cx: 0, cy: 0, lw: Math.log(1600) },
-    mix: 0, hl: 1, line: 0, box: 0, flow: 0,
+    mix: 0, hl: 1, line: 0, box: 0, flow: 0, expl: 0,
   };
   const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
   const entradas = [];
@@ -50,7 +50,9 @@ export function constroiTimeline({ storyboard, corte, world }) {
   let cam = null;      // último estado de câmera 3D
   let vb = null;       // último enquadramento de diagrama
   let mix = null;      // 0 = 3D, 1 = diagrama
+  let nivel = 0;       // nível de explosão no fim do beat anterior (0 = montada)
   let cursor = 0;
+  const nivelDe = (e) => (e === 'assembled' ? 0 : Number(String(e).slice(1)));
 
   beats.forEach((b, i) => {
     const start = cursor;
@@ -76,6 +78,11 @@ export function constroiTimeline({ storyboard, corte, world }) {
       if (mixDe !== 0) tl.fromTo(S, { mix: mixDe }, { mix: 0, duration: dur, ease: 'power1.inOut' }, start);
       cam = alvo; mix = 0;
     }
+    // explosão: do nível anterior ao pedido, na entrada do beat (beat sem explode_state mantém o anterior)
+    const alvoNivel = b.explode_state != null ? nivelDe(b.explode_state) : nivel;
+    if (i === 0) S.expl = alvoNivel;
+    tl.fromTo(S, { expl: nivel }, { expl: alvoNivel, duration: dur, ease: diag ? 'none' : ease }, start);
+    nivel = alvoNivel;
     // destaque: 0 -> 1 durante a entrada
     tl.fromTo(S, { hl: 0 }, { hl: 1, duration: dur, ease: 'none' }, start);
     tl.set(S, { line: 0, box: 0, flow: 0 }, start);

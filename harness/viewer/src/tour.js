@@ -33,6 +33,23 @@ export function criaTour({ dados, palco, cena, capture, corte }) {
   };
   const ativo = (t) => { let k = 0; for (let i = 0; i < beats.length; i++) if (beats[i].start <= t + 1e-9) k = i; return k; };
 
+  // Destaque em 3D: fatores por malha de cada beat. Beat de diagrama herda o do último beat 3D.
+  const dims3d = [];
+  {
+    let ult = null;
+    beats.forEach((e, i) => {
+      const b = e.beat;
+      if (b.level <= 1) {
+        const partes = [b.part, ...(b.highlight ?? []).filter((h) => !h.startsWith('tag:'))].filter(Boolean);
+        const tags = (b.highlight ?? []).filter((h) => h.startsWith('tag:')).map((h) => h.slice(4));
+        for (const p of partes) if (!cena.temPeca(p) && cena.temAncora('card')) console.warn(`[${b.id}] peça ${p} não existe no GLB; sem esmaecer`);
+        ult = cena.fatoresDe(partes, tags);
+      }
+      dims3d[i] = ult;
+      if (b.overlay) console.warn(`[3D] overlay ainda sem mapeamento de peças (beat ${b.id}, caminho ${b.overlay.path}); nada desenhado`);
+    });
+  }
+
   let qVb = S.vb;      // enquadramento quantizado do quadro atual
   const k = () => STAGE_W / Math.exp(qVb.lw);
   const mundoParaTela = (wx, wy) => {
@@ -78,6 +95,7 @@ export function criaTour({ dados, palco, cena, capture, corte }) {
     const t = Math.round(tl.time() * 1e6) / 1e6;
     const q = (v) => Math.round(v * 1e6) / 1e6;
     const vb = { cx: q(S.vb.cx), cy: q(S.vb.cy), lw: q(S.vb.lw) };
+    const expl = q(S.expl);
     const mix = q(S.mix), hl = q(S.hl), line = q(S.line), box = q(S.box), flow = q(S.flow);
     const cam = Object.fromEntries(Object.entries(S.cam).map(([k2, v]) => [k2, q(v)]));
     qVb = vb;
@@ -87,6 +105,7 @@ export function criaTour({ dados, palco, cena, capture, corte }) {
     cena.renderer.domElement.style.visibility = ocultar3d ? 'hidden' : 'visible';
     cena.renderer.domElement.style.opacity = 1 - mix;
     if (!ocultar3d) {
+      cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl);
       if (!livre) cena.ajustaCamera(cam);
       cena.desenha();
     }
@@ -113,6 +132,8 @@ export function criaTour({ dados, palco, cena, capture, corte }) {
     duration, fps: storyboard.fps, cut: corte,
     beats: beats.map(({ id, start, settle, end, level }) => ({ id, start, settle, end, level })),
     textoDe,
+    /** Estado quantizado da cena 3D no instante atual (para os testes). */
+    estado: () => ({ expl: Math.round(S.expl * 1e6) / 1e6, mix: Math.round(S.mix * 1e6) / 1e6 }),
     seek,
     time: () => tl.time(),
     beatAtual: () => beats[ativo(tl.time())],

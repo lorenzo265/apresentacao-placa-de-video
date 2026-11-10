@@ -1,0 +1,39 @@
+{
+  "beats": {
+    "a8.1": {
+      "headline": "Placa montada",
+      "caption": "Fixture de teste do 3D: a placa fechada, vista pela face B.",
+      "fala": "",
+      "source_line": "",
+      "claims": []
+    },
+    "a8.2": {
+      "headline": "E1: o espelho de E/S",
+      "caption": "Fixture de teste: o suporte sai pela lateral.",
+      "fala": "",
+      "source_line": "",
+      "claims": []
+    },
+    "a8.3": {
+      "headline": "E4: o adaptador PCIe",
+      "caption": "Fixture de teste: o adaptador sobe, preso à placa.",
+      "fala": "",
+      "source_line": "",
+      "claims": []
+    },
+    "a8.4": {
+      "headline": "E7: o pacote da GPU",
+      "caption": "Fixture de teste: placa de circuito afastada, chip em destaque.",
+      "fala": "",
+      "source_line": "",
+      "claims": []
+    },
+    "t1.1": {
+      "headline": "Daqui em diante é diagrama",
+      "caption": "As contagens são oficiais. As posições e as formas são ilustrativas.",
+      "fala": "",
+      "source_line": "",
+      "claims": []
+    }
+  }
+}

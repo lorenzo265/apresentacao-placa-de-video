@@ -10,6 +10,7 @@ import { buildWorld } from './world.js';
 import { criaCena } from './scene3d.js';
 import { criaTour } from './tour.js';
 import { STAGE_W, STAGE_H } from './layout.js';
+import { criaChamada } from './callout.js';
 
 const params = new URLSearchParams(location.search);
 const capture = params.get('capture') === '1';
@@ -49,6 +50,33 @@ async function inicia() {
   cena.avisos.forEach((a) => console.warn(`[3D] ${a}`));
   // Para os testes: diz se o GLB entrou e se uma peça existe pelo id do assembly.
   window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos };
+
+  // Modo ferramenta (?frame3d=1): um quadro da cena 3D sem o tour, para frame3d.cjs.
+  if (params.get('frame3d') === '1') {
+    const chamada = criaChamada(palco);
+    window.__frame3d = ({ pos, target, fov = 30, explode = 'assembled', part = null, anchor = null, box = 'right-center' }) => {
+      const nivel = explode === 'assembled' ? 0 : Number(explode.slice(1));
+      const f = part ? cena.fatoresDe([part], []) : null;
+      cena.aplicaEstado(nivel, f, f, 1);
+      cena.ajustaCamera({ px: pos[0], py: pos[1], pz: pos[2], tx: target[0], ty: target[1], tz: target[2], fov });
+      cena.desenha();
+      const res = { glb: !cena.blockout, peca: part ? cena.temPeca(part) : null, ancora: null, caixa: null, dentro: null, cobre: null };
+      if (anchor) {
+        if (!cena.temAncora(anchor)) { res.erroAncora = `âncora ${anchor} não existe`; return res; }
+        const a = cena.ancoraTela(anchor);
+        const b = { callout: { anchor, box, line_in: 0, line_out: 0 }, provenance: [] };
+        chamada.define(b, { headline: 'Título de exemplo', caption: 'Legenda de exemplo para ver onde a caixa fica.', source_line: '' });
+        chamada.atualiza(b, a, 1, 1, '#f1f4f8');
+        const r = chamada.ret();
+        res.ancora = a; res.caixa = r;
+        res.dentro = a[0] >= 0 && a[0] <= STAGE_W && a[1] >= 0 && a[1] <= STAGE_H;
+        res.cobre = a[0] >= r[0] && a[0] <= r[0] + r[2] && a[1] >= r[1] && a[1] <= r[1] + r[3];
+      }
+      return res;
+    };
+    window.__tourReady = true;
+    return;
+  }
 
   const corte = params.get('cut') ?? (storyboard.cuts.completo ? 'completo' : Object.keys(storyboard.cuts)[0]);
   const tour = criaTour({ dados: { storyboard, textos, world }, palco, cena, capture, corte });

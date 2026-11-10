@@ -1,5 +1,343 @@
 {
   "beats": {
+    "a0.1": {
+      "headline": "Anatomia de uma GPU: da placa ao chip",
+      "caption": "Disciplina de Organização e Arquitetura de Computadores. Grupo Warp 32. Um tour pela NVIDIA RTX PRO 6000 Blackwell Workstation Edition, da placa até o interior do chip.",
+      "fala": "Somos o grupo Warp 32. Vamos abrir uma placa de vídeo profissional, peça por peça, até chegar ao chip.",
+      "source_line": "Trabalho do grupo Warp 32 para a disciplina de Organização e Arquitetura de Computadores",
+      "claims": []
+    },
+    "a0.2": {
+      "headline": "RTX PRO 6000 Blackwell Workstation Edition",
+      "caption": "A placa que vamos abrir é a NVIDIA RTX PRO 6000 Blackwell Workstation Edition: dois slots de largura e refrigeração de fluxo duplo, a ar.",
+      "fala": "Esta é a placa: NVIDIA RTX PRO 6000 Blackwell, edição Workstation. Ocupa dois slots e é refrigerada a ar.",
+      "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition, p. 1 e 3",
+      "claims": [
+        "card.model_name",
+        "card.slots",
+        "card.thermal"
+      ]
+    },
+    "a0.3": {
+      "headline": "A ficha técnica em quatro números",
+      "caption": "96 GB de memória GDDR7 com ECC, 600 W de potência total da placa, 24.064 núcleos CUDA e interface PCIe 5.0 x16.",
+      "fala": "Quatro números resumem a placa: 96 GB de GDDR7 com ECC, que é correção de erros, 600 W de potência total, 24.064 núcleos CUDA e PCIe 5.0 com 16 pistas.",
+      "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition, p. 3. ECC: whitepaper RTX PRO Blackwell v1.1, p. 13",
+      "claims": [
+        "mem.capacity_gb",
+        "mem.type",
+        "mem.ecc",
+        "card.tgp_w",
+        "chip.cuda_cores",
+        "card.pcie"
+      ]
+    },
+    "a0.4": {
+      "headline": "O mapa do tour",
+      "caption": "Cinco níveis, da placa até os conceitos. Três caminhos o acompanham: energia, dados e calor. Quatro selos dizem se cada afirmação é confirmada, derivada, provável ou ilustrativa.",
+      "fala": "O tour tem cinco níveis, da placa até os conceitos. Três caminhos o acompanham: energia, dados e calor. E quatro selos mostram a procedência de cada afirmação.",
+      "source_line": "",
+      "claims": []
+    },
+    "a1.1": {
+      "headline": "Dois ventiladores na mesma face",
+      "caption": "A face A tem dois ventiladores grandes. O datasheet fala em dois caminhos de ar axiais, ou seja, na direção do eixo do ventilador, e a placa ocupa dois slots.",
+      "fala": "Começamos pela face dos ventiladores. São dois, na frente da placa, segundo a Gamers Nexus. O datasheet fala em dois caminhos de ar axiais: o ar corre na direção do eixo. A placa ocupa dois slots.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 1 e 3",
+      "claims": [
+        "card.fans",
+        "card.airflow_pathways",
+        "card.slots"
+      ]
+    },
+    "a1.2": {
+      "headline": "5,4 por 12 polegadas, dois slots",
+      "caption": "O datasheet dá 5,4 pol de altura e 12 pol de comprimento, em dois slots. Em milímetros, conta nossa: cerca de 137 por 305.",
+      "fala": "O datasheet dá 5,4 polegadas de altura por 12 de comprimento, em dois slots. Convertendo, são cerca de 137 por 305 milímetros, conta nossa. É uma placa grande: o comprimento decide se ela cabe no gabinete.",
+      "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition, p. 3. Milímetros: conta nossa",
+      "claims": [
+        "card.form_factor",
+        "card.height_mm",
+        "card.length_mm",
+        "card.slots"
+      ]
+    },
+    "a1.3": {
+      "headline": "O ar atravessa a placa",
+      "caption": "No projeto double-flow-through, o ar atravessa a placa em vez de bater no PCB. As aberturas anguladas do topo lançam ar para cima e para longe da placa.",
+      "fala": "Na outra face, duas grades finas e um X liso. A Gamers Nexus diz que a placa empurra o ar através dela, em vez de contra o PCB, e que as aberturas do topo lançam ar para cima e para longe. Por onde o ar entra, não achamos nas fontes lidas.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 1 e 3",
+      "claims": [
+        "card.thermal",
+        "card.airflow_pathways",
+        "card.airflow_through",
+        "card.exhaust_slats",
+        "card.face_b_layout"
+      ]
+    },
+    "a1.4": {
+      "headline": "Um conector de 16 pinos no topo",
+      "caption": "O conector de energia fica na borda superior: 16 pinos, sendo 12 de potência e 4 de sinal. Os 600 W são a potência total da placa, não do conector.",
+      "fala": "No topo, o conector de energia, de 16 pinos. Pela norma, 12 levam potência e 4 levam sinal. Os 600 W são a potência total da placa. Se tudo viesse em 12 V, seriam cerca de 50 A, conta nossa. A variante, 12VHPWR ou 12V-2x6, está em aberto.",
+      "source_line": "Fonte: NVIDIA, datasheet, p. 3, e guia rápido, p. 10. Pinos: norma Intel ATX12VO. Corrente: conta nossa",
+      "claims": [
+        "card.power_connector",
+        "card.power_connector_gn",
+        "card.power_connector_position",
+        "card.power_connector_pins",
+        "card.tgp_w",
+        "card.power_current_12v_a"
+      ]
+    },
+    "a1.5": {
+      "headline": "Quatro DisplayPort no bracket",
+      "caption": "O bracket é uma chapa lisa, sem grade de ventilação, com 4 portas DisplayPort 2.1b em uma fileira. O padrão chega a 80 Gbps.",
+      "fala": "Bracket é a placa metálica que fecha o slot na traseira do gabinete. Aqui ela é lisa, sem grade, com as quatro saídas DisplayPort em fileira. Seguem o padrão 2.1b, que chega a 80 Gbps.",
+      "source_line": "Fonte: NVIDIA, datasheet, p. 3, guia rápido, p. 13, e whitepaper RTX PRO Blackwell v1.1, p. 30",
+      "claims": [
+        "card.dp_outputs",
+        "card.dp_standard",
+        "card.dp_max_gbps",
+        "card.bracket_layout"
+      ]
+    },
+    "a1.6": {
+      "headline": "Carcaça quase igual à da RTX 5090",
+      "caption": "Segundo a Puget Systems, a carcaça é quase idêntica à da GeForce RTX 5090. Esta placa traz 96 GB de memória com ECC.",
+      "fala": "A Puget Systems descreve a carcaça como quase idêntica à da GeForce RTX 5090. É juízo de revisor, sem medida. Esta placa traz 96 GB de memória com ECC.",
+      "source_line": "Fonte: Puget Systems, análise da RTX PRO 6000 Blackwell Workstation. NVIDIA, datasheet, p. 3",
+      "claims": [
+        "card.housing_vs_5090",
+        "mem.capacity_gb",
+        "mem.ecc"
+      ]
+    },
+    "a2.1": {
+      "headline": "Desmontagem na ordem de um teardown real",
+      "caption": "Seguimos os sete passos do teardown da Gamers Nexus. O primeiro a sair é o bracket de I/O, que o texto da fonte chama de back plate. A identificação vem das fotos.",
+      "fala": "Teardown é desmontar para ver o que há dentro. Seguimos o da Gamers Nexus, em sete passos. Sai primeiro o bracket de I/O. O texto diz back plate, e a identificação como bracket é nossa, pelas fotos.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Identificação pelas fotos: leitura nossa",
+      "claims": [
+        "teardown.step_count",
+        "teardown.e1"
+      ]
+    },
+    "a2.2": {
+      "headline": "Um parafuso, e sai o aro externo",
+      "caption": "Segundo passo: um único parafuso solta a moldura externa. Nas fotos, ela é um aro fino do lado das grades.",
+      "fala": "Segundo passo: um único parafuso solta a moldura externa. Que ela seja um aro fino, do lado das grades, é leitura nossa das fotos.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Forma do aro: leitura nossa das fotos",
+      "claims": [
+        "teardown.e2"
+      ]
+    },
+    "a2.3": {
+      "headline": "Parafusos centrais e tampas",
+      "caption": "No terceiro passo saem parafusos em volta do centro da placa e, com eles, as tampas centrais. A fonte não informa quantos parafusos são nem de que tipo.",
+      "fala": "Terceiro passo. Saem parafusos em volta do centro da placa e, com eles, as tampas centrais. A fonte não diz quantos parafusos são nem de que tipo.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025)",
+      "claims": [
+        "teardown.e3"
+      ]
+    },
+    "a2.4": {
+      "headline": "O conector PCIe é uma peça separada",
+      "caption": "No quarto passo desparafusa-se o grampo que prende o slot PCIe à placa, e sai o adaptador PCIe. O conector PCIe é uma peça separada do PCB.",
+      "fala": "Quarto passo. Desparafusa-se o grampo que prende o slot PCIe à placa, e sai o adaptador PCIe. É uma peça separada do PCB. A fonte diz que o slot se liga por um adaptador de pinagem customizada.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025)",
+      "claims": [
+        "teardown.e4",
+        "card.pcie_adapter_separate"
+      ]
+    },
+    "a2.5": {
+      "headline": "Uma placa cobre o PCB",
+      "caption": "No quinto passo uma placa é desencaixada com alavanca e deixa o PCB à mostra. Não achamos fonte que descreva a função dessa placa.",
+      "fala": "Quinto passo. Uma placa é desencaixada com alavanca e deixa o PCB à mostra. Não achamos fonte que descreva a função dessa placa, então não vamos inventar uma.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025)",
+      "claims": [
+        "teardown.e5"
+      ]
+    },
+    "a2.6": {
+      "headline": "Cabos flat e mola de lâmina",
+      "caption": "No sexto passo saem os cabos flat e os parafusos da mola de lâmina, para chegar ao chip. O que cada cabo liga não aparece nas fotos.",
+      "fala": "Sexto passo. Saem os cabos flat e os parafusos da mola de lâmina, para chegar ao chip. A fonte não diz a função da mola. O que os cabos ligam não aparece nas fotos.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025)",
+      "claims": [
+        "teardown.e6"
+      ]
+    },
+    "a2.7": {
+      "headline": "Pasta térmica, não metal líquido",
+      "caption": "Ao tirar o PCB, a Gamers Nexus esperava metal líquido e achou pasta térmica sobre o chip. A RTX 5090 Founders Edition usa metal líquido, então derivar da placa irmã pode errar.",
+      "fala": "No último passo sai o PCB. Nas fotos ele é quase quadrado e fica no centro, entre as duas pilhas de aletas. Sobre o chip, pasta térmica. A Gamers Nexus esperava metal líquido, como na RTX 5090, e achou pasta. Placa irmã é pista, não prova.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090 Founders Edition",
+      "claims": [
+        "teardown.e7",
+        "card.thermal_interface",
+        "ref5090.thermal_interface",
+        "pcb.position",
+        "pcb.shape"
+      ]
+    },
+    "a2.8": {
+      "headline": "Vista explodida: os três caminhos",
+      "caption": "Com a placa aberta, três caminhos atravessam as peças: energia, dados e calor. Vamos seguir um de cada vez.",
+      "fala": "Com tudo aberto, dá para ver o que a placa faz. Três caminhos cruzam estas peças: a energia, os dados e o calor. Vamos seguir um de cada vez.",
+      "source_line": "",
+      "claims": []
+    },
+    "a2.9": {
+      "headline": "Caminho da energia",
+      "caption": "A energia entra pelo conector de 16 pinos e passa por indutores antes de chegar ao chip. São 600 W de potência total da placa. Não achamos fonte com o número de fases.",
+      "fala": "Âmbar é a energia. O cabo liga quatro conectores de 8 pinos ao de 16 da placa. Quatro vezes 150 W dão 600 W, conta nossa. Fases de energia, não achamos nas fontes. Nossa proposta, provável: 24 para o chip e 4 para a memória.",
+      "source_line": "Fonte: NVIDIA, guia rápido, p. 5 e 10, e datasheet, p. 3. Fases: proposta do grupo, sem fonte",
+      "claims": [
+        "card.power_connector",
+        "card.power_adapter",
+        "card.power_adapter_inputs",
+        "card.power_per_8pin_w",
+        "card.power_adapter_nominal_w",
+        "card.tgp_w",
+        "vrm.inductor_row"
+      ]
+    },
+    "a2.10": {
+      "headline": "Caminho dos dados",
+      "caption": "Em ciano: contatos PCIe, adaptador, cabos flat, chip, memória e saídas de vídeo. As peças existem na placa. O trajeto dos cabos é o da RTX 5090 Founders Edition, e por isso é provável.",
+      "fala": "Ciano são os dados. Entram pelo PCIe, passam pelo adaptador e pelos cabos flat, chegam ao chip e à memória e saem pelas quatro portas de vídeo. O que cada cabo flat liga não aparece nas fotos. O trajeto vem da RTX 5090, então é provável.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090 Founders Edition",
+      "claims": [
+        "card.pcie",
+        "card.pcie_adapter_separate",
+        "teardown.e6",
+        "ref5090.pcb_pieces",
+        "mem.back_modules",
+        "card.dp_outputs"
+      ]
+    },
+    "a2.11": {
+      "headline": "Caminho do calor",
+      "caption": "Em vermelho: chip, pasta térmica, aletas e ar. A câmara de vapor é da RTX 5090 e aqui é provável. Não achamos fonte que mostre o interior do cooler desta placa.",
+      "fala": "Vermelho é o calor. O chip passa o calor pela pasta térmica às aletas, e o ar o leva embora. Câmara de vapor espalha o calor numa chapa selada com líquido. A 5090 tem uma, e um revisor a cita nesta placa. Nenhum teardown mostra o interior, então o cooler é proposta nossa, provável.",
+      "source_line": "Fonte: Gamers Nexus, teardown (2025). NVIDIA, página da GeForce RTX 5090. Jon Peddie Research, análise da RTX PRO 6000 (2025)",
+      "claims": [
+        "card.thermal_interface",
+        "teardown.e7",
+        "card.airflow_through",
+        "card.exhaust_slats",
+        "ref5090.vapor_chamber",
+        "card.vapor_chamber_jpr"
+      ]
+    },
+    "a2.12": {
+      "headline": "A marcação do chip: GB202-870-A1",
+      "caption": "Com a pasta limpa, a Gamers Nexus lê no chip a marcação GB 202-870-A1. Na foto, ela só é legível em parte.",
+      "fala": "Com a pasta limpa, a Gamers Nexus lê no chip a marcação GB 202-870-A1. Na foto, ela só é legível em parte, então confiamos na leitura do texto da fonte. GB202 é o nome do chip, o mesmo do whitepaper.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8",
+      "claims": [
+        "chip.marking",
+        "chip.name",
+        "teardown.e7"
+      ]
+    },
+    "a3.1": {
+      "headline": "16 chips de memória no verso",
+      "caption": "A Gamers Nexus contou 16 módulos de memória no verso do PCB. Nas fotos, 5 e 5 nas laterais do chip, 4 junto ao conector de energia e 2 na borda oposta.",
+      "fala": "Virando a placa, a memória GDDR7 aparece no verso do PCB. A fonte contou 16 módulos. Pelas fotos, cinco de cada lado do chip, quatro junto ao conector de energia e dois na borda oposta. Memória perto do chip encurta as trilhas, o que ajuda o sinal a 28 Gbps por pino.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Disposição: leitura nossa das fotos",
+      "claims": [
+        "mem.back_modules",
+        "mem.back_layout",
+        "mem.type",
+        "mem.pin_rate_gbps"
+      ]
+    },
+    "a3.2": {
+      "headline": "32 posições de memória",
+      "caption": "A Gamers Nexus fala em 32 posições de memória. Se todas estiverem ocupadas, 32 chips de 3 GB dão os 96 GB da placa. É dedução da fonte, sem leitura da marcação.",
+      "fala": "A Gamers Nexus fala em 32 posições de memória, e contou 16 no verso. Posição não é chip: a fonte não diz que todas estão ocupadas. Se estiverem, 32 vezes 3 GB dão 96 GB. Essa é a dedução da própria fonte. 24 chips de 4 GB também fecham, e as fontes não excluem isso.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 3",
+      "claims": [
+        "mem.positions",
+        "mem.back_modules",
+        "mem.chip_gb",
+        "mem.capacity_gb"
+      ]
+    },
+    "a3.3": {
+      "headline": "16 controladores de 32 bits",
+      "caption": "O chip tem 16 controladores de memória de 32 bits, 512 bits no total. Com 32 posições, são em média 2 chips por controlador. Como eles dividem o controlador é proposta nossa, provável.",
+      "fala": "São 16 controladores de 32 bits, 512 bits de barramento. Com 32 posições, a média é de dois chips por controlador, se todas estiverem ocupadas. Nenhuma fonte descreve como dois chips dividem um controlador. Nossa hipótese, provável, é dois canais por controlador, um por chip.",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, e datasheet, p. 3. Gamers Nexus, teardown (2025). Razão 2 para 1: conta nossa",
+      "claims": [
+        "chip.mem_controllers",
+        "chip.mem_controller_bits",
+        "mem.bus_bits",
+        "mem.positions",
+        "mem.positions_per_controller"
+      ]
+    },
+    "a3.4": {
+      "headline": "Largura vezes taxa dá a banda",
+      "caption": "28 Gbps por pino, vezes 512 bits, divididos por 8, dão 1.792 GB/s. A GDDR7 usa sinalização PAM3: três níveis, 1,5 bit por ciclo.",
+      "fala": "28 Gbps por pino, vezes 512 pinos de dados, divididos por 8 bits por byte, dão 1.792 GB/s. A GDDR7 usa PAM3, com três níveis por sinal, que carregam 1,5 bit por ciclo.",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e p. 12",
+      "claims": [
+        "mem.pin_rate_gbps",
+        "mem.bus_bits",
+        "mem.bandwidth_gbs",
+        "mem.signaling"
+      ]
+    },
+    "a3.5": {
+      "headline": "ECC corrige um bit trocado",
+      "caption": "A memória tem ECC de correção simples, sempre ligado e sem opção de desligar. Um bit trocado por erro é corrigido.",
+      "fala": "ECC é um código que guarda bits extras para detectar e corrigir erros. Aqui é de correção simples: um bit trocado é corrigido. Fica sempre ligado, sem opção de desligar.",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 13",
+      "claims": [
+        "mem.ecc"
+      ]
+    },
+    "a3.6": {
+      "headline": "Por que os dados moram na placa",
+      "caption": "A memória local entrega 1.792 GB/s. O PCIe 5.0 x16 chega a cerca de 63 GB/s por direção. A diferença é de cerca de 28 vezes, conta nossa.",
+      "fala": "Por que os dados moram na placa? A memória local entrega 1.792 GB/s. O PCIe 5.0 de 16 pistas chega a cerca de 63 GB/s por direção. É cerca de 28 vezes menos, conta nossa. O 63 depende de uma codificação que só achamos em fonte secundária.",
+      "source_line": "Fonte: NVIDIA, datasheet, p. 3. PCI-SIG, comunicado sobre o PCIe 5.0 (2019). Razão e 63 GB/s: contas nossas",
+      "claims": [
+        "mem.bandwidth_gbs",
+        "card.pcie",
+        "pcie.gen5_lane_gts",
+        "pcie.x16_gbs_per_direction",
+        "card.mem_vs_pcie_ratio"
+      ]
+    },
+    "a3.7": {
+      "headline": "Saídas de vídeo: DisplayPort 2.1b",
+      "caption": "As 4 saídas seguem o padrão DisplayPort 2.1b, até 80 Gbps. Como a placa chega a esse limite, com que cabo, não achamos nas fontes lidas.",
+      "fala": "As quatro saídas seguem o DisplayPort 2.1b, até 80 Gbps. Como a placa chega a esse limite, com que cabo e certificação, não achamos nas fontes lidas.",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 30. Datasheet, p. 3",
+      "claims": [
+        "card.dp_outputs",
+        "card.dp_standard",
+        "card.dp_max_gbps"
+      ]
+    },
+    "a7.5": {
+      "headline": "Remontagem e os quatro selos",
+      "caption": "A placa se remonta na ordem inversa. Cada afirmação do tour tem um selo: confirmado, derivado, provável ou ilustrativo. Eles separam fato, conta e proposta.",
+      "fala": "Montamos tudo de volta, na ordem inversa. Para fechar, os quatro selos. Confirmado é o que uma fonte oficial ou o teardown desta placa diz. Derivado é conta nossa, leitura de foto ou o que só um revisor afirma. Provável é proposta do grupo, como o interior do cooler e as fases de energia. Ilustrativo é desenho, como a planta do chip.",
+      "source_line": "",
+      "claims": []
+    },
+    "a7.6": {
+      "headline": "Créditos e fontes",
+      "caption": "Grupo Warp 32. Fontes: NVIDIA (datasheet, whitepaper e guias), Gamers Nexus, Jon Peddie Research, Puget Systems, Intel, PCI-SIG e o código aberto do driver.",
+      "fala": "Obrigado. Este trabalho é do grupo Warp 32: Vitor, Arthur, João, Lorenzo e Thiago. As fontes passam na tela: NVIDIA, Gamers Nexus, Jon Peddie Research, Puget Systems, Intel, PCI-SIG e o código aberto do driver.",
+      "source_line": "Lista completa de fontes: ver a documentação escrita do grupo Warp 32",
+      "claims": []
+    },
     "t1.1": {
       "headline": "A partir daqui é diagrama",
       "caption": "As contagens são oficiais. O arranjo segue o diagrama de blocos da NVIDIA (whitepaper, Fig. 3), que é esquemático. A planta física do die não é pública.",

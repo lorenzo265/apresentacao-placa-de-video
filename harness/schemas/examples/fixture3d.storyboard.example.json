@@ -1,0 +1,194 @@
+{
+  "version": "0.3",
+  "fps": 30,
+  "cuts": {
+    "fixture3d": {
+      "max_priority": 1
+    }
+  },
+  "world": [
+    {
+      "diagram": "chip.floorplan",
+      "rect": [
+        0,
+        0,
+        1600,
+        900
+      ]
+    }
+  ],
+  "beats": [
+    {
+      "id": "a8.1",
+      "act": 0,
+      "section": "01",
+      "level": 1,
+      "priority": 1,
+      "status": "ready",
+      "part": "io.bracket",
+      "diagram": null,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          520,
+          -380,
+          260
+        ],
+        "target": [
+          152,
+          68,
+          20
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.io.bracket.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 8,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a8.2",
+      "act": 0,
+      "section": "01",
+      "level": 1,
+      "priority": 1,
+      "status": "ready",
+      "part": "io.bracket",
+      "diagram": null,
+      "explode_state": "E1",
+      "camera": {
+        "pos": [
+          -260,
+          -300,
+          -120
+        ],
+        "target": [
+          100,
+          68,
+          20
+        ],
+        "fov": 34,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.io.bracket.1",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 8,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a8.3",
+      "act": 0,
+      "section": "01",
+      "level": 1,
+      "priority": 1,
+      "status": "ready",
+      "part": "pcie.adapter",
+      "diagram": null,
+      "explode_state": "E4",
+      "camera": {
+        "pos": [
+          560,
+          -420,
+          330
+        ],
+        "target": [
+          152,
+          68,
+          60
+        ],
+        "fov": 30,
+        "duration": 3.0,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.pcie.adapter.fingers",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 8,
+      "provenance": [
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a8.4",
+      "act": 0,
+      "section": "01",
+      "level": 1,
+      "priority": 1,
+      "status": "ready",
+      "part": "gpu.package",
+      "diagram": null,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          520,
+          -480,
+          480
+        ],
+        "target": [
+          152,
+          68,
+          80
+        ],
+        "fov": 35,
+        "duration": 3.0,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.gpu.package.1",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 8,
+      "provenance": [
+        "inferred"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "t1.1",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.die"
+        ],
+        "padding": 0.08,
+        "duration": 3.0,
+        "ease": "power2.inOut"
+      },
+      "hold": 7,
+      "provenance": [
+        "illustrative"
+      ],
+      "speaker": "João"
+    }
+  ]
+}

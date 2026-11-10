@@ -59,6 +59,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
   const placa = new THREE.Group();    // tudo em mm, Z para cima
   scene.add(placa);
   let blockout = null;
+  let estado = null;      // explosão e destaque (só com GLB)
   const avisos = [];
 
   if (temGlb) {
@@ -82,6 +83,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
       raiz.rotation.x = Math.PI / 2;
       gltf.scene.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
       placa.add(raiz);
+      estado = criaEstado3d(gltf.scene);
     } catch (e) {
       avisos.push(`falha ao carregar card.glb: ${e.message}; usando blockout`);
     }
@@ -103,8 +105,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
     if (!o) return null;
     placa.updateMatrixWorld(true);
     camera.updateMatrixWorld(true);
-    new THREE.Box3().setFromObject(o).getCenter(v);
-    if (Number.isNaN(v.x)) o.getWorldPosition(v);
+    o.getWorldPosition(v);
     v.project(camera);
     return [(v.x * 0.5 + 0.5) * STAGE_W, (-v.y * 0.5 + 0.5) * STAGE_H];
   }
@@ -112,6 +113,15 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
   return {
     renderer, camera, controls, scene, blockout, avisos,
     temAncora: (n) => !!acha(n),
+    temPeca: (n) => !!estado && estado.temPeca(n),
+    /** Aplica explosão (nível 0 a 8, contínuo) e destaque (fatores prévio e atual, mistura hl). */
+    aplicaEstado(nivel, fPrev, fCur, hl) {
+      if (!estado) return;
+      estado.explode(nivel);
+      estado.destaque(fPrev, fCur, hl);
+      placa.updateMatrixWorld(true);
+    },
+    fatoresDe: (partes, tags) => (estado ? estado.fatoresDe(partes, tags) : null),
     ancoraTela,
     ajustaCamera,
     desenha() { renderer.render(scene, camera); },
@@ -152,4 +162,76 @@ function desenhaBlockout(pai, medidas) {
   g.add(chip);
   pai.add(g);
   return g;
+}
+
+const DIM = 0.15;          // opacidade das peças esmaecidas
+const suave = (x) => x * x * (3 - 2 * x);
+
+/**
+ * Estado de explosão e de destaque sobre o GLB (nós em metros, Y para cima, dentro de gltf.scene).
+ * Explosão: nível n (0 = montada, 1 a 8 = E1 a E8, contínuo). A peça de estágio k desloca
+ * explode_cad.dir * distance (referencial CAD, relativo à peça-mãe) com progresso
+ * suave(clamp(n - (k - 1), 0, 1)). Mover o nó leva os filhos junto.
+ * Destaque: cada malha ganha uma cópia própria do material (os originais não mudam); a opacidade
+ * é recalculada a cada quadro a partir do estado, sem acumular nada.
+ */
+function criaEstado3d(raiz) {
+  const nos = [];
+  const pecas = new Map();       // nome -> true
+  const malhas = [];
+  raiz.traverse((o) => {
+    const u = o.userData ?? {};
+    if (o.name) pecas.set(o.name, o);
+    const est = /^E([1-8])$/.exec(u.stage ?? '');
+    const ex = u.explode_cad;
+    if (est && ex && ex.distance > 0) {
+      const [dx, dy, dz] = ex.dir;            // CAD (Z para cima) -> glTF (Y para cima): (x, z, -y)
+      const d = ex.distance / 1000;
+      nos.push({ o, base: o.position.clone(), estagio: Number(est[1]), off: new THREE.Vector3(dx * d, dz * d, -dy * d), p: -1 });
+    }
+    if (o.isMesh) {
+      const nomes = new Set();
+      for (let a = o; a; a = a.parent) {
+        if (a.name) nomes.add(a.name);
+        if (a.userData?.instance_of) nomes.add(a.userData.instance_of);
+        if (a.userData?.group) nomes.add(`tag:${a.userData.group}`);
+      }
+      const mats = (Array.isArray(o.material) ? o.material : [o.material]).map((m) => m.clone());
+      o.material = Array.isArray(o.material) ? mats : mats[0];
+      malhas.push({ o, nomes, mats, base: mats.map((m) => ({ op: m.opacity, tr: m.transparent, dw: m.depthWrite })), f: 1 });
+    }
+  });
+
+  return {
+    temPeca: (n) => pecas.has(n),
+    explode(nivel) {
+      for (const n of nos) {
+        const p = suave(Math.min(1, Math.max(0, nivel - (n.estagio - 1))));
+        if (p === n.p) continue;
+        n.p = p;
+        n.o.position.copy(n.base).addScaledVector(n.off, p);
+      }
+    },
+    /** Fatores de opacidade por malha para um conjunto de peças (ids) e de tags; null = nada esmaece. */
+    fatoresDe(partes, tags) {
+      const sel = [...(partes ?? []), ...(tags ?? []).map((t) => `tag:${t}`)];
+      const ok = sel.filter((n) => pecas.has(n) || n.startsWith('tag:'));
+      if (!ok.length) return null;
+      return malhas.map((m) => (ok.some((n) => m.nomes.has(n)) ? 1 : DIM));
+    },
+    destaque(fPrev, fCur, hl) {
+      malhas.forEach((m, i) => {
+        const a = fPrev ? fPrev[i] : 1, b = fCur ? fCur[i] : 1;
+        const f = a + (b - a) * hl;
+        if (f === m.f) return;
+        m.f = f;
+        m.mats.forEach((mt, k) => {
+          const bs = m.base[k];
+          mt.opacity = bs.op * f;
+          mt.transparent = bs.tr || f < 0.999;
+          mt.depthWrite = f < 0.999 ? false : bs.dw;
+        });
+      });
+    },
+  };
 }
