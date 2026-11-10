@@ -1,0 +1,738 @@
+{
+  "id": "sys.cmd",
+  "level": 4,
+  "title": "Como o trabalho chega à GPU: canais e GPFIFO",
+  "disclaimer": "Segundo o driver oficial, para os canais do próprio driver. Número de entradas do anel, posições de GET e PUT, caixas e posições são ilustrativos.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_sys_cmd.py",
+  "nodes": [
+    {
+      "id": "cmd.lane.cpu",
+      "kind": "lane",
+      "rect": [
+        40,
+        24,
+        1100,
+        176
+      ],
+      "label": "CPU (driver)",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "lane",
+        "lane-cpu"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.chan",
+      "kind": "frame",
+      "rect": [
+        40,
+        214,
+        1100,
+        360
+      ],
+      "label": "um canal",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "channel"
+      ],
+      "claims": [
+        "cmd.channel"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Cada canal tem um número fixo de entradas de GPFIFO (segundo o driver oficial)."
+    },
+    {
+      "id": "cmd.lane.gpu",
+      "kind": "lane",
+      "rect": [
+        40,
+        588,
+        1100,
+        176
+      ],
+      "label": "GPU",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "lane",
+        "lane-gpu"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.s1",
+      "kind": "step",
+      "rect": [
+        210,
+        64,
+        290,
+        100
+      ],
+      "label": "1. grava os comandos",
+      "sublabel": "no pushbuffer",
+      "label_size": 22,
+      "parent": "cmd.lane.cpu",
+      "tags": [
+        "step",
+        "submit",
+        "pushbuffer"
+      ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.s2",
+      "kind": "step",
+      "rect": [
+        520,
+        64,
+        290,
+        100
+      ],
+      "label": "2. reserva uma entrada",
+      "sublabel": "da GPFIFO do canal",
+      "label_size": 22,
+      "parent": "cmd.lane.cpu",
+      "tags": [
+        "step",
+        "submit",
+        "gpfifo"
+      ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.s3",
+      "kind": "step",
+      "rect": [
+        830,
+        64,
+        290,
+        100
+      ],
+      "label": "3. avança o ponteiro PUT",
+      "sublabel": "write_gpu_put",
+      "label_size": 22,
+      "parent": "cmd.lane.cpu",
+      "tags": [
+        "step",
+        "submit",
+        "gpfifo"
+      ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.pushbuffer",
+      "kind": "memory",
+      "rect": [
+        80,
+        280,
+        330,
+        260
+      ],
+      "label": "pushbuffer",
+      "label_size": 22,
+      "parent": "cmd.chan",
+      "tags": [
+        "pushbuffer"
+      ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.pushbuffer.cmd0",
+      "kind": "codeline",
+      "rect": [
+        96,
+        330,
+        298,
+        32.4
+      ],
+      "label": "comando",
+      "label_size": 16,
+      "parent": "cmd.pushbuffer",
+      "tags": [
+        "pushbuffer",
+        "pb-entry"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Conteúdo dos comandos: ilustrativo."
+    },
+    {
+      "id": "cmd.pushbuffer.cmd1",
+      "kind": "codeline",
+      "rect": [
+        96,
+        370.4,
+        298,
+        32.4
+      ],
+      "label": "comando",
+      "label_size": 16,
+      "parent": "cmd.pushbuffer",
+      "tags": [
+        "pushbuffer",
+        "pb-entry"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Conteúdo dos comandos: ilustrativo."
+    },
+    {
+      "id": "cmd.pushbuffer.cmd2",
+      "kind": "codeline",
+      "rect": [
+        96,
+        410.8,
+        298,
+        32.4
+      ],
+      "label": "comando",
+      "label_size": 16,
+      "parent": "cmd.pushbuffer",
+      "tags": [
+        "pushbuffer",
+        "pb-entry"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Conteúdo dos comandos: ilustrativo."
+    },
+    {
+      "id": "cmd.pushbuffer.cmd3",
+      "kind": "codeline",
+      "rect": [
+        96,
+        451.2,
+        298,
+        32.4
+      ],
+      "label": "comando",
+      "label_size": 16,
+      "parent": "cmd.pushbuffer",
+      "tags": [
+        "pushbuffer",
+        "pb-entry"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Conteúdo dos comandos: ilustrativo."
+    },
+    {
+      "id": "cmd.pushbuffer.cmd4",
+      "kind": "codeline",
+      "rect": [
+        96,
+        491.6,
+        298,
+        32.4
+      ],
+      "label": "comando",
+      "label_size": 16,
+      "parent": "cmd.pushbuffer",
+      "tags": [
+        "pushbuffer",
+        "pb-entry"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Conteúdo dos comandos: ilustrativo."
+    },
+    {
+      "id": "cmd.ring",
+      "kind": "frame",
+      "rect": [
+        570,
+        224,
+        400,
+        340
+      ],
+      "label": "GPFIFO (anel)",
+      "label_size": 20,
+      "parent": "cmd.chan",
+      "tags": [
+        "gpfifo"
+      ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ring.e0",
+      "kind": "cell",
+      "rect": [
+        733,
+        254,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "queued"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Entrada com trabalho a consumir (ilustrativo)."
+    },
+    {
+      "id": "cmd.ring.e1",
+      "kind": "cell",
+      "rect": [
+        816.44,
+        288.56,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "free"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ring.e2",
+      "kind": "cell",
+      "rect": [
+        851,
+        372,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "free"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ring.e3",
+      "kind": "cell",
+      "rect": [
+        816.44,
+        455.44,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "free"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ring.e4",
+      "kind": "cell",
+      "rect": [
+        733,
+        490,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "free"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ring.e5",
+      "kind": "cell",
+      "rect": [
+        649.56,
+        455.44,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "queued"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Entrada com trabalho a consumir (ilustrativo)."
+    },
+    {
+      "id": "cmd.ring.e6",
+      "kind": "cell",
+      "rect": [
+        615,
+        372,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "queued"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Entrada com trabalho a consumir (ilustrativo)."
+    },
+    {
+      "id": "cmd.ring.e7",
+      "kind": "cell",
+      "rect": [
+        649.56,
+        288.56,
+        74,
+        44
+      ],
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "gpfifo-entry",
+        "queued"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Entrada com trabalho a consumir (ilustrativo)."
+    },
+    {
+      "id": "cmd.ring.center",
+      "kind": "header",
+      "rect": [
+        700,
+        372,
+        140,
+        44
+      ],
+      "label": "GPFIFO",
+      "label_size": 22,
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ptr.get",
+      "kind": "field",
+      "rect": [
+        598.24,
+        508.94,
+        72,
+        36
+      ],
+      "label": "GET",
+      "label_size": 20,
+      "mono": true,
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "ptr-get",
+        "pointer"
+      ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.ptr.put",
+      "kind": "field",
+      "rect": [
+        869.76,
+        243.06,
+        72,
+        36
+      ],
+      "label": "PUT",
+      "label_size": 20,
+      "mono": true,
+      "parent": "cmd.ring",
+      "tags": [
+        "gpfifo",
+        "ptr-put",
+        "pointer"
+      ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.s4",
+      "kind": "step",
+      "rect": [
+        460,
+        628,
+        620,
+        100
+      ],
+      "label": "4. a GPU consome a fila do canal",
+      "label_size": 24,
+      "parent": "cmd.lane.gpu",
+      "tags": [
+        "step",
+        "gpfifo",
+        "channel"
+      ],
+      "claims": [
+        "cmd.gpfifo",
+        "cmd.channel"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.channels",
+      "kind": "frame",
+      "rect": [
+        1170,
+        24,
+        390,
+        250
+      ],
+      "label": "canais: filas de execução independentes",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "channel"
+      ],
+      "claims": [
+        "cmd.channel"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.channels.c0",
+      "kind": "block",
+      "rect": [
+        1186,
+        66,
+        174,
+        90
+      ],
+      "label": "canal",
+      "label_size": 20,
+      "parent": "cmd.channels",
+      "tags": [
+        "channel"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Quantidade de canais: ilustrativa."
+    },
+    {
+      "id": "cmd.channels.c1",
+      "kind": "block",
+      "rect": [
+        1370,
+        66,
+        174,
+        90
+      ],
+      "label": "canal",
+      "label_size": 20,
+      "parent": "cmd.channels",
+      "tags": [
+        "channel"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Quantidade de canais: ilustrativa."
+    },
+    {
+      "id": "cmd.channels.c2",
+      "kind": "block",
+      "rect": [
+        1186,
+        166,
+        174,
+        90
+      ],
+      "label": "canal",
+      "label_size": 20,
+      "parent": "cmd.channels",
+      "tags": [
+        "channel"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Quantidade de canais: ilustrativa."
+    },
+    {
+      "id": "cmd.channels.c3",
+      "kind": "block",
+      "rect": [
+        1370,
+        166,
+        174,
+        90
+      ],
+      "label": "…",
+      "label_size": 20,
+      "parent": "cmd.channels",
+      "tags": [
+        "channel"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Quantidade de canais: ilustrativa."
+    },
+    {
+      "id": "cmd.note.user",
+      "kind": "note",
+      "rect": [
+        1170,
+        290,
+        390,
+        120
+      ],
+      "label": "descrito para os canais do próprio driver",
+      "sublabel": "um programa CUDA passa pela parte fechada do driver",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "note",
+        "user-path"
+      ],
+      "claims": [
+        "cmd.user_path"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "O caminho de um programa CUDA comum passa pela parte fechada do driver; supor o mesmo esquema de canal e GPFIFO é leitura nossa."
+    },
+    {
+      "id": "cmd.note.driver",
+      "kind": "note",
+      "rect": [
+        1170,
+        426,
+        390,
+        80
+      ],
+      "label": "segundo o driver oficial",
+      "sublabel": "uvm_channel.c, uvm_pushbuffer.h",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "note",
+        "driver"
+      ],
+      "shape_provenance": "illustrative"
+    }
+  ],
+  "flows": [
+    {
+      "id": "cmd.flow.ptr_get",
+      "from": "cmd.ptr.get",
+      "to": "cmd.ring.e5",
+      "path": "control",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "cmd.flow.ptr_put",
+      "from": "cmd.ptr.put",
+      "to": "cmd.ring.e1",
+      "path": "control",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "cmd.flow.s1_pb",
+      "from": "cmd.s1",
+      "to": "cmd.pushbuffer",
+      "points": [
+        [
+          330,
+          164
+        ],
+        [
+          330,
+          280
+        ]
+      ],
+      "path": "data",
+      "provenance": "confirmed",
+      "claim": "cmd.submit"
+    },
+    {
+      "id": "cmd.flow.s2_entry",
+      "from": "cmd.s2",
+      "to": "cmd.ring.e0",
+      "points": [
+        [
+          770,
+          164
+        ],
+        [
+          770,
+          254
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "cmd.submit"
+    },
+    {
+      "id": "cmd.flow.s3_put",
+      "from": "cmd.s3",
+      "to": "cmd.ptr.put",
+      "points": [
+        [
+          980,
+          164
+        ],
+        [
+          980,
+          261.06
+        ],
+        [
+          941.76,
+          261.06
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "cmd.submit"
+    },
+    {
+      "id": "cmd.flow.get_gpu",
+      "from": "cmd.ptr.get",
+      "to": "cmd.s4",
+      "points": [
+        [
+          634.24,
+          544.94
+        ],
+        [
+          634.24,
+          628
+        ]
+      ],
+      "path": "data",
+      "provenance": "confirmed",
+      "claim": "cmd.gpfifo"
+    }
+  ],
+  "checks": []
+}
