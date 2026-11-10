@@ -122,7 +122,7 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 | Storyboard | `story/storyboard.json` (63 beats: 31 prontos, 32 rascunho, nenhum bloqueado) | validado; o teste roda os 31 |
 | Auditoria | `qa/fact-check-f6*.md` (quatro passadas) | **aprovado com ressalvas, todas aplicadas**. Gate humano do animatic: **aprovado em 2026-11-10** |
 | Proposta da placa física | `design/proposal.md`, `design/proposal.json` | **aprovada no gate humano da F2 em 2026-11-10** (oito decisões, conforme recomendado) |
-| Entrega | um `.html` único, navegado ao vivo; sem vídeo por enquanto | decisão de 2026-11-10; o seminário terá mais tempo do que 15 a 20 minutos (valor a confirmar) |
+| Entrega | um `.html` único, navegado ao vivo; sem vídeo por enquanto. Gerado por `npm run build:single` (`harness/dist/tour.html`, 1,3 MB), testado por `tools/smoke-single.cjs` nos dois cortes | decisão de 2026-11-10; o seminário terá mais tempo do que 15 a 20 minutos (valor a confirmar) |
 
 Tempo do corte do seminário: ato 4 com 1:56, ato 5 com 4:57, ato 6 com 2:59, ato 7 com 1:09 (só dois dos quatro beats essenciais existem). Atos 4 a 7: 11:03, para um orçamento de 11:50. O corte completo desses atos dá 15:17.
 

@@ -13,7 +13,10 @@ import { STAGE_W, STAGE_H } from './layout.js';
 
 const params = new URLSearchParams(location.search);
 const capture = params.get('capture') === '1';
+// No arquivo único (npm run build:single) os dados vêm embutidos na página.
+const embutido = window.__TOUR_DATA__ ?? null;
 const getJson = async (u) => {
+  if (embutido && u in embutido) return embutido[u];
   const r = await fetch(u);
   if (!r.ok) throw new Error(`${u}: ${r.status}`);
   return r.json();

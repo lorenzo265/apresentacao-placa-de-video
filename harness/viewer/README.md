@@ -27,6 +27,15 @@ node harness/tools/capture.cjs --cut completo [--fps 30] [--beats a4.2,a5.5] [--
 
 O smoke confere, por beat: console sem erro, `headline` igual ao de `beats.json`, limites de palavras e regra do tempo de leitura, caption sem estouro e com corpo de 28 px, caixa dentro da tela, âncora na tela e fora da caixa, foco inteiro na tela e fora da caixa, e determinismo (mesmo instante, com um `seek` no meio, dá PNG idêntico). A captura grava `harness/dist/capture/<corte>/<beat>/%05d.png`, pula o beat se o hash (beat, texto, diagramas, GLB, bundle) não mudou e monta `harness/dist/tour-<corte>.mp4`.
 
+## Arquivo único para apresentar
+
+```
+cd harness/viewer && npm run build:single        # gera harness/dist/tour.html
+node harness/tools/smoke-single.cjs [--cut seminario] [--no-build]
+```
+
+`harness/dist/tour.html` leva código, estilos, fontes e dados embutidos (cerca de 1,3 MB). Abre com dois cliques, sem servidor e sem internet. Teclas: seta para a direita e para a esquerda, espaço, `N` para as notas. O corte se troca no seletor da barra ou com `?cut=seminario` no fim do endereço. O `smoke-single` abre o arquivo por `file://` com a rede desligada, confere que nada é pedido de fora, que as fontes carregam, que a seta leva a cada beat e que o título na tela é o de `beats.json`. Enquanto não houver GLB o 3D é o blockout; quando houver, o script para com erro até o GLB ser embutido.
+
 ## API `window.__tour`
 
 `ready` (Promise; também `window.__tourReady = true`), `duration`, `fps`, `cut`, `beats` (`{id, start, settle, end, level}`), `seek(t)` (posiciona a timeline e desenha um quadro de forma síncrona), `play()`, `pause()`, `next()` (toca até o `settle` do próximo beat e pausa), `prev()`, `goto(id)`, `time()`, `probe(id)` (`{anchor, focus, box, captionOverflow, headline}` em pixels do palco; só vale para o beat ativo).

@@ -10,6 +10,7 @@
     "dev": "vite",
     "prebuild": "node scripts/sync-data.mjs",
     "build": "vite build",
+    "build:single": "npm run build && node scripts/build-single.mjs",
     "preview": "vite preview",
     "smoke": "node ../tools/smoke.cjs",
     "capture": "node ../tools/capture.cjs"
