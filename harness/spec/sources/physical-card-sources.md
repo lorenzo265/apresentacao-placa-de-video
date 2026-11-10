@@ -158,9 +158,63 @@ URL: https://sabareesh.com/posts/blackwell-waterblock/ (`derived`: blog pessoal 
 - Material e acabamento do shroud e da moldura, textura da placa traseira.
 - Disposição dos 4 DisplayPort na bracket, grade de exaustão na bracket.
 - Ângulo do conector 16 pinos e posição exata (só "top middle", JPR).
-- Conteúdo da caixa: adaptador (só JPR e snippet B&H); guia rápido da NVIDIA não encontrado.
+- Conteúdo da caixa: **resolvido em 2026-11-10** pelo guia de início rápido oficial (seção 14). Resta o que o "Enhanced Straight Extender" da mesma tabela é (a tabela não explica).
 - Dimensões do package do GB202 e do die visível; stiffener.
 - Tipos de parafuso e quantidades.
 - Peso oficial NVIDIA; o 1,9 kg vem de revisor.
 - Teardowns da RTX 6000 Ada não buscados (fora do tempo).
 - Fotos oficiais do press kit; TechPowerup, VideoCardz, Tom's Hardware, Guru3D e TweakTown bloquearam o acesso automático.
+
+---
+
+# Complemento de 2026-11-10 (F1, fatos físicos dos atos 0 a 3)
+
+Método desta seção: o PDF do guia foi baixado e **lido como imagem de página** (ferramenta Read), então os trechos abaixo são leitura visual literal. Os trechos do teardown da Gamers Nexus vieram de **resumo automático dirigido (WebFetch) pedindo citação literal**, sem leitura humana da página: valem como o resumo entregou, e o `fact-checker` deve reabrir. Fotos: vistas por esta sessão em 2026-11-10 (gn-11, gn-29) e pelo catálogo `harness/spec/references/index.md`. Acesso: 2026-11-10 para tudo. Classe da Gamers Nexus: `derived` (revisor terceiro), sem exceção.
+
+## 14. NVIDIA, "NVIDIA RTX PRO Blackwell Architecture, Quick Start Guide" (r14, 2025-07-18)
+URL: https://images.nvidia.com/aem-dam/Solutions/design-visualization/quadro-product-literature/rtx-pro-blackwell-online-qsg-210x148mm-20250718-r14.pdf (`confirmed`, documento oficial NVIDIA; nome do arquivo "20250718 r14"; hospedado em images.nvidia.com). Acesso: 2026-11-10. Lido como imagem, páginas 1 a 14 do PDF (formato A5 paisagem). Uma versão anterior do mesmo guia (https://images.nvidia.com/aem-dam/en-zz/Solutions/design-visualization/quadro-product-literature/nvidia-rtx-pro-blackwell-online-qsg.pdf, metadado de modificação 2025-03-25) só teve a capa lida; não é usada.
+
+| Dado | Trecho literal | Onde (página do PDF) |
+|---|---|---|
+| Itens incluídos | tabela "Equipment: Included equipment with each NVIDIA RTX PRO Blackwell graphics card"; coluna "RTX PRO 6000 Workstation Edition": "Quick Start Card" = 1; "Auxiliary Power Cable (4x PCIe 8-pin (PSU) to 1x PCIe Gen5 16-pin (GPU) power adapter)" = 1; "Enhanced Straight Extender" = 1. A coluna "RTX PRO 6000 Max-Q Workstation Edition" traz "Auxiliary Power Cable (2x PCIe 8-pin (PSU) to 1x PCIe Gen5 16-pin (GPU) power adapter)" = 1 e "–" para o extender | p. 5 |
+| Slots | "The RTX PRO 6000, RTX PRO 6000 Max-Q, RTX PRO 5000, RTX PRO 4500, RTX PRO 4000 SFF, and RTX PRO 2000 are dual-slot GPUs and will require removing two adjacent slot covers." | p. 8 (repetido na p. 9) |
+| Posição e tipo do conector | "Connect the auxiliary power cable from the power supply to the 16-pin PCIe Gen5 connector on the top edge of the RTX PRO 6000, or on the east edge of the RTX PRO 6000 Max-Q, RTX PRO 5000, RTX PRO 4500, or RTX PRO 4000 GPU." | p. 10, passo 8 |
+| Quatro cabos | "For RTX PRO 6000, connect four separate PCIe 8-pin cables from the system power supply to the NVIDIA Quad PCIe 8-pin power adapter as necessary." | p. 10 |
+| Aviso | "Attention: Use only the included NVIDIA power connector adapter for your NVIDIA RTX PRO graphics card. Ensure a secure connection by firmly plugging the power dongle into the graphics card." Nota: "Use the recommended power connector guidelines at www.nvidia.com/workstationpowerguidelines." | p. 12 |
+| Saídas e bracket | página "Connecting To The Display": desenho do bracket da "RTX PRO 6000" com legenda "DisplayPort Connectors (x4)"; as quatro portas ficam em uma fileira, a chapa não tem grade de ventilação (a da Max-Q, no mesmo desenho, tem) | p. 13 (observação visual do desenho) |
+| Desenho do conector | no passo 8, o desenho do encaixe mostra 16 posições: 12 grandes e uma fileira de 4 pequenas | p. 10 (observação visual do desenho, sem texto) |
+| Placa | "PCI Express (PCIe) x16 slot" como requisito de placa-mãe | p. 3 |
+
+Não consta no guia: potência da placa (o desenho não traz watts), nome "12VHPWR" ou "12V-2x6", peso, dimensões. Consta só "PCIe Gen5 16-pin". O guia **não resolve** a equivalência com "CEM5 16-pin" (datasheet), 12VHPWR (GN) ou 12V-2x6 (revendedores).
+O documento "Power Guidelines for Workstation Products" (www.nvidia.com/workstationpowerguidelines, DA-07261-001_v11, abril de 2022) foi aberto e **não serve**: a tabela vai até a RTX A6000 e não cita esta placa nem o conector de 16 pinos.
+Conta (`derived`, nossa): 4 conectores de 8 pinos x 150 W = 600 W de capacidade nominal (150 W por 2x4: Intel 613768 Tabela 3-5, `standards-sources.md` seção 2). A NVIDIA não diz que o adaptador entrega 600 W nem que usa o teto de cada conector.
+
+## 15. Gamers Nexus, trechos literais do teardown (releitura de 2026-11-10)
+URL: a mesma da seção 3. Resumo automático dirigido, pedindo citação literal (sem leitura humana). A fonte usa apóstrofo curvo.
+
+| Passo ou dado | Trecho literal |
+|---|---|
+| 1 | "Starting disassembly, we removed the card’s back plate." |
+| 2 | "Then we removed a single screw, which allowed us to pull off the card’s exterior frame." |
+| 3 | "From here, we removed some screws around the center of the card to remove the center covers." |
+| 4 | "Next, we unscrewed the clamp that holds the PCIe slot to the card." e "Here’s a close look at the removed PCIe adapter." |
+| 5 | "From here, we pried a plate off of the card, exposing the PCB." |
+| 6 | "We then proceeded to remove ribbon cables and screws to the leaf spring to access the GPU." |
+| 7 | "Pulling off the PCB, we were expecting to see liquid metal, but we saw thermal paste instead." e "Finally, we cleaned off the thermal paste off of the GPU, exposing the GB 202-870-A1 SKU." |
+| Aletas | "you can see where the fins start to get taller." e "you’ll notice a slight depression down towards the middle of the fins." |
+| Saída de ar | "The top of the RTX Pro 6000 retains the angle on the card’s vented slats." |
+| PCB | "The PCB is in the center of the card" |
+| Fluxo | "pushes air straight through the card" |
+| Memória | "16 memory modules on the back" e "32 total memory locations" |
+| Adaptador | "customized pinout adapter" |
+
+Identificação do passo 1 (`derived`, por foto): o texto diz "back plate"; as fotos gn-14 a gn-16 do catálogo mostram que a peça removida é o **bracket de I/O** (chapa com as 4 DisplayPort e etiquetas). Confirmei em gn-11: chapa preta com 4 DisplayPort em fileira, parafusos visíveis (o catálogo conta 4), etiquetas "PRO 6000 96GB", código de barras e etiqueta NVIDIA.
+
+## 16. Observações visuais desta rodada (2026-11-10)
+- gn-11 (captura 7-37, GN, placa montada): "4 DisplayPort em uma fileira, igualmente espaçadas, sobre chapa preta lisa com etiquetas". Vista por esta sessão. O guia oficial (seção 14, p. 13) mostra o mesmo desenho.
+- gn-29 (captura 13-38, GN, PCB em perspectiva entre as duas carcaças de aletas): vi o PCB central entre as duas pilhas de aletas, pads cinza cobrindo posições em volta do chip (cerca de 5 na esquerda, 5 na direita, 4 embaixo e 2 em cima, pads com resíduo cobrindo os chips), reforço preto em X sobre o verso do chip, dois conectores finos e um cabo flat saindo para a carcaça, conector de energia preto com cavidades na borda, fila de componentes quadrados na borda. O catálogo (`references/index.md`, seção e) descreve a mesma disposição: "16 chips de memória, contagem razoavelmente segura (faixa de 15 a 16)", em U: 5 de cada lado, 4 na borda superior, 2 na borda dos dedos PCIe. Fica `derived`, com faixa de 15 a 16.
+- Catálogo (`references/index.md`, seção f): indutores "em fileira ao longo da borda superior, junto ao conector de energia" (gn-33, gn-36, gn-42), total visível "entre 10 e 20, sem contagem total segura". Não reconferi nesta rodada.
+- Catálogo (seção e): contorno do PCB "quase quadrado, com um degrau na borda superior junto ao conector"; sem medida (proporção grosseira em foto oblíqua).
+
+## 17. Datasheet, trechos literais da p. 1 (releitura visual de 2026-11-10)
+URL da seção 1, lido como imagem pela sessão. Capa: "NVIDIA RTX PRO 6000 Blackwell Workstation Edition". Texto: "The RTX PRO 6000 Blackwell harnesses a 600 W power design to fuel the most demanding professional workloads"; "Its double-flow-through cooling system channels airflow through dual axial pathways"; "Key Features": "96 GB of GDDR7 memory", "PCIe Gen 5", "Four Display Port 2.1b connectors", "Double flow through thermal design". Render da capa: duas grandes áreas de grade fina separadas por um X central de superfície lisa com o texto "RTX PRO 6000", encaixe do conector na borda superior e logotipo NVIDIA na lateral.
