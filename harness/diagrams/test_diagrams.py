@@ -23,7 +23,8 @@ SPEC = {f["id"]: f["value"] for f in json.loads(SPEC_PATH.read_text(encoding="ut
 D = {json.loads(p.read_text(encoding="utf-8"))["id"]: json.loads(p.read_text(encoding="utf-8"))
      for p in sorted(DIAGRAMS.glob("*.json"))}
 PREFIX = {"chip.floorplan": "chip.", "chip.sm": "sm.", "chip.warp": "warp.", "chip.isa": "isa.",
-          "chip.risc": "risc.", "chip.memhier": "memh.", "sys.mmu": "mmu.", "sys.irq": "irq."}
+          "chip.risc": "risc.", "chip.memhier": "memh.", "sys.mmu": "mmu.", "sys.irq": "irq.",
+          "close.delta": "delta.", "close.gaps": "gaps.", "sys.cmd": "cmd."}
 
 
 def nodes(did, kind=None, tag=None, enabled=None):
@@ -184,7 +185,16 @@ class ISA(unittest.TestCase):
         m = re.search(r"FFMA[^/]*/\* (0x[0-9a-f]{16}) \*/\s*/\* (0x[0-9a-f]{16}) \*/", text)
         words = [n["label"] for n in nodes("chip.isa", tag="word-hex")]
         self.assertEqual(words, [m.group(1), m.group(2)])
-        self.assertEqual(len(D["chip.isa"]["flows"]) - 1, 12)        # Tabela 3 + FFMA -> palavra
+        maps = [f for f in D["chip.isa"]["flows"] if f["id"].startswith("isa.map.")]
+        self.assertEqual(len(maps), 12 + 6)                          # Tabela 3 + tid, mul.wide, 2 add.s64, ntid
+        self.assertTrue(all(f["provenance"] == "derived" for f in maps))
+        row1 = nodes("chip.isa", tag="field-row-1")
+        self.assertEqual(sum(n["count"]["value"] for n in row1), 8 * SPEC["isa.instruction_bytes"])  # 91+23+14
+        row2 = nodes("chip.isa", tag="field-row-2")
+        instr = [n for n in row1 if "field-instr" in n["tags"]][0]["rect"]
+        for n in row2:   # opcode e predicado aninhados sob a caixa "instrução"
+            self.assertTrue(n["rect"][0] >= instr[0] and n["rect"][0] + n["rect"][2] <= instr[0] + instr[2])
+            self.assertGreater(n["rect"][1], instr[1] + instr[3] - 1e-6)
         for n in sass:
             reg_r = bool(re.search(r"(?<![A-Z_])R\d+", n["label"]))
             self.assertEqual(reg_r, "reg-r" in n["tags"], n["label"])
@@ -214,10 +224,20 @@ class MMU(unittest.TestCase):
 
 
 class Sistema(unittest.TestCase):
+    def test_xid_sem_ligacao_com_trap(self):
+        xid13 = [n for n in D["sys.irq"]["nodes"] if n.get("label") == "Xid 13"][0]
+        xid31 = [n for n in D["sys.irq"]["nodes"] if n.get("label") == "Xid 31"][0]
+        self.assertNotIn("mech-2", xid13["tags"])
+        self.assertIn("xid-log", xid13["tags"])
+        self.assertIn("mech-3", xid31["tags"])
+        trap = {n["id"] for n in nodes("sys.irq", tag="trap")}
+        for f in D["sys.irq"]["flows"]:
+            self.assertFalse(f["from"] in trap and f["to"] in (xid13["id"], xid31["id"]))
+
     def test_tres_mecanismos_e_lacunas(self):
         for k in (1, 2, 3):
             self.assertTrue(nodes("sys.irq", tag=f"mech-{k}"))
-        self.assertTrue(nodes("sys.irq", "gap"))
+        self.assertEqual(nodes("sys.irq", "gap"), [])        # o envio de comandos agora tem fonte (sys.cmd)
         inferred = [n for n in nodes("sys.irq", "note") if n.get("provenance") == "inferred"]
         self.assertEqual(len(inferred), 1)
         mig = [n for n in D["sys.irq"]["nodes"] if n["id"] == "irq.mig"][0]
@@ -228,6 +248,39 @@ class Sistema(unittest.TestCase):
         c = nodes("chip.risc", tag="conclusion")
         self.assertEqual(len(c), 1)
         self.assertEqual(c[0]["provenance"], "inferred")
+
+
+class Fechamento(unittest.TestCase):
+    def test_barras_proporcionais_e_valores(self):
+        pairs = {"sm": ("ada.sm_count", "chip.sm_count"), "l2": ("ada.l2_kb", "chip.l2_kb"),
+                 "mem": ("ada.mem_gb", "mem.capacity_gb"), "tgp": ("ada.tgp_w", "card.tgp_w"),
+                 "bw": ("ada.bandwidth_gbs", "mem.bandwidth_gbs")}
+        byid = {n["id"]: n for n in D["close.delta"]["nodes"]}
+        for k, (fa, fb) in pairs.items():
+            a, b = byid[f"delta.{k}.ada"], byid[f"delta.{k}.bw"]
+            self.assertEqual((a["count"]["value"], b["count"]["value"]), (SPEC[fa], SPEC[fb]))
+            self.assertAlmostEqual(a["rect"][2] / b["rect"][2], SPEC[fa] / SPEC[fb], places=4)  # rect arredondado a 0,01
+            self.assertIn(f"row-{k}", a["tags"])
+        self.assertEqual(len(nodes("close.delta", tag="conflict")), 1)
+
+    def test_lacunas_por_item(self):
+        items = nodes("close.gaps", tag="item")
+        self.assertEqual(len(items), 8)
+        for it in items:
+            rt = [t for t in it["tags"] if t.startswith("row-")][0]
+            self.assertEqual(len([n for n in nodes("close.gaps", "gap") if rt in n["tags"]]), 1, rt)
+            self.assertEqual(len([n for n in nodes("close.gaps", tag="known") if rt in n["tags"]]), 1, rt)
+
+    def test_gpfifo(self):
+        self.assertEqual(len(nodes("sys.cmd", tag="pointer")), 2)
+        self.assertTrue(nodes("sys.cmd", tag="gpfifo-entry"))
+        for d in D.values():   # cmd.user_path saiu do spec: ninguém cita
+            for item in d["nodes"] + d["flows"]:
+                self.assertNotIn("cmd.user_path", item.get("claims", []) + [item.get("claim")], item["id"])
+        user = [n for n in D["sys.cmd"]["nodes"] if n["id"] == "cmd.note.user"][0]
+        self.assertEqual(user["provenance"], "inferred")
+        for n in nodes("sys.cmd", "step"):
+            self.assertTrue(any(c.startswith("cmd.") for c in n.get("claims", [])), n["id"])
 
 
 if __name__ == "__main__":

@@ -93,8 +93,9 @@ for k, name in enumerate(LEVELS):
         d.flow(f"mmu.flow.walk{k}", f"mmu.level.{k - 1}", nid, path="data", provenance="illustrative",
                points=[(a[0] + a[2], cy), (b[0], cy)])
 page = lv_rects[-1]
-d.node("mmu.page", "memory", page, "página de 4 KB", val("mem.type"), tags=["page", "dram"], label_size=22,
-       claims=["mem.type", "mmu.page_sizes"], provenance="confirmed")
+d.node("mmu.page", "memory", page, "página de 4 KB", "memória física", tags=["page", "dram"], label_size=22,
+       claims=["mmu.page_sizes"], provenance="confirmed",
+       note="Destino da tradução: endereço físico. Onde a página está (GDDR7 ou memória do sistema) não tem fonte.")
 a = lv_rects[len(LEVELS) - 1]
 d.flow("mmu.flow.walk_page", f"mmu.level.{len(LEVELS) - 1}", "mmu.page", path="data", provenance="illustrative",
        points=[(a[0] + a[2], a[1] + a[3] / 2), (page[0], page[1] + page[3] / 2)])
@@ -128,8 +129,8 @@ for (name, off), r in zip(PAGES, row(40, 524, 1520, 96, len(PAGES), 20)):
     d.check(f"{idx} + {off}", VA)
 
 # ---------------- comparação, lacuna ----------------
-d.node("mmu.pascal", "note", [40, 650, 600, 90], f"Pascal: {val('mmu.pascal.va_bits')} bits, "
-       f"{val('mmu.pascal.levels')} níveis", "geração anterior, para comparar", tags=["pascal"],
+d.node("mmu.pascal", "note", [40, 650, 600, 90], f"Pascal (2016): {val('mmu.pascal.va_bits')} bits, "
+       f"{val('mmu.pascal.levels')} níveis", "geração antiga, para comparar", tags=["pascal"],
        count="mmu.pascal.va_bits", claims=["mmu.pascal.levels"], provenance="derived")
 d.node("mmu.gap.tlb", "gap", [660, 650, 900, 90], "TLB: tamanho, níveis e política", "não são públicos",
        tags=["gap", "tlb"], note=gap("mmu.tlb")["description"])

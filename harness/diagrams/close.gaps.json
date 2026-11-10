@@ -1,0 +1,584 @@
+{
+  "id": "close.gaps",
+  "level": 4,
+  "title": "O que não é público",
+  "disclaimer": "Lacunas declaradas: o que as fontes lidas não cobrem. 'Sabemos' resume fatos do spec; a disposição é ilustrativa.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_close_gaps.py",
+  "nodes": [
+    {
+      "id": "gaps.head.item",
+      "kind": "header",
+      "rect": [
+        40,
+        24,
+        290,
+        46
+      ],
+      "label": "item do enunciado",
+      "parent": null,
+      "tags": [
+        "header"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.head.known",
+      "kind": "header",
+      "rect": [
+        340,
+        24,
+        620,
+        46
+      ],
+      "label": "o que sabemos",
+      "parent": null,
+      "tags": [
+        "header",
+        "head-known"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.head.gap",
+      "kind": "header",
+      "rect": [
+        970,
+        24,
+        590,
+        46
+      ],
+      "label": "o que não é público",
+      "parent": null,
+      "tags": [
+        "header",
+        "head-gap"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.registradores.item",
+      "kind": "header",
+      "rect": [
+        40,
+        80,
+        290,
+        88
+      ],
+      "label": "Registradores",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-registradores",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.registradores.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        80,
+        620,
+        88
+      ],
+      "label": "65.536 por SM; até 255 por thread",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-registradores",
+        "known"
+      ],
+      "count": {
+        "value": 65536,
+        "claim": "sm.regfile_entries",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "sm.max_regs_per_thread"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.registradores.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        80,
+        590,
+        88
+      ],
+      "label": "bancos e portas do banco de registradores",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-registradores",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Organização do banco de registradores na Blackwell (bancos, portas): só há medidas de Volta, Turing e Ampere (derived). Os registradores RZ e PT não aparecem em fonte de leitura direta, e o RZ não aparece na listagem SASS do SAXPY."
+    },
+    {
+      "id": "gaps.instrucoes.item",
+      "kind": "header",
+      "rect": [
+        40,
+        176,
+        290,
+        88
+      ],
+      "label": "Instruções",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-instrucoes",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.instrucoes.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        176,
+        620,
+        88
+      ],
+      "label": "16 bytes cada; 258 mnemônicos",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-instrucoes",
+        "known"
+      ],
+      "count": {
+        "value": 16,
+        "unit": "bytes",
+        "claim": "isa.instruction_bytes",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "isa.sass_mnemonics"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.instrucoes.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        176,
+        590,
+        88
+      ],
+      "label": "bits de controle no sm_120",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-instrucoes",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Bits de controle, contadores de dependência e cache de reúso na Blackwell: as medidas são de Volta (Jia) e Ampere/Turing (Huerta); nenhuma Blackwell foi medida, e a NVIDIA não dá acesso aos bits pelas ferramentas. | Função de LDC R1, c[0x0][0x37c] e LDCU.64 UR4, c[0x0][0x358] no SAXPY: não documentada. Não há descrição oficial de LDC nem do operando de constante em aritmética para sm_120."
+    },
+    {
+      "id": "gaps.risc_cisc.item",
+      "kind": "header",
+      "rect": [
+        40,
+        272,
+        290,
+        88
+      ],
+      "label": "RISC ou CISC",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-risc-cisc",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.risc_cisc.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        272,
+        620,
+        88
+      ],
+      "label": "formato fixo; carga e armazenamento como regra",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-risc-cisc",
+        "known"
+      ],
+      "claims": [
+        "isa.instruction_bytes",
+        "isa.ptx_load_store"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.risc_cisc.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        272,
+        590,
+        88
+      ],
+      "label": "microcódigo; lista de modos de endereçamento",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-risc-cisc",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Declarado em chip.risc: nenhuma informação pública sobre microcódigo; modos de endereçamento não levantados."
+    },
+    {
+      "id": "gaps.mmu.item",
+      "kind": "header",
+      "rect": [
+        40,
+        368,
+        290,
+        88
+      ],
+      "label": "MMU",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-mmu",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.mmu.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        368,
+        620,
+        88
+      ],
+      "label": "57 bits, 6 níveis, 4 tamanhos de página",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-mmu",
+        "known"
+      ],
+      "count": {
+        "value": 57,
+        "unit": "bits",
+        "claim": "mmu.va_bits",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "mmu.levels",
+        "mmu.page_sizes"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.mmu.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        368,
+        590,
+        88
+      ],
+      "label": "TLB: tamanho, níveis e política",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-mmu",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Número de entradas, níveis e política de TLB: o código do driver descreve o que o software programa, não o circuito. Sem fonte. | Documento de hardware de MMU para Hopper e Blackwell: o open-gpu-doc só mostra Pascal a Ampere nas listagens abertas. Só a Pascal foi lida."
+    },
+    {
+      "id": "gaps.interrupcoes.item",
+      "kind": "header",
+      "rect": [
+        40,
+        464,
+        290,
+        88
+      ],
+      "label": "Interrupções",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-interrupcoes",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.interrupcoes.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        464,
+        620,
+        88
+      ],
+      "label": "MSI-X ou MSI, duas metades, trap, Xid",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-interrupcoes",
+        "known"
+      ],
+      "claims": [
+        "irq.modes",
+        "irq.top_half",
+        "irq.bottom_half",
+        "irq.ptx_trap",
+        "irq.xid13"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.interrupcoes.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        464,
+        590,
+        88
+      ],
+      "label": "preempção na Blackwell; interrupção no SM",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-interrupcoes",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Granularidade da preempção na Blackwell: só há fonte para a Pascal (instrução). | Se os SMs têm mecanismo de interrupção no sentido de uma CPU: nenhuma fonte; é inferência do grupo e não entra no spec. | O driver habilita MSI-X ou MSI e recua para \"PCIe virtual-wire interrupts\". Nenhum trecho lido descreve o caminho da interrupção dentro da GPU. O arquivo nv.c foi lido em parte."
+    },
+    {
+      "id": "gaps.memoria.item",
+      "kind": "header",
+      "rect": [
+        40,
+        560,
+        290,
+        88
+      ],
+      "label": "Gerenciamento de memória",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-memoria",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.memoria.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        560,
+        620,
+        88
+      ],
+      "label": "falhas em lote e repetição; carveout do L1",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-memoria",
+        "known"
+      ],
+      "claims": [
+        "fault.buffer_batch",
+        "fault.replay",
+        "mem.l1_carveout"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.memoria.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        560,
+        590,
+        88
+      ],
+      "label": "espaço por programa; tamanhos do carveout",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-memoria",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa. | Memória compartilhada por SM na CC 12.0: Tuning Guide diz 128 KB por SM, Guia CUDA Tab. 35 (resumo) dá cache unificado de 128 KB e compartilhada até 100 KB, e 99 KB por bloco. Divergência de significado não resolvida por leitura direta."
+    },
+    {
+      "id": "gaps.pipeline.item",
+      "kind": "header",
+      "rect": [
+        40,
+        656,
+        290,
+        88
+      ],
+      "label": "Pipeline",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-pipeline",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.pipeline.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        656,
+        620,
+        88
+      ],
+      "label": "4 escalonadores, 32 threads por ciclo cada",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-pipeline",
+        "known"
+      ],
+      "count": {
+        "value": 4,
+        "claim": "sm.blocks",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "sm.block_dispatch_threads_per_clk"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.pipeline.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        656,
+        590,
+        88
+      ],
+      "label": "profundidade e instruções por ciclo",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-pipeline",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Profundidade total do pipeline do SM e instruções por ciclo na Blackwell. Huerta et al. (Ampere) descrevem os estágios Fetch, Decode, Issue, Control, Allocate e execução, sem a profundidade; nada oficial."
+    },
+    {
+      "id": "gaps.cache.item",
+      "kind": "header",
+      "rect": [
+        40,
+        752,
+        290,
+        88
+      ],
+      "label": "Cache",
+      "label_size": 19,
+      "parent": null,
+      "tags": [
+        "row-cache",
+        "item"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.cache.known",
+      "kind": "cell",
+      "rect": [
+        340,
+        752,
+        620,
+        88
+      ],
+      "label": "L1 de 128 KB por SM; L2 de 128 MB",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-cache",
+        "known"
+      ],
+      "count": {
+        "value": 128,
+        "unit": "KB",
+        "claim": "sm.l1_shared_kb",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.l2_kb"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "gaps.cache.gap",
+      "kind": "gap",
+      "rect": [
+        970,
+        752,
+        590,
+        88
+      ],
+      "label": "substituição, escrita, associatividade, linha",
+      "label_size": 20,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-cache",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Política dos caches (substituição, escrita, associatividade, linha) de L1 e L2: o whitepaper não cobre."
+    }
+  ],
+  "flows": [],
+  "checks": []
+}

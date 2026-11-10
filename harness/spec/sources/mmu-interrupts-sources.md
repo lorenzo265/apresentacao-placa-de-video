@@ -356,10 +356,26 @@ Trechos pedidos pela auditoria `harness/qa/fact-check-f6.md`, conferidos com bus
 | Estado por thread | "Individual threads composing a warp start together at the same program address, but they have their own instruction address counter and register state and are therefore free to branch and execute independently." | guia CUDA 13.5, 3.2.2.1 |
 | Divergência | "A warp executes one common instruction at a time ... If threads of a warp diverge via a data-dependent conditional branch, the warp executes each branch path taken, disabling threads that are not on that path." | guia CUDA 13.5, 3.2.2.1 |
 | Antes e depois da compute capability 7.0 | "On GPUs with compute capability lower than 7.0, warps used a single program counter shared amongst all 32 threads in the warp together with an active mask specifying the active threads of the warp." | guia CUDA 13.5, 3.2.2.1.1 |
+| Escalonamento independente de threads | "In GPUs of compute capability 7.0 and later, independent thread scheduling allows full concurrency between threads, regardless of warp. With independent thread scheduling, the GPU maintains execution state per thread, including a program counter and call stack ... A schedule optimizer determines how to group active threads from the same warp together into SIMT units. ... threads can now diverge and reconverge at sub-warp granularity." | guia CUDA 13.5, 3.2.2.1.1 |
 | Troca de warp sem custo | "The execution context (program counters, registers, etc.) for each warp processed by an SM is maintained on-chip throughout the warp's lifetime. Therefore, switching between warps incurs no cost." | guia CUDA 13.5, 3.2.2.2 |
 | Escalonador de warp | "At each instruction issue cycle, a warp scheduler selects a warp with threads ready to execute its next instruction (the active threads of the warp) and issues the instruction to those threads." | guia CUDA 13.5, 3.2.2.2 |
 | Registradores e memória partilhados | "Each SM has a set of 32-bit registers that are partitioned among the warps, and a shared memory that is partitioned among the thread blocks." | guia CUDA 13.5, 3.2.2.2 |
 | Diagrama de blocos oficial | "Figure 3. GB202 GPU block diagram (full chip)." O auditor viu a figura (p. 8): duas fileiras de 6 GPCs, L2 no centro, controladores de memória nas laterais | whitepaper RTX PRO Blackwell v1.1, p. 8 |
 | FP64 | "The FP64 TFLOP rate is 1/64th the TFLOP rate of FP32 operations." | whitepaper, nota da Fig. 3 |
 | PAM3 | "uses PAM3 (Pulse Amplitude Modulation: 3 levels) signaling technology" | whitepaper, p. 12 |
+
+## Conferência direta, quarta rodada (sessão principal, 2026-11-10): beats que estavam bloqueados
+
+Busca literal nas cópias baixadas do guia CUDA 13.5, do Blackwell Tuning Guide 13.5 e do driver (`kernel-open/nvidia-uvm/uvm_channel.h`, `uvm_channel.c`, `uvm_pushbuffer.h`).
+
+| Dado | Trecho literal | Onde |
+|---|---|---|
+| Do bloco ao warp | "When an SM is given one or more thread blocks to execute, it partitions them into warps and each warp gets scheduled for execution by a warp scheduler. The way a block is partitioned into warps is always the same; each warp contains threads of consecutive, increasing thread IDs with the first warp containing thread 0." | guia CUDA 13.5, 3.2.2.2 |
+| Divisão do L1 | "the portion of the L1 cache dedicated to shared memory (known as the carveout) can be selected at runtime as in previous architectures ... using cudaFuncSetAttribute() with the attribute cudaFuncAttributePreferredSharedMemoryCarveout." A lista de tamanhos que vem em seguida é do H100 e do B200, não da compute capability 12.0 | Blackwell Tuning Guide 13.5, 1.4.2.3 |
+| Canais | "the GPU has multiple independent queues of execution (UVM channels)"; "Each channel has a uvm_gpu_tracking_semaphore_t and a set of uvm_gpfifo_entry_t (one per each HW GPFIFO entry) allowing to track completion of pushes on the channel." | `uvm_pushbuffer.h`; `uvm_channel.h` |
+| GPFIFO | "The beginning of the first pending push is called the GPU get and the end of the last push is called the CPU put. This follows the HW GPFIFO naming that's a true ringbuffer (always completing in order and supporting transparent wrap-around)."; "a HW channel has a fixed limit of GPFIFO entries it supports that's chosen at channel creation" | `uvm_pushbuffer.h` |
+| Envio do trabalho | a função `internal_channel_submit_work(uvm_push_t *push, NvU32 push_size, NvU32 new_gpu_put)` termina em `gpu->parent->host_hal->write_gpu_put(channel, new_gpu_put);` | `uvm_channel.c`, linhas 984 a 1014 |
+| Reserva | "Beginning a push on a channel implies reserving a GPFIFO entry in that channel and hence there can only be as many on-going pushes per channel as there are free GPFIFO entries." | `uvm_channel.h` |
+
+Ressalva: esses trechos descrevem os canais que o **próprio driver** usa (os canais da UVM). O caminho de um programa CUDA comum passa pela parte fechada do driver. Aplicar a ele o mesmo esquema é `derived`.
 

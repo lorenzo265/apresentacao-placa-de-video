@@ -11,7 +11,8 @@ sys.path.insert(0, str(HERE))
 SCRIPTS = [
     "build_chip_warp.py", "build_chip_sm.py", "build_chip_floorplan.py",
     "build_chip_isa.py", "build_chip_risc.py", "build_chip_memhier.py",
-    "build_sys_mmu.py", "build_sys_irq.py",
+    "build_sys_mmu.py", "build_sys_irq.py", "build_sys_cmd.py",
+    "build_close_delta.py", "build_close_gaps.py",
 ]
 
 if __name__ == "__main__":

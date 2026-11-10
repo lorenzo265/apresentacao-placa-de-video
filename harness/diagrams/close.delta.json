@@ -1,0 +1,630 @@
+{
+  "id": "close.delta",
+  "level": 4,
+  "title": "RTX 6000 Ada contra RTX PRO 6000 Blackwell",
+  "disclaimer": "Valores oficiais (whitepaper, Tab. 4, e datasheet); as razões são contas nossas. Barras proporcionais dentro de cada linha, não entre linhas.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_close_delta.py",
+  "nodes": [
+    {
+      "id": "delta.head.item",
+      "kind": "header",
+      "rect": [
+        40,
+        24,
+        260,
+        46
+      ],
+      "label": "grandeza",
+      "parent": null,
+      "tags": [
+        "header"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.legend.ada",
+      "kind": "cell",
+      "rect": [
+        320,
+        24,
+        300,
+        46
+      ],
+      "label": "RTX 6000 Ada",
+      "parent": null,
+      "tags": [
+        "legend",
+        "ada"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.legend.bw",
+      "kind": "sm",
+      "rect": [
+        630,
+        24,
+        380,
+        46
+      ],
+      "label": "RTX PRO 6000 Blackwell",
+      "parent": null,
+      "tags": [
+        "legend",
+        "blackwell"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.head.ratio",
+      "kind": "header",
+      "rect": [
+        1320,
+        24,
+        240,
+        46
+      ],
+      "label": "Blackwell / Ada",
+      "parent": null,
+      "tags": [
+        "header",
+        "ratio"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.sm.name",
+      "kind": "header",
+      "rect": [
+        40,
+        86,
+        260,
+        124
+      ],
+      "label": "SMs",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "row-sm",
+        "row-name"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.sm.ada",
+      "kind": "cell",
+      "rect": [
+        320,
+        92,
+        740.21,
+        52
+      ],
+      "label": "Ada: 142",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-sm",
+        "ada",
+        "bar"
+      ],
+      "count": {
+        "value": 142,
+        "claim": "ada.sm_count",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.sm.bw",
+      "kind": "sm",
+      "rect": [
+        320,
+        152,
+        980,
+        52
+      ],
+      "label": "Blackwell: 188",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-sm",
+        "blackwell",
+        "bar"
+      ],
+      "count": {
+        "value": 188,
+        "claim": "chip.sm_count",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.sm.ratio",
+      "kind": "counter",
+      "rect": [
+        1320,
+        108,
+        240,
+        80
+      ],
+      "label": "× 1,32",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "row-sm",
+        "ratio"
+      ],
+      "claims": [
+        "ada.sm_count",
+        "chip.sm_count"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Conta nossa: 188 / 142."
+    },
+    {
+      "id": "delta.l2.name",
+      "kind": "header",
+      "rect": [
+        40,
+        224,
+        260,
+        124
+      ],
+      "label": "L2",
+      "sublabel": "KB",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "row-l2",
+        "row-name"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.l2.ada",
+      "kind": "cell",
+      "rect": [
+        320,
+        230,
+        735,
+        52
+      ],
+      "label": "Ada: 98.304 KB",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-l2",
+        "ada",
+        "bar"
+      ],
+      "count": {
+        "value": 98304,
+        "unit": "KB",
+        "claim": "ada.l2_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.l2.bw",
+      "kind": "sm",
+      "rect": [
+        320,
+        290,
+        980,
+        52
+      ],
+      "label": "Blackwell: 131.072 KB",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-l2",
+        "blackwell",
+        "bar"
+      ],
+      "count": {
+        "value": 131072,
+        "unit": "KB",
+        "claim": "chip.l2_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.l2.ratio",
+      "kind": "counter",
+      "rect": [
+        1320,
+        246,
+        240,
+        80
+      ],
+      "label": "× 1,33",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "row-l2",
+        "ratio"
+      ],
+      "claims": [
+        "ada.l2_kb",
+        "chip.l2_kb"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Conta nossa: 131.072 / 98.304."
+    },
+    {
+      "id": "delta.mem.name",
+      "kind": "header",
+      "rect": [
+        40,
+        362,
+        260,
+        124
+      ],
+      "label": "Memória",
+      "sublabel": "GB",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "row-mem",
+        "row-name"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.mem.ada",
+      "kind": "cell",
+      "rect": [
+        320,
+        368,
+        490,
+        52
+      ],
+      "label": "Ada: 48 GB",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-mem",
+        "ada",
+        "bar"
+      ],
+      "count": {
+        "value": 48,
+        "unit": "GB",
+        "claim": "ada.mem_gb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.mem.bw",
+      "kind": "sm",
+      "rect": [
+        320,
+        428,
+        980,
+        52
+      ],
+      "label": "Blackwell: 96 GB",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-mem",
+        "blackwell",
+        "bar"
+      ],
+      "count": {
+        "value": 96,
+        "unit": "GB",
+        "claim": "mem.capacity_gb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.mem.ratio",
+      "kind": "counter",
+      "rect": [
+        1320,
+        384,
+        240,
+        80
+      ],
+      "label": "× 2,00",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "row-mem",
+        "ratio"
+      ],
+      "claims": [
+        "ada.mem_gb",
+        "mem.capacity_gb"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Conta nossa: 96 / 48."
+    },
+    {
+      "id": "delta.tgp.name",
+      "kind": "header",
+      "rect": [
+        40,
+        500,
+        260,
+        124
+      ],
+      "label": "Potência",
+      "sublabel": "W",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "row-tgp",
+        "row-name"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.tgp.ada",
+      "kind": "cell",
+      "rect": [
+        320,
+        506,
+        490,
+        52
+      ],
+      "label": "Ada: 300 W",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-tgp",
+        "ada",
+        "bar"
+      ],
+      "count": {
+        "value": 300,
+        "unit": "W",
+        "claim": "ada.tgp_w",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.tgp.bw",
+      "kind": "sm",
+      "rect": [
+        320,
+        566,
+        980,
+        52
+      ],
+      "label": "Blackwell: 600 W",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-tgp",
+        "blackwell",
+        "bar"
+      ],
+      "count": {
+        "value": 600,
+        "unit": "W",
+        "claim": "card.tgp_w",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Ada: TGP da Tab. 4. Blackwell: 'Total board power' do datasheet; não se sabe se inclui o slot."
+    },
+    {
+      "id": "delta.tgp.ratio",
+      "kind": "counter",
+      "rect": [
+        1320,
+        522,
+        240,
+        80
+      ],
+      "label": "× 2,00",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "row-tgp",
+        "ratio"
+      ],
+      "claims": [
+        "ada.tgp_w",
+        "card.tgp_w"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Conta nossa: 600 / 300."
+    },
+    {
+      "id": "delta.bw.name",
+      "kind": "header",
+      "rect": [
+        40,
+        638,
+        260,
+        124
+      ],
+      "label": "Banda de memória",
+      "sublabel": "GB/s",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "row-bw",
+        "row-name"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.bw.ada",
+      "kind": "cell",
+      "rect": [
+        320,
+        644,
+        525,
+        52
+      ],
+      "label": "Ada: 960 GB/s",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-bw",
+        "ada",
+        "bar"
+      ],
+      "count": {
+        "value": 960,
+        "unit": "GB/s",
+        "claim": "ada.bandwidth_gbs",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Ada: 960 GB/s da Tab. 4 (confere com 384 bits x 20 Gbps); a Tab. 1 diz 1.008."
+    },
+    {
+      "id": "delta.bw.bw",
+      "kind": "sm",
+      "rect": [
+        320,
+        704,
+        980,
+        52
+      ],
+      "label": "Blackwell: 1.792 GB/s",
+      "label_size": 22,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-bw",
+        "blackwell",
+        "bar"
+      ],
+      "count": {
+        "value": 1792,
+        "unit": "GB/s",
+        "claim": "mem.bandwidth_gbs",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "delta.bw.ratio",
+      "kind": "counter",
+      "rect": [
+        1320,
+        660,
+        240,
+        80
+      ],
+      "label": "× 1,87",
+      "sublabel": "(Tab. 4)",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "row-bw",
+        "ratio"
+      ],
+      "claims": [
+        "ada.bandwidth_gbs",
+        "mem.bandwidth_gbs"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Conta nossa: 1.792 / 960."
+    },
+    {
+      "id": "delta.note.conflict",
+      "kind": "note",
+      "rect": [
+        40,
+        786,
+        1520,
+        90
+      ],
+      "label": "Banda da Ada: 960 GB/s na Tab. 4 e 1.008 GB/s na Tab. 1",
+      "sublabel": "mesmo documento; adotamos a Tab. 4 (com a Tab. 1, a razão seria × 1,78)",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "conflict",
+        "row-bw",
+        "ada"
+      ],
+      "count": {
+        "value": 1008,
+        "unit": "GB/s",
+        "claim": "ada.bandwidth_gbs_tab1",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "ada.bandwidth_gbs",
+        "mem.bandwidth_gbs"
+      ],
+      "shape_provenance": "illustrative"
+    }
+  ],
+  "flows": [],
+  "checks": [
+    {
+      "expr": "delta.sm.bw / delta.sm.ada",
+      "expect": 1.323943661971831
+    },
+    {
+      "expr": "delta.l2.bw / delta.l2.ada",
+      "expect": 1.3333333333333333
+    },
+    {
+      "expr": "delta.mem.bw / delta.mem.ada",
+      "expect": 2.0
+    },
+    {
+      "expr": "delta.tgp.bw / delta.tgp.ada",
+      "expect": 2.0
+    },
+    {
+      "expr": "delta.bw.bw / delta.bw.ada",
+      "expect": 1.8666666666666667
+    },
+    {
+      "expr": "delta.mem.ada * 2",
+      "expect": 96
+    },
+    {
+      "expr": "delta.tgp.ada * 2",
+      "expect": 600
+    },
+    {
+      "expr": "delta.l2.ada * 4 / 3",
+      "expect": 131072
+    }
+  ]
+}

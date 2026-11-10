@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """chip.sm (nível 3): um SM, redesenho próprio da Fig. 5 do whitepaper (p. 10).
 
-Mesma organização da figura: quatro blocos em grade 2 x 2 (escalonador, banco de
+Mesma organização da figura: quatro partições em grade 2 x 2 (escalonador, banco de
 registradores, núcleos FP32/INT32, Tensor Core, LD/ST e SFU) e, embaixo, a L1 /
 memória compartilhada, as unidades de textura e o RT Core. Retrato, para caber
 na célula de SM da planta do chip.
@@ -16,7 +16,7 @@ CORES_BLOCK = CORES // BLOCKS                     # 32, conta nossa (derived)
 assert CORES_BLOCK * BLOCKS == CORES
 LDST = val("sm.block_ldst_units")                 # 4
 TEX = val("sm.tex_units")                         # 4
-assert val("sm.tensor_cores") == BLOCKS, "a figura tem um Tensor Core por bloco; o spec mudou"
+assert val("sm.tensor_cores") == BLOCKS, "a figura tem um Tensor Core por partição; o spec mudou"
 
 d = Diagram(
     "chip.sm", "sm", 3, "Um SM da Blackwell",
@@ -29,7 +29,7 @@ d.node("sm.frame", "frame", [20, 20, 960, 1660], "SM", tags=["sm-frame"], label_
 
 # contadores no alto: número no rótulo, unidade na sublinha
 cnt = row(150, 30, 818, 70, 4, 10)
-d.node("sm.count.blocks", "counter", cnt[0], f"{BLOCKS}", "blocos", parent="sm.frame",
+d.node("sm.count.blocks", "counter", cnt[0], f"{BLOCKS}", "partições", parent="sm.frame",
        tags=["counter", "block"], count="sm.blocks")
 d.node("sm.count.cores", "counter", cnt[1], f"{CORES}", "núcleos CUDA", parent="sm.frame",
        tags=["counter", "core"], count="sm.cuda_cores")
@@ -39,12 +39,12 @@ d.node("sm.count.regs", "counter", cnt[2], f"{br(val('sm.regfile_entries'))}", "
 d.node("sm.count.regkb", "counter", cnt[3], f"{val('sm.regfile_kb')} KB", "de registradores",
        parent="sm.frame", tags=["counter", "regfile"], count="sm.regfile_kb")
 
-# quatro blocos
+# quatro partições (ids e tags seguem sm.block.N / block-N)
 blocks = grid(40, 112, 920, 1032, 2, 2, 20, 20)
 for b, (x, y, w, h) in enumerate(blocks):
     bid = f"sm.block.{b}"
     bt = f"block-{b}"
-    d.node(bid, "block", [x, y, w, h], f"Bloco {b}", parent="sm.frame", tags=["block", bt],
+    d.node(bid, "block", [x, y, w, h], f"Partição {b}", parent="sm.frame", tags=["block", bt],
            label_size=18, claims=["sm.blocks"])
     ix, iw = x + 10, w - 20
     sched = [ix, y + 34, iw, 64]
@@ -64,22 +64,22 @@ for b, (x, y, w, h) in enumerate(blocks):
     d.node(f"{bid}.cores", "frame", cg, f"FP32 / INT32 × {CORES_BLOCK}", parent=bid,
            tags=["core", "core-group", bt], label_size=17, claims=["sm.cuda_cores", "sm.blocks"],
            provenance="derived",
-           note=f"{CORES} núcleos por SM / {BLOCKS} blocos = {CORES_BLOCK} (conta nossa). "
+           note=f"{CORES} núcleos por SM / {BLOCKS} partições = {CORES_BLOCK} (conta nossa). "
                 "Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11).")
     for c, cr in enumerate(grid(ix + 6, y + 204, 238, 234, 4, CORES_BLOCK // 4, 4, 4)):
         d.node(f"{bid}.core.{c}", "core", cr, parent=f"{bid}.cores", tags=["core", bt])
     d.node(f"{bid}.tensor", "tensor", [ix + 260, y + 176, iw - 260, 268], "Tensor Core",
            "5ª geração", parent=bid, tags=["tensor", bt], claims=["sm.tensor_cores"],
-           provenance="confirmed", note="4 por SM (p. 9), um por bloco na Fig. 5.")
+           provenance="confirmed", note="4 por SM (p. 9), um por partição na Fig. 5.")
     units = row(ix, y + 454, iw, 46, LDST + 1, 6)
     for u in range(LDST):
         d.node(f"{bid}.ldst.{u}", "ldst", units[u], "LD/ST", parent=bid, tags=["ldst", bt],
                claims=["sm.block_ldst_units"],
-               note=fact("sm.block_ldst_units")["note"] + ". Desenhadas como na Fig. 5, quatro por bloco.")
+               note="Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU.")
     d.node(f"{bid}.sfu", "sfu", units[LDST], "SFU", parent=bid, tags=["sfu", bt],
-           note="Presente na Fig. 5; o spec não tem fato com a contagem de SFUs.")
+           claims=["sm.block_sfu"], provenance="confirmed", note="Uma SFU por partição (Fig. 5).")
 
-# unidades comuns aos quatro blocos
+# unidades comuns às quatro partições
 d.node("sm.l1", "cache", [40, 1164, 920, 76], "L1 / memória compartilhada",
        f"{val('sm.l1_shared_kb')} KB", parent="sm.frame", tags=["l1", "cache"],
        count="sm.l1_shared_kb", provenance="confirmed")
@@ -90,6 +90,7 @@ d.node("sm.rt", "rt", [40, 1314, 920, 220], "RT Core", "4ª geração", parent="
        tags=["rt"], count="sm.rt_cores", provenance="confirmed")
 d.node("sm.fp64", "note", [40, 1550, 920, 110], f"{val('sm.fp64_cores')} núcleos FP64",
        "não aparecem na Fig. 5", parent="sm.frame", tags=["fp64", "note"], count="sm.fp64_cores",
+       claims=["sm.fp64_rate"],
        note=fact("sm.fp64_cores")["note"] + ". A Fig. 5 não os desenha; posição ilustrativa.")
 
 d.check("sm.count.blocks * sm.block.0.regfile", val("sm.regfile_entries"))

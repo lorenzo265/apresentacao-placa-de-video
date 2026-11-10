@@ -2,8 +2,8 @@
 """chip.floorplan (nível 2): planta do GB202 nesta placa, a partir do spec.
 
 A grade nasce de chip.gpc_count x chip.tpc_per_gpc x chip.sm_per_tpc (posições do
-chip completo); chip.tpc_count diz quantas estão habilitadas. As posições
-desabilitadas são escolha ilustrativa: a NVIDIA não diz quais são.
+chip completo); chip.tpc_count diz quantas estão nesta placa. As posições
+fora desta placa são escolha ilustrativa: a NVIDIA não diz quais são.
 """
 from _kit import Diagram, br, center, fact, gap, grid, kb_to_mb, val
 
@@ -23,19 +23,22 @@ N_OFF = TPC_FULL - TPC_ON
 DISABLED = [(4, 6), (7, 1)][:N_OFF]
 assert len(DISABLED) == N_OFF, "o spec mudou: rever as posições apagadas"
 ZOOM = (2, 7, 1)  # GPC 2, TPC 7, SM 1
-DISABLED_NOTE = ("A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa "
+DISABLED_NOTE = ("A NVIDIA não informa quais posições de TPC ficam fora desta placa "
                  "(lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa.")
 
 d = Diagram(
-    "chip.floorplan", "chip", 2, "Planta do GB202 nesta placa",
-    "Diagrama ilustrativo: as contagens são oficiais (whitepaper, Tab. 4); posições, formas "
-    "e quais TPCs estão apagados não são.",
+    "chip.floorplan", "chip", 2, "Diagrama de blocos do GB202",
+    "Redesenho do diagrama de blocos da NVIDIA (whitepaper, Fig. 3). As contagens são oficiais; "
+    "a planta física do die não é pública. A grade de TPCs dentro de cada GPC e quais posições "
+    "ficam de fora são ilustrativas.",
 )
 
 # ---------------- moldura do die ----------------
 DIE = [330, 24, 1246, 842]
 d.node("chip.die", "die", DIE, val("chip.name"), parent=None, tags=["die"], label_size=28,
-       claims=["chip.name"], provenance="confirmed")
+       claims=["chip.name", "chip.block_diagram"], provenance="confirmed",
+       note="Arranjo da Fig. 3 do whitepaper (duas fileiras de 6 GPCs, L2 no centro, controladores nas laterais); "
+            "é diagrama de blocos, não a planta física.")
 proc = val("chip.process").split(" (")[0]
 d.node("chip.data", "note", [470, 34, 560, 56],
        f"{br(val('chip.die_area_mm2'))} mm² · {br(val('chip.transistors_billion'))} bilhões de transistores",
@@ -84,7 +87,7 @@ for g, gr in enumerate(gpc_rects):
                    state="disabled" if off else None, note=DISABLED_NOTE if off else None,
                    embed="chip.sm" if zoom else None)
             sm_seen += 0 if off else 1
-assert sm_seen == SM_ON, f"desenhei {sm_seen} SMs habilitados, o spec diz {SM_ON}"
+assert sm_seen == SM_ON, f"desenhei {sm_seen} SMs nesta placa, o spec diz {SM_ON}"
 
 # ---------------- L2 e controladores de memória ----------------
 L2 = [GX, 424, GW, 96]
@@ -98,7 +101,7 @@ l2cx, l2cy = center(L2)
 for i, mr in enumerate(mc_l + mc_r):
     left = i < MCS // 2
     mid = f"chip.memctl.{i}"
-    d.node(mid, "memctl", mr, "MC", f"{MC_BITS} bits", parent="chip.die",
+    d.node(mid, "memctl", mr, "MC", f"{MC_BITS} bits", parent="chip.die", label_size=24,
            tags=["memctl", "memory-path", "memctl-left" if left else "memctl-right"],
            count="chip.mem_controller_bits", provenance="confirmed")
     _, cy = center(mr)
@@ -113,10 +116,10 @@ for i, mr in enumerate(mc_l + mc_r):
 SX, SW = 24, 290
 d.node("chip.count.gpc", "counter", [SX, 24, SW, 70], f"{GPCS} GPCs", "Graphics Processing Clusters",
        tags=["counter", "count-gpc"], count="chip.gpc_count")
-d.node("chip.count.tpc", "counter", [SX, 104, SW, 70], f"{TPC_ON} TPCs", "habilitados nesta placa",
+d.node("chip.count.tpc", "counter", [SX, 104, SW, 70], f"{TPC_ON} TPCs", "nesta placa (Tab. 4)",
        tags=["counter", "count-tpc"], count="chip.tpc_count")
 d.node("chip.count.sm", "counter", [SX, 184, SW, 70], f"{SM_ON} SMs",
-       f"habilitados ({TPC_ON} × {SM_PER_TPC})", tags=["counter", "count-sm"], count="chip.sm_count",
+       f"{TPC_ON} × {SM_PER_TPC}", tags=["counter", "count-sm"], count="chip.sm_count",
        claims=["chip.tpc_count", "chip.sm_per_tpc"])
 d.node("chip.count.cores", "counter", [SX, 264, SW, 70], f"{br(val('chip.cuda_cores'))} núcleos CUDA",
        f"{SM_ON} × {CORES_SM}", tags=["counter", "count-cores"], count="chip.cuda_cores",
@@ -138,7 +141,7 @@ d.node("chip.note.conflict", "note", [SX, 588, SW, 84], f"Chip completo: {val('c
        count="chip.sm_count_full", claims=["chip.sm_count", "chip.tpc_count_full", "chip.tpc_count"],
        note=fact("chip.sm_count_full")["note"] + ". Valor adotado: " + str(SM_ON)
        + " (Tab. 4, confere com " + f"{TPC_ON} × {SM_PER_TPC} e com o datasheet).")
-d.node("chip.note.disabled", "note", [SX, 684, SW, 84], f"{N_OFF} posições de TPC apagadas",
+d.node("chip.note.disabled", "note", [SX, 684, SW, 84], f"{N_OFF} TPCs a menos que o chip completo",
        "quais: escolha ilustrativa", tags=["note", "disabled-key"],
        claims=["chip.tpc_count", "chip.tpc_count_full"], note=DISABLED_NOTE)
 d.node("chip.gap.sm_reason", "gap", [SX, 780, SW, 86], f"Por que {SM_ON} e não {val('chip.sm_count_full')}?",

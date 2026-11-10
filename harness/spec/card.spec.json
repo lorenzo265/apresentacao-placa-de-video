@@ -212,7 +212,7 @@
       "value": 4,
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro"
+      "note": "Fig. 5 do whitepaper: quatro unidades LD/ST por bloco, ao lado de uma SFU (figura vista pela sessão principal em 2026-11-09)"
     },
     {
       "id": "sm.regfile_kb",
@@ -346,7 +346,7 @@
       "value": "PAM3, 1,5 bit por ciclo",
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
-      "note": "p. 12: '3 levels delivering 1.5 bits per cycle'. A auditoria do físico não sabia se a sigla PAM3 é literal do whitepaper; PAM3 consta na JEDEC (comunicado em standards-sources.md, seção 8)"
+      "note": "whitepaper, p. 12, literal: \"uses PAM3 (Pulse Amplitude Modulation: 3 levels) signaling technology\""
     },
     {
       "id": "mem.positions",
@@ -971,6 +971,48 @@
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada",
       "note": "Fig. 5 do whitepaper: uma SFU por bloco, ao lado de quatro LD/ST"
+    },
+    {
+      "id": "sched.block_to_warps",
+      "value": "o SM recebe blocos de threads e os divide em warps; cada warp é escalonado por um escalonador de warp",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.2. Como os blocos são distribuídos entre os SMs não está nesse trecho"
+    },
+    {
+      "id": "mem.l1_carveout",
+      "value": "a parte do L1 dedicada à memória compartilhada (carveout) é escolhida em tempo de execução",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
+      "note": "Blackwell Tuning Guide 13.5, 1.4.2.3. Os tamanhos listados no guia são do H100 e do B200; os da compute capability 12.0 não foram levantados"
+    },
+    {
+      "id": "cmd.channel",
+      "value": "a GPU tem várias filas de execução independentes, os canais; cada canal tem um número fixo de entradas de GPFIFO",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
+      "note": "segundo o driver oficial, sobre os canais do próprio driver (UVM)"
+    },
+    {
+      "id": "cmd.gpfifo",
+      "value": "a GPFIFO do hardware é um buffer em anel com ponteiros GET e PUT",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
+      "note": "segundo o driver oficial, uvm_pushbuffer.h"
+    },
+    {
+      "id": "cmd.submit",
+      "value": "o driver grava os comandos em um pushbuffer, reserva uma entrada de GPFIFO e avança o ponteiro PUT da GPU (write_gpu_put)",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
+      "note": "segundo o driver oficial, uvm_channel.c, internal_channel_submit_work. Vale para os canais do próprio driver"
+    },
+    {
+      "id": "simt.independent_scheduling",
+      "value": "desde a compute capability 7.0, a GPU guarda o estado de execução por thread e reagrupa as threads ativas; elas podem divergir e reconvergir em grupos menores que o warp",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.1.1"
     }
   ],
   "gaps": [
@@ -997,10 +1039,6 @@
     {
       "id": "cooler.interior",
       "description": "Interior do cooler (câmara de vapor, heatpipes, número de aletas, diâmetro dos ventiladores): a câmara de vapor 3D bilateral vem só de texto de revisor (Jon Peddie); nenhum teardown da PRO 6000 a descreve."
-    },
-    {
-      "id": "cpu.command_submission",
-      "description": "Como a CPU envia comandos à GPU (filas de canais, doorbell, buffers de comando): não coberto pelas fontes lidas."
     },
     {
       "id": "mmu.address_space_per_program",
@@ -1064,7 +1102,7 @@
     },
     {
       "id": "irq.exit_path",
-      "description": "Caminho físico da interrupção (a GPU 'manda pelo PCIe'): o código mostra MSI, MSI-X e recuo para linha legada, mas nenhum trecho literal diz que a interrupção sai pelo barramento PCIe. A leitura de nv.c cobriu só 100.000 de 176.317 caracteres na primeira passada."
+      "description": "O driver habilita MSI-X ou MSI e recua para \"PCIe virtual-wire interrupts\". Nenhum trecho lido descreve o caminho da interrupção dentro da GPU. O arquivo nv.c foi lido em parte."
     },
     {
       "id": "irq.sm_level",
@@ -1092,7 +1130,7 @@
     },
     {
       "id": "cuda.limits_cc120",
-      "description": "Coluna da compute capability 12.0 das Tab. 33 e 34 do Guia CUDA (threads, warps e blocos por SM) não separada pelo resumo automático; blocos por SM vem do Tuning Guide. Independent Thread Execution (3.2.2.1.1) não aberto."
+      "description": "Coluna da compute capability 12.0 das Tab. 33 e 34 do Guia CUDA (threads, warps e blocos por SM) não separada pelo resumo automático; blocos por SM vem do Tuning Guide."
     },
     {
       "id": "cuda.smem_per_sm_cc120",
@@ -1105,6 +1143,10 @@
     {
       "id": "display.dp_phys",
       "description": "Dimensões do receptáculo DisplayPort só em Wikipedia (baixa autoridade); como a placa chega a UHBR20 (cabo, certificação) não está nas fontes."
+    },
+    {
+      "id": "cmd.user_path",
+      "description": "Os trechos lidos do driver descrevem só os canais do próprio driver (UVM). O caminho de um programa CUDA comum não foi lido; supor o mesmo esquema de canal e GPFIFO é leitura nossa."
     }
   ]
 }
