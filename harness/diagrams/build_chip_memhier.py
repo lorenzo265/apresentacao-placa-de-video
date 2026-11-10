@@ -54,6 +54,20 @@ for i, item in enumerate(LAT):
            note="Jarmusch et al., medida na RTX 5080 (GB203); 'cerca de' na fonte." if cnt else
            "Jarmusch et al., RTX 5080 (GB203), seção VI-B.")
 
+# carveout do L1 (beat a5.14): a divisão entre cache e memória compartilhada é escolhida em tempo de execução
+cy0 = STEP_Y[1] + 6
+CNOTE = "Divisão desenhada ilustrativa; os tamanhos possíveis na compute capability 12.0 não foram levantados."
+d.node("memh.carveout.l1", "cache", [650, cy0, 170, 50], "cache L1", tags=["carveout", "l1"],
+       claims=["mem.l1_carveout", "sm.l1_shared_kb"], provenance="confirmed", label_size=20, note=CNOTE)
+d.node("memh.carveout.smem", "memory", [826, cy0, 214, 50], "compartilhada", tags=["carveout", "l1"],
+       claims=["mem.l1_carveout", "sm.l1_shared_kb"], provenance="confirmed", label_size=20, note=CNOTE)
+d.node("memh.carveout.note", "note", [650, cy0 + 56, 390, 36], "divisão escolhida em tempo de execução",
+       tags=["carveout", "l1"], claims=["mem.l1_carveout"], provenance="confirmed", label_size=18)
+d.node("memh.carveout.gap", "gap", [650, cy0 + 98, 390, 40], "tamanhos na CC 12.0: não levantados",
+       tags=["carveout", "gap"], label_size=18,
+       note="Os tamanhos listados no Tuning Guide são do H100 e do B200. " + gap("cuda.smem_per_sm_cc120")["description"])
+assert cy0 + 138 <= STEP_Y[1] + SH
+
 d.node("memh.total.regs", "counter", [1320, STEP_Y[0] + 24, 250, SH - 48],
        f"{br(val('card.regfile_total_kb'))} KB", f"{SM} × {val('sm.regfile_kb')} KB",
        tags=["total", "regs"], label_size=26, count="card.regfile_total_kb", claims=["chip.sm_count", "sm.regfile_kb"])

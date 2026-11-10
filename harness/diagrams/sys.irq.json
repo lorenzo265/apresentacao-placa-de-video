@@ -659,21 +659,25 @@
     },
     {
       "id": "irq.gap.cmd",
-      "kind": "gap",
+      "kind": "note",
       "rect": [
         40,
         740,
         1530,
         60
       ],
-      "label": "Como a CPU envia comandos à GPU: ainda não lido",
+      "label": "envio de comandos: ver o quadro de canais e GPFIFO",
       "parent": null,
       "tags": [
-        "gap",
+        "note",
         "command-submission"
       ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Como a CPU envia comandos à GPU (filas de canais, doorbell, buffers de comando): não coberto pelas fontes lidas."
+      "note": "Id mantido por compatibilidade com o storyboard; o envio de comandos está em sys.cmd."
     },
     {
       "id": "irq.note.sm",

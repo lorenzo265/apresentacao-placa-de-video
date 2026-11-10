@@ -273,6 +273,95 @@
       "note": "Jarmusch et al., medida na RTX 5080 (GB203); 'cerca de' na fonte."
     },
     {
+      "id": "memh.carveout.l1",
+      "kind": "cache",
+      "rect": [
+        650,
+        262,
+        170,
+        50
+      ],
+      "label": "cache L1",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "carveout",
+        "l1"
+      ],
+      "claims": [
+        "mem.l1_carveout",
+        "sm.l1_shared_kb"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Divisão desenhada ilustrativa; os tamanhos possíveis na compute capability 12.0 não foram levantados."
+    },
+    {
+      "id": "memh.carveout.smem",
+      "kind": "memory",
+      "rect": [
+        826,
+        262,
+        214,
+        50
+      ],
+      "label": "compartilhada",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "carveout",
+        "l1"
+      ],
+      "claims": [
+        "mem.l1_carveout",
+        "sm.l1_shared_kb"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Divisão desenhada ilustrativa; os tamanhos possíveis na compute capability 12.0 não foram levantados."
+    },
+    {
+      "id": "memh.carveout.note",
+      "kind": "note",
+      "rect": [
+        650,
+        318,
+        390,
+        36
+      ],
+      "label": "divisão escolhida em tempo de execução",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "carveout",
+        "l1"
+      ],
+      "claims": [
+        "mem.l1_carveout"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.carveout.gap",
+      "kind": "gap",
+      "rect": [
+        650,
+        360,
+        390,
+        40
+      ],
+      "label": "tamanhos na CC 12.0: não levantados",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "carveout",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Os tamanhos listados no Tuning Guide são do H100 e do B200. Memória compartilhada por SM na CC 12.0: Tuning Guide diz 128 KB por SM, Guia CUDA Tab. 35 (resumo) dá cache unificado de 128 KB e compartilhada até 100 KB, e 99 KB por bloco. Divergência de significado não resolvida por leitura direta."
+    },
+    {
       "id": "memh.total.regs",
       "kind": "counter",
       "rect": [

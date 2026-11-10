@@ -69,7 +69,7 @@
         88
       ],
       "label": "Registradores",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-registradores",
@@ -134,7 +134,7 @@
         88
       ],
       "label": "Instruções",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-instrucoes",
@@ -200,7 +200,7 @@
         88
       ],
       "label": "RISC ou CISC",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-risc-cisc",
@@ -262,7 +262,7 @@
         88
       ],
       "label": "MMU",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-mmu",
@@ -329,7 +329,7 @@
         88
       ],
       "label": "Interrupções",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-interrupcoes",
@@ -394,7 +394,7 @@
         88
       ],
       "label": "Gerenciamento de memória",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-memoria",
@@ -457,7 +457,7 @@
         88
       ],
       "label": "Pipeline",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-pipeline",
@@ -522,7 +522,7 @@
         88
       ],
       "label": "Cache",
-      "label_size": 21,
+      "label_size": 19,
       "parent": null,
       "tags": [
         "row-cache",

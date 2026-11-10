@@ -54,7 +54,7 @@ for i in range(N):
     x, y = CX + R * math.cos(a) - EW / 2, CY + R * math.sin(a) - EH / 2
     queued = (i - GET_I) % N < (PUT_I - GET_I) % N
     d.node(f"cmd.ring.e{i}", "step" if queued else "cell", [x, y, EW, EH], parent="cmd.ring",
-           tags=["gpfifo", "gpfifo-entry", "queued" if queued else "free"],
+           tags=["gpfifo", "gpfifo-entry", "queued" if queued else "free"], claims=[RING],
            note="Entrada com trabalho a consumir (ilustrativo)." if queued else None)
     cells.append((x, y, a))
 d.node("cmd.ring.center", "header", [CX - 70, CY - 22, 140, 44], "GPFIFO", parent="cmd.ring",

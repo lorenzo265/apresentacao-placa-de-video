@@ -278,7 +278,7 @@
     },
     {
       "id": "cmd.ring.e0",
-      "kind": "cell",
+      "kind": "step",
       "rect": [
         733,
         254,
@@ -290,6 +290,9 @@
         "gpfifo",
         "gpfifo-entry",
         "queued"
+      ],
+      "claims": [
+        "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative",
       "note": "Entrada com trabalho a consumir (ilustrativo)."
@@ -309,6 +312,9 @@
         "gpfifo-entry",
         "free"
       ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
       "shape_provenance": "illustrative"
     },
     {
@@ -325,6 +331,9 @@
         "gpfifo",
         "gpfifo-entry",
         "free"
+      ],
+      "claims": [
+        "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative"
     },
@@ -343,6 +352,9 @@
         "gpfifo-entry",
         "free"
       ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
       "shape_provenance": "illustrative"
     },
     {
@@ -360,11 +372,14 @@
         "gpfifo-entry",
         "free"
       ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
       "shape_provenance": "illustrative"
     },
     {
       "id": "cmd.ring.e5",
-      "kind": "cell",
+      "kind": "step",
       "rect": [
         649.56,
         455.44,
@@ -377,12 +392,15 @@
         "gpfifo-entry",
         "queued"
       ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
       "shape_provenance": "illustrative",
       "note": "Entrada com trabalho a consumir (ilustrativo)."
     },
     {
       "id": "cmd.ring.e6",
-      "kind": "cell",
+      "kind": "step",
       "rect": [
         615,
         372,
@@ -395,12 +413,15 @@
         "gpfifo-entry",
         "queued"
       ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
       "shape_provenance": "illustrative",
       "note": "Entrada com trabalho a consumir (ilustrativo)."
     },
     {
       "id": "cmd.ring.e7",
-      "kind": "cell",
+      "kind": "step",
       "rect": [
         649.56,
         288.56,
@@ -412,6 +433,9 @@
         "gpfifo",
         "gpfifo-entry",
         "queued"
+      ],
+      "claims": [
+        "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative",
       "note": "Entrada com trabalho a consumir (ilustrativo)."
@@ -515,7 +539,7 @@
         250
       ],
       "label": "canais: filas de execução independentes",
-      "label_size": 18,
+      "label_size": 16,
       "parent": null,
       "tags": [
         "channel"
@@ -607,9 +631,9 @@
         390,
         120
       ],
-      "label": "descrito para os canais do próprio driver",
-      "sublabel": "um programa CUDA passa pela parte fechada do driver",
-      "label_size": 18,
+      "label": "descrito para os canais do driver",
+      "sublabel": "CUDA: parte fechada do driver",
+      "label_size": 20,
       "parent": null,
       "tags": [
         "note",
@@ -620,7 +644,7 @@
       ],
       "provenance": "derived",
       "shape_provenance": "illustrative",
-      "note": "O caminho de um programa CUDA comum passa pela parte fechada do driver; supor o mesmo esquema de canal e GPFIFO é leitura nossa."
+      "note": "Descrito para os canais do próprio driver; o caminho de um programa CUDA passa pela parte fechada do driver. Supor o mesmo esquema de canal e GPFIFO é leitura nossa."
     },
     {
       "id": "cmd.note.driver",
