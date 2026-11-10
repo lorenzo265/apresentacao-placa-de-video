@@ -246,11 +246,13 @@ O risco declarado na ARCHITECTURE (render lento sem GPU) vira requisito de proje
 
 ### 7.2 Diagramas dos níveis 2 a 4
 
-Os atos 4 a 6 valem a nota e hoje não têm dono no roster (os modeladores cuidam só de peça física). Proposta:
+Os atos 4 a 6 valem a nota. Definido em 2026-11-10 (contrato completo em `harness/diagrams/README.md`):
 
 - Contrato `diagrams/<id>.json`: cena declarativa (nós, grupos, contagens, fluxos, rótulos), gerada **a partir do spec**, nunca desenhada à mão. A planta do chip nasce dos números 12, 94 e 188; se o spec mudar, o diagrama muda.
-- O viewer desenha os diagramas no mesmo canvas, para o zoom contínuo de T1 e T2 funcionar.
-- Novo agente `diagram-designer` (tipo B, opus) e skill `chip-diagram-kit`. Ver `harness/ARCHITECTURE.md`, seção 6.
+- O viewer desenha os diagramas em uma **camada SVG**, por cima do canvas 3D, com um espaço de coordenadas único. O diagrama do SM mora dentro de uma célula de SM da planta do chip (`embed`), então o zoom é contínuo do chip até o detalhe. Motivos: texto nítido em qualquer zoom, captura determinística e muito menos código do que texto em 3D.
+- A passagem da placa 3D para o diagrama (beat t1.1) é uma fusão: a câmera 3D aproxima do chip enquanto a camada SVG aparece.
+- Um beat de nível 2 a 4 tem `view` (diagrama e nós a enquadrar), `highlight` e `flows`, em vez de `camera`. O campo `world` do storyboard posiciona os diagramas que não estão dentro de outro.
+- Agente `diagram-designer` (tipo B, opus) e skill `chip-diagram-kit`. Ver `harness/ARCHITECTURE.md`, seção 6.
 - Todo diagrama carrega `provenance` por elemento: contagem `confirmed`, posição `illustrative`.
 
 ## 8. QA do vídeo

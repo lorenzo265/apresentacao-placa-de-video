@@ -31,7 +31,7 @@ O trabalho é de Arquitetura (ver `vault/01-Briefing/Requisitos da disciplina.md
 Regras:
 - Contagens e tamanhos do chip vêm do spec (`confirmed`). A forma e a posição desenhadas nos níveis 2 e 3 são `illustrative`, e o viewer diz isso.
 - Cada peça de `design/assembly.json` ganha o campo `level` (0 a 4). Os ids `chip.*` são os mesmos `part_id` das notas do vault.
-- Os níveis 2 a 4 não são geometria de CAD. São diagramas declarativos (`diagrams/<id>.json`), gerados a partir do spec pelo `diagram-designer` e desenhados pelo viewer no mesmo canvas.
+- Os níveis 2 a 4 não são geometria de CAD. São diagramas declarativos (`diagrams/<id>.json`), gerados a partir do spec pelo `diagram-designer` e desenhados pelo viewer em uma camada SVG por cima do canvas 3D, com um espaço de coordenadas único (decisão de 2026-11-10; contrato em `diagrams/README.md`).
 - Uma seção do roteiro tem vários beats. O storyboard organiza os beats em atos (`story/video-plan.md`, seção 3).
 - A passagem entre níveis é um beat próprio, com zoom contínuo.
 
@@ -212,8 +212,8 @@ Esse é o texto longo (`body`), que aparece só no viewer. O texto de cada beat 
 | `design/assembly.json` | origem `card.envelope_min` (canto do envelope, não do PCB); campos `stage`, `fidelity`, `exists_provenance`, `shape_provenance`, `count`, `measurements` | `design/assembly-plan.md`, seção 7 |
 | `design/measurements.csv` | novo: toda medida com método, fonte, tolerância e procedência | `design/assembly-plan.md`, seção 6 |
 | `spec/references/index.md` | novo: fotos de referência por vista (só URLs) | `design/assembly-plan.md`, seção 6.1 |
-| `story/storyboard.json` | campos `id`, `act`, `section`, `level`, `priority`, `overlay`, `speaker`; bloco `cuts`; `fps` | `story/video-plan.md`, seções 2 e 4 |
-| `diagrams/<id>.json` | novo: cena declarativa dos níveis 2 a 4 | `story/video-plan.md`, seção 7.2 |
+| `story/storyboard.json` | campos `id`, `act`, `section`, `level`, `priority`, `overlay`, `speaker`; bloco `cuts`; `fps`. Beats de nível 2 a 4 usam `view`, `highlight` e `flows` em vez de `camera`; `world` posiciona os diagramas | `story/video-plan.md`, seções 2, 4 e 7.2 |
+| `diagrams/<id>.json` | novo: cena declarativa dos níveis 2 a 4, com retângulo por nó, diagramas embutidos, fluxos e contas | `diagrams/README.md` |
 | Unidades | CAD, assembly e storyboard em mm e Z para cima. O GLB sai em metros e Y para cima (padrão glTF). A conversão é feita só no `integrator` | `design/assembly-plan.md`, seção 7 |
 | `schemas/*.schema.json` | novo: cinco schemas e o validador `tools/validate.py`, que também confere limite de palavras, tempo de leitura, referências entre arquivos e as contas dos diagramas | feito em 2026-11-09 |
 

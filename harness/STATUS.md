@@ -40,7 +40,7 @@ Apoio: 16 agentes, 1 skill escrita de 10, 5 schemas com validador testado (`tool
 |---|---|---|---|---|
 | Registradores | 07 | Tuning Guide, whitepaper (Fig. 5), experimento | 4 bancos de 16.384 por SM (65.536), até 255 por thread, famílias `R`, `UR`, `P`, `SR` no código real | |
 | Conjunto de instruções | 08 | PTX 9.5, Binary Utilities 13.5, experimento reproduzido | CUDA, PTX e SASS lado a lado; palavra de 128 bits; 258 mnemônicos em 13 categorias | |
-| CISC ou RISC | 08 | lista oficial de instruções | "RISC no formato, com instruções próprias de acelerador" (análise do grupo) | **aprovação humana da conclusão** |
+| CISC ou RISC | 08 | lista oficial de instruções | "RISC no formato, com instruções próprias de acelerador" (análise do grupo) | aprovada em 2026-11-10 |
 | MMU | 10 | código oficial do driver (leitura direta), documento da Pascal | 57 bits, 6 níveis, páginas de 4 KB a 512 MB; comparação com a Pascal | TLB é lacuna declarada; espaço de endereços por programa sem trecho de fonte |
 | Interrupções | 11 | driver, PTX, catálogo de Xid | três mecanismos documentados: interrupção para a CPU, `trap`, preempção. Que o SM não trata interrupções é leitura do grupo (`inferred`) | como a CPU envia comandos (falta ler) |
 | Gerenciamento de memória | 03, 09, 10 | whitepaper, driver, normas | GDDR7, hierarquia, falha de página em lote | memória unificada no guia CUDA |
@@ -57,7 +57,7 @@ Apoio: 16 agentes, 1 skill escrita de 10, 5 schemas com validador testado (`tool
 | 4 a 8 | Vídeo, texto por beat, atos, fidelidade, contratos | resolvidos nos planos |
 | 9 | Duração do seminário | resolvido: 15 a 20 minutos |
 | 10 | Quem apresenta cada bloco | resolvido: segue a definição de tarefas da proposta entregue (`story/video-plan.md`, seção 6). Três ajustes pequenos aguardam o grupo |
-| 11 | Schemas dos contratos | resolvido: `schemas/` e `tools/validate.py` |
+| 11 | Schemas dos contratos | resolvido: `schemas/` e `tools/validate.py`. Em 2026-11-10 o contrato dos diagramas ganhou geometria e a decisão da camada SVG (`diagrams/README.md`) |
 | 12 | Skills a escrever | aberto: nesta semana só `viewer-scaffold`, `chip-diagram-kit` e `build123d-gpu-parts` |
 | 13 | Normas | resolvido em parte: `spec/sources/standards-sources.md`. A norma PCIe aberta é a revisão 3.0; a bracket de dois slots e o receptáculo DisplayPort não têm desenho de fonte forte |
 | 14 | Catálogo de fotos | resolvido: `spec/references/index.md`. Faltam vistas ortogonais oficiais, a frente do PCB e o interior do cooler |
@@ -99,7 +99,7 @@ Linhas de corte: se a proposta de engenharia não for aprovada na terça, o inte
 
 ## 8. Decisões que são suas
 
-1. **Aprovar a conclusão RISC ou CISC** revisada (`vault/03-Roteiro/08`).
+1. Conclusão RISC ou CISC: **aprovada em 2026-11-10**.
 2. **Divisão da fala:** já segue a proposta entregue. Faltam três ajustes pequenos (`story/video-plan.md`, seção 6): dono da planta do chip, posição do beat da divergência e o tempo do Arthur.
 3. **Como tratar o artigo no seminário:** recomendo citar só a MMU como atualização ("o formato mudou na Hopper") e apresentar RISC ou CISC como aprofundamento. O resto se resolve na fala.
 4. **Tamanho do grupo:** a proposta entregue e o artigo têm cinco integrantes; a nota do enunciado no vault diz até quatro. Corrigir a nota?
