@@ -1,0 +1,1627 @@
+{
+  "version": "0.3",
+  "fps": 30,
+  "cuts": {
+    "seminario": {
+      "max_priority": 1
+    },
+    "completo": {
+      "max_priority": 3
+    },
+    "teaser": {
+      "beats": [
+        "a4.2",
+        "a4.4",
+        "t2.1",
+        "a5.16",
+        "a5.9",
+        "a6.1"
+      ]
+    }
+  },
+  "world": [
+    {
+      "diagram": "chip.floorplan",
+      "rect": [
+        0,
+        0,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "chip.memhier",
+      "rect": [
+        3000,
+        0,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "sys.mmu",
+      "rect": [
+        6000,
+        0,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "chip.isa",
+      "rect": [
+        0,
+        1400,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "chip.risc",
+      "rect": [
+        3000,
+        1400,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "sys.irq",
+      "rect": [
+        6000,
+        1400,
+        1600,
+        900
+      ]
+    }
+  ],
+  "beats": [
+    {
+      "id": "a0.1",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a0.2",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a0.3",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a0.4",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.1",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.2",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.3",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.4",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.5",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.6",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 3,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.1",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.2",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.3",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.4",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.5",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.6",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.7",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.8",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.9",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "inferred"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.10",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.11",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "inferred"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a2.12",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a3.1",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.2",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.3",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "inferred"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.4",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.5",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.6",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.7",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 3,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "t1.1",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.count.gpc",
+          "chip.die",
+          "chip.gap.sm_reason"
+        ],
+        "padding": 0.03,
+        "duration": 3.0,
+        "ease": "power2.out"
+      },
+      "callout": {
+        "anchor": "chip.die",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 14,
+      "provenance": [
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a4.1",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.memctl.0",
+          "chip.data",
+          "chip.gpc.2"
+        ],
+        "padding": 0.04,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "chip.data"
+      ],
+      "callout": {
+        "anchor": "chip.data",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 14,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a4.2",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.count.gpc",
+          "chip.key.cores_per_sm",
+          "chip.gpc.0",
+          "chip.gpc.1"
+        ],
+        "padding": 0.05,
+        "duration": 2.0,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:count-gpc",
+        "tag:count-tpc",
+        "tag:count-sm",
+        "tag:count-cores",
+        "tag:key",
+        "tag:gpc-0"
+      ],
+      "callout": {
+        "anchor": "chip.gpc.0.tpc.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 17,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a4.3",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 2,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.count.gpc",
+          "chip.die",
+          "chip.gap.sm_reason"
+        ],
+        "padding": 0.03,
+        "duration": 2.0,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:conflict",
+        "tag:disabled-key",
+        "tag:gap",
+        "tag:tpc-disabled",
+        "tag:sm-disabled"
+      ],
+      "callout": {
+        "anchor": "chip.gpc.4.tpc.6",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a4.4",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.count.gpc",
+          "chip.die",
+          "chip.gap.sm_reason"
+        ],
+        "padding": 0.03,
+        "duration": 2.2,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:memory-path"
+      ],
+      "flows": [
+        "chip.flow.l2_mc0",
+        "chip.flow.l2_mc1",
+        "chip.flow.l2_mc2",
+        "chip.flow.l2_mc3",
+        "chip.flow.l2_mc4",
+        "chip.flow.l2_mc5",
+        "chip.flow.l2_mc6",
+        "chip.flow.l2_mc7",
+        "chip.flow.l2_mc8",
+        "chip.flow.l2_mc9",
+        "chip.flow.l2_mc10",
+        "chip.flow.l2_mc11",
+        "chip.flow.l2_mc12",
+        "chip.flow.l2_mc13",
+        "chip.flow.l2_mc14",
+        "chip.flow.l2_mc15"
+      ],
+      "callout": {
+        "anchor": "chip.l2",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 17,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a4.5",
+      "act": 4,
+      "section": "04",
+      "level": 2,
+      "priority": 2,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "view": {
+        "diagram": "chip.floorplan",
+        "focus": [
+          "chip.amp",
+          "chip.pcie",
+          "chip.gpc.4",
+          "chip.gpc.5"
+        ],
+        "padding": 0.06,
+        "duration": 2.0,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:outside-gpc"
+      ],
+      "callout": {
+        "anchor": "chip.amp",
+        "box": "left-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 24,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.3",
+      "act": 4,
+      "section": "05",
+      "level": 2,
+      "priority": 3,
+      "status": "blocked",
+      "part": null,
+      "diagram": "chip.floorplan",
+      "hold": 0,
+      "provenance": [],
+      "speaker": "João"
+    },
+    {
+      "id": "t2.1",
+      "act": 5,
+      "section": "06",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.frame"
+        ],
+        "padding": 0.03,
+        "duration": 3.5,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:sched",
+        "tag:regfile",
+        "tag:l1"
+      ],
+      "callout": {
+        "anchor": "sm.frame",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 22,
+      "provenance": [
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.4",
+      "act": 5,
+      "section": "06",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.block.2",
+          "sm.block.3",
+          "sm.l1",
+          "sm.rt"
+        ],
+        "padding": 0.03,
+        "duration": 1.6,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:core",
+        "tag:tensor",
+        "tag:rt",
+        "tag:tex"
+      ],
+      "callout": {
+        "anchor": "sm.rt",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.5",
+      "act": 5,
+      "section": "06",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.count.blocks",
+          "sm.block.0",
+          "sm.block.1",
+          "sm.block.2",
+          "sm.block.3"
+        ],
+        "padding": 0.02,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:sched",
+        "sm.count.blocks"
+      ],
+      "callout": {
+        "anchor": "sm.block.1.sched",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.1",
+      "act": 4,
+      "section": "05",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.warp",
+      "view": {
+        "diagram": "chip.warp",
+        "focus": [
+          "tag:thread",
+          "tag:counter"
+        ],
+        "padding": 0.05,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:thread",
+        "tag:warp-size"
+      ],
+      "callout": {
+        "anchor": "warp.thread.7",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 16,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.2",
+      "act": 4,
+      "section": "05",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.warp",
+      "view": {
+        "diagram": "chip.warp",
+        "focus": [
+          "tag:thread",
+          "tag:counter"
+        ],
+        "padding": 0.05,
+        "duration": 1.4,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:thread",
+        "warp.count.max_warps"
+      ],
+      "callout": {
+        "anchor": "warp.thread.15",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 17,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.15",
+      "act": 5,
+      "section": "12",
+      "level": 4,
+      "priority": 2,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.warp",
+      "view": {
+        "diagram": "chip.warp",
+        "focus": [
+          "tag:thread",
+          "tag:counter"
+        ],
+        "padding": 0.05,
+        "duration": 1.4,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:occupancy"
+      ],
+      "callout": {
+        "anchor": "warp.count.threads_sm",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 25,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.16",
+      "act": 5,
+      "section": "12",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.warp",
+      "view": {
+        "diagram": "chip.warp",
+        "focus": [
+          "tag:thread"
+        ],
+        "padding": 0.01,
+        "duration": 1.6,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:thread"
+      ],
+      "callout": {
+        "anchor": "warp.thread.31",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.6",
+      "act": 5,
+      "section": "07",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.count.blocks",
+          "sm.block.0",
+          "sm.block.1",
+          "sm.block.2",
+          "sm.block.3"
+        ],
+        "padding": 0.02,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:regfile"
+      ],
+      "callout": {
+        "anchor": "sm.block.1.regfile",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.7",
+      "act": 5,
+      "section": "07",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.isa",
+      "view": {
+        "diagram": "chip.isa",
+        "focus": [
+          "isa.head.sass",
+          "isa.sass.19"
+        ],
+        "padding": 0.04,
+        "duration": 3.5,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:sass"
+      ],
+      "callout": {
+        "anchor": "isa.sass.6",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 27,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.8",
+      "act": 5,
+      "section": "07",
+      "level": 4,
+      "priority": 2,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.isa",
+      "view": {
+        "diagram": "chip.isa",
+        "focus": [
+          "isa.head.cuda",
+          "isa.count.regs"
+        ],
+        "padding": 0.05,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "isa.count.regs"
+      ],
+      "callout": {
+        "anchor": "isa.count.regs",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 24,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.9",
+      "act": 5,
+      "section": "08",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.isa",
+      "view": {
+        "diagram": "chip.isa",
+        "focus": [
+          "isa.head.ptx",
+          "isa.head.sass",
+          "isa.ptx.19",
+          "isa.sass.19"
+        ],
+        "padding": 0.03,
+        "duration": 2.0,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:ptx",
+        "tag:sass"
+      ],
+      "flows": [
+        "isa.map.0",
+        "isa.map.1",
+        "isa.map.2",
+        "isa.map.3",
+        "isa.map.4",
+        "isa.map.5",
+        "isa.map.6",
+        "isa.map.7",
+        "isa.map.8",
+        "isa.map.9",
+        "isa.map.10",
+        "isa.map.11"
+      ],
+      "callout": {
+        "anchor": "isa.sass.18",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 27,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.10",
+      "act": 5,
+      "section": "08",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.isa",
+      "view": {
+        "diagram": "chip.isa",
+        "focus": [
+          "isa.word.ins",
+          "isa.gap.control"
+        ],
+        "padding": 0.05,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:word"
+      ],
+      "callout": {
+        "anchor": "isa.word.bytes",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.11",
+      "act": 5,
+      "section": "08",
+      "level": 4,
+      "priority": 2,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.risc",
+      "view": {
+        "diagram": "chip.risc",
+        "focus": [
+          "risc.ops.head",
+          "risc.amp"
+        ],
+        "padding": 0.08,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "risc.op.hmma"
+      ],
+      "hold": 24,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.12",
+      "act": 5,
+      "section": "08",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.risc",
+      "view": {
+        "diagram": "chip.risc",
+        "focus": [
+          "risc.head.criterion",
+          "risc.conclusion"
+        ],
+        "padding": 0.03,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:row-1",
+        "tag:row-2",
+        "tag:row-5",
+        "risc.conclusion"
+      ],
+      "callout": {
+        "anchor": "risc.conclusion",
+        "box": "left-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 28,
+      "provenance": [
+        "inferred",
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.13",
+      "act": 5,
+      "section": "09",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.memhier",
+      "view": {
+        "diagram": "chip.memhier",
+        "focus": [
+          "memh.head.steps",
+          "memh.lat.dram",
+          "memh.note.lat"
+        ],
+        "padding": 0.03,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:step",
+        "tag:latency"
+      ],
+      "callout": {
+        "anchor": "memh.lat.dram",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a5.14",
+      "act": 5,
+      "section": "09",
+      "level": 3,
+      "priority": 3,
+      "status": "blocked",
+      "part": null,
+      "diagram": "chip.memhier",
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a6.1",
+      "act": 6,
+      "section": "10",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "sys.mmu",
+      "view": {
+        "diagram": "sys.mmu",
+        "focus": [
+          "mmu.head",
+          "mmu.pages.512mb"
+        ],
+        "padding": 0.03,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:va",
+        "tag:level",
+        "tag:page",
+        "tag:stop",
+        "tag:page-sizes",
+        "mmu.count.levels"
+      ],
+      "flows": [
+        "mmu.flow.idx0",
+        "mmu.flow.idx1",
+        "mmu.flow.idx2",
+        "mmu.flow.idx3",
+        "mmu.flow.idx4",
+        "mmu.flow.idx5",
+        "mmu.flow.offset",
+        "mmu.flow.walk1",
+        "mmu.flow.walk2",
+        "mmu.flow.walk3",
+        "mmu.flow.walk4",
+        "mmu.flow.walk5",
+        "mmu.flow.walk_page",
+        "mmu.flow.stop_2m",
+        "mmu.flow.stop_512m"
+      ],
+      "callout": {
+        "anchor": "mmu.va.offset",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 42,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Thiago"
+    },
+    {
+      "id": "a6.2",
+      "act": 6,
+      "section": "10",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "sys.irq",
+      "view": {
+        "diagram": "sys.irq",
+        "focus": [
+          "irq.mech3.head",
+          "irq.m3.batch"
+        ],
+        "padding": 0.05,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:fault"
+      ],
+      "flows": [
+        "irq.flow.m3_fault_buffer",
+        "irq.flow.m3_buffer_stall",
+        "irq.flow.m3_stall_cpu",
+        "irq.flow.m3_replay"
+      ],
+      "callout": {
+        "anchor": "irq.m3.stall",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 42,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "Thiago"
+    },
+    {
+      "id": "a6.3",
+      "act": 6,
+      "section": "11",
+      "level": 4,
+      "priority": 2,
+      "status": "blocked",
+      "part": null,
+      "diagram": "sys.irq",
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Thiago"
+    },
+    {
+      "id": "a6.4",
+      "act": 6,
+      "section": "11",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "sys.irq",
+      "view": {
+        "diagram": "sys.irq",
+        "focus": [
+          "irq.lane.gpu",
+          "irq.lane.cpu"
+        ],
+        "padding": 0.05,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:mech-1",
+        "tag:mech-2",
+        "tag:mech-3",
+        "irq.note.sm"
+      ],
+      "flows": [
+        "irq.flow.m1_12",
+        "irq.flow.m1_23",
+        "irq.flow.m1_34",
+        "irq.flow.m2_trap",
+        "irq.flow.m3_fault_buffer",
+        "irq.flow.m3_buffer_stall",
+        "irq.flow.m3_stall_cpu",
+        "irq.flow.m3_replay"
+      ],
+      "hold": 42,
+      "provenance": [
+        "inferred",
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "Thiago"
+    },
+    {
+      "id": "a6.5",
+      "act": 6,
+      "section": "11",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "sys.irq",
+      "view": {
+        "diagram": "sys.irq",
+        "focus": [
+          "irq.amp",
+          "irq.mig"
+        ],
+        "padding": 0.15,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:amp",
+        "tag:mig"
+      ],
+      "callout": {
+        "anchor": "irq.amp",
+        "box": "left-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 38,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Thiago"
+    },
+    {
+      "id": "a7.1",
+      "act": 7,
+      "section": "13",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a7.2",
+      "act": 7,
+      "section": "13",
+      "level": 0,
+      "priority": 3,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a7.3",
+      "act": 7,
+      "section": "14",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a7.4",
+      "act": 7,
+      "section": "14",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a7.5",
+      "act": 7,
+      "section": "14",
+      "level": 0,
+      "priority": 1,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a7.6",
+      "act": 7,
+      "section": "14",
+      "level": 0,
+      "priority": 2,
+      "status": "draft",
+      "part": null,
+      "diagram": null,
+      "hold": 0,
+      "provenance": [],
+      "speaker": "Vitor"
+    }
+  ]
+}
