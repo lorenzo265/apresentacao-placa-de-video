@@ -363,3 +363,18 @@ Trechos pedidos pela auditoria `harness/qa/fact-check-f6.md`, conferidos com bus
 | FP64 | "The FP64 TFLOP rate is 1/64th the TFLOP rate of FP32 operations." | whitepaper, nota da Fig. 3 |
 | PAM3 | "uses PAM3 (Pulse Amplitude Modulation: 3 levels) signaling technology" | whitepaper, p. 12 |
 
+## Conferência direta, quarta rodada (sessão principal, 2026-11-10): beats que estavam bloqueados
+
+Busca literal nas cópias baixadas do guia CUDA 13.5, do Blackwell Tuning Guide 13.5 e do driver (`kernel-open/nvidia-uvm/uvm_channel.h`, `uvm_channel.c`, `uvm_pushbuffer.h`).
+
+| Dado | Trecho literal | Onde |
+|---|---|---|
+| Do bloco ao warp | "When an SM is given one or more thread blocks to execute, it partitions them into warps and each warp gets scheduled for execution by a warp scheduler. The way a block is partitioned into warps is always the same; each warp contains threads of consecutive, increasing thread IDs with the first warp containing thread 0." | guia CUDA 13.5, 3.2.2.2 |
+| Divisão do L1 | "the portion of the L1 cache dedicated to shared memory (known as the carveout) can be selected at runtime as in previous architectures ... using cudaFuncSetAttribute() with the attribute cudaFuncAttributePreferredSharedMemoryCarveout." A lista de tamanhos que vem em seguida é do H100 e do B200, não da compute capability 12.0 | Blackwell Tuning Guide 13.5, 1.4.2.3 |
+| Canais | "the GPU has multiple independent queues of execution (UVM channels)"; "Each channel has a uvm_gpu_tracking_semaphore_t and a set of uvm_gpfifo_entry_t (one per each HW GPFIFO entry) allowing to track completion of pushes on the channel." | `uvm_pushbuffer.h`; `uvm_channel.h` |
+| GPFIFO | "This follows the HW GPFIFO naming that's a true ringbuffer (always completing in order and supporting transparent wrap-around)."; "a HW channel has a fixed limit of GPFIFO entries it supports that's chosen at channel creation" | `uvm_pushbuffer.h` |
+| Envio do trabalho | a função `internal_channel_submit_work(uvm_push_t *push, NvU32 push_size, NvU32 new_gpu_put)` termina em `gpu->parent->host_hal->write_gpu_put(channel, new_gpu_put);` | `uvm_channel.c`, linhas 984 a 1014 |
+| Reserva | "Beginning a push on a channel implies reserving a GPFIFO entry in that channel and hence there can only be as many on-going pushes per channel as there are free GPFIFO entries." | `uvm_channel.h` |
+
+Ressalva: esses trechos descrevem os canais que o **próprio driver** usa (os canais da UVM). O caminho de um programa CUDA comum passa pela parte fechada do driver. Aplicar a ele o mesmo esquema é `derived`.
+
