@@ -44,7 +44,9 @@ Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 12 min
 
 Os beats de prioridade 2 ficam prontos como reserva: entram no viewer ao vivo se alguém perguntar, sem contar no tempo.
 
-Formato do seminário (decisão humana pendente): a recomendação é **viewer ao vivo, avançando beat a beat pelo teclado**, com o MP4 do mesmo corte como plano de reserva. Vídeo corrido com fala gravada só se o grupo preferir.
+Formato do seminário (decidido em 2026-11-10): **viewer ao vivo, em um arquivo `.html` único, avançando beat a beat pelo teclado**. O vídeo fica suspenso por enquanto: ficou pesado, e o HTML abre em qualquer computador sem internet. A captura em MP4 continua disponível como plano de reserva, se o grupo voltar a querer.
+
+O autor informou em 2026-11-10 que o seminário terá **mais tempo** do que os 15 a 20 minutos, sem dizer quanto. Até o valor chegar, o orçamento da seção 2.1 continua valendo para o corte `seminario`, e o corte `completo` (cerca de 15 minutos só nos atos 4 a 7) passa a ser uma opção real.
 
 ## 3. Estrutura em atos
 

@@ -1,7 +1,7 @@
 # Proposta de engenharia da F2: partes não públicas da RTX PRO 6000 Blackwell Workstation Edition (v0.1)
 
 - Data: 2026-11-10. Autor: `architecture-inferencer`, com a skill `gpu-assembly-proposal`.
-- Estado: **aguardando gate humano**. Nada daqui entra em `assembly.json` nem em `measurements.csv` sem aprovação.
+- Estado: **aprovada no gate humano da F2 em 2026-11-10.** As oito decisões (D1 a D8) foram aprovadas conforme as recomendações da tabela abaixo. A proposta pode alimentar `assembly.json` e `measurements.csv`, mantendo a procedência e os avisos de cada peça.
 - Versão estruturada: `harness/design/proposal.json` (mesmos ids e números).
 - Base: `spec/card.spec.json` e seus `gaps`, `design/assembly-plan.md` v0.3 (fila da seção 8), `spec/references/index.md` e as fotos em cache.
 

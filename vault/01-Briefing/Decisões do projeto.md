@@ -29,6 +29,11 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-11-10 | Conclusão RISC ou CISC aprovada: "RISC no formato, com instruções próprias de acelerador", apresentada como análise do grupo | Aprovação do autor depois da auditoria de 2026-11-09 |
 | 2026-11-10 | Início da implementação do viewer e dos diagramas do chip | Decisão do autor |
 | 2026-11-10 | Os diagramas dos níveis 2 a 4 são desenhados em uma camada SVG com um espaço de coordenadas único, e não no canvas 3D | Texto nítido em qualquer zoom, captura determinística e muito menos código; o zoom continua contínuo do chip ao detalhe |
+| 2026-11-10 | **Animatic dos atos 4 a 7 aprovado** (gate humano da F6), depois de quatro passadas do `fact-checker` | 31 beats e 11 diagramas; estrutura e conteúdo aprovados, design e visualização ficam para depois |
+| 2026-11-10 | **Proposta de engenharia da placa aprovada** (gate humano da F2): as oito decisões conforme recomendado em `harness/design/proposal.md` | Libera a árvore de montagem e o modelo 3D |
+| 2026-11-10 | Entrega do tour: **um arquivo `.html` único**, que o apresentador navega ao vivo. Sem vídeo por enquanto | O vídeo ficou pesado; o HTML abre em qualquer computador, sem internet |
+| 2026-11-10 | O seminário terá **mais tempo** do que os 15 a 20 minutos | Informado pelo autor; o valor exato ainda não foi dito |
 
 ## Em aberto
+- Duração nova do seminário (o autor disse que haverá mais tempo, sem dizer quanto).
 - Três ajustes na divisão da fala (`harness/story/video-plan.md`, seção 6).
