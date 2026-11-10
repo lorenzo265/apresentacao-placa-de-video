@@ -1,0 +1,64 @@
+{
+  "units": "mm",
+  "up": "+Z",
+  "origin": "card.envelope_min",
+  "parts": [
+    {
+      "id": "frame.backplate",
+      "parent": null,
+      "level": 1,
+      "stage": "E1",
+      "fidelity": "A",
+      "exists_provenance": "confirmed",
+      "shape_provenance": "derived",
+      "confidence": 0.6,
+      "rationale": "primeira peça retirada no teardown desta placa; forma a derivar de fotos",
+      "geometry": null,
+      "measurements": [],
+      "explode": {
+        "dir": [
+          0,
+          0,
+          -1
+        ],
+        "distance": 40,
+        "order": 1
+      },
+      "anchors": [
+        {
+          "id": "anchor.frame.backplate.1",
+          "pos": [
+            150,
+            68,
+            0
+          ]
+        }
+      ],
+      "fasteners": []
+    },
+    {
+      "id": "cooler.vapor_chamber",
+      "parent": null,
+      "level": 1,
+      "stage": "E8",
+      "fidelity": "B",
+      "exists_provenance": "derived",
+      "shape_provenance": "inferred",
+      "confidence": 0.4,
+      "rationale": "descrita para a placa irmã; nenhum teardown desta placa abre o cooler",
+      "geometry": null,
+      "explode": {
+        "dir": [
+          0,
+          0,
+          1
+        ],
+        "distance": 30,
+        "order": 8
+      },
+      "anchors": [],
+      "viewer_disclaimer": "Estrutura provável: não achamos fonte que mostre o interior do cooler desta placa."
+    }
+  ],
+  "known_deviations": []
+}

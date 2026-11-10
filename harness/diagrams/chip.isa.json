@@ -1,0 +1,1774 @@
+{
+  "id": "chip.isa",
+  "level": 4,
+  "title": "SAXPY em CUDA C, PTX e SASS (sm_120)",
+  "disclaimer": "Código real do exemplo do artigo, compilado para sm_120. A posição das linhas é ilustrativa; os campos da palavra de 128 bits são os descritos para a Volta.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_chip_isa.py",
+  "nodes": [
+    {
+      "id": "isa.head.cuda",
+      "kind": "header",
+      "rect": [
+        30,
+        26,
+        530,
+        42
+      ],
+      "label": "CUDA C",
+      "parent": null,
+      "tags": [
+        "header",
+        "cuda"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.head.ptx",
+      "kind": "header",
+      "rect": [
+        600,
+        26,
+        390,
+        42
+      ],
+      "label": "PTX (máquina virtual)",
+      "parent": null,
+      "tags": [
+        "header",
+        "ptx"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.head.sass",
+      "kind": "header",
+      "rect": [
+        1080,
+        26,
+        490,
+        42
+      ],
+      "label": "SASS (sm_120)",
+      "parent": null,
+      "tags": [
+        "header",
+        "sass"
+      ],
+      "claims": [
+        "isa.target"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.cuda.0",
+      "kind": "codeline",
+      "rect": [
+        30,
+        78,
+        530,
+        66
+      ],
+      "label": "extern \"C\" __global__ void saxpy(",
+      "sublabel": "    int n, float a, const float* x, float* y)",
+      "label_size": 18,
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "cuda",
+        "cuda-0"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.cuda.1",
+      "kind": "codeline",
+      "rect": [
+        30,
+        146,
+        530,
+        32
+      ],
+      "label": "{",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "cuda",
+        "cuda-1"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.cuda.2",
+      "kind": "codeline",
+      "rect": [
+        30,
+        180,
+        530,
+        32
+      ],
+      "label": "    int i = blockIdx.x * blockDim.x + threadIdx.x;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "cuda",
+        "cuda-2"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.cuda.3",
+      "kind": "codeline",
+      "rect": [
+        30,
+        214,
+        530,
+        32
+      ],
+      "label": "    if (i < n)",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "cuda",
+        "cuda-3"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.cuda.4",
+      "kind": "codeline",
+      "rect": [
+        30,
+        248,
+        530,
+        32
+      ],
+      "label": "        y[i] = a * x[i] + y[i];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "cuda",
+        "cuda-4"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.cuda.5",
+      "kind": "codeline",
+      "rect": [
+        30,
+        282,
+        530,
+        32
+      ],
+      "label": "}",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "cuda",
+        "cuda-5"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.0",
+      "kind": "codeline",
+      "rect": [
+        600,
+        78,
+        390,
+        32
+      ],
+      "label": "ld.param.b32 %r3, [saxpy_param_0];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-0",
+        "op-ld",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.1",
+      "kind": "codeline",
+      "rect": [
+        600,
+        112,
+        390,
+        32
+      ],
+      "label": "ld.param.b32 %r2, [saxpy_param_1];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-1",
+        "op-ld",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.2",
+      "kind": "codeline",
+      "rect": [
+        600,
+        146,
+        390,
+        32
+      ],
+      "label": "ld.param.b64 %rd1, [saxpy_param_2];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-2",
+        "op-ld",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.3",
+      "kind": "codeline",
+      "rect": [
+        600,
+        180,
+        390,
+        32
+      ],
+      "label": "ld.param.b64 %rd2, [saxpy_param_3];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-3",
+        "op-ld",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.4",
+      "kind": "codeline",
+      "rect": [
+        600,
+        214,
+        390,
+        32
+      ],
+      "label": "mov.u32 %r4, %ctaid.x;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-4",
+        "op-mov",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.5",
+      "kind": "codeline",
+      "rect": [
+        600,
+        248,
+        390,
+        32
+      ],
+      "label": "mov.u32 %r5, %ntid.x;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-5",
+        "op-mov"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.6",
+      "kind": "codeline",
+      "rect": [
+        600,
+        282,
+        390,
+        32
+      ],
+      "label": "mov.u32 %r6, %tid.x;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-6",
+        "op-mov"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.7",
+      "kind": "codeline",
+      "rect": [
+        600,
+        316,
+        390,
+        32
+      ],
+      "label": "mad.lo.s32 %r1, %r4, %r5, %r6;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-7",
+        "op-mad",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.8",
+      "kind": "codeline",
+      "rect": [
+        600,
+        350,
+        390,
+        32
+      ],
+      "label": "setp.ge.s32 %p1, %r1, %r3;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-8",
+        "op-setp",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.9",
+      "kind": "codeline",
+      "rect": [
+        600,
+        384,
+        390,
+        32
+      ],
+      "label": "@%p1 bra $L__BB0_2;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-9",
+        "op-bra",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.10",
+      "kind": "codeline",
+      "rect": [
+        600,
+        418,
+        390,
+        32
+      ],
+      "label": "cvta.to.global.u64 %rd3, %rd1;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-10",
+        "op-cvta"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.11",
+      "kind": "codeline",
+      "rect": [
+        600,
+        452,
+        390,
+        32
+      ],
+      "label": "cvta.to.global.u64 %rd4, %rd2;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-11",
+        "op-cvta"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.12",
+      "kind": "codeline",
+      "rect": [
+        600,
+        486,
+        390,
+        32
+      ],
+      "label": "mul.wide.s32 %rd5, %r1, 4;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-12",
+        "op-mul"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.13",
+      "kind": "codeline",
+      "rect": [
+        600,
+        520,
+        390,
+        32
+      ],
+      "label": "add.s64 %rd6, %rd3, %rd5;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-13",
+        "op-add"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.14",
+      "kind": "codeline",
+      "rect": [
+        600,
+        554,
+        390,
+        32
+      ],
+      "label": "ld.global.b32 %r7, [%rd6];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-14",
+        "op-ld",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.15",
+      "kind": "codeline",
+      "rect": [
+        600,
+        588,
+        390,
+        32
+      ],
+      "label": "add.s64 %rd7, %rd4, %rd5;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-15",
+        "op-add"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.16",
+      "kind": "codeline",
+      "rect": [
+        600,
+        622,
+        390,
+        32
+      ],
+      "label": "ld.global.b32 %r8, [%rd7];",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-16",
+        "op-ld",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.17",
+      "kind": "codeline",
+      "rect": [
+        600,
+        656,
+        390,
+        32
+      ],
+      "label": "fma.rn.f32 %r9, %r2, %r7, %r8;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-17",
+        "op-fma",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.18",
+      "kind": "codeline",
+      "rect": [
+        600,
+        690,
+        390,
+        32
+      ],
+      "label": "st.global.b32 [%rd7], %r9;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-18",
+        "op-st",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.ptx.19",
+      "kind": "codeline",
+      "rect": [
+        600,
+        724,
+        390,
+        32
+      ],
+      "label": "ret;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "ptx",
+        "ptx-19",
+        "op-ret"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.0",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        78,
+        490,
+        32
+      ],
+      "label": "0000  LDC R1, c[0x0][0x37c] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-0",
+        "addr-0000",
+        "op-ldc",
+        "reg-r",
+        "const",
+        "useful",
+        "no-pair"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Sem par no código-fonte; função não documentada (README do exemplo)."
+    },
+    {
+      "id": "isa.sass.1",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        112,
+        490,
+        32
+      ],
+      "label": "0010  S2R R0, SR_TID.X ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-1",
+        "addr-0010",
+        "op-s2r",
+        "reg-r",
+        "reg-sr",
+        "useful"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.2",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        146,
+        490,
+        32
+      ],
+      "label": "0020  S2UR UR4, SR_CTAID.X ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-2",
+        "addr-0020",
+        "op-s2ur",
+        "reg-ur",
+        "reg-sr",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.3",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        180,
+        490,
+        32
+      ],
+      "label": "0030  LDCU UR5, c[0x0][0x380] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-3",
+        "addr-0030",
+        "op-ldcu",
+        "reg-ur",
+        "const",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.4",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        214,
+        490,
+        32
+      ],
+      "label": "0040  LDC R7, c[0x0][0x360] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-4",
+        "addr-0040",
+        "op-ldc",
+        "reg-r",
+        "const",
+        "useful"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.5",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        248,
+        490,
+        32
+      ],
+      "label": "0050  IMAD R7, R7, UR4, R0 ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-5",
+        "addr-0050",
+        "op-imad",
+        "reg-r",
+        "reg-ur",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.6",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        282,
+        490,
+        32
+      ],
+      "label": "0060  ISETP.GE.AND P0, PT, R7, UR5, PT ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-6",
+        "addr-0060",
+        "op-isetp",
+        "reg-r",
+        "reg-ur",
+        "reg-p",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.7",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        316,
+        490,
+        32
+      ],
+      "label": "0070  @P0 EXIT ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-7",
+        "addr-0070",
+        "op-exit",
+        "reg-p",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.8",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        350,
+        490,
+        32
+      ],
+      "label": "0080  LDC.64 R2, c[0x0][0x388] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-8",
+        "addr-0080",
+        "op-ldc",
+        "reg-r",
+        "const",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.9",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        384,
+        490,
+        32
+      ],
+      "label": "0090  LDCU.64 UR4, c[0x0][0x358] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-9",
+        "addr-0090",
+        "op-ldcu",
+        "reg-ur",
+        "const",
+        "useful",
+        "no-pair"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Sem par no código-fonte; função não documentada (README do exemplo)."
+    },
+    {
+      "id": "isa.sass.10",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        418,
+        490,
+        32
+      ],
+      "label": "00a0  LDCU UR6, c[0x0][0x384] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-10",
+        "addr-00a0",
+        "op-ldcu",
+        "reg-ur",
+        "const",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.11",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        452,
+        490,
+        32
+      ],
+      "label": "00b0  LDC.64 R4, c[0x0][0x390] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-11",
+        "addr-00b0",
+        "op-ldc",
+        "reg-r",
+        "const",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.12",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        486,
+        490,
+        32
+      ],
+      "label": "00c0  IMAD.WIDE R2, R7, 0x4, R2 ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-12",
+        "addr-00c0",
+        "op-imad",
+        "reg-r",
+        "useful"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.13",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        520,
+        490,
+        32
+      ],
+      "label": "00d0  LDG.E R2, desc[UR4][R2.64] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-13",
+        "addr-00d0",
+        "op-ldg",
+        "reg-r",
+        "reg-ur",
+        "mem",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.14",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        554,
+        490,
+        32
+      ],
+      "label": "00e0  IMAD.WIDE R4, R7, 0x4, R4 ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-14",
+        "addr-00e0",
+        "op-imad",
+        "reg-r",
+        "useful"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.15",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        588,
+        490,
+        32
+      ],
+      "label": "00f0  LDG.E R7, desc[UR4][R4.64] ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-15",
+        "addr-00f0",
+        "op-ldg",
+        "reg-r",
+        "reg-ur",
+        "mem",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.16",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        622,
+        490,
+        32
+      ],
+      "label": "0100  FFMA R7, R2, UR6, R7 ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-16",
+        "addr-0100",
+        "op-ffma",
+        "reg-r",
+        "reg-ur",
+        "useful",
+        "mapped",
+        "ffma"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.17",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        656,
+        490,
+        32
+      ],
+      "label": "0110  STG.E desc[UR4][R4.64], R7 ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-17",
+        "addr-0110",
+        "op-stg",
+        "reg-r",
+        "reg-ur",
+        "mem",
+        "useful",
+        "mapped"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.18",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        690,
+        490,
+        32
+      ],
+      "label": "0120  EXIT ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-18",
+        "addr-0120",
+        "op-exit",
+        "useful"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.sass.19",
+      "kind": "codeline",
+      "rect": [
+        1080,
+        724,
+        490,
+        32
+      ],
+      "label": "0130  BRA 0x130 ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "code",
+        "sass",
+        "sass-19",
+        "addr-0130",
+        "op-bra",
+        "after-exit"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.count.ptx",
+      "kind": "counter",
+      "rect": [
+        30,
+        334,
+        170,
+        74
+      ],
+      "label": "20 instruções",
+      "sublabel": "PTX",
+      "parent": null,
+      "tags": [
+        "counter",
+        "ptx"
+      ],
+      "count": {
+        "value": 20,
+        "claim": "ex.saxpy.ptx_instructions",
+        "provenance": "derived"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.count.sass",
+      "kind": "counter",
+      "rect": [
+        210,
+        334,
+        170,
+        74
+      ],
+      "label": "19 úteis",
+      "sublabel": "SASS, até o EXIT",
+      "parent": null,
+      "tags": [
+        "counter",
+        "sass"
+      ],
+      "count": {
+        "value": 19,
+        "claim": "ex.saxpy.sass_useful",
+        "provenance": "derived"
+      },
+      "shape_provenance": "illustrative",
+      "note": "A listagem tem 32 instruções: depois da BRA vêm NOPs, omitidos aqui."
+    },
+    {
+      "id": "isa.count.regs",
+      "kind": "counter",
+      "rect": [
+        390,
+        334,
+        170,
+        74
+      ],
+      "label": "10 registradores",
+      "sublabel": "por thread",
+      "parent": null,
+      "tags": [
+        "counter",
+        "reg-r",
+        "regs"
+      ],
+      "count": {
+        "value": 10,
+        "claim": "ex.saxpy.registers",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "ex.saxpy.spill_bytes"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "'Used 10 registers' do ptxas -v; 0 bytes de spill."
+    },
+    {
+      "id": "isa.word.ins",
+      "kind": "header",
+      "rect": [
+        30,
+        424,
+        530,
+        40
+      ],
+      "label": "FFMA R7, R2, UR6, R7 ;",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "word",
+        "ffma"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.word.w0",
+      "kind": "field",
+      "rect": [
+        30,
+        470,
+        261,
+        66
+      ],
+      "label": "0x0000000602077c23",
+      "sublabel": "1ª palavra de 64 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "word",
+        "ffma",
+        "word-hex"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Lida de saxpy.sm_120.sass, endereço 0x0100."
+    },
+    {
+      "id": "isa.word.w1",
+      "kind": "field",
+      "rect": [
+        299,
+        470,
+        261,
+        66
+      ],
+      "label": "0x004fca0008000007",
+      "sublabel": "2ª palavra de 64 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "word",
+        "ffma",
+        "word-hex"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Lida de saxpy.sm_120.sass, endereço 0x0100."
+    },
+    {
+      "id": "isa.word.bytes",
+      "kind": "counter",
+      "rect": [
+        30,
+        544,
+        530,
+        48
+      ],
+      "label": "16 bytes = 128 bits por instrução",
+      "parent": null,
+      "tags": [
+        "word",
+        "counter",
+        "word-size"
+      ],
+      "count": {
+        "value": 16,
+        "unit": "bytes",
+        "claim": "isa.instruction_bytes",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.field.opcode",
+      "kind": "field",
+      "rect": [
+        30,
+        602,
+        101.2,
+        68
+      ],
+      "label": "opcode",
+      "sublabel": "10 a 13 bits",
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-opcode"
+      ],
+      "claims": [
+        "isa.volta.opcode_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.pred",
+      "kind": "field",
+      "rect": [
+        137.2,
+        602,
+        101.2,
+        68
+      ],
+      "label": "predicado",
+      "sublabel": "4 bits",
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-pred"
+      ],
+      "count": {
+        "value": 4,
+        "unit": "bits",
+        "claim": "isa.volta.predicate_bits",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.control",
+      "kind": "field",
+      "rect": [
+        244.4,
+        602,
+        101.2,
+        68
+      ],
+      "label": "controle",
+      "sublabel": "≥ 23 bits",
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-control"
+      ],
+      "count": {
+        "value": 23,
+        "unit": "bits",
+        "claim": "isa.volta.control_bits_min",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.instr",
+      "kind": "field",
+      "rect": [
+        351.6,
+        602,
+        101.2,
+        68
+      ],
+      "label": "instrução",
+      "sublabel": "≥ 91 bits",
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-instr"
+      ],
+      "count": {
+        "value": 91,
+        "unit": "bits",
+        "claim": "isa.volta.instruction_bits_min",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.unused",
+      "kind": "field",
+      "rect": [
+        458.8,
+        602,
+        101.2,
+        68
+      ],
+      "label": "sem uso",
+      "sublabel": "14 bits",
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-unused"
+      ],
+      "count": {
+        "value": 14,
+        "unit": "bits",
+        "claim": "isa.volta.unused_bits",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.note",
+      "kind": "note",
+      "rect": [
+        30,
+        678,
+        530,
+        44
+      ],
+      "label": "campos descritos para a Volta (2018)",
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "note"
+      ],
+      "claims": [
+        "isa.volta.instruction_bits_min"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.gap.control",
+      "kind": "gap",
+      "rect": [
+        30,
+        730,
+        530,
+        54
+      ],
+      "label": "Bits de controle no sm_120",
+      "sublabel": "não documentados",
+      "parent": null,
+      "tags": [
+        "gap",
+        "word"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Bits de controle, contadores de dependência e cache de reúso na Blackwell: as medidas são de Volta (Jia) e Ampere/Turing (Huerta); nenhuma Blackwell foi medida, e a NVIDIA não dá acesso aos bits pelas ferramentas."
+    }
+  ],
+  "flows": [
+    {
+      "id": "isa.map.0",
+      "from": "isa.ptx.0",
+      "to": "isa.sass.3",
+      "points": [
+        [
+          990,
+          94
+        ],
+        [
+          1080,
+          196
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.1",
+      "from": "isa.ptx.1",
+      "to": "isa.sass.10",
+      "points": [
+        [
+          990,
+          128
+        ],
+        [
+          1080,
+          434
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.2",
+      "from": "isa.ptx.2",
+      "to": "isa.sass.8",
+      "points": [
+        [
+          990,
+          162
+        ],
+        [
+          1080,
+          366
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.3",
+      "from": "isa.ptx.3",
+      "to": "isa.sass.11",
+      "points": [
+        [
+          990,
+          196
+        ],
+        [
+          1080,
+          468
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.4",
+      "from": "isa.ptx.4",
+      "to": "isa.sass.2",
+      "points": [
+        [
+          990,
+          230
+        ],
+        [
+          1080,
+          162
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.5",
+      "from": "isa.ptx.7",
+      "to": "isa.sass.5",
+      "points": [
+        [
+          990,
+          332
+        ],
+        [
+          1080,
+          264
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.6",
+      "from": "isa.ptx.8",
+      "to": "isa.sass.6",
+      "points": [
+        [
+          990,
+          366
+        ],
+        [
+          1080,
+          298
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.7",
+      "from": "isa.ptx.9",
+      "to": "isa.sass.7",
+      "points": [
+        [
+          990,
+          400
+        ],
+        [
+          1080,
+          332
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.8",
+      "from": "isa.ptx.14",
+      "to": "isa.sass.13",
+      "points": [
+        [
+          990,
+          570
+        ],
+        [
+          1080,
+          536
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.9",
+      "from": "isa.ptx.16",
+      "to": "isa.sass.15",
+      "points": [
+        [
+          990,
+          638
+        ],
+        [
+          1080,
+          604
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.10",
+      "from": "isa.ptx.17",
+      "to": "isa.sass.16",
+      "points": [
+        [
+          990,
+          672
+        ],
+        [
+          1080,
+          638
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.11",
+      "from": "isa.ptx.18",
+      "to": "isa.sass.17",
+      "points": [
+        [
+          990,
+          706
+        ],
+        [
+          1080,
+          672
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.flow.ffma_word",
+      "from": "isa.sass.16",
+      "to": "isa.word.w1",
+      "points": [
+        [
+          1080,
+          638
+        ],
+        [
+          1050,
+          638
+        ],
+        [
+          1050,
+          776
+        ],
+        [
+          578,
+          776
+        ],
+        [
+          578,
+          503
+        ],
+        [
+          560,
+          503
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    }
+  ],
+  "checks": [
+    {
+      "expr": "isa.count.ptx - 2 - 1 + 2",
+      "expect": 19
+    },
+    {
+      "expr": "isa.count.sass + 1 + 12",
+      "expect": 32
+    },
+    {
+      "expr": "isa.word.bytes * 8",
+      "expect": 128
+    },
+    {
+      "expr": "isa.field.instr + isa.field.control + isa.field.unused",
+      "expect": 128
+    }
+  ]
+}

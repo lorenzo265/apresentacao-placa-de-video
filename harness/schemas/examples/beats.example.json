@@ -1,0 +1,45 @@
+{
+  "beats": {
+    "a0.2": {
+      "headline": "RTX PRO 6000 Blackwell",
+      "caption": "Placa de estação de trabalho da NVIDIA, com o chip GB202.",
+      "fala": "Abertura: apresentar a placa e o grupo.",
+      "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition",
+      "claims": []
+    },
+    "t1.1": {
+      "headline": "Daqui em diante é diagrama",
+      "caption": "As contagens são oficiais. As posições e as formas são ilustrativas.",
+      "fala": "",
+      "source_line": "",
+      "claims": []
+    },
+    "a4.2": {
+      "headline": "12 GPCs, 94 TPCs, 188 SMs",
+      "caption": "O chip se organiza em três níveis. Nesta placa são 94 TPCs com 2 SMs cada: 188 SMs e 24.064 núcleos CUDA.",
+      "fala": "",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4",
+      "claims": [
+        "chip.tpc_count",
+        "chip.sm_count",
+        "chip.cuda_cores"
+      ]
+    },
+    "t2.1": {
+      "headline": "Um dos 188",
+      "caption": "Cada SM é um processador completo, com escalonadores, registradores e memória própria.",
+      "fala": "",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4",
+      "claims": [
+        "chip.sm_count"
+      ]
+    },
+    "a5.5": {
+      "headline": "Quatro blocos por SM",
+      "caption": "Cada bloco tem o seu escalonador de warp e despacha 32 threads por ciclo.",
+      "fala": "",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5",
+      "claims": []
+    }
+  }
+}

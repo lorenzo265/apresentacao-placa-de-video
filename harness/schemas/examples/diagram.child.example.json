@@ -1,0 +1,113 @@
+{
+  "id": "chip.sm",
+  "level": 3,
+  "title": "Um SM (exemplo reduzido)",
+  "disclaimer": "Diagrama ilustrativo, redesenhado a partir da Fig. 5 do whitepaper.",
+  "size": [
+    800,
+    600
+  ],
+  "generated_by": "exemplo escrito à mão para testar o viewer",
+  "nodes": [
+    {
+      "id": "sm.box",
+      "kind": "sm-frame",
+      "rect": [
+        0,
+        0,
+        800,
+        600
+      ],
+      "label": "SM",
+      "parent": null,
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0",
+      "kind": "block",
+      "rect": [
+        20,
+        40,
+        370,
+        300
+      ],
+      "parent": "sm.box",
+      "tags": [
+        "block"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.sched",
+      "kind": "sched",
+      "rect": [
+        30,
+        50,
+        350,
+        40
+      ],
+      "label": "Escalonador de warp",
+      "sublabel": "32 threads por ciclo",
+      "parent": "sm.block.0",
+      "tags": [
+        "sched"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.regfile",
+      "kind": "regfile",
+      "rect": [
+        30,
+        100,
+        350,
+        50
+      ],
+      "label": "16.384 registradores de 32 bits",
+      "mono": false,
+      "parent": "sm.block.0",
+      "tags": [
+        "regfile"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.l1",
+      "kind": "cache",
+      "rect": [
+        20,
+        360,
+        760,
+        60
+      ],
+      "label": "L1 / memória compartilhada",
+      "sublabel": "128 KB",
+      "parent": "sm.box",
+      "tags": [
+        "l1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.code.0",
+      "kind": "codeline",
+      "rect": [
+        420,
+        60,
+        360,
+        28
+      ],
+      "label": "FFMA R7, R2, UR6, R7 ;",
+      "mono": true,
+      "align": "left",
+      "parent": "sm.box",
+      "tags": [
+        "code"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    }
+  ],
+  "flows": [],
+  "checks": []
+}

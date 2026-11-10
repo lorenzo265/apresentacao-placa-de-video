@@ -1,0 +1,389 @@
+{
+  "id": "chip.memhier",
+  "level": 3,
+  "title": "Hierarquia de memória: tamanho e latência",
+  "disclaimer": "Tamanhos oficiais (whitepaper); latências medidas na RTX 5080 (GB203), outra placa da mesma família. Larguras dos degraus ilustrativas.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_chip_memhier.py",
+  "nodes": [
+    {
+      "id": "memh.head.steps",
+      "kind": "header",
+      "rect": [
+        30,
+        30,
+        1000,
+        44
+      ],
+      "label": "do mais rápido (em cima) ao maior (embaixo)",
+      "parent": null,
+      "tags": [
+        "header"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.head.lat",
+      "kind": "header",
+      "rect": [
+        1060,
+        30,
+        240,
+        44
+      ],
+      "label": "latência",
+      "parent": null,
+      "tags": [
+        "header",
+        "latency"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.head.total",
+      "kind": "header",
+      "rect": [
+        1320,
+        30,
+        250,
+        44
+      ],
+      "label": "total na placa",
+      "parent": null,
+      "tags": [
+        "header",
+        "total"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.step.regs",
+      "kind": "regfile",
+      "rect": [
+        30,
+        90,
+        400,
+        148
+      ],
+      "label": "Registradores",
+      "sublabel": "256 KB por SM",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "step",
+        "step-1",
+        "regs",
+        "size"
+      ],
+      "count": {
+        "value": 256,
+        "unit": "KB",
+        "claim": "sm.regfile_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.step.l1",
+      "kind": "cache",
+      "rect": [
+        30,
+        256,
+        600,
+        148
+      ],
+      "label": "L1 / memória compartilhada",
+      "sublabel": "128 KB por SM",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "step",
+        "step-2",
+        "l1",
+        "size"
+      ],
+      "count": {
+        "value": 128,
+        "unit": "KB",
+        "claim": "sm.l1_shared_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.step.l2",
+      "kind": "cache",
+      "rect": [
+        30,
+        422,
+        800,
+        148
+      ],
+      "label": "L2",
+      "sublabel": "128 MB no chip",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "step",
+        "step-3",
+        "l2",
+        "size"
+      ],
+      "count": {
+        "value": 131072,
+        "unit": "KB",
+        "claim": "chip.l2_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.step.dram",
+      "kind": "memory",
+      "rect": [
+        30,
+        588,
+        1000,
+        148
+      ],
+      "label": "GDDR7",
+      "sublabel": "96 GB na placa",
+      "label_size": 30,
+      "parent": null,
+      "tags": [
+        "step",
+        "step-4",
+        "dram",
+        "size"
+      ],
+      "count": {
+        "value": 96,
+        "unit": "GB",
+        "claim": "mem.capacity_gb",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "mem.type"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.lat.regs",
+      "kind": "gap",
+      "rect": [
+        1060,
+        104,
+        240,
+        120
+      ],
+      "label": "sem medida",
+      "sublabel": "no spec",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "latency",
+        "regs",
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "O spec não tem latência de acesso ao banco de registradores. lat.int_fp_cycles (4 ciclos) é latência de instrução, não de acesso."
+    },
+    {
+      "id": "memh.lat.l1",
+      "kind": "counter",
+      "rect": [
+        1060,
+        270,
+        240,
+        120
+      ],
+      "label": "30 a 40 ciclos",
+      "sublabel": "RTX 5080 (GB203)",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "latency",
+        "l1"
+      ],
+      "claims": [
+        "lat.l1_cycles"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Jarmusch et al., RTX 5080 (GB203), seção VI-B."
+    },
+    {
+      "id": "memh.lat.l2",
+      "kind": "counter",
+      "rect": [
+        1060,
+        436,
+        240,
+        120
+      ],
+      "label": "≈ 358 ciclos",
+      "sublabel": "RTX 5080 (GB203)",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "latency",
+        "l2"
+      ],
+      "count": {
+        "value": 358,
+        "unit": "ciclos",
+        "claim": "lat.l2_cycles",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Jarmusch et al., medida na RTX 5080 (GB203); 'cerca de' na fonte."
+    },
+    {
+      "id": "memh.lat.dram",
+      "kind": "counter",
+      "rect": [
+        1060,
+        602,
+        240,
+        120
+      ],
+      "label": "≈ 876,7 ciclos",
+      "sublabel": "RTX 5080 (GB203)",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "latency",
+        "dram"
+      ],
+      "count": {
+        "value": 876.7,
+        "unit": "ciclos",
+        "claim": "lat.global_cycles",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Jarmusch et al., medida na RTX 5080 (GB203); 'cerca de' na fonte."
+    },
+    {
+      "id": "memh.total.regs",
+      "kind": "counter",
+      "rect": [
+        1320,
+        114,
+        250,
+        100
+      ],
+      "label": "48.128 KB",
+      "sublabel": "188 × 256 KB",
+      "label_size": 26,
+      "parent": null,
+      "tags": [
+        "total",
+        "regs"
+      ],
+      "count": {
+        "value": 48128,
+        "unit": "KB",
+        "claim": "card.regfile_total_kb",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.sm_count",
+        "sm.regfile_kb"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.total.l1",
+      "kind": "counter",
+      "rect": [
+        1320,
+        280,
+        250,
+        100
+      ],
+      "label": "24.064 KB",
+      "sublabel": "188 × 128 KB",
+      "label_size": 26,
+      "parent": null,
+      "tags": [
+        "total",
+        "l1"
+      ],
+      "count": {
+        "value": 24064,
+        "unit": "KB",
+        "claim": "card.l1_total_kb",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.sm_count",
+        "sm.l1_shared_kb"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.note.lat",
+      "kind": "note",
+      "rect": [
+        30,
+        772,
+        760,
+        100
+      ],
+      "label": "latências: RTX 5080 (GB203)",
+      "sublabel": "mesma família, outra placa: valores derivados",
+      "parent": null,
+      "tags": [
+        "note",
+        "latency"
+      ],
+      "claims": [
+        "lat.l1_cycles",
+        "lat.l2_cycles",
+        "lat.global_cycles"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "memh.gap.policy",
+      "kind": "gap",
+      "rect": [
+        810,
+        772,
+        760,
+        100
+      ],
+      "label": "Política e associatividade dos caches",
+      "sublabel": "não são públicas",
+      "parent": null,
+      "tags": [
+        "gap",
+        "cache-policy"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Política dos caches (substituição, escrita, associatividade, linha) de L1 e L2: o whitepaper não cobre."
+    }
+  ],
+  "flows": [],
+  "checks": [
+    {
+      "expr": "memh.step.regs * 188",
+      "expect": 48128
+    },
+    {
+      "expr": "memh.step.l1 * 188",
+      "expect": 24064
+    }
+  ]
+}

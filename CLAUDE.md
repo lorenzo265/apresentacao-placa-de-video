@@ -4,7 +4,7 @@ Apresentação cinematográfica e interativa de uma placa de vídeo NVIDIA RTX P
 
 ## Estrutura
 
-- `harness/`: camada técnica (spec, modelagem, storyboard, viewer). Comece por `harness/ARCHITECTURE.md`, que é a fonte de verdade.
+- `harness/`: camada técnica (spec, modelagem, storyboard, viewer). Comece por `harness/ARCHITECTURE.md`, que é a fonte de verdade. O estado do projeto está em `harness/STATUS.md`; a placa real em `harness/design/assembly-plan.md`; o vídeo em `harness/story/video-plan.md`.
 - `vault/`: vault Obsidian com a camada editorial (briefing, pesquisa, roteiro, ensaios). Tem o próprio `vault/CLAUDE.md`, que vale para tudo dentro de `vault/`.
 - `.claude/agents/`: subagentes do harness, com o modelo de cada um no frontmatter.
 - `.claude/skills/`: skills do projeto (`gpu-assembly-proposal`).
@@ -39,6 +39,7 @@ Uma skill carrega suas instruções no contexto de quem a invoca, então **o mod
 | `source-registration` | a escrever | **C** | `spec-researcher` | Rotina de registrar fonte: nota no vault, excertos em `harness/spec/sources/`, contas conferidas |
 | `sass-example-lab` | a escrever | **C**, **A** para a interpretação | `spec-researcher` | Escrever PTX, compilar com `ptxas`, desmontar com `nvdisasm`. Interpretar o SASS e classificar é com A |
 | `build123d-gpu-parts` | a escrever | **B** peças complexas, **C** simples, **D** repetitivas | `modeler-complex`, `modeler-standard`, `instancer` | Segue o agente |
+| `chip-diagram-kit` | a escrever | **B** | `diagram-designer` | Transforma os números do spec em diagramas dos níveis 2 a 4. Erro de desenho vira erro de conteúdo |
 | `cinematic-storyboard` | a escrever | **B** | `storyboard-director` | Ritmo, câmera e enquadramento exigem julgamento visual |
 | `explainer-writing-ptbr` | a escrever | **C** | `technical-writer` | Escrita didática em volume, sempre seguida de auditoria |
 | `viewer-scaffold` | a escrever | **C** | `viewer-engineer` | Código web padrão com teste automatizado |
@@ -62,4 +63,11 @@ Uma skill carrega suas instruções no contexto de quem a invoca, então **o mod
 - Placa: RTX PRO 6000 Blackwell, Workstation Edition.
 - Contexto: trabalho de Arquitetura da disciplina de Organização e Arquitetura de Computadores, grupo de até 4. Entregas: proposta em 2026-10-26 (0,5), texto em 2026-11-09 (1,5), seminário em 2026-11-16 (2,0). Ver `vault/01-Briefing/Requisitos da disciplina.md`.
 - O enunciado cobra arquitetura (registradores, instruções, CISC/RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). Roteiro v2 (14 seções, da placa ao interior do chip) confirmado em 2026-10-19. O v1, focado em hardware físico, está arquivado em `vault/_arquivo/roteiro-v1/`.
-- Fase atual: F1 em andamento. Fontes lidas: whitepaper da arquitetura e página do produto (ver `harness/spec/sources/`). Também lidos: PTX ISA, CUDA Binary Utilities, compute capability e dois artigos de microbenchmark; exemplos SAXPY e `mma` compilados para `sm_120` em `harness/examples/`. As fontes de instruções foram auditadas pelo `fact-checker` (`harness/qa/fact-check-isa.md`); a análise RISC ou CISC da seção 08 aguarda revisão humana. Pendentes: guia CUDA, código aberto do driver (MMU e interrupções) e o conector de energia.
+- Fase atual (2026-11-09): F1 quase fechada, nada das fases F2 a F8 existe além de planos, schemas e validador. Acompanhamento completo, pendências e plano até o seminário em `harness/STATUS.md`.
+- Grupo Warp 32. Documentação escrita entregue em 2026-11-09 (artigo); revisão em `harness/qa/revisao-artigo.md`. Seminário de 15 a 20 minutos.
+- Fontes de chip e instruções: whitepaper, página do produto, PTX ISA, CUDA Binary Utilities, compute capability e dois artigos de microbenchmark; exemplos SAXPY e `mma` compilados para `sm_120` em `harness/examples/`. Auditadas pelo `fact-checker` (`harness/qa/fact-check-isa.md`); a análise RISC ou CISC da seção 08 aguarda revisão humana.
+- Fontes do hardware físico (2026-11-09): datasheet oficial e teardown da própria placa em `harness/spec/sources/physical-card-sources.md`, auditoria em `harness/qa/fact-check-fisico.md`. A placa tem cooler de fluxo duplo com dois ventiladores, adaptador PCIe separado e 32 posições de memória; o interior do cooler e as fases de energia continuam sem fonte.
+- Fontes de MMU e interrupções (`harness/spec/sources/mmu-interrupts-sources.md`), normas (`standards-sources.md`) e catálogo de fotos (`harness/spec/references/index.md`), todos de 2026-11-09, com auditoria da segunda leva em andamento.
+- Planos (2026-11-09), ainda sem gate humano: montagem v0.3 (`harness/design/assembly-plan.md`) e vídeo (`harness/story/video-plan.md`, 63 beats, 42 no corte do seminário). Contratos em `harness/schemas/`, validados por `harness/tools/validate.py`.
+- Conclusão RISC ou CISC aprovada pelo humano em 2026-11-10 (seção 08 do roteiro). Os diagramas do chip são desenhados em camada SVG (contrato em `harness/diagrams/README.md`).
+- Em andamento desde 2026-11-10: `spec/card.spec.json`, viewer e diagramas do chip. Pendentes: proposta de engenharia da F2, ajustes da divisão da fala, segunda passada das auditorias.

@@ -1,0 +1,1110 @@
+{
+  "card_id": "rtx-pro-6000-blackwell-ws",
+  "facts": [
+    {
+      "id": "chip.name",
+      "value": "GB202",
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Chip completo GB202 (p. 8 e 45); a placa usa uma versão com 94 TPCs"
+    },
+    {
+      "id": "chip.gpc_count",
+      "value": 12,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Tab. 4 (RTX PRO 6000 Workstation) e chip completo"
+    },
+    {
+      "id": "chip.tpc_per_gpc",
+      "value": 8,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 9, valor do chip completo (12 x 8 = 96). Com 94 TPCs na placa a divisão por GPC não é inteira e o whitepaper não diz quais GPCs têm menos TPCs"
+    },
+    {
+      "id": "chip.sm_per_tpc",
+      "value": 2,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 9: TPC = 1 PolyMorph Engine e 2 SMs"
+    },
+    {
+      "id": "chip.tpc_count",
+      "value": 94,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Tab. 4, nesta placa; o texto da p. 8 diz que a placa usa o GB202 completo (96)",
+      "conflict": true
+    },
+    {
+      "id": "chip.tpc_count_full",
+      "value": 96,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Chip completo GB202, p. 8 e 45"
+    },
+    {
+      "id": "chip.sm_count",
+      "value": 188,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Tab. 4; confere com 94 x 2 e com 24.064 / 128 (datasheet). O texto da p. 8 diz 192; o whitepaper não explica a diferença",
+      "conflict": true
+    },
+    {
+      "id": "chip.sm_count_full",
+      "value": 192,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
+      "note": "p. 8: 'The RTX PRO 6000 GPUs use the full GB202 GPU' (192 SMs), contra 188 nas Tab. 1 e 4",
+      "conflict": true
+    },
+    {
+      "id": "chip.cuda_cores",
+      "value": 24064,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Tab. 4 e datasheet p. 3; 188 x 128"
+    },
+    {
+      "id": "chip.cuda_cores_full",
+      "value": 24576,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Chip completo, p. 8 e 45; 192 x 128"
+    },
+    {
+      "id": "chip.transistors_billion",
+      "value": 92.2,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "bilhões",
+      "note": "Tab. 4"
+    },
+    {
+      "id": "chip.die_area_mm2",
+      "value": 750,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "mm2",
+      "note": "Tab. 4"
+    },
+    {
+      "id": "chip.process",
+      "value": "TSMC 4N (4nm 4N NVIDIA Custom Process)",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
+      "note": "Tab. 4, p. 48; '4 nm' é rótulo do processo, não medida de elemento"
+    },
+    {
+      "id": "chip.l2_kb",
+      "value": 131072,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "KB",
+      "note": "128 MB; p. 9 e Tab. 4"
+    },
+    {
+      "id": "chip.mem_controllers",
+      "value": 16,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 8: dezesseis controladores de 32 bits (chip completo)"
+    },
+    {
+      "id": "chip.mem_controller_bits",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "bits",
+      "note": "p. 8; 16 x 32 = 512"
+    },
+    {
+      "id": "chip.amp_isa",
+      "value": "RISC-V",
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 25: AI Management Processor implementado com processador RISC-V dedicado na frente do pipeline"
+    },
+    {
+      "id": "chip.boost_clock_mhz",
+      "value": 2617,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
+      "unit": "MHz",
+      "note": "Tab. 4, linha 'GPU Boost Clock (MHz)'; o documento não usa 'máxima'"
+    },
+    {
+      "id": "chip.fp32_tflops",
+      "value": 126.0,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
+      "unit": "TFLOPS",
+      "note": "Tab. 4, 'Peak FP32 TFLOPS (non-Tensor)', baseada no boost clock; 24.064 x 2 x 2,617 GHz = 125,95"
+    },
+    {
+      "id": "chip.marking",
+      "value": "GB 202-870-A1",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
+      "note": "Grafia da Gamers Nexus, que chama de SKU; a marcação não foi lida em foto pelo grupo"
+    },
+    {
+      "id": "sm.cuda_cores",
+      "value": 128,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 9, núcleos FP32 (unificados com INT32: operam como FP32 ou INT32 em cada ciclo, p. 11)"
+    },
+    {
+      "id": "sm.tensor_cores",
+      "value": 4,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "5ª geração, p. 9"
+    },
+    {
+      "id": "sm.rt_cores",
+      "value": 1,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "4ª geração, p. 9"
+    },
+    {
+      "id": "sm.tex_units",
+      "value": 4,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 9"
+    },
+    {
+      "id": "sm.fp64_cores",
+      "value": 2,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "Nota da Fig. 3, p. 8; taxa de 1/64 da FP32"
+    },
+    {
+      "id": "sm.blocks",
+      "value": 4,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Fig. 5, p. 10: quatro blocos, cada um com warp scheduler e banco de registradores"
+    },
+    {
+      "id": "sm.block_regfile_entries",
+      "value": 16384,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Fig. 5, p. 10: 'Register File (16,384 x 32-bit)' por bloco"
+    },
+    {
+      "id": "sm.block_dispatch_threads_per_clk",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "unit": "threads/ciclo",
+      "note": "Fig. 5, p. 10: 'Dispatch (32 thread/clk)' por bloco"
+    },
+    {
+      "id": "sm.block_ldst_units",
+      "value": 4,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro"
+    },
+    {
+      "id": "sm.regfile_kb",
+      "value": 256,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "KB",
+      "note": "p. 9; 4 x 16.384 x 4 B = 256 KB"
+    },
+    {
+      "id": "sm.regfile_entries",
+      "value": 65536,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Blackwell Tuning Guide 13.5, 1.4.1.1: 'The register file size is 64K 32-bit registers per SM.' Confere com 256 KB / 4 B e 4 x 16.384"
+    },
+    {
+      "id": "sm.l1_shared_kb",
+      "value": 128,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "KB",
+      "note": "L1 e memória compartilhada unificadas (p. 9). O máximo configurável só para compartilhada é menor (100 KB na Tab. 35 do Guia CUDA, lida por resumo automático; 99 KB por bloco no Tuning Guide)"
+    },
+    {
+      "id": "sm.max_regs_per_thread",
+      "value": 255,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Tuning Guide 13.5, 1.4.1.1. Huerta et al. (Ampere) dizem 'from 1 to 256' por warp; vale o valor oficial",
+      "conflict": true
+    },
+    {
+      "id": "sm.max_warps",
+      "value": 48,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Tuning Guide 13.5, 1.4.1.1, compute capability 12.0 (64 para 10.0)"
+    },
+    {
+      "id": "sm.max_blocks",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Tuning Guide 13.5, 1.4.1.1, compute capability 10.0 e 12.0. A Tab. 33 do Guia CUDA (resumo) lista 16, 24 e 32 sem identificar a coluna"
+    },
+    {
+      "id": "sm.max_threads",
+      "value": 1536,
+      "provenance": "derived",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Conta nossa: 48 warps x 32; o Tuning Guide não declara threads por SM"
+    },
+    {
+      "id": "warp.size",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#1-nvidia-ptx-isa-94",
+      "note": "PTX ISA 2.2.1 e 4.5.1: WARP_SZ é 32 em todas as arquiteturas-alvo"
+    },
+    {
+      "id": "card.regfile_total_kb",
+      "value": 48128,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "KB",
+      "note": "Tab. 4; 188 x 256 KB"
+    },
+    {
+      "id": "card.l1_total_kb",
+      "value": 24064,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "KB",
+      "note": "Tab. 4; 188 x 128 KB"
+    },
+    {
+      "id": "card.threads_resident",
+      "value": 288768,
+      "provenance": "derived",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Conta nossa: 1.536 threads por SM x 188 SMs"
+    },
+    {
+      "id": "mem.capacity_gb",
+      "value": 96,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-6000-product-page.md#dados-conferidos",
+      "unit": "GB",
+      "note": "Também no whitepaper Tab. 4 e no datasheet p. 3"
+    },
+    {
+      "id": "mem.type",
+      "value": "GDDR7",
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-6000-product-page.md#dados-conferidos"
+    },
+    {
+      "id": "mem.bus_bits",
+      "value": 512,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "unit": "bits",
+      "note": "Datasheet p. 3 'Memory Interface: 512-bit'; whitepaper Tab. 4. A página do produto não traz a largura"
+    },
+    {
+      "id": "mem.pin_rate_gbps",
+      "value": 28,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "unit": "Gbps",
+      "note": "Tab. 4"
+    },
+    {
+      "id": "mem.bandwidth_gbs",
+      "value": 1792,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-6000-product-page.md#dados-conferidos",
+      "unit": "GB/s",
+      "note": "Confere com 28 Gbps x 512 / 8; também no datasheet e na Tab. 4"
+    },
+    {
+      "id": "mem.ecc",
+      "value": true,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 13 (nota da v1.1): correção de erro simples (SEC), sempre ligada, sem opção de desligar"
+    },
+    {
+      "id": "mem.signaling",
+      "value": "PAM3, 1,5 bit por ciclo",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
+      "note": "p. 12: '3 levels delivering 1.5 bits per cycle'. A auditoria do físico não sabia se a sigla PAM3 é literal do whitepaper; PAM3 consta na JEDEC (comunicado em standards-sources.md, seção 8)"
+    },
+    {
+      "id": "mem.positions",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
+      "note": "'32 total memory locations'; a fonte fala em posições, não diz que estão todas ocupadas"
+    },
+    {
+      "id": "mem.back_modules",
+      "value": 16,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
+      "note": "'16 memory modules on the back'"
+    },
+    {
+      "id": "mem.chip_gb",
+      "value": 3,
+      "provenance": "derived",
+      "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
+      "unit": "GB",
+      "note": "Dedução da própria Gamers Nexus (32 x 3 GB = 96 GB), sem leitura da marcação do chip. As fontes não excluem 24 chips de 4 GB"
+    },
+    {
+      "id": "isa.compute_capability",
+      "value": "12.0",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#3-nvidia-cuda-gpus-compute-capability"
+    },
+    {
+      "id": "isa.target",
+      "value": "sm_120",
+      "provenance": "confirmed",
+      "source": "examples/saxpy-cu/README.md#como-reproduzir",
+      "note": "Alvo usado pelo nvcc/ptxas nos exemplos reproduzidos; o PTX ISA lido não cita sm_120 (só sm_100 e sm_100a)"
+    },
+    {
+      "id": "isa.instruction_bytes",
+      "value": 16,
+      "provenance": "confirmed",
+      "source": "examples/saxpy-cu/README.md#resultado-da-conferencia",
+      "unit": "bytes",
+      "note": "Endereços de 0x10 em 0x10 no SASS de sm_120; Binary Utilities (apêndice 7.1): 'The instruction size is 16 bytes.'"
+    },
+    {
+      "id": "isa.sass_mnemonics",
+      "value": 258,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Contagem nossa da tabela 'Blackwell and Rubin Instruction Set' (CUDA Binary Utilities 13.5); o fact-checker contou 258 de forma independente"
+    },
+    {
+      "id": "isa.sass_categories",
+      "value": 13,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categorias da mesma tabela; contagem nossa (39+34+8+8+4+32+62+11+12+6+4+25+13 = 258)"
+    },
+    {
+      "id": "isa.ptx_version",
+      "value": "9.5",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#6-nvidia-ptx-isa-resumo-automatico-da-versao-atual-e-leitura-direta-de-uma-versao-antiga",
+      "note": "Página aberta em 2026-11-09; o PTX gerado nos exemplos começa com '.version 9.5'. isa-sources.md ainda registra 9.4 (leitura de 2026-10-19): atualização, não conflito de fontes"
+    },
+    {
+      "id": "isa.ptx_load_store",
+      "value": true,
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#1-nvidia-ptx-isa-94",
+      "note": "PTX ISA 6.2: 'PTX describes a load-store machine...'"
+    },
+    {
+      "id": "isa.op.ldgsts",
+      "value": "Asynchronous Global to Shared Memcopy",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categoria Load/Store"
+    },
+    {
+      "id": "isa.op.tex",
+      "value": "Texture Fetch",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categoria Texture"
+    },
+    {
+      "id": "isa.op.hmma",
+      "value": "Matrix Multiply and Accumulate",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categoria Floating Point"
+    },
+    {
+      "id": "isa.op.qmma",
+      "value": "FP8 Matrix Multiply and Accumulate Across a Warp",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categoria Floating Point"
+    },
+    {
+      "id": "isa.op.utmaldg",
+      "value": "Tensor Load from Global to Shared Memory",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categoria Tensor Memory Access"
+    },
+    {
+      "id": "isa.op.ldcu",
+      "value": "carga de constante para registrador uniforme",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-nvidia-cuda-binary-utilities-134",
+      "note": "Descrição em português do registro da seção 4.4 das Binary Utilities (não é a cadeia literal em inglês). A função de LDCU.64 UR4 no SAXPY segue não documentada"
+    },
+    {
+      "id": "isa.op.s2ur",
+      "value": "registrador especial para registrador uniforme",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-nvidia-cuda-binary-utilities-134",
+      "note": "Descrição em português do registro da seção 4.4 das Binary Utilities (não é a cadeia literal em inglês)"
+    },
+    {
+      "id": "isa.op.bpt",
+      "value": "BreakPoint/Trap",
+      "provenance": "confirmed",
+      "source": "spec/sources/isa-sources.md#2-1-releitura-em-2026-11-09-cuda-binary-utilities-135-auditada",
+      "note": "Categoria Control"
+    },
+    {
+      "id": "isa.volta.instruction_bits_min",
+      "value": 91,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#4-jia-et-al-volta-arxiv-180406826",
+      "unit": "bits",
+      "note": "Volta, capítulo 2: 'ao menos' 91 bits de instrução"
+    },
+    {
+      "id": "isa.volta.control_bits_min",
+      "value": 23,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#4-jia-et-al-volta-arxiv-180406826",
+      "unit": "bits",
+      "note": "Volta: 'ao menos' 23 bits de controle"
+    },
+    {
+      "id": "isa.volta.unused_bits",
+      "value": 14,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#4-jia-et-al-volta-arxiv-180406826",
+      "unit": "bits",
+      "note": "Volta: 14 bits aparentemente não usados (91 + 23 + 14 = 128)"
+    },
+    {
+      "id": "isa.volta.opcode_bits",
+      "value": "10 a 13",
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#4-jia-et-al-volta-arxiv-180406826",
+      "unit": "bits",
+      "note": "Volta, seção 2.3: nos bits menos significativos da primeira metade de 64 bits"
+    },
+    {
+      "id": "isa.volta.predicate_bits",
+      "value": 4,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#4-jia-et-al-volta-arxiv-180406826",
+      "unit": "bits",
+      "note": "Volta, seção 2.3: negação e índice de 3 bits"
+    },
+    {
+      "id": "ex.saxpy.registers",
+      "value": 10,
+      "provenance": "confirmed",
+      "source": "examples/saxpy-cu/README.md#resultado-da-conferencia",
+      "note": "'Used 10 registers' do ptxas -v, sm_120"
+    },
+    {
+      "id": "ex.saxpy.spill_bytes",
+      "value": 0,
+      "provenance": "confirmed",
+      "source": "examples/saxpy-cu/README.md#resultado-da-conferencia",
+      "unit": "bytes",
+      "note": "'0 bytes spill stores, 0 bytes spill loads'"
+    },
+    {
+      "id": "ex.saxpy.ptx_instructions",
+      "value": 20,
+      "provenance": "derived",
+      "source": "examples/saxpy-cu/README.md#resultado-da-conferencia",
+      "note": "Contagem de linhas do PTX gerado pelo nvcc 13.5.37"
+    },
+    {
+      "id": "ex.saxpy.sass_instructions",
+      "value": 32,
+      "provenance": "derived",
+      "source": "examples/saxpy-cu/README.md#resultado-da-conferencia",
+      "note": "Contagem da listagem do cuobjdump (512 bytes); inclui 12 NOP depois da BRA que a Figura 4 do artigo omite"
+    },
+    {
+      "id": "ex.saxpy.sass_useful",
+      "value": 19,
+      "provenance": "derived",
+      "source": "examples/saxpy-cu/README.md#resultado-da-conferencia",
+      "note": "Contagem até o último EXIT"
+    },
+    {
+      "id": "ex.mma.hmma",
+      "value": "HMMA.16816.F32",
+      "provenance": "confirmed",
+      "source": "examples/mma/README.md#o-que-a-saida-mostra",
+      "note": "SASS gerado por mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32 (ptxas 12.9.86, nvdisasm 13.4.92, sm_120)"
+    },
+    {
+      "id": "ex.mma.qmma",
+      "value": "QMMA.16832.F32.E4M3.E4M3",
+      "provenance": "confirmed",
+      "source": "examples/mma/README.md#o-que-a-saida-mostra",
+      "note": "SASS gerado por mma.sync.aligned.m16n8k32.row.col.f32.e4m3.e4m3.f32"
+    },
+    {
+      "id": "lat.int_fp_cycles",
+      "value": 4,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#5-jarmusch-et-al-blackwell-gb203-arxiv-250710789",
+      "unit": "ciclos",
+      "note": "RTX 5080 (GB203), Tab. III: INT32 e FP32"
+    },
+    {
+      "id": "lat.fp64_cycles",
+      "value": 63.57,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#5-jarmusch-et-al-blackwell-gb203-arxiv-250710789",
+      "unit": "ciclos",
+      "note": "RTX 5080 (GB203), Tab. III"
+    },
+    {
+      "id": "lat.l1_cycles",
+      "value": "30 a 40",
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#5-jarmusch-et-al-blackwell-gb203-arxiv-250710789",
+      "unit": "ciclos",
+      "note": "RTX 5080 (GB203), seção VI-B"
+    },
+    {
+      "id": "lat.l2_cycles",
+      "value": 358,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#5-jarmusch-et-al-blackwell-gb203-arxiv-250710789",
+      "unit": "ciclos",
+      "note": "RTX 5080 (GB203), acerto no L2, 'cerca de', seção VI-C"
+    },
+    {
+      "id": "lat.global_cycles",
+      "value": 876.7,
+      "provenance": "derived",
+      "source": "spec/sources/isa-sources.md#5-jarmusch-et-al-blackwell-gb203-arxiv-250710789",
+      "unit": "ciclos",
+      "note": "RTX 5080 (GB203), memória global, 'cerca de', seção VI-D"
+    },
+    {
+      "id": "mmu.va_bits",
+      "value": 57,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "unit": "bits",
+      "note": "Segundo o driver oficial: num_va_bits_hopper() retorna 57; GB20x usa a MMU da Hopper. 1+9+9+9+8 = 36 de diretório + 21 de deslocamento"
+    },
+    {
+      "id": "mmu.levels",
+      "value": 6,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Segundo o driver oficial: PDE4, PDE3, PDE2, PDE1, PDE0 e PTE (uvm_hopper_mmu.c)"
+    },
+    {
+      "id": "mmu.index_bits",
+      "value": "1, 9, 9, 9, 8",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Segundo o driver oficial: bit_widths[] = {1, 9, 9, 9, 8} em index_bits_hopper; mais 9 (4 KB) ou 5 (64 KB) no último nível"
+    },
+    {
+      "id": "mmu.page_sizes",
+      "value": "4 KB, 64 KB, 2 MB e 512 MB",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Segundo o driver oficial: page_sizes_ampere, herdada pela HAL da Hopper. A exceção GB20B (integrada) usa 2M, 64K e 4K; a GB100 (data center) acrescenta 256 GB"
+    },
+    {
+      "id": "mmu.format_family",
+      "value": "Hopper",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Segundo o driver oficial: 'GB20x MMU behaves as Hopper MMU' (uvm_hal.c)"
+    },
+    {
+      "id": "mmu.gb202_in_gb20x",
+      "value": true,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Segundo o driver oficial: ctrl2080mc.h lista NV2080_CTRL_MC_ARCH_INFO_IMPLEMENTATION_GB202 entre os valores de ARCHITECTURE_GB20x"
+    },
+    {
+      "id": "mmu.pascal.va_bits",
+      "value": 49,
+      "provenance": "derived",
+      "source": "spec/sources/mmu-interrupts-sources.md#2-nvidia-pascal-mmu-format-changes-leitura-direta-5-paginas-do-pdf",
+      "unit": "bits",
+      "note": "Pascal (GP100), outra geração"
+    },
+    {
+      "id": "mmu.pascal.levels",
+      "value": 5,
+      "provenance": "derived",
+      "source": "spec/sources/mmu-interrupts-sources.md#2-nvidia-pascal-mmu-format-changes-leitura-direta-5-paginas-do-pdf",
+      "note": "Pascal: PD3, PD2, PD1, PD0 e PT"
+    },
+    {
+      "id": "irq.modes",
+      "value": "MSI-X, MSI ou linha legada, conforme o driver consegue habilitar",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Segundo o driver oficial: nv_init_msix / nv_init_msi (nv.c, nv-msi.c); recuo para 'PCIe virtual-wire interrupts' se o MSI falha"
+    },
+    {
+      "id": "irq.top_half",
+      "value": "nvidia_isr",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Segundo o driver oficial: nvidia_isr chama rm_isr; a UVM tem uvm_isr_top_half"
+    },
+    {
+      "id": "irq.bottom_half",
+      "value": "nvidia_isr_kthread_bh",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Segundo o driver oficial: chama rm_isr_bh; registrada com request_threaded_irq"
+    },
+    {
+      "id": "irq.ptx_trap",
+      "value": "Abort execution and generate an interrupt to the host CPU.",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "PTX ISA 9.5, 9.7.21.4, 'Supported on all target architectures'"
+    },
+    {
+      "id": "irq.xid13",
+      "value": "Graphics Engine Exception",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Catálogo de Xid; condição: falhas gerais de aplicação do usuário. Catálogo geral, não cita a Blackwell"
+    },
+    {
+      "id": "irq.xid31",
+      "value": "GPU memory page fault",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-sessao-principal-2026-11-09",
+      "note": "Catálogo de Xid; registrado quando a MMU reporta uma falha, como acesso a endereço ilegal. Catálogo geral, não cita a Blackwell"
+    },
+    {
+      "id": "fault.replayable_blocks_preemption",
+      "value": true,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Segundo o driver oficial: 'replayable faults block preemption of the channel until...' (uvm_gpu_non_replayable_faults.c). As não reproduzíveis de outros motores são fatais"
+    },
+    {
+      "id": "sched.amp",
+      "value": "AI Management Processor: escalonador de contextos programável, implementado com um processador RISC-V dedicado na frente do pipeline da GPU",
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 25"
+    },
+    {
+      "id": "sched.mig_instances",
+      "value": 4,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
+      "note": "p. 44; Tab. 3 (p. 45): 1x 96 GB, 2x 48 GB ou 4x 24 GB"
+    },
+    {
+      "id": "sched.preemption_instruction_level",
+      "value": true,
+      "provenance": "derived",
+      "source": "spec/sources/mmu-interrupts-sources.md#3-nvidia-whitepaper-tesla-p100-pascal-gp100-leitura-direta",
+      "note": "Só há fonte para a Pascal (whitepaper P100, p. 30); nada sobre a granularidade na Blackwell"
+    },
+    {
+      "id": "gsp.isa",
+      "value": "RISC-V",
+      "provenance": "derived",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
+      "note": "Código do driver oficial da família Turing (kernel_gsp_tu102.c: 'prepares RISCV core to run GSP-RM'); para o GB202 é derived. O README do GSP não menciona RISC-V"
+    },
+    {
+      "id": "card.tgp_w",
+      "value": 600,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "unit": "W",
+      "note": "'Total board power: 600 W' (datasheet p. 3); Max-Q é 300 W. Não se sabe se inclui a potência do slot"
+    },
+    {
+      "id": "card.pcie",
+      "value": "PCIe 5.0 x16",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "note": "'System Interface: PCIe 5.0 x16' (datasheet p. 3)"
+    },
+    {
+      "id": "card.dp_outputs",
+      "value": 4,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "note": "'4x DisplayPort 2.1b' (datasheet p. 3); a página do produto diz 4x DisplayPort 2.1"
+    },
+    {
+      "id": "card.dp_standard",
+      "value": "DisplayPort 2.1b",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "note": "Whitepaper p. 30: até 80 Gbps (UHBR20, quatro pistas)"
+    },
+    {
+      "id": "card.power_connector",
+      "value": "1x PCIe CEM5 16-pin",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "note": "Datasheet p. 3. CEM5 é a especificação, não o nome do conector. A equivalência com 12VHPWR (H+) ou 12V-2x6 (H++) não está provada",
+      "conflict": true
+    },
+    {
+      "id": "card.power_connector_gn",
+      "value": "12VHPWR",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
+      "note": "Teardown: 'Like the 5090, the card uses a 12VHPWR cable'. Outras fontes (revendedor da 5090) dizem 12V-2x6; pela Intel, 12VHPWR (CEM 5.0) foi substituído por 12V-2x6 (CEM 5.1)",
+      "conflict": true
+    },
+    {
+      "id": "card.form_factor",
+      "value": "5,4 pol de altura x 12 pol de comprimento, dois slots, altura estendida",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "note": "Datasheet p. 3: '5.4\" H x 12\" L, dual slot, extended height'; resolução da fonte de 0,1 pol"
+    },
+    {
+      "id": "card.height_mm",
+      "value": 137.2,
+      "provenance": "derived",
+      "source": "spec/sources/physical-card-sources.md#respostas-por-item-resumo",
+      "unit": "mm",
+      "note": "Conversão nossa de 5,4 pol; convenção do projeto, tolerância não vale contra a placa"
+    },
+    {
+      "id": "card.length_mm",
+      "value": 304.8,
+      "provenance": "derived",
+      "source": "spec/sources/physical-card-sources.md#respostas-por-item-resumo",
+      "unit": "mm",
+      "note": "Conversão nossa de 12,0 pol; convenção do projeto"
+    },
+    {
+      "id": "card.weight_g",
+      "value": 1899,
+      "provenance": "derived",
+      "source": "spec/sources/physical-card-sources.md#4-jon-peddie-research-the-nvidia-rtx-pro-6000-blackwell-edition-2025-11-17",
+      "unit": "g",
+      "note": "Revisor (Jon Peddie): 4 lb 3 oz, conversão nossa; sem peso oficial da NVIDIA"
+    },
+    {
+      "id": "card.thermal",
+      "value": "Double-flow-through",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "note": "Datasheet p. 3 e p. 1 ('dual axial pathways'); a página do produto diz 'Double Flow Through'"
+    },
+    {
+      "id": "card.fans",
+      "value": 2,
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
+      "note": "'2-slot card with 2 large fans on the front'; 'axiais' vem do datasheet e é derived"
+    },
+    {
+      "id": "card.thermal_interface",
+      "value": "pasta térmica",
+      "provenance": "confirmed",
+      "source": "spec/sources/physical-card-sources.md#conflitos-entre-fontes",
+      "note": "Teardown da PRO 6000 encontrou pasta, não metal líquido; a NVIDIA diz metal líquido na 5090 FE (placa irmã)"
+    },
+    {
+      "id": "ada.sm_count",
+      "value": 142,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "note": "Whitepaper Tab. 4, AD102; 71 TPCs x 2"
+    },
+    {
+      "id": "ada.l2_kb",
+      "value": 98304,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "unit": "KB",
+      "note": "Whitepaper Tab. 4"
+    },
+    {
+      "id": "ada.mem_gb",
+      "value": 48,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "unit": "GB",
+      "note": "GDDR6, 384 bits, 20 Gbps"
+    },
+    {
+      "id": "ada.tgp_w",
+      "value": 300,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "unit": "W",
+      "note": "Whitepaper Tab. 4"
+    },
+    {
+      "id": "ada.bandwidth_gbs",
+      "value": 960,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "unit": "GB/s",
+      "note": "Tab. 4; confere com 384 x 20 / 8. A Tab. 1 do mesmo whitepaper diz 1.008 GB/s (ver ada.bandwidth_gbs_tab1)",
+      "conflict": true
+    },
+    {
+      "id": "ada.bandwidth_gbs_tab1",
+      "value": 1008,
+      "provenance": "confirmed",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#inconsistencias-do-documento-tratar-com-cuidado",
+      "unit": "GB/s",
+      "note": "Valor da Tab. 1; não fecha com 384 bits x 20 Gbps",
+      "conflict": true
+    },
+    {
+      "id": "pcie.gen5_lane_gts",
+      "value": 32,
+      "provenance": "confirmed",
+      "source": "spec/sources/standards-sources.md#15-pci-sig-comunicado-pci-sig-achieves-32gts-with-new-pci-express-50-specification-29-de-maio-de-2019-copia-na-design-reuse",
+      "unit": "GT/s",
+      "note": "Comunicado da PCI-SIG (cópia republicada)"
+    },
+    {
+      "id": "pcie.x16_gbs_per_direction",
+      "value": 63.0,
+      "provenance": "derived",
+      "source": "spec/sources/standards-sources.md#c4-pcie-50-x16",
+      "unit": "GB/s",
+      "note": "Conta nossa: 32 GT/s x 128/130 / 8 x 16 = 63,015. A codificação 128b/130b para 5.0 só consta em Wikipedia (baixa autoridade). Teto por direção; sem codificação seriam 64 GB/s"
+    },
+    {
+      "id": "simt.per_thread_state",
+      "value": "cada thread de um warp tem o seu contador de instrução e o seu estado de registradores",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.1: \"they have their own instruction address counter and register state\""
+    },
+    {
+      "id": "simt.divergence",
+      "value": "o warp executa cada caminho tomado, desabilitando as threads que não estão nele",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.1: \"the warp executes each branch path taken, disabling threads that are not on that path\""
+    },
+    {
+      "id": "sched.warp_scheduler",
+      "value": "a cada ciclo de emissão, o escalonador de warp escolhe um warp com threads prontas e emite a instrução para elas",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.2. O critério entre os warps prontos não é público"
+    },
+    {
+      "id": "sched.warp_switch_no_cost",
+      "value": true,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.2: o contexto de cada warp fica no chip; \"switching between warps incurs no cost\""
+    },
+    {
+      "id": "fault.stall",
+      "value": "a falha reproduzível impede a preempção do canal até o driver atender (fault and stall); os outros canais ficam parados",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "segundo o driver oficial, uvm_gpu_non_replayable_faults.c"
+    },
+    {
+      "id": "fault.buffer_batch",
+      "value": "o driver lê um lote de falhas do buffer e junta as repetidas",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "segundo o driver oficial, uvm_gpu_replayable_faults.c"
+    },
+    {
+      "id": "fault.replay",
+      "value": "depois de atender, o driver manda a GPU repetir os acessos (push_replay_on_gpu)",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "segundo o driver oficial, uvm_gpu_replayable_faults.c"
+    },
+    {
+      "id": "chip.block_diagram",
+      "value": "Fig. 3 do whitepaper: duas fileiras de 6 GPCs, L2 no centro, controladores de memória nas laterais",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "é diagrama de blocos esquemático, não a planta física do die"
+    },
+    {
+      "id": "sm.fp64_rate",
+      "value": "1/64 da taxa de FP32",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "nota da Fig. 3 do whitepaper"
+    },
+    {
+      "id": "sm.block_sfu",
+      "value": 1,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada",
+      "note": "Fig. 5 do whitepaper: uma SFU por bloco, ao lado de quatro LD/ST"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "mmu.tlb",
+      "description": "Número de entradas, níveis e política de TLB: o código do driver descreve o que o software programa, não o circuito. Sem fonte."
+    },
+    {
+      "id": "pipeline.depth",
+      "description": "Profundidade total do pipeline do SM e instruções por ciclo na Blackwell. Huerta et al. (Ampere) descrevem os estágios Fetch, Decode, Issue, Control, Allocate e execução, sem a profundidade; nada oficial."
+    },
+    {
+      "id": "cache.policy",
+      "description": "Política dos caches (substituição, escrita, associatividade, linha) de L1 e L2: o whitepaper não cobre."
+    },
+    {
+      "id": "regfile.organization",
+      "description": "Organização do banco de registradores na Blackwell (bancos, portas): só há medidas de Volta, Turing e Ampere (derived). Os registradores RZ e PT não aparecem em fonte de leitura direta, e o RZ não aparece na listagem SASS do SAXPY."
+    },
+    {
+      "id": "power.vrm.phases",
+      "description": "Nenhuma fonte desta placa conta as fases de energia, controladores ou estágios de potência. Os números da RTX 5090 FE (30, 27 ou 34 fases) divergem entre si e são de outra placa; o blog sabareesh só cita indutores '85N'."
+    },
+    {
+      "id": "cooler.interior",
+      "description": "Interior do cooler (câmara de vapor, heatpipes, número de aletas, diâmetro dos ventiladores): a câmara de vapor 3D bilateral vem só de texto de revisor (Jon Peddie); nenhum teardown da PRO 6000 a descreve."
+    },
+    {
+      "id": "cpu.command_submission",
+      "description": "Como a CPU envia comandos à GPU (filas de canais, doorbell, buffers de comando): não coberto pelas fontes lidas."
+    },
+    {
+      "id": "mmu.address_space_per_program",
+      "description": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa."
+    },
+    {
+      "id": "mem.vendor",
+      "description": "Fabricante e código dos chips GDDR7 da PRO 6000: nenhuma fonte desta placa. O Samsung K4VAF3257C-SC28 citado em snippet é da RTX 5090 FE e não vale."
+    },
+    {
+      "id": "mem.chip_density_and_population",
+      "description": "Densidade real dos chips e se as 32 posições estão ocupadas: os 3 GB por chip são dedução da Gamers Nexus; 24 chips de 4 GB não é excluído pelas fontes. O arranjo dois chips por controlador (modo de 2 canais, um por face) é inferência, sem fonte; a largura de canal da JESD239 não foi lida."
+    },
+    {
+      "id": "power.slot_connector_split",
+      "description": "Como a placa divide os 600 W entre o conector de 16 pinos e o slot (75 W na CEM 3.0), e se o 'total board power' inclui o slot. A potência do slot na CEM 5.x não foi aberta."
+    },
+    {
+      "id": "power.connector_variant",
+      "description": "Se o 'PCIe CEM5 16-pin' do datasheet é o 12VHPWR (H+) ou o 12V-2x6 (H++): o datasheet não diz e as fontes divergem. Conteúdo da caixa (adaptador 4x150 W para 16 pinos) só em Jon Peddie, sem ver a caixa."
+    },
+    {
+      "id": "standards.cem5x",
+      "description": "CEM 5.x: nenhuma cópia aberta. Mecânica (altura 111,15 mm, bracket, furação), 'extended height' e bracket de dois slots vêm da CEM 3.0 de 2013 ou estão sem definição."
+    },
+    {
+      "id": "card.fan_blades",
+      "description": "Contagem de pás (7 em cada ventilador, faixa de 7 a 8) existe só no catálogo de fotos spec/references/index.md, fora das fontes que o schema aceita (spec/sources/ ou examples/). Fica como derived pendente de excerto salvo em spec/sources/."
+    },
+    {
+      "id": "mmu.ampere.va_bits",
+      "description": "49 bits na Ampere: afirmado em harness/qa/revisao-artigo.md e fact-check-segunda-leva.md, mas nenhum arquivo de spec/sources/ traz o trecho (só Pascal, 49 bits, e Hopper/GB20x, 57 bits). Sem trecho salvo, não entra."
+    },
+    {
+      "id": "pcb.layout",
+      "description": "Dimensões do PCB principal, posição do GB202 e das placas-filhas (PCIe, saídas), dimensões do package e do stiffener, posição e ângulo do conector de 16 pinos (só 'top middle', Jon Peddie), disposição dos 4 DisplayPort e grade da bracket."
+    },
+    {
+      "id": "card.fasteners",
+      "description": "Tipos e quantidades de parafusos: a Gamers Nexus não informa; T6 só em snippet da RTX 5090 FE."
+    },
+    {
+      "id": "card.official_weight",
+      "description": "Peso oficial da NVIDIA e dimensões em mm: o datasheet traz só polegadas; o peso vem de revisor."
+    },
+    {
+      "id": "chip.sm_count_reason",
+      "description": "Por que 188 SMs e não 192: o whitepaper não explica (não fala em partes com defeito nem em rendimento). A explicação do artigo do grupo é inferência."
+    },
+    {
+      "id": "chip.tpc_gpc_distribution",
+      "description": "Como os 94 TPCs se distribuem pelos 12 GPCs: o whitepaper dá 8 TPCs por GPC no chip completo e 94 na placa, sem dizer quais GPCs têm menos."
+    },
+    {
+      "id": "sched.preemption_blackwell",
+      "description": "Granularidade da preempção na Blackwell: só há fonte para a Pascal (instrução)."
+    },
+    {
+      "id": "gsp.isa_blackwell",
+      "description": "ISA do GSP no GB202: o trecho é da família Turing; o README do GSP não cita RISC-V. Também sem fonte para 'o firmware é fechado'."
+    },
+    {
+      "id": "irq.exit_path",
+      "description": "Caminho físico da interrupção (a GPU 'manda pelo PCIe'): o código mostra MSI, MSI-X e recuo para linha legada, mas nenhum trecho literal diz que a interrupção sai pelo barramento PCIe. A leitura de nv.c cobriu só 100.000 de 176.317 caracteres na primeira passada."
+    },
+    {
+      "id": "irq.sm_level",
+      "description": "Se os SMs têm mecanismo de interrupção no sentido de uma CPU: nenhuma fonte; é inferência do grupo e não entra no spec."
+    },
+    {
+      "id": "mmu.hardware_doc",
+      "description": "Documento de hardware de MMU para Hopper e Blackwell: o open-gpu-doc só mostra Pascal a Ampere nas listagens abertas. Só a Pascal foi lida."
+    },
+    {
+      "id": "isa.sm120_ptx_target",
+      "description": "O PTX ISA lido não cita sm_120 como .target (aparecem sm_100 e sm_100a); sm_120 vem do compute capability 12.0 e das ferramentas."
+    },
+    {
+      "id": "isa.sass_definition",
+      "description": "Definição oficial de SASS: as Binary Utilities só falam em 'CUDA assembly' e na opção -sass; o PTX nunca usa o termo."
+    },
+    {
+      "id": "isa.ldc_ldcu_saxpy",
+      "description": "Função de LDC R1, c[0x0][0x37c] e LDCU.64 UR4, c[0x0][0x358] no SAXPY: não documentada. Não há descrição oficial de LDC nem do operando de constante em aritmética para sm_120."
+    },
+    {
+      "id": "isa.control_bits_blackwell",
+      "description": "Bits de controle, contadores de dependência e cache de reúso na Blackwell: as medidas são de Volta (Jia) e Ampere/Turing (Huerta); nenhuma Blackwell foi medida, e a NVIDIA não dá acesso aos bits pelas ferramentas."
+    },
+    {
+      "id": "cuda.limits_cc120",
+      "description": "Coluna da compute capability 12.0 das Tab. 33 e 34 do Guia CUDA (threads, warps e blocos por SM) não separada pelo resumo automático; blocos por SM vem do Tuning Guide. Independent Thread Execution (3.2.2.1.1) não aberto."
+    },
+    {
+      "id": "cuda.smem_per_sm_cc120",
+      "description": "Memória compartilhada por SM na CC 12.0: Tuning Guide diz 128 KB por SM, Guia CUDA Tab. 35 (resumo) dá cache unificado de 128 KB e compartilhada até 100 KB, e 99 KB por bloco. Divergência de significado não resolvida por leitura direta."
+    },
+    {
+      "id": "mem.gddr7_standard",
+      "description": "JESD239 (GDDR7) e o PCIe 5.0 da PCI-SIG não foram abertos; codificação 128b/130b só em Wikipedia; o '128 GB/s' do comunicado da PCI-SIG não diz se soma as duas direções."
+    },
+    {
+      "id": "display.dp_phys",
+      "description": "Dimensões do receptáculo DisplayPort só em Wikipedia (baixa autoridade); como a placa chega a UHBR20 (cabo, certificação) não está nas fontes."
+    }
+  ]
+}

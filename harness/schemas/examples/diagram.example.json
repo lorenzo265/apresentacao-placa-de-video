@@ -1,0 +1,205 @@
+{
+  "id": "chip.floorplan",
+  "level": 2,
+  "title": "Planta do GB202 (exemplo reduzido)",
+  "disclaimer": "Diagrama ilustrativo: as contagens são oficiais, as posições não.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "exemplo escrito à mão para testar o viewer",
+  "nodes": [
+    {
+      "id": "chip.die",
+      "kind": "die",
+      "rect": [
+        0,
+        0,
+        1600,
+        900
+      ],
+      "label": "GB202",
+      "parent": null,
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.tpc_active",
+      "kind": "counter",
+      "rect": [
+        40,
+        820,
+        300,
+        50
+      ],
+      "label": "94 TPCs",
+      "parent": "chip.die",
+      "tags": [
+        "counter"
+      ],
+      "count": {
+        "value": 94,
+        "claim": "chip.tpc_count",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.sm_active",
+      "kind": "counter",
+      "rect": [
+        360,
+        820,
+        300,
+        50
+      ],
+      "label": "188 SMs",
+      "parent": "chip.die",
+      "tags": [
+        "counter"
+      ],
+      "count": {
+        "value": 188,
+        "claim": "chip.sm_count",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0",
+      "kind": "gpc",
+      "rect": [
+        40,
+        40,
+        480,
+        360
+      ],
+      "label": "GPC 0",
+      "parent": "chip.die",
+      "tags": [
+        "gpc"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        60,
+        100,
+        200,
+        280
+      ],
+      "label": "TPC",
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        75,
+        150,
+        170,
+        100
+      ],
+      "label": "SM",
+      "parent": "chip.gpc.0.tpc.0",
+      "tags": [
+        "sm",
+        "sm-zoom"
+      ],
+      "embed": "chip.sm",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        75,
+        265,
+        170,
+        100
+      ],
+      "label": "SM",
+      "parent": "chip.gpc.0.tpc.0",
+      "tags": [
+        "sm"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        290,
+        100,
+        200,
+        280
+      ],
+      "label": "TPC",
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc"
+      ],
+      "state": "disabled",
+      "note": "exemplo de posição não habilitada",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.l2",
+      "kind": "cache",
+      "rect": [
+        600,
+        300,
+        400,
+        200
+      ],
+      "label": "L2",
+      "sublabel": "128 MB",
+      "parent": "chip.die",
+      "tags": [
+        "l2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.0",
+      "kind": "memctl",
+      "rect": [
+        1500,
+        100,
+        60,
+        120
+      ],
+      "label": "MC",
+      "parent": "chip.die",
+      "tags": [
+        "memctl"
+      ],
+      "shape_provenance": "illustrative"
+    }
+  ],
+  "flows": [
+    {
+      "id": "chip.flow.l2_mc0",
+      "from": "chip.l2",
+      "to": "chip.memctl.0",
+      "label": "32 bits",
+      "path": "data",
+      "provenance": "illustrative"
+    }
+  ],
+  "checks": [
+    {
+      "expr": "chip.tpc_active * 2",
+      "expect": 188
+    },
+    {
+      "expr": "chip.sm_active * 128",
+      "expect": 24064
+    }
+  ]
+}

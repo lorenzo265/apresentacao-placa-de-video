@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "diagrams/<id>.json: cena declarativa dos níveis 2 a 4 (ver diagrams/README.md)",
+  "type": "object",
+  "required": [
+    "id",
+    "level",
+    "title",
+    "disclaimer",
+    "size",
+    "nodes",
+    "flows",
+    "checks"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 4
+    },
+    "title": {
+      "type": "string"
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 10,
+      "description": "aviso mostrado no viewer: contagens oficiais, posições ilustrativas"
+    },
+    "size": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "[largura, altura] do diagrama"
+    },
+    "generated_by": {
+      "type": "string",
+      "description": "script que gerou o arquivo; diagrama não é editado à mão"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "rect",
+          "shape_provenance"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "kind": {
+            "type": "string",
+            "pattern": "^[a-z0-9\\-]+$",
+            "description": "classe visual; o viewer aplica o estilo k-<kind>"
+          },
+          "rect": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4,
+            "description": "[x, y, largura, altura] em unidades do diagrama, y para baixo"
+          },
+          "label": {
+            "type": "string"
+          },
+          "sublabel": {
+            "type": "string"
+          },
+          "label_size": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "altura do texto em unidades do diagrama; sem isso o viewer ajusta ao retângulo"
+          },
+          "align": {
+            "enum": [
+              "center",
+              "left"
+            ]
+          },
+          "mono": {
+            "type": "boolean",
+            "description": "texto monoespaçado (código, endereços)"
+          },
+          "parent": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_\\-]+$"
+            }
+          },
+          "state": {
+            "enum": [
+              "normal",
+              "disabled"
+            ]
+          },
+          "count": {
+            "type": "object",
+            "required": [
+              "value",
+              "claim",
+              "provenance"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "claim": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+              },
+              "provenance": {
+                "enum": [
+                  "confirmed",
+                  "derived"
+                ]
+              }
+            }
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+            },
+            "description": "fatos do spec que o texto do nó usa, além de count"
+          },
+          "provenance": {
+            "enum": [
+              "confirmed",
+              "derived",
+              "inferred",
+              "illustrative"
+            ]
+          },
+          "shape_provenance": {
+            "enum": [
+              "illustrative",
+              "inferred"
+            ]
+          },
+          "embed": {
+            "allOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+              }
+            ],
+            "description": "id de outro diagrama desenhado dentro deste retângulo"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "from",
+          "to",
+          "provenance"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "label": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "description": "polilinha; sem isso o viewer liga os centros"
+          },
+          "path": {
+            "enum": [
+              "energy",
+              "data",
+              "heat",
+              "control"
+            ]
+          },
+          "provenance": {
+            "enum": [
+              "confirmed",
+              "derived",
+              "inferred",
+              "illustrative"
+            ]
+          },
+          "claim": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "expr",
+          "expect"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "expr": {
+            "type": "string",
+            "description": "conta com ids de nós que têm count, por exemplo chip.tpc_active * 2"
+          },
+          "expect": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

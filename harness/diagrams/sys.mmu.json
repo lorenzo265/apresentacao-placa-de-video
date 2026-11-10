@@ -1,0 +1,983 @@
+{
+  "id": "sys.mmu",
+  "level": 4,
+  "title": "MMU: endereço virtual de 57 bits em 6 níveis",
+  "disclaimer": "Segundo o driver oficial (o GB202 usa o formato de MMU da Hopper). Larguras dos campos proporcionais aos bits; caixas e posições ilustrativas.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_sys_mmu.py",
+  "nodes": [
+    {
+      "id": "mmu.head",
+      "kind": "header",
+      "rect": [
+        40,
+        24,
+        980,
+        50
+      ],
+      "label": "Endereço virtual de 57 bits (página de 4 KB)",
+      "parent": null,
+      "tags": [
+        "header",
+        "va"
+      ],
+      "count": {
+        "value": 57,
+        "unit": "bits",
+        "claim": "mmu.va_bits",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "mmu.format_family",
+        "mmu.gb202_in_gb20x"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.count.levels",
+      "kind": "counter",
+      "rect": [
+        1040,
+        24,
+        250,
+        50
+      ],
+      "label": "6 níveis",
+      "parent": null,
+      "tags": [
+        "counter",
+        "level"
+      ],
+      "count": {
+        "value": 6,
+        "claim": "mmu.levels",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.note.driver",
+      "kind": "note",
+      "rect": [
+        1310,
+        24,
+        250,
+        50
+      ],
+      "label": "segundo o driver oficial",
+      "parent": null,
+      "tags": [
+        "note",
+        "driver"
+      ],
+      "claims": [
+        "mmu.format_family",
+        "mmu.gb202_in_gb20x"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Código de driver mostra o que o software programa, não o circuito (uvm_hal.c, uvm_hopper_mmu.c)."
+    },
+    {
+      "id": "mmu.va.idx0",
+      "kind": "field",
+      "rect": [
+        40,
+        92,
+        64,
+        78
+      ],
+      "label": "[56]",
+      "sublabel": "1 bit",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "idx-0"
+      ],
+      "claims": [
+        "mmu.index_bits"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.va.idx1",
+      "kind": "field",
+      "rect": [
+        104,
+        92,
+        234,
+        78
+      ],
+      "label": "[55:47]",
+      "sublabel": "9 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "idx-1"
+      ],
+      "claims": [
+        "mmu.index_bits"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.va.idx2",
+      "kind": "field",
+      "rect": [
+        338,
+        92,
+        234,
+        78
+      ],
+      "label": "[46:38]",
+      "sublabel": "9 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "idx-2"
+      ],
+      "claims": [
+        "mmu.index_bits"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.va.idx3",
+      "kind": "field",
+      "rect": [
+        572,
+        92,
+        234,
+        78
+      ],
+      "label": "[37:29]",
+      "sublabel": "9 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "idx-3"
+      ],
+      "claims": [
+        "mmu.index_bits"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.va.idx4",
+      "kind": "field",
+      "rect": [
+        806,
+        92,
+        208,
+        78
+      ],
+      "label": "[28:21]",
+      "sublabel": "8 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "idx-4"
+      ],
+      "claims": [
+        "mmu.index_bits"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.va.idx5",
+      "kind": "field",
+      "rect": [
+        1014,
+        92,
+        234,
+        78
+      ],
+      "label": "[20:12]",
+      "sublabel": "9 bits",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "idx-5"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.va_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "57 - 36 - 12 = 9 bits no PTE para 4 KB"
+    },
+    {
+      "id": "mmu.va.offset",
+      "kind": "field",
+      "rect": [
+        1248,
+        92,
+        312,
+        78
+      ],
+      "label": "[11:0]",
+      "sublabel": "12 bits: deslocamento",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "va",
+        "field",
+        "offset"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.va_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "4 KB = 2^12"
+    },
+    {
+      "id": "mmu.level.0",
+      "kind": "step",
+      "rect": [
+        40,
+        250,
+        191.43,
+        92
+      ],
+      "label": "PDE4",
+      "sublabel": "nível 1",
+      "parent": null,
+      "tags": [
+        "level",
+        "level-0",
+        "pde4"
+      ],
+      "claims": [
+        "mmu.levels"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.level.1",
+      "kind": "step",
+      "rect": [
+        261.43,
+        250,
+        191.43,
+        92
+      ],
+      "label": "PDE3",
+      "sublabel": "nível 2",
+      "parent": null,
+      "tags": [
+        "level",
+        "level-1",
+        "pde3"
+      ],
+      "claims": [
+        "mmu.levels"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.level.2",
+      "kind": "step",
+      "rect": [
+        482.86,
+        250,
+        191.43,
+        92
+      ],
+      "label": "PDE2",
+      "sublabel": "nível 3",
+      "parent": null,
+      "tags": [
+        "level",
+        "level-2",
+        "pde2"
+      ],
+      "claims": [
+        "mmu.levels"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.level.3",
+      "kind": "step",
+      "rect": [
+        704.29,
+        250,
+        191.43,
+        92
+      ],
+      "label": "PDE1",
+      "sublabel": "nível 4",
+      "parent": null,
+      "tags": [
+        "level",
+        "level-3",
+        "pde1"
+      ],
+      "claims": [
+        "mmu.levels"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.level.4",
+      "kind": "step",
+      "rect": [
+        925.71,
+        250,
+        191.43,
+        92
+      ],
+      "label": "PDE0",
+      "sublabel": "nível 5",
+      "parent": null,
+      "tags": [
+        "level",
+        "level-4",
+        "pde0"
+      ],
+      "claims": [
+        "mmu.levels"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.level.5",
+      "kind": "step",
+      "rect": [
+        1147.14,
+        250,
+        191.43,
+        92
+      ],
+      "label": "PTE",
+      "sublabel": "nível 6",
+      "parent": null,
+      "tags": [
+        "level",
+        "level-5",
+        "pte"
+      ],
+      "claims": [
+        "mmu.levels"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.page",
+      "kind": "memory",
+      "rect": [
+        1368.57,
+        250,
+        191.43,
+        92
+      ],
+      "label": "página de 4 KB",
+      "sublabel": "GDDR7",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "page",
+        "dram"
+      ],
+      "claims": [
+        "mem.type",
+        "mmu.page_sizes"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.stop.2m",
+      "kind": "note",
+      "rect": [
+        925.71,
+        358,
+        191.43,
+        70
+      ],
+      "label": "fim: 2 MB",
+      "sublabel": "36 + 21 bits",
+      "parent": null,
+      "tags": [
+        "stop-2m",
+        "stop"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.index_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "A página de 2 MB termina em PDE0, sem descer ao PTE (conta: 57 - 21 = 36 bits de índice)."
+    },
+    {
+      "id": "mmu.stop.512m",
+      "kind": "note",
+      "rect": [
+        704.29,
+        358,
+        191.43,
+        70
+      ],
+      "label": "fim: 512 MB",
+      "sublabel": "28 + 29 bits",
+      "parent": null,
+      "tags": [
+        "stop-512m",
+        "stop"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.index_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "A página de 512 MB termina em PDE1, sem descer ao PTE (conta: 57 - 29 = 28 bits de índice)."
+    },
+    {
+      "id": "mmu.pages.head",
+      "kind": "header",
+      "rect": [
+        40,
+        470,
+        1520,
+        44
+      ],
+      "label": "tamanho de página = bits de índice + deslocamento",
+      "parent": null,
+      "tags": [
+        "header",
+        "page-sizes"
+      ],
+      "claims": [
+        "mmu.page_sizes"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.pages.4kb",
+      "kind": "cell",
+      "rect": [
+        40,
+        524,
+        365,
+        96
+      ],
+      "label": "4 KB",
+      "sublabel": "45 + 12 = 57 bits",
+      "label_size": 28,
+      "parent": null,
+      "tags": [
+        "page-sizes",
+        "page-4kb"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.index_bits",
+        "mmu.va_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.pages.64kb",
+      "kind": "cell",
+      "rect": [
+        425,
+        524,
+        365,
+        96
+      ],
+      "label": "64 KB",
+      "sublabel": "41 + 16 = 57 bits",
+      "label_size": 28,
+      "parent": null,
+      "tags": [
+        "page-sizes",
+        "page-64kb"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.index_bits",
+        "mmu.va_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.pages.2mb",
+      "kind": "cell",
+      "rect": [
+        810,
+        524,
+        365,
+        96
+      ],
+      "label": "2 MB",
+      "sublabel": "36 + 21 = 57 bits",
+      "label_size": 28,
+      "parent": null,
+      "tags": [
+        "page-sizes",
+        "page-2mb",
+        "stop-2m"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.index_bits",
+        "mmu.va_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.pages.512mb",
+      "kind": "cell",
+      "rect": [
+        1195,
+        524,
+        365,
+        96
+      ],
+      "label": "512 MB",
+      "sublabel": "28 + 29 = 57 bits",
+      "label_size": 28,
+      "parent": null,
+      "tags": [
+        "page-sizes",
+        "page-512mb",
+        "stop-512m"
+      ],
+      "claims": [
+        "mmu.page_sizes",
+        "mmu.index_bits",
+        "mmu.va_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.pascal",
+      "kind": "note",
+      "rect": [
+        40,
+        650,
+        600,
+        90
+      ],
+      "label": "Pascal: 49 bits, 5 níveis",
+      "sublabel": "geração anterior, para comparar",
+      "parent": null,
+      "tags": [
+        "pascal"
+      ],
+      "count": {
+        "value": 49,
+        "unit": "bits",
+        "claim": "mmu.pascal.va_bits",
+        "provenance": "derived"
+      },
+      "claims": [
+        "mmu.pascal.levels"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "mmu.gap.tlb",
+      "kind": "gap",
+      "rect": [
+        660,
+        650,
+        900,
+        90
+      ],
+      "label": "TLB: tamanho, níveis e política",
+      "sublabel": "não são públicos",
+      "parent": null,
+      "tags": [
+        "gap",
+        "tlb"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Número de entradas, níveis e política de TLB: o código do driver descreve o que o software programa, não o circuito. Sem fonte."
+    },
+    {
+      "id": "mmu.gap.per_process",
+      "kind": "gap",
+      "rect": [
+        40,
+        760,
+        1520,
+        90
+      ],
+      "label": "Espaço de endereços por programa",
+      "sublabel": "nenhuma fonte descreve",
+      "parent": null,
+      "tags": [
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa."
+    }
+  ],
+  "flows": [
+    {
+      "id": "mmu.flow.idx0",
+      "from": "mmu.va.idx0",
+      "to": "mmu.level.0",
+      "points": [
+        [
+          72,
+          170
+        ],
+        [
+          72,
+          208
+        ],
+        [
+          135.71,
+          208
+        ],
+        [
+          135.71,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.idx1",
+      "from": "mmu.va.idx1",
+      "to": "mmu.level.1",
+      "points": [
+        [
+          221,
+          170
+        ],
+        [
+          221,
+          208
+        ],
+        [
+          357.14,
+          208
+        ],
+        [
+          357.14,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.walk1",
+      "from": "mmu.level.0",
+      "to": "mmu.level.1",
+      "points": [
+        [
+          231.43,
+          296
+        ],
+        [
+          261.43,
+          296
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "mmu.flow.idx2",
+      "from": "mmu.va.idx2",
+      "to": "mmu.level.2",
+      "points": [
+        [
+          455,
+          170
+        ],
+        [
+          455,
+          208
+        ],
+        [
+          578.57,
+          208
+        ],
+        [
+          578.57,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.walk2",
+      "from": "mmu.level.1",
+      "to": "mmu.level.2",
+      "points": [
+        [
+          452.86,
+          296
+        ],
+        [
+          482.86,
+          296
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "mmu.flow.idx3",
+      "from": "mmu.va.idx3",
+      "to": "mmu.level.3",
+      "points": [
+        [
+          689,
+          170
+        ],
+        [
+          689,
+          208
+        ],
+        [
+          800,
+          208
+        ],
+        [
+          800,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.walk3",
+      "from": "mmu.level.2",
+      "to": "mmu.level.3",
+      "points": [
+        [
+          674.29,
+          296
+        ],
+        [
+          704.29,
+          296
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "mmu.flow.idx4",
+      "from": "mmu.va.idx4",
+      "to": "mmu.level.4",
+      "points": [
+        [
+          910,
+          170
+        ],
+        [
+          910,
+          208
+        ],
+        [
+          1021.43,
+          208
+        ],
+        [
+          1021.43,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.walk4",
+      "from": "mmu.level.3",
+      "to": "mmu.level.4",
+      "points": [
+        [
+          895.71,
+          296
+        ],
+        [
+          925.71,
+          296
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "mmu.flow.idx5",
+      "from": "mmu.va.idx5",
+      "to": "mmu.level.5",
+      "points": [
+        [
+          1131,
+          170
+        ],
+        [
+          1131,
+          208
+        ],
+        [
+          1242.86,
+          208
+        ],
+        [
+          1242.86,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.walk5",
+      "from": "mmu.level.4",
+      "to": "mmu.level.5",
+      "points": [
+        [
+          1117.14,
+          296
+        ],
+        [
+          1147.14,
+          296
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "mmu.flow.walk_page",
+      "from": "mmu.level.5",
+      "to": "mmu.page",
+      "points": [
+        [
+          1338.57,
+          296
+        ],
+        [
+          1368.57,
+          296
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative"
+    },
+    {
+      "id": "mmu.flow.offset",
+      "from": "mmu.va.offset",
+      "to": "mmu.page",
+      "points": [
+        [
+          1404,
+          170
+        ],
+        [
+          1404,
+          208
+        ],
+        [
+          1464.29,
+          208
+        ],
+        [
+          1464.29,
+          250
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed"
+    },
+    {
+      "id": "mmu.flow.stop_2m",
+      "from": "mmu.level.4",
+      "to": "mmu.stop.2m",
+      "points": [
+        [
+          1021.43,
+          342
+        ],
+        [
+          1021.43,
+          358
+        ]
+      ],
+      "path": "control",
+      "provenance": "derived"
+    },
+    {
+      "id": "mmu.flow.stop_512m",
+      "from": "mmu.level.3",
+      "to": "mmu.stop.512m",
+      "points": [
+        [
+          800,
+          342
+        ],
+        [
+          800,
+          358
+        ]
+      ],
+      "path": "control",
+      "provenance": "derived"
+    }
+  ],
+  "checks": [
+    {
+      "expr": "45 + 12",
+      "expect": 57
+    },
+    {
+      "expr": "41 + 16",
+      "expect": 57
+    },
+    {
+      "expr": "36 + 21",
+      "expect": 57
+    },
+    {
+      "expr": "28 + 29",
+      "expect": 57
+    }
+  ]
+}

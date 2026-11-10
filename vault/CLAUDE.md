@@ -15,11 +15,11 @@ Regras para o agente que organiza este vault (skill `obsidian-vault-organizer`).
 |---|---|
 | Público | Estudante de computação e o professor. Rigor de engenharia, explicado para um estudante acompanhar |
 | Profundidade e quantidade de conteúdo | Sem limite definido pelo grupo |
-| Duração do seminário | **pendente** (perguntar ao professor) |
+| Duração do seminário | 15 a 20 minutos, no máximo (informado pelo grupo em 2026-11-09). Alvo do roteiro: 17 minutos |
 | Prazos | 2026-10-26 proposta, 2026-11-09 texto, 2026-11-16 seminário |
 | Variante da placa | Workstation Edition |
 
-Enquanto a duração do seminário estiver pendente, o agente não avisa sobre estouro de tempo (rotina 2 da skill). Os prazos das entregas estão em [[Requisitos da disciplina]].
+O agente avisa quando a soma dos tempos passar de 20 minutos (rotina 2 da skill). O orçamento por ato está em `../harness/story/video-plan.md`, seção 2.1. Os prazos das entregas estão em [[Requisitos da disciplina]].
 
 ## Regras específicas deste vault
 

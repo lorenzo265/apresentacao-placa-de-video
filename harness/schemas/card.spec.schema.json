@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "card.spec.json: fatos da placa, cada um com fonte e procedência",
+  "type": "object",
+  "required": [
+    "card_id",
+    "facts",
+    "gaps"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "card_id": {
+      "type": "string"
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "value",
+          "provenance",
+          "source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "value": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          },
+          "provenance": {
+            "enum": [
+              "confirmed",
+              "derived"
+            ],
+            "description": "o spec só guarda fato com fonte; inferred e illustrative vivem na proposta"
+          },
+          "source": {
+            "type": "string",
+            "pattern": "^(spec/sources/|examples/).+",
+            "description": "arquivo de fontes e âncora"
+          },
+          "conflict": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "description"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)*$"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

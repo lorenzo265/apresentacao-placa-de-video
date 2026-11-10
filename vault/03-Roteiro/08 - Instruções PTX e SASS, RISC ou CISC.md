@@ -1,6 +1,6 @@
 ---
 tipo: secao
-status: revisar
+status: pronto
 secao: Instruções PTX e SASS, RISC ou CISC
 ordem: 8
 nivel: chip
@@ -53,14 +53,26 @@ A NVIDIA não classifica o SASS como RISC ou CISC. A classificação abaixo vale
 | Critério clássico | O que as fontes mostram | Sugere |
 |---|---|---|
 | Instruções de largura fixa | 16 bytes em todas as instruções (documentação oficial e experimento em `sm_120`) | RISC |
-| Acesso à memória só por carga e armazenamento | PTX é load-store. No SASS, global e compartilhada passam por `LDG`/`STG`/`LDS`/`STS`, mas **instruções aritméticas aceitam operando direto do banco de constantes** (Binary Utilities 3.1.1). No nosso SAXPY o compilador preferiu `LDC`/`LDCU` | RISC com exceção |
+| Acesso à memória só por carga e armazenamento | PTX é load-store. No SASS, global e compartilhada passam por `LDG`/`STG`/`LDS`/`STS`, mas há ressalvas. (1) Instruções aritméticas aceitam operando direto do banco de constantes no exemplo da seção 3.1.1 do Binary Utilities, cuja arquitetura não é declarada; Huerta et al. confirmam isso na Ampere. No nosso código de `sm_120` isso não aparece. Fica `derived`. (2) A lista oficial da Blackwell tem instruções que copiam **de memória para memória**: `LDGSTS` ("Asynchronous Global to Shared Memcopy") e `UTMALDG` ("Tensor Load from Global to Shared Memory"). A NVIDIA classifica a `LDGSTS` como instrução de carga e armazenamento. (3) Não contam como evidência: `UBLKCP` ("Bulk Data Copy"), `UMEMSETS` ("Initialize Shared Memory"), `ATOMG` e `REDG`: a descrição oficial tem poucas palavras e não basta para afirmar como acessam a memória | regra RISC, com a `LDGSTS` e a `UTMALDG` como exceções |
 | Modos de endereçamento | `desc[UR4][R2.64]` (descritor mais par de registradores), `c[banco][deslocamento]` e imediatos. Não levantamos a lista completa | não determinado |
-| Registradores | Banco físico de 256 KB por SM, 65.536 registradores de 32 bits (derivado), compartilhado entre os warps. O limite visível por thread (255, a confirmar no guia CUDA) é o que importa para a ISA | RISC, provisório |
-| Instruções que fazem muito trabalho | `HMMA` e `QMMA` fazem 2.048 e 4.096 multiplicações-acumulações por instrução. Porém "reduzido" em RISC fala da simplicidade de cada instrução (formato fixo, poucos modos), e há ISAs RISC com extensões vetoriais e matriciais | neutro |
+| Registradores | Banco físico de 256 KB por SM, 65.536 registradores de 32 bits (derivado), compartilhado entre os warps. O limite visível por thread é 255 (Blackwell Tuning Guide 13.5, 1.4.1.1) | RISC |
+| Instruções que fazem muito trabalho | `HMMA` e `QMMA` fazem 2.048 e 4.096 multiplicações-acumulações por instrução (conta nossa). A lista oficial tem ainda `TEX` ("Texture Fetch"), `MUFU` ("FP32 Multi Function Operation"), `DECOMPRESS` ("Decompress a vector") e `SPARSIFY` ("Generate metadata and compress a vector"). Porém "reduzido" em RISC fala da simplicidade de cada instrução (formato fixo, poucos modos), e há ISAs RISC com extensões vetoriais e matriciais | afasta do RISC clássico; típico de acelerador |
+| Tamanho do conjunto | 258 mnemônicos em 13 categorias na seção "Blackwell and Rubin Instruction Set" (duas contagens independentes sobre a página, com o mesmo resultado) | neutro: o número de instruções não define RISC |
 | Escalonamento exposto ao compilador | Na Volta, ao menos 23 bits por instrução são de controle (esperas, barreiras, reuso). O compilador decide parte do escalonamento | afasta do RISC clássico e lembra VLIW (observação nossa) |
 | Microcódigo | nenhuma informação pública | não determinado |
 
-**Conclusão provisória (`inferred`):** pelo formato, o SASS se comporta como RISC (largura fixa, memória por instruções de carga e armazenamento, muitos registradores), com duas ressalvas: aceita operando direto de constante e carrega controle de escalonamento na própria instrução. As instruções de matriz são típicas de uma arquitetura de domínio específico e não contradizem RISC por si só. A distinção clássica entre RISC e CISC é menos nítida nesse tipo de arquitetura.
+**Conclusão (`inferred`, análise do grupo; aprovada pelo humano em 2026-11-10):** o SASS é **RISC no formato e na regra geral, com extensões de acelerador**. Não é RISC puro nem CISC.
+
+- A favor de RISC: instrução de largura fixa (128 bits), acesso à memória global e compartilhada por carga e armazenamento como regra, muitos registradores, poucos modos de endereçamento visíveis.
+- Contra o RISC clássico: cópia assíncrona de memória para memória (`LDGSTS`, `UTMALDG`); instruções que fazem muito trabalho de uma vez (`HMMA` e `QMMA` multiplicam um bloco de matriz por warp; `TEX` busca e filtra textura).
+- Fora da dicotomia: o compilador grava na instrução o controle de escalonamento, o que lembra VLIW.
+
+Frase para o seminário: "Pelo formato é RISC: instrução de tamanho fixo, memória acessada por carga e armazenamento como regra, até 255 registradores por thread. Mas o conjunto tem instruções próprias de acelerador: busca de textura, multiplicação de um bloco de matriz por warp e cópia assíncrona da memória global para a compartilhada. A NVIDIA não classifica o SASS; esta é a análise do grupo."
+
+O artigo entregue em 2026-11-09 concluiu "RISC" com base no exemplo SAXPY. A conclusão continua de pé como regra geral; o seminário a aprofunda com a lista completa de instruções.
+
+> [!note] Argumentos ainda sem fonte registrada
+> ISAs RISC atuais também têm operações atômicas de leitura, operação e escrita, e algumas têm instruções de cópia de memória. Se isso for dito no seminário, a fonte (especificação da ISA citada) precisa ser registrada antes. Sem a fonte, a frase não entra.
 
 Já o AMP, o processador de gerenciamento da GPU, é RISC-V, ou seja, uma ISA RISC por projeto.
 
@@ -68,7 +80,8 @@ Já o AMP, o processador de gerenciamento da GPU, é RISC-V, ou seja, uma ISA RI
 > A latência não entra como critério porque é propriedade da microarquitetura, não da ISA. Para referência: instruções INT32 e FP32 levam 4 ciclos na GB203, mas FP64 leva cerca de 63,6 ciclos ([[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture|Jarmusch et al.]], Tab. III).
 
 ## A levantar
-- Quantas instruções distintas existem no SASS de `sm_120` e quais modos de endereçamento ela usa (contar na tabela 4.4 do Binary Utilities).
+- Levantar os modos de endereçamento (a contagem de 258 mnemônicos foi fechada em 2026-11-09).
+- Ancorar a semântica de `ATOMG` e `REDG` nas instruções `atom` e `red` do PTX.
 - Para que serve o ciclo `BRA` após o último `EXIT` e quais campos de controle `sm_120` usa. A Volta tem descrição, `sm_120` não.
 - Limite de registradores por thread (guia CUDA).
 - Documentação do caminho uniforme (registradores `UR`). A tabela 4.4 descreve `LDCU` como carga de constante para um registrador uniforme e `S2UR` como cópia de registrador especial para um registrador uniforme, mas isso dá o nome, não o funcionamento.
@@ -82,7 +95,7 @@ Já o AMP, o processador de gerenciamento da GPU, é RISC-V, ou seja, uma ISA RI
 - [[Jia et al. - Dissecting the NVIDIA Volta GPU]]
 - [[Jarmusch et al. - Dissecting the NVIDIA Blackwell Architecture]]
 - [[Ampere - Demystifying the Nvidia Ampere Architecture]]
-- Exemplos compilados: `harness/examples/saxpy/` e `harness/examples/mma/`
+- Exemplos compilados: `harness/examples/saxpy-cu/` (o do artigo, reproduzido), `harness/examples/saxpy/` e `harness/examples/mma/`
 - Auditoria: `harness/qa/fact-check-isa.md`
 
 ## No viewer

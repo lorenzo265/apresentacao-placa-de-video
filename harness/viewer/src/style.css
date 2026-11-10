@@ -1,0 +1,62 @@
+/* Layout do palco e componentes de DOM. Sem transições nem animações CSS:
+   tudo que se move é função do tempo da timeline. */
+* { box-sizing: border-box; transition: none !important; animation: none !important; }
+html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: Inter, sans-serif; color: var(--texto); }
+#palco { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; background: #07090c; overflow: hidden; transform-origin: center; }
+body.capture #palco { left: 0; top: 0; transform: none; }
+#cena3d, #diagramas, #chamada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+#cena3d canvas { display: block; }
+#diagramas, #chamada { pointer-events: none; }
+#cena3d { background: #07090c; }  /* cor chapada: gradiente CSS rasteriza de forma diferente conforme o histórico e quebra o determinismo */
+
+/* cabeçalho */
+#cabecalho { position: absolute; left: 0; top: 0; width: 1920px; height: 88px; padding: 0 48px; display: flex; align-items: center; justify-content: space-between;
+  background: #07090ce0; font-size: 26px; pointer-events: none; }
+#cabecalho .trilha { display: flex; gap: 14px; align-items: center; color: #6d7888; font-weight: 500; }
+#cabecalho .trilha i { font-style: normal; color: #444d5a; }
+#cabecalho .trilha span.ativo { color: #f2f5fa; font-weight: 700; }
+#cabecalho .secao { color: #aab4c2; font-weight: 500; letter-spacing: .03em; }
+#cabecalho .progresso { position: absolute; left: 0; bottom: 0; width: 100%; height: 5px; background: #1a202a; }
+#cabecalho .barra { height: 100%; width: 0; background: #8fa0bf; }
+
+/* faixas fixas */
+#aviso-diagrama { position: absolute; left: 0; bottom: 0; width: 1920px; height: 52px; padding: 0 48px; display: flex; align-items: center;
+  background: #0d1118; border-top: 1px solid #2a3340; color: #b7c0cd; font-size: 24px; pointer-events: none; }
+#aviso-diagrama::before { content: ""; width: 14px; height: 14px; margin-right: 16px; background: #8a93a3; transform: rotate(45deg); flex: none; }
+#aviso-blockout { position: absolute; right: 48px; bottom: 28px; padding: 6px 16px; border: 1px dashed #8a93a3; border-radius: 6px;
+  color: #c9d1dc; font: 500 24px "JetBrains Mono", monospace; background: #0b0e13cc; pointer-events: none; }
+
+/* linha de chamada */
+#chamada .linha { fill: none; stroke: var(--cor-linha, #f1f4f8); stroke-width: 3px; stroke-linejoin: round; }
+#chamada .ponto { fill: var(--cor-linha, #f1f4f8); }
+#chamada .anel { fill: none; stroke: var(--cor-linha, #f1f4f8); stroke-width: 2px; opacity: .6; }
+
+/* caixa de texto */
+#caixa { position: absolute; width: 620px; max-height: 640px; overflow: hidden; padding: 22px 28px 24px; border-radius: 10px;
+  background: #0d1118ee; border: 1px solid #2f3947; box-shadow: 0 8px 30px #0008; }
+#caixa.left { left: 48px; } #caixa.right { right: 48px; }
+#caixa.top { top: 112px; } #caixa.bottom { bottom: 76px; }
+#caixa.center { top: 50%; margin-top: -170px; }
+#caixa h2 { margin: 10px 0 10px; font-size: 40px; line-height: 1.12; font-weight: 700; letter-spacing: -.01em; }
+#caixa .caption { margin: 0 0 14px; font-size: 28px; line-height: 1.34; color: #d8dee8; }
+#caixa .fonte { margin: 0; font-size: 20px; line-height: 1.3; color: #8d99a8; border-top: 1px solid #243040; padding-top: 10px; }
+#caixa .selos { display: flex; flex-wrap: wrap; gap: 8px; }
+.selo { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px 3px 8px; border-radius: 99px; font-size: 20px; font-weight: 600; border: 1.5px solid currentColor; }
+.selo svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.s-confirmed { color: #7fd6a0; } .s-derived { color: #8cb4ff; } .s-inferred { color: #e6c35c; } .s-illustrative { color: #b9a6e8; }
+.s-illustrative svg { fill: #b9a6e833; }
+
+/* controles e notas */
+#controles { position: absolute; right: 24px; bottom: 70px; display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: 10px;
+  background: #0d1118f0; border: 1px solid #2f3947; z-index: 5; }
+#controles button, #controles select { height: 44px; min-width: 44px; padding: 0 12px; color: #e3e8ef; background: #1a2230; border: 1px solid #38455a; border-radius: 6px; font: 500 18px Inter, sans-serif; cursor: pointer; }
+#controles button:hover { background: #26324a; }
+#controles svg { fill: #e3e8ef; stroke: #e3e8ef; stroke-width: 1.5; stroke-linejoin: round; vertical-align: middle; }
+#controles select { max-width: 260px; }
+body.capture #controles, body.capture #notas { display: none; }
+#notas { position: absolute; left: 48px; top: 110px; width: 760px; max-height: 760px; overflow: auto; padding: 18px 26px; border-radius: 10px; z-index: 6;
+  background: #0b0e13f5; border: 1px solid #3a4658; font-size: 24px; }
+#notas[hidden] { display: none; }
+#notas h3 { margin: 0 0 10px; font-size: 28px; } #notas h4 { margin: 18px 0 6px; font-size: 22px; color: #9aa6b5; }
+#notas .fala { line-height: 1.4; } #notas ul { margin: 0; padding-left: 24px; }
+#erro { position: fixed; inset: 20px; color: #ff9a8a; font: 20px "JetBrains Mono", monospace; white-space: pre-wrap; }

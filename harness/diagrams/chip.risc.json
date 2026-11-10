@@ -1,0 +1,731 @@
+{
+  "id": "chip.risc",
+  "level": 4,
+  "title": "RISC ou CISC? Critérios para o SASS (sm_120)",
+  "disclaimer": "Análise do grupo sobre fatos oficiais: a NVIDIA não classifica o SASS. A coluna 'Aponta para' e a conclusão são inferência; a disposição é ilustrativa.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_chip_risc.py",
+  "nodes": [
+    {
+      "id": "risc.head.criterion",
+      "kind": "header",
+      "rect": [
+        30,
+        30,
+        300,
+        50
+      ],
+      "label": "Critério",
+      "parent": null,
+      "tags": [
+        "header",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.head.evidence",
+      "kind": "header",
+      "rect": [
+        338,
+        30,
+        540,
+        50
+      ],
+      "label": "O que as fontes mostram",
+      "parent": null,
+      "tags": [
+        "header",
+        "col-evidence"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.head.verdict",
+      "kind": "header",
+      "rect": [
+        886,
+        30,
+        244,
+        50
+      ],
+      "label": "Aponta para",
+      "parent": null,
+      "tags": [
+        "header",
+        "col-verdict"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.1.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        90,
+        300,
+        70
+      ],
+      "label": "Largura da instrução",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-1",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.1.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        90,
+        540,
+        70
+      ],
+      "label": "16 bytes em todas as instruções",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-1",
+        "col-evidence"
+      ],
+      "count": {
+        "value": 16,
+        "unit": "bytes",
+        "claim": "isa.instruction_bytes",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.1.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        90,
+        244,
+        70
+      ],
+      "label": "RISC",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-1",
+        "col-verdict",
+        "lean-risc"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.2.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        168,
+        300,
+        70
+      ],
+      "label": "Acesso à memória",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-2",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.2.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        168,
+        540,
+        70
+      ],
+      "label": "carga e armazenamento, exceto LDGSTS e UTMALDG",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-2",
+        "col-evidence"
+      ],
+      "claims": [
+        "isa.ptx_load_store",
+        "isa.op.ldgsts",
+        "isa.op.utmaldg"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.2.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        168,
+        244,
+        70
+      ],
+      "label": "RISC, com exceções",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-2",
+        "col-verdict",
+        "lean-risc"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.3.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        246,
+        300,
+        70
+      ],
+      "label": "Modos de endereçamento",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-3",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.3.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        246,
+        540,
+        70
+      ],
+      "label": "descritor, banco de constantes, imediato",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-3",
+        "col-evidence"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Visto na listagem do SAXPY (desc[UR4][R2.64], c[0x0][...], 0x4); lista completa não levantada."
+    },
+    {
+      "id": "risc.row.3.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        246,
+        244,
+        70
+      ],
+      "label": "não determinado",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-3",
+        "col-verdict",
+        "lean-neutral"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.4.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        324,
+        300,
+        70
+      ],
+      "label": "Registradores",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-4",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.4.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        324,
+        540,
+        70
+      ],
+      "label": "65.536 por SM; até 255 por thread",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-4",
+        "col-evidence"
+      ],
+      "count": {
+        "value": 65536,
+        "claim": "sm.regfile_entries",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "sm.max_regs_per_thread"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.4.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        324,
+        244,
+        70
+      ],
+      "label": "RISC",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-4",
+        "col-verdict",
+        "lean-risc"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.5.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        402,
+        300,
+        70
+      ],
+      "label": "Trabalho por instrução",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-5",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.5.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        402,
+        540,
+        70
+      ],
+      "label": "HMMA: bloco de matriz por warp; TEX",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-5",
+        "col-evidence"
+      ],
+      "claims": [
+        "ex.mma.hmma",
+        "isa.op.hmma",
+        "isa.op.tex"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.5.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        402,
+        244,
+        70
+      ],
+      "label": "afasta do RISC clássico",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-5",
+        "col-verdict",
+        "lean-away"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.6.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        480,
+        300,
+        70
+      ],
+      "label": "Tamanho do conjunto",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-6",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.6.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        480,
+        540,
+        70
+      ],
+      "label": "258 mnemônicos em 13 categorias",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-6",
+        "col-evidence"
+      ],
+      "count": {
+        "value": 258,
+        "claim": "isa.sass_mnemonics",
+        "provenance": "derived"
+      },
+      "claims": [
+        "isa.sass_categories"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.6.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        480,
+        244,
+        70
+      ],
+      "label": "neutro",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-6",
+        "col-verdict",
+        "lean-neutral"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.7.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        558,
+        300,
+        70
+      ],
+      "label": "Escalonamento no binário",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-7",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.7.ev",
+      "kind": "cell",
+      "rect": [
+        338,
+        558,
+        540,
+        70
+      ],
+      "label": "≥ 23 bits de controle (Volta)",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-7",
+        "col-evidence"
+      ],
+      "count": {
+        "value": 23,
+        "unit": "bits",
+        "claim": "isa.volta.control_bits_min",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.7.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        558,
+        244,
+        70
+      ],
+      "label": "lembra VLIW",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-7",
+        "col-verdict",
+        "lean-away"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.8.crit",
+      "kind": "cell",
+      "rect": [
+        30,
+        636,
+        300,
+        70
+      ],
+      "label": "Microcódigo",
+      "label_size": 21,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-8",
+        "col-criterion"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.8.ev",
+      "kind": "gap",
+      "rect": [
+        338,
+        636,
+        540,
+        70
+      ],
+      "label": "nenhuma informação pública",
+      "label_size": 19,
+      "align": "left",
+      "parent": null,
+      "tags": [
+        "row-8",
+        "col-evidence"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.row.8.verdict",
+      "kind": "cell",
+      "rect": [
+        886,
+        636,
+        244,
+        70
+      ],
+      "label": "não determinado",
+      "label_size": 18,
+      "parent": null,
+      "tags": [
+        "row-8",
+        "col-verdict",
+        "lean-neutral"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.conclusion",
+      "kind": "note",
+      "rect": [
+        30,
+        724,
+        1100,
+        116
+      ],
+      "label": "RISC no formato, com instruções próprias de acelerador",
+      "sublabel": "análise do grupo; a NVIDIA não classifica o SASS",
+      "parent": null,
+      "tags": [
+        "conclusion"
+      ],
+      "claims": [
+        "isa.instruction_bytes",
+        "isa.ptx_load_store",
+        "isa.op.ldgsts",
+        "isa.op.tex",
+        "isa.op.hmma"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative",
+      "note": "Seção 08 do roteiro, conclusão aprovada pelo humano em 2026-11-10. Fora da dicotomia: o compilador grava controle de escalonamento na instrução, o que lembra VLIW."
+    },
+    {
+      "id": "risc.ops.head",
+      "kind": "header",
+      "rect": [
+        1160,
+        30,
+        410,
+        50
+      ],
+      "label": "Instruções de acelerador",
+      "parent": null,
+      "tags": [
+        "header",
+        "ops"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.op.ldgsts",
+      "kind": "codeline",
+      "rect": [
+        1160,
+        90,
+        410,
+        130
+      ],
+      "label": "LDGSTS",
+      "sublabel": "“Asynchronous Global to Shared Memcopy”",
+      "label_size": 30,
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "ops",
+        "op-ldgsts"
+      ],
+      "claims": [
+        "isa.op.ldgsts"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Descrição oficial: CUDA Binary Utilities 13.5, 'Blackwell and Rubin Instruction Set'."
+    },
+    {
+      "id": "risc.op.tex",
+      "kind": "codeline",
+      "rect": [
+        1160,
+        232,
+        410,
+        130
+      ],
+      "label": "TEX",
+      "sublabel": "“Texture Fetch”",
+      "label_size": 30,
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "ops",
+        "op-tex"
+      ],
+      "claims": [
+        "isa.op.tex"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Descrição oficial: CUDA Binary Utilities 13.5, 'Blackwell and Rubin Instruction Set'."
+    },
+    {
+      "id": "risc.op.hmma",
+      "kind": "codeline",
+      "rect": [
+        1160,
+        374,
+        410,
+        130
+      ],
+      "label": "HMMA",
+      "sublabel": "“Matrix Multiply and Accumulate”",
+      "label_size": 30,
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "ops",
+        "op-hmma"
+      ],
+      "claims": [
+        "isa.op.hmma",
+        "ex.mma.hmma"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Descrição oficial: CUDA Binary Utilities 13.5, 'Blackwell and Rubin Instruction Set'."
+    },
+    {
+      "id": "risc.amp",
+      "kind": "note",
+      "rect": [
+        1160,
+        520,
+        410,
+        90
+      ],
+      "label": "AMP: RISC-V",
+      "sublabel": "um RISC por projeto, fora do SM",
+      "parent": null,
+      "tags": [
+        "amp"
+      ],
+      "claims": [
+        "chip.amp_isa"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "risc.gap.microcode",
+      "kind": "gap",
+      "rect": [
+        1160,
+        724,
+        410,
+        116
+      ],
+      "label": "Microcódigo, modos completos",
+      "sublabel": "sem fonte pública",
+      "parent": null,
+      "tags": [
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Microcódigo: nenhuma informação pública. Modos de endereçamento: lista completa não levantada."
+    }
+  ],
+  "flows": [],
+  "checks": []
+}
