@@ -16,6 +16,8 @@ O `scripts/sync-data.mjs` copia para `public/data/` (não versionado) `story/sto
 
 Parâmetros da URL: `?cut=seminario` (padrão `completo`), `?capture=1` (sem controles, palco fixo de 1920 x 1080, sem laço de animação), `?beat=<id>` (começa no fim da chamada do beat).
 
+Temas de estilo (proposta da etapa de design, ainda sem escolha do autor): `?tema=keynote|estudio|blueprint`. Sem `?tema` o viewer é o de sempre (conferido quadro a quadro contra as capturas anteriores). `?leve=1` desliga os efeitos caros do tema (desfoque da caixa, brilho do nó-alvo, halos). Parâmetros em `src/temas.js` (fundo, luzes, materiais, arestas, sombra de contato, raio de canto, fluxos), estilo em `src/temas.css` (só regras sob `:root[data-tema]`), cotas da placa montada no tema blueprint em `src/cotas.js` (só medidas auditadas de `measurements.json`). Capturas e folhas de contato: `node harness/tools/estilo.cjs` (grava `harness/dist/estilo/`); quadros por segundo ao vivo: `node harness/tools/estilo.cjs --perf`. Os dois smokes aceitam `--tema <nome>`.
+
 Teclado: setas (beat anterior e próximo), espaço (tocar e pausar), `N` (notas do apresentador: `speaker`, `fala` e beats `draft` e `blocked`). Em beat 3D com o tour pausado dá para orbitar com o mouse; ao avançar, a câmera volta ao storyboard.
 
 ## Testar e capturar
