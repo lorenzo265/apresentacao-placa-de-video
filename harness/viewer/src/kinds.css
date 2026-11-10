@@ -1,0 +1,82 @@
+/* Estilo dos `kind` dos diagramas (classe k-<kind>). Contrato: harness/diagrams/README.md.
+   Paleta sóbria; as únicas cores vivas são os três caminhos (dados, energia, calor)
+   e o laranja de thread-alt (logotipo do grupo). Kind desconhecido cai no estilo de `frame`. */
+:root {
+  --fundo: #080a0e;
+  --texto: #e3e8ef;
+  --texto-suave: #9aa6b5;
+  --traco: #4a5565;
+  --c-dados: #35d0e6;
+  --c-energia: #ffb020;
+  --c-calor: #ff6a3d;
+  --c-controle: #aab4c2;
+  --c-grupo: #ff8a1f;
+}
+
+#diagramas .n rect { fill: #111620; stroke: var(--traco); stroke-width: 1.2px; vector-effect: non-scaling-stroke; }
+#diagramas .n text { fill: var(--texto); font-family: Inter, sans-serif; font-weight: 500; dominant-baseline: central; pointer-events: none; }
+#diagramas .n text.titulo { fill: var(--texto-suave); font-weight: 600; letter-spacing: .02em; }
+#diagramas .n text.sub { fill: var(--texto-suave); font-weight: 400; }
+#diagramas .n text.mono { font-family: "JetBrains Mono", monospace; font-weight: 400; }
+
+/* contornos */
+#diagramas .k-die rect { fill: #0c1017; stroke: #6a7587; stroke-width: 2.4px; }
+#diagramas .k-frame rect, #diagramas .k-sm-frame rect { fill: #0e131b; stroke: #566174; stroke-width: 1.6px; }
+#diagramas .k-lane rect { fill: #0d1219; stroke: #1f2733; stroke-width: 1px; }
+/* hierarquia do chip */
+#diagramas .k-gpc rect { fill: #121923; stroke: #46526a; }
+#diagramas .k-tpc rect { fill: #17202d; stroke: #55637c; }
+#diagramas .k-sm rect { fill: #1d2a3b; stroke: #6d7f9c; }
+/* unidades do SM */
+#diagramas .k-block rect { fill: #151d29; stroke: #3d4a5f; }
+#diagramas .k-sched rect { fill: #2a3a52; stroke: #7a8fb0; }
+#diagramas .k-regfile rect { fill: #243247; stroke: #6a7fa0; }
+#diagramas .k-core rect { fill: #1d2837; stroke: #52627a; }
+#diagramas .k-tensor rect { fill: #2c3548; stroke: #8290ad; }
+#diagramas .k-rt rect { fill: #262f40; stroke: #75839f; }
+#diagramas .k-tex rect { fill: #222c3c; stroke: #667590; }
+#diagramas .k-ldst rect { fill: #202a39; stroke: #5f6e88; }
+#diagramas .k-sfu rect { fill: #1f2836; stroke: #5a687f; }
+/* memória */
+#diagramas .k-cache rect { fill: #2a2f3d; stroke: #8b94ab; }
+#diagramas .k-memory rect { fill: #232834; stroke: #7f879b; }
+#diagramas .k-memctl rect { fill: #202530; stroke: #6e7689; }
+/* campos e tabelas */
+#diagramas .k-field rect { fill: #1b2332; stroke: #7586a3; }
+#diagramas .k-table rect { fill: #101620; stroke: #55637c; }
+#diagramas .k-cell rect { fill: #161d2a; stroke: #3b4658; }
+#diagramas .k-header rect { fill: #232c3c; stroke: #55637c; }
+#diagramas .k-header text { font-weight: 600; }
+#diagramas .k-codeline rect { fill: #0a0d12; stroke: #2c3544; }
+#diagramas .k-step rect { fill: #1b2332; stroke: #7586a3; }
+#diagramas .k-step text { font-weight: 600; }
+/* sistema */
+#diagramas .k-actor rect { fill: #1b2332; stroke: #8493ad; stroke-width: 1.8px; }
+#diagramas .k-counter rect { fill: #1a2230; stroke: #7e8da8; }
+#diagramas .k-counter text { font-weight: 700; fill: #f2f5fa; }
+/* threads de um warp */
+#diagramas .k-thread rect { fill: #3a4a63; stroke: #8fa0bf; }
+#diagramas .k-thread-alt rect { fill: var(--c-grupo); stroke: #ffc27a; }
+/* observação e lacuna declarada */
+#diagramas .k-note rect { fill: none; stroke: #566174; stroke-dasharray: 3 3; stroke-width: 1px; }
+#diagramas .k-note text { fill: var(--texto-suave); font-weight: 400; }
+#diagramas .k-gap rect { fill: #0b0e13; stroke: #8a93a3; stroke-dasharray: 8 5; stroke-width: 1.6px; }
+#diagramas .k-gap text { fill: #b7c0cd; font-style: italic; }
+
+/* posição não habilitada: apagado e hachurado */
+#diagramas .n.disabled rect:first-child { fill: #0b0e13; stroke: #333b48; stroke-dasharray: 4 4; }
+#diagramas .n.disabled text { fill: #5c6676; }
+#diagramas .n rect.hachurada { fill: url(#hachura); stroke: none; }
+.hachura-traco { stroke: #3a4352; stroke-width: 1.2px; fill: none; }
+
+/* fluxos */
+#fluxos .f-base { fill: none; stroke-width: 3px; opacity: .28; vector-effect: non-scaling-stroke; }
+#fluxos .f-anim { fill: none; stroke-width: 4px; stroke-dasharray: 16 14; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+#fluxos .f-rotulo { font-family: Inter, sans-serif; font-weight: 600; paint-order: stroke; stroke: #080a0e; stroke-width: 5px; stroke-linejoin: round; dominant-baseline: central; }
+#fluxos .f-data { color: var(--c-dados); }
+#fluxos .f-energy { color: var(--c-energia); }
+#fluxos .f-heat { color: var(--c-calor); }
+#fluxos .f-control { color: var(--c-controle); }
+#fluxos .fluxo .f-base, #fluxos .fluxo .f-anim { stroke: currentColor; }
+#fluxos .fluxo .f-ponta, #fluxos .fluxo .f-rotulo { fill: currentColor; }
+#fluxos .f-rotulo { stroke: #080a0e; }

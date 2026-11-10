@@ -49,13 +49,14 @@ export function criaCamadaDiagramas(container, world) {
     const m = Math.min(w, h);
     const fit = (txt, hPref, maxW) => Math.min(hPref, maxW / Math.max(0.5, larguraPorUnidade(txt, mono, peso)));
     const sz = n.label_size ? n.label_size * r.s : null;
+    const teto = 0.1 * Math.max(w, h);       // rótulo ajustado nunca passa de 10% do maior lado
     if (n.label) {
       if (r.isContainer) {
         // contêiner: título no canto superior esquerdo
-        const hh = sz ?? fit(n.label, m * 0.06, w * 0.8);
-        rotulos.push({ txt: n.label, x: x + m * 0.03, y: y + m * 0.03 + hh / 2, h: hh, anchor: 'start', cls: 'titulo' });
+        const hh = sz ?? fit(n.label, m * 0.045, w * 0.8);
+        rotulos.push({ txt: n.label, x: x + m * 0.03, y: y + m * 0.02 + hh / 2, h: hh, anchor: 'start', cls: 'titulo' });
       } else if (n.sublabel) {
-        const h1 = sz ?? fit(n.label, h * 0.34, w * 0.92);
+        const h1 = sz ?? fit(n.label, Math.min(h * 0.34, teto), w * 0.92);
         const h2 = fit(n.sublabel, Math.min(h1 * 0.8, h * 0.26), w * 0.92);
         const total = h1 + h2 * 1.15;
         const y1 = y + (h - total) / 2 + h1 / 2;
@@ -63,11 +64,11 @@ export function criaCamadaDiagramas(container, world) {
         rotulos.push({ txt: n.label, x: ax, y: y1, h: h1, anchor: esq ? 'start' : 'middle', cls: 'rotulo' });
         rotulos.push({ txt: n.sublabel, x: ax, y: y1 + h1 / 2 + h2 * 0.65, h: h2, anchor: esq ? 'start' : 'middle', cls: 'sub' });
       } else {
-        const hh = sz ?? fit(n.label, h * 0.5, (esq ? w - h * 0.5 : w * 0.92));
+        const hh = sz ?? fit(n.label, Math.min(h * 0.5, teto), (esq ? w - h * 0.5 : w * 0.92));
         rotulos.push({ txt: n.label, x: esq ? x + h * 0.25 : x + w / 2, y: y + h / 2, h: hh, anchor: esq ? 'start' : 'middle', cls: 'rotulo' });
       }
     } else if (n.sublabel && !r.isContainer) {
-      const hh = fit(n.sublabel, h * 0.4, w * 0.92);
+      const hh = fit(n.sublabel, Math.min(h * 0.4, teto), w * 0.92);
       rotulos.push({ txt: n.sublabel, x: x + w / 2, y: y + h / 2, h: hh, anchor: 'middle', cls: 'sub' });
     }
     for (const t of rotulos) {
@@ -125,10 +126,11 @@ export function criaCamadaDiagramas(container, world) {
       const a = dimsAnt ? dimsAnt[it.r.idx] : 1, b = dims ? dims[it.r.idx] : 1;
       const op = Math.round((a + (b - a) * hl) * 100) / 100;
       if (op !== it.op) { it.op = op; it.g.style.opacity = op; }
-      const fadeHost = it.hostFade ? 1 - suave(200, 340, w * k) : 1;
+      const fadeHost = (it.hostFade ? 1 - suave(200, 340, w * k) : 1);
+      const fadeCont = it.r.isContainer ? 1 - suave(1100, 1500, Math.min(w, h) * k) : 1;
       for (const tx of it.textos) {
         const px = tx.h * k;
-        const o = suave(LOD_MIN, LOD_FULL, px) * (1 - suave(LOD_BIG_START, LOD_BIG_END, px)) * fadeHost;
+        const o = suave(LOD_MIN, LOD_FULL, px) * (1 - suave(LOD_BIG_START, LOD_BIG_END, px)) * fadeHost * fadeCont;
         const q = Math.round(o * 50) / 50;
         if (q !== tx.op) { tx.op = q; tx.e.style.opacity = q; tx.e.style.display = q <= 0 ? 'none' : ''; }
       }

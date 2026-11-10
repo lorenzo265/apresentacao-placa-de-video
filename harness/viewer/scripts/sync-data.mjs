@@ -32,8 +32,14 @@ copiaOuExemplo('beats', path.join(harness, 'content', 'pt-BR', 'beats.json'),
 
 // Diagramas: todos os diagrams/*.json reais; se não houver nenhum, os dois exemplos juntos.
 const dDir = path.join(harness, 'diagrams');
-const reais = fs.existsSync(dDir) ? fs.readdirSync(dDir).filter((f) => f.endsWith('.json') && !f.startsWith('_') && !f.startsWith('.')).sort() : [];
-if (reais.length) {
+const reais = fs.existsSync(dDir) ? fs.readdirSync(dDir).filter((f) => f.endsWith('.json') && !f.startsWith('_') && !f.startsWith('.')).sort().filter((f) => {
+  try { const d = JSON.parse(fs.readFileSync(path.join(dDir, f), 'utf8')); return d && d.id && Array.isArray(d.nodes); } catch { return false; }
+}) : [];
+// Conjunto coerente: se o storyboard é o de exemplo, os diagramas reais não casam com ele
+// (ids diferentes); então vão os de exemplo. Para forçar os reais: SYNC_REAL_DIAGRAMS=1.
+const usaReais = reais.length && (manifest.source.storyboard === 'real' || process.env.SYNC_REAL_DIAGRAMS === '1');
+if (reais.length && !usaReais) console.log('sync-data: storyboard é de exemplo; usando os diagramas de exemplo (SYNC_REAL_DIAGRAMS=1 força os reais)');
+if (usaReais) {
   for (const f of reais) {
     fs.copyFileSync(path.join(dDir, f), path.join(out, 'diagrams', f));
     manifest.diagrams.push({ file: f, source: 'real' });
@@ -44,7 +50,7 @@ if (reais.length) {
     manifest.diagrams.push({ file: f, source: 'examples' });
   }
 }
-manifest.source.diagrams = reais.length ? 'real' : 'examples';
+manifest.source.diagrams = usaReais ? 'real' : 'examples';
 
 // GLB
 const glb = path.join(harness, 'build', 'card.glb');

@@ -15,8 +15,8 @@ export const LINE_OUT_DEFAULT = 0.5;
 // Nível de detalhe dos rótulos: altura do texto na tela, em px
 export const LOD_MIN = 9;       // abaixo disto o rótulo some
 export const LOD_FULL = 13;     // a partir daqui o rótulo está totalmente visível
-export const LOD_BIG_START = 260; // rótulos gigantes (zoom muito acima) esmaecem
-export const LOD_BIG_END = 420;
+export const LOD_BIG_START = 150; // rótulos gigantes (zoom muito acima) esmaecem
+export const LOD_BIG_END = 240;
 
 /** Lado da tela em que a caixa fica, a partir de callout.box (ou terço inferior esquerdo). */
 export function boxPlacement(callout) {
