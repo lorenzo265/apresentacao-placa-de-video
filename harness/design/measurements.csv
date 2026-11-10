@@ -1,6 +1,6 @@
 feature,value_mm,tolerance_mm,method,source,provenance,status
-card_envelope_length,304.8,0.5,conversão de 12.0 pol do datasheet (convenção do projeto),physical-card-sources.md s.1,derived,auditado com ressalvas
-card_envelope_height,137.16,0.5,conversão de 5.4 pol do datasheet (convenção do projeto),physical-card-sources.md s.1,derived,auditado com ressalvas
+card_envelope_length,304.8,0.5,conversão de 12.0 pol do datasheet (convenção do projeto); comprimento da carcaça sem o bracket,physical-card-sources.md s.1,derived,auditado com ressalvas
+card_envelope_height,137.16,0.5,conversão de 5.4 pol do datasheet (convenção do projeto); D2: da ponta dos contatos PCIe ao topo da carcaça,physical-card-sources.md s.1,derived,auditado com ressalvas; leitura D2 aprovada em 2026-11-10
 pcie_slot_pitch,20.32,,cota de figura,standards-sources.md: CEM 3.0 Fig.1-3 p.18,confirmed (norma rev 3.0),não auditado
 card_height_standard,111.15,0.13,cota e texto,standards-sources.md: CEM 3.0 Fig.9-1 p.128 e p.133,confirmed (norma rev 3.0),não auditado
 card_length_full_max,312.00,0.13,cota de figura,standards-sources.md: CEM 3.0 Fig.9-2 p.129,confirmed (norma rev 3.0),não auditado
@@ -24,11 +24,107 @@ dp_contact_pitch,1.00,,página de produto,standards-sources.md: Molex 472720001,
 gddr7_package_width,12.0,,tabela da Micron citada por terceiro,standards-sources.md: JPR/Micron,derived,não auditado
 gddr7_package_length,14.0,,tabela da Micron citada por terceiro,standards-sources.md: JPR/Micron,derived,não auditado
 gddr7_package_thickness,1.1,,tabela da Micron citada por terceiro,standards-sources.md: JPR/Micron,derived,não auditado
-fan_ring_outer_diameter,115,6,proporção em foto quase ortogonal de terceiro (gn-05); escala pelo comprimento de 304.8,references/index.md: Proporções medidas em foto,derived,não auditado; altura não fecha com a oficial
-fan_hub_diameter,40,3,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
-fan_centers_distance,182,8,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
-fan1_center_from_bracket_end,61,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
-fan2_center_from_bracket_end,244,10,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
-pcie_fingers_start_from_bracket_end,48,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
-pcie_fingers_end_from_bracket_end,131,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,não auditado
-shroud_height_without_fingers,122,6,proporção em foto (gn-05); conflita com a altura oficial de 137.16,references/index.md: Proporções medidas em foto,derived,não auditado; conflito aberto
+fan_ring_outer_diameter,115,6,proporção em foto quase ortogonal de terceiro (gn-05); escala pelo comprimento de 304.8,references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+fan_hub_diameter,40,3,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+fan_centers_distance,182,8,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+fan1_center_from_bracket_end,61,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+fan2_center_from_bracket_end,244,10,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+pcie_fingers_start_from_bracket_end,48,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+pcie_fingers_end_from_bracket_end,131,4,proporção em foto (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+shroud_height_without_fingers,122,6,proporção em foto (gn-05); conflita com a altura oficial de 137.16,references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); conflito reduzido por D2 a 4 mm (Q1); não auditado
+card_thickness,40,2,texto de terceiro legível em gn-05; 5090 FE com 42 mm (Puget),proposal.json: card.thickness,derived,proposta F2 aprovada em 2026-11-10; não auditado
+shroud_height_proposed,126,4,137.16 menos 11 mm de contatos; hipótese de que a cota oficial inclui os contatos,proposal.json: card.height_reference,derived,D2 aprovada em 2026-11-10; resíduo de 4 mm (Q1); não auditado
+pcie_fingers_below_shroud,11,2,proporção em foto de terceiro (gn-05),references/index.md: Proporções medidas em foto,derived,D3 aprovada (foto de terceiro); não auditado
+pcb_main_width,108,10,proporção em foto oblíqua (gn-29); chip GDDR7 e conector J3 como réguas,proposal.json: pcb.main,derived,D8: só para bloqueio de volumes; travar depois da medição do visual-qa em recortes de resolução cheia de gn-29 e gn-25
+pcb_main_height,112,10,proporção em foto oblíqua (gn-29) e orçamento de componentes,proposal.json: pcb.main,derived,D8: só para bloqueio de volumes; travar depois da medição do visual-qa em recortes de resolução cheia de gn-29 e gn-25
+pcb_main_center_from_bracket_end,152,6,simetria dos ventiladores e cruzamento do X (gn-05),proposal.json: pcb.main,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcb_main_thickness,1.6,0.4,referência da norma; sem medida,proposal.json: pcb.main,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+power_connector_center_from_bracket_end,195,10,canto do PCB (gn-29) e faixa de 55 a 70 % do comprimento (gn-02; gn-46),proposal.json: pcb.main,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_package_x,56,3,vazamento sobre o GB202 conferido por proporção em gn-41,proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_package_y,63,3,vazamento sobre o GB202; sem conferência em foto,proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_die_x,24.2,1.3,750 mm2 com proporção de 1 para 1.28 (gn-05; gn-42),proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_die_y,31.0,1.5,750 mm2 com proporção de 1 para 1.28 (gn-05; gn-42),proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_stiffener_ring_width,11,2,(56 - 34) / 2; janela por proporção em foto (gn-05; gn-41),proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_die_top_above_pcb,2.9,0.6,prática de mercado,proposal.json: gpu.package,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_length,100,8,proporção em foto (gn-25); zona de contatos de 84.3 mm como régua,proposal.json: pcie.adapter,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_strip_height,16.5,2,proporção em foto (gn-25),proposal.json: pcie.adapter,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_total_height,35,3,proporção em foto (gn-25),proposal.json: pcie.adapter,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_connector_length,23,2,proporção em foto (gn-25),proposal.json: pcie.adapter,derived,proposta F2 aprovada em 2026-11-10; não auditado
+vapor_chamber_contact_plate_x,60,8,proporção em foto (gn-34); marca da pasta como régua,proposal.json: cooler.vapor_chamber,derived,proposta F2 aprovada em 2026-11-10; não auditado
+vapor_chamber_contact_plate_y,68,8,proporção em foto (gn-34),proposal.json: cooler.vapor_chamber,derived,proposta F2 aprovada em 2026-11-10; não auditado
+vapor_chamber_thickness,4,1.5,prática de mercado,proposal.json: cooler.vapor_chamber,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+heatpipe_diameter,8,2,prática de mercado,proposal.json: cooler.heatpipes,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+fin_stack_end_length_x,98,8,(304.8 - largura do PCB) / 2,proposal.json: cooler.fins.1_2,derived,proposta F2 aprovada em 2026-11-10; não auditado
+fin_stack_end_depth_z,22,4,orçamento de espessura,proposal.json: cooler.fins.1_2,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+fin_pitch,1.6,0.4,prática de mercado; não contado em foto,proposal.json: cooler.fins.1_2,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+fin_stack_center_length_x,64,10,proporção em foto (gn-34),proposal.json: cooler.fins.3,derived,proposta F2 aprovada em 2026-11-10; não auditado
+fan_rotor_diameter,111,4,aro de 115 mm menos folga,proposal.json: cooler.fan.blade,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+fan_axial_depth,13,3,orçamento de espessura,proposal.json: cooler.fan.blade,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+dp_port_pitch,19.5,2,proporção em foto (gn-16); receptáculo de 16.1 mm como régua,proposal.json: io.board,derived,proposta F2 aprovada em 2026-11-10; não auditado
+flex_dp_width,22,4,proporção em foto (gn-29),proposal.json: flex.dp,derived,proposta F2 aprovada em 2026-11-10; não auditado
+vrm_inductor_side,6.5,1.5,proporção em foto (gn-40) e prática de mercado,proposal.json: power.vrm.gpu,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_window_x,34,3,proporção em foto (gn-41: janela de 1.35 vezes o die),proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+gb202_window_y,40,3,proporção em foto (gn-41: janela de 1.35 vezes o die),proposal.json: gpu.package,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcb_main_card_x_min,98,8,conta 152 - 108 / 2; posição por simetria (gn-05),proposal.json: pcb.main (card_x_range_mm),derived,D8: só para bloqueio de volumes; travar com a largura do PCB
+pcb_main_card_y_min,14,6,proporção em foto; vale com D2,proposal.json: pcb.main (card_y_range_mm),derived,D8: só para bloqueio de volumes; travar com a altura do PCB
+gpu_center_u,54,5,GB202 no centro do PCB (gn-29; gn-33),proposal.json: pcb.main (gpu_center_uv_mm),derived,proposta F2 aprovada em 2026-11-10; não auditado
+gpu_center_v,56,5,GB202 no centro do PCB (gn-29; gn-33),proposal.json: pcb.main (gpu_center_uv_mm),derived,proposta F2 aprovada em 2026-11-10; não auditado
+power_connector_rotation_deg,40,20,valor em graus (não mm); o corpo acompanha o chanfro do PCB em gn-29; sentido a conferir,proposal.json: pcb.main (power_connector),inferred,proposta F2 aprovada em 2026-11-10; confiança 0.3; não auditado
+aux_header_u,12,8,proporção em foto (gn-21; gn-30),proposal.json: pcb.main (aux_header),derived,proposta F2 aprovada em 2026-11-10; não auditado
+aux_header_length,14,5,proporção em foto (gn-21),proposal.json: io.aux_header,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_tab_width,39,4,proporção em foto (gn-25),proposal.json: pcie.adapter,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_connector_center_y,25,3,proporção em foto (gn-25); medido a partir da ponta dos contatos,proposal.json: pcie.adapter,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcie_adapter_connector_x,125,8,proporção em foto (gn-25) e posição dos contatos (gn-05),proposal.json: pcie.adapter (card_x_of_connector_mm),derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcb_plate_outline_x,104,10,proporção em foto (gn-27),proposal.json: pcb.plate,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcb_plate_outline_y,108,10,proporção em foto (gn-27),proposal.json: pcb.plate,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcb_plate_window,22,6,proporção em foto (gn-20; gn-27); furo quadrado,proposal.json: pcb.plate,derived,proposta F2 aprovada em 2026-11-10; não auditado
+pcb_plate_thickness,1.5,1.0,sem foto de perfil,proposal.json: pcb.plate,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+leaf_spring_outline_x,78,8,proporção em foto oblíqua (gn-29; gn-31),proposal.json: cooler.leaf_spring,derived,proposta F2 aprovada em 2026-11-10; não auditado
+leaf_spring_outline_y,84,8,proporção em foto oblíqua (gn-29; gn-31),proposal.json: cooler.leaf_spring,derived,proposta F2 aprovada em 2026-11-10; não auditado
+leaf_spring_window_x,40,6,proporção em foto oblíqua (gn-29),proposal.json: cooler.leaf_spring,derived,proposta F2 aprovada em 2026-11-10; não auditado
+leaf_spring_window_y,44,6,proporção em foto oblíqua (gn-29),proposal.json: cooler.leaf_spring,derived,proposta F2 aprovada em 2026-11-10; não auditado
+leaf_spring_thickness,1.2,0.8,sem foto de perfil,proposal.json: cooler.leaf_spring,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+fin_stack_end_height_y,118,7,proporção em foto (gn-29; gn-31),proposal.json: cooler.fins.1_2,derived,proposta F2 aprovada em 2026-11-10; não auditado
+fin_thickness,0.3,0.1,prática de mercado,proposal.json: cooler.fins.1_2,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+heatpipe_length_per_side,110,13,comprimento da pilha de aletas da ponta; trajeto não visto,proposal.json: cooler.heatpipes,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+io_board_outline_long,100,15,forma só para dar volume; nenhuma foto mostra a placa,proposal.json: io.board,illustrative,proposta F2 aprovada em 2026-11-10 (D6)
+io_board_outline_short,22,8,forma só para dar volume; nenhuma foto mostra a placa,proposal.json: io.board,illustrative,proposta F2 aprovada em 2026-11-10 (D6)
+flex_dp_length,130,20,ponta do PCB vista (gn-29; gn-31); a outra ponta não aparece,proposal.json: flex.dp,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+flex_fan_width,5,3,prática de mercado,proposal.json: flex.fan,inferred,proposta F2 aprovada em 2026-11-10; não auditado
+shroud_wall,2.0,1.0,sem fonte,proposal.json: card.thickness,illustrative,proposta F2 aprovada em 2026-11-10
+cooler_base_frame_outline_x,108,10,acompanha o contorno do PCB (gn-34; gn-39),proposal.json: cooler.base,derived,D8: segue a largura do PCB
+cooler_base_frame_outline_y,112,10,acompanha o contorno do PCB (gn-34; gn-39),proposal.json: cooler.base,derived,D8: segue a altura do PCB
+layer_center_covers,2.5,,orçamento de espessura no centro a partir da face B (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+layer_pcb_plate,1.5,,orçamento de espessura no centro a partir da face B (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+layer_back_mem_pad,2.1,,orçamento de espessura no centro: memória do verso e pad (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+layer_package_tim,3.0,,orçamento de espessura no centro: package e pasta (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+layer_center_fins_face_a,25.3,,orçamento de espessura no centro: aletas centrais e tampa da face A (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+layer_end_fan_ring,15,,orçamento de espessura nas pontas a partir da face A: ventilador e aro (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+layer_end_face_b_grid,3,,orçamento de espessura nas pontas: grade da face B (não é medida),proposal.json: card.thickness,inferred,orçamento da proposta F2 aprovada; não é medida
+mem_side_bracket_u,18,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_side_opposite_u,90,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_side_v_first,26,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_side_v_pitch,15,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_power_edge_v,95.5,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_power_edge_u_first,31.5,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_power_edge_u_pitch,15,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_contact_edge_v,16.5,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_contact_edge_u_1,38,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+mem_contact_edge_u_2,70,4,arranjo regular compatível com gn-29 e gn-30; não medido,proposal.json: mem.back.1..16 (layout_uv_mm),inferred,proposta F2 aprovada em 2026-11-10; coordenadas aproximadas
+iface_bracket_plane_x,0,,convenção: plano em que o bracket encosta na carcaça; a chapa do bracket fica em x negativo,assembly.json (origem card.envelope_min),derived,interface do assembly.json
+iface_shroud_y_min,11.16,2,conta card_envelope_height - shroud_height_proposed (D2),assembly.json,derived,interface do assembly.json; conta sobre outras linhas
+iface_shroud_center_y,74.16,2,conta iface_shroud_y_min + shroud_height_proposed / 2,assembly.json,derived,interface do assembly.json; conta sobre outras linhas
+iface_pcb_back_z,33.9,1,conta card_thickness - layer_center_covers - layer_pcb_plate - layer_back_mem_pad,assembly.json,inferred,interface do assembly.json; conta sobre o orçamento de camadas
+iface_pcb_front_z,32.3,1,conta iface_pcb_back_z - pcb_main_thickness,assembly.json,inferred,interface do assembly.json; conta sobre o orçamento de camadas
+iface_die_center_x,152,5,conta pcb_main_card_x_min + gpu_center_u,assembly.json,derived,interface do assembly.json; conta sobre outras linhas
+iface_die_center_y,70,5,conta pcb_main_card_y_min + gpu_center_v,assembly.json,derived,interface do assembly.json; conta sobre outras linhas
+iface_die_contact_z,29.3,1,conta iface_pcb_front_z - layer_package_tim; plano em que die e pasta encostam na face de contato,assembly.json,inferred,interface do assembly.json; conta sobre o orçamento de camadas
+iface_spring_holes_dx,78,8,4 furos nos cantos da mola (gn-29; gn-33; gn-40); padrão centrado no die e adotado igual ao contorno da mola,proposal.json: cooler.leaf_spring,inferred,interface do assembly.json; posição dos furos a medir pelo visual-qa
+iface_spring_holes_dy,84,8,4 furos nos cantos da mola (gn-29; gn-33; gn-40); padrão centrado no die e adotado igual ao contorno da mola,proposal.json: cooler.leaf_spring,inferred,interface do assembly.json; posição dos furos a medir pelo visual-qa
+iface_plate_holes_dx,104,10,4 abas de fixação nos cantos da placa (gn-27); padrão centrado no die e adotado igual ao contorno da placa,proposal.json: pcb.plate,inferred,interface do assembly.json; posição dos furos a medir pelo visual-qa
+iface_plate_holes_dy,108,10,4 abas de fixação nos cantos da placa (gn-27); padrão centrado no die e adotado igual ao contorno da placa,proposal.json: pcb.plate,inferred,interface do assembly.json; posição dos furos a medir pelo visual-qa
+iface_adapter_board_z_min,37.5,2,escolha de bloqueio: adaptador por fora da pcb.plate e logo abaixo da face B (gn-20; gn-22),assembly.json,inferred,escolha de bloqueio do assembly-planner sem fonte; conferir no visual-qa
+iface_fan_center_y,74.16,4,escolha de bloqueio: ventiladores centrados na altura da carcaça (gn-02; gn-05),assembly.json,inferred,escolha de bloqueio do assembly-planner sem fonte; conferir no visual-qa
+iface_power_edge_band_y,120.75,4,conta: meio da faixa entre a fileira de memória da borda de energia e a borda superior do PCB,assembly.json,inferred,interface do assembly.json; conta sobre outras linhas
+iface_contact_edge_band_y,19.25,4,conta: meio da faixa entre a borda inferior do PCB e a fileira de memória da borda dos contatos,assembly.json,inferred,interface do assembly.json; conta sobre outras linhas
+explode_gap,40,,direção de arte: distância de explosão = k x explode_gap; k maior para a camada mais externa,assembly.json,illustrative,provisório; o storyboard-director ajusta
