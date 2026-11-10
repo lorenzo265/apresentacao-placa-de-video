@@ -863,7 +863,7 @@
       "value": "12 pinos de potência (6 de +12 V e 6 de retorno) e 4 de sinal",
       "provenance": "derived",
       "source": "spec/sources/standards-sources.md#2-intel-atx12vo-12v-only-desktop-power-supply-design-guide-rev-211-maio-de-2024-doc-613768",
-      "note": "Norma do 12V-2x6 (Intel 613768): p. 63, os 12 pinos de potência têm de estar ligados; p. 26 e Tabela 5-10, quatro sinais laterais (S1 a S4), pinos 1 a 6 em +12 V e 7 a 12 em retorno. O guia rápido da NVIDIA mostra um desenho de 16 posições (12 grandes e 4 pequenas) e diz só \"16-pin PCIe Gen5\"; a foto gn-30 mostra o mesmo. Que o conector da placa seja o da norma é derivado. Nenhuma fonte lida discorda da divisão 12 e 4: pela Intel, 12VHPWR e 12V-2x6 são mecanicamente iguais na maior parte. O conflito aberto é o da variante e está em card.power_connector e card.power_connector_gn."
+      "note": "Norma do 12V-2x6 (Intel 613768): p. 63, os 12 pinos de potência têm de estar ligados; p. 26 e Tabela 5-10, quatro sinais laterais (S1 a S4), pinos 1 a 6 em +12 V e 7 a 12 em retorno. O guia rápido da NVIDIA mostra um desenho de 16 posições (12 grandes e 4 pequenas) e diz só \"16-pin PCIe Gen5\"; a foto gn-30 mostra as 12 cavidades grandes (2 x 6), e os 4 contatos de sinal não aparecem nela. Que o conector da placa seja o da norma é derivado. Nenhuma fonte lida discorda da divisão 12 e 4: pela Intel, 12VHPWR e 12V-2x6 são mecanicamente iguais na maior parte. O conflito aberto é o da variante e está em card.power_connector e card.power_connector_gn."
     },
     {
       "id": "card.power_adapter",
@@ -915,14 +915,14 @@
       "value": "o ar atravessa a placa em vez de bater no PCB",
       "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Gamers Nexus, teardown desta placa: \"pushes air straight through the card rather than into a PCB\". A mesma fonte diz por onde o ar sai (ver card.exhaust_slats); não achamos fonte que diga por qual face ele entra (lacuna airflow.direction). Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
+      "note": "Gamers Nexus, teardown desta placa: \"pushes air straight through the card rather than into a PCB\". A mesma fonte diz que as aberturas do topo lançam ar para cima e para longe (ver card.exhaust_slats), sem dizer que é a única saída; não achamos fonte que diga por qual face ele entra (lacuna airflow.direction). Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "card.exhaust_slats",
-      "value": "aberturas anguladas na borda superior, que lançam o ar para cima e para longe da placa",
+      "value": "aberturas anguladas na borda superior, que lançam ar para cima e para longe da placa",
       "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Gamers Nexus, teardown desta placa: \"The top of the RTX Pro 6000 retains the angle on the card’s vented slats.\" e, na frase seguinte, \"This projects the air out at an angle that’s up and away from the card.\" O que é angulado para cima e para longe é o jato de ar, não a aba. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
+      "note": "Gamers Nexus, teardown desta placa: \"The top of the RTX Pro 6000 retains the angle on the card’s vented slats.\" e, na frase seguinte, \"This projects the air out at an angle that’s up and away from the card.\" O que é angulado para cima e para longe é o jato de ar, não a aba. A fonte não diz que todo o ar sai por ali. Na borda superior: a foto gn-13 mostra duas fendas longas no painel do topo, ao lado do plugue. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "card.face_b_layout",
@@ -1052,14 +1052,14 @@
     },
     {
       "id": "card.fins_taller_depression",
-      "value": "as aletas ficam mais altas a partir de onde termina a placa que cobre o PCB; em outro trecho, a fonte aponta uma leve depressão no meio das aletas",
+      "value": "as aletas ficam mais altas a partir de onde termina a \"PCB plate\" (termo da fonte); em outro trecho, a fonte aponta uma leve depressão no meio das aletas",
       "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Duas frases de trechos diferentes do teardown. (1) \"This indicates where the PCB plate ends.\" e \"you can see where the fins start to get taller.\" A \"PCB plate\" é a placa que cobre o PCB (passo 5), não o próprio PCB. (2) \"If you look at the backside of the card where the fans are ... you’ll notice a slight depression down towards the middle of the fins.\" O texto não deixa claro qual face é essa. Material e contagem de aletas: não informados. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
+      "note": "Duas passagens do teardown, na ordem da fonte. (1) \"The PCB is in the center of the card and you can see where the fins start to get taller.\" e, em seguida, \"This indicates where the PCB plate ends.\" A fonte não explica o termo \"PCB plate\": pode ser o próprio PCB ou a placa que o cobre (passo 5). (2) \"If you look at the backside of the card where the fans are, you’ll notice a slight depression down towards the middle of the fins.\", seguido de \"This is supposed to help with pressure drop.\" O texto não deixa claro qual face é essa. Material e contagem de aletas: não informados. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "mem.back_layout",
-      "value": "16 chips (faixa de 15 a 16) nos quatro lados do chip: 5 e 5 nas laterais, 4 na borda do conector de energia, 2 na borda dos dedos PCIe",
+      "value": "16 chips (faixa de 15 a 16) nos quatro lados do chip: 5 e 5 nas laterais, 4 na borda do conector de energia, 2 na borda oposta, do lado do adaptador PCIe",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#16-observacoes-visuais-desta-rodada-2026-11-10",
       "note": "Leitura das fotos gn-29 (oblíqua, laterais sob resíduo de pad), gn-30 (os 4 da borda do conector, de perto) e gn-31 (a mesma disposição vista de cima); recontada pelo fact-checker em 2026-11-10 a 52% da resolução. Texto da GN: \"We counted 16 memory modules on the back\" (mem.back_modules)."
@@ -1068,7 +1068,7 @@
       "id": "mem.positions_per_controller",
       "value": 2,
       "provenance": "derived",
-      "source": "spec/sources/standards-sources.md#c3-memória-32-posições--3-gb--96-gb-e-16-controladores-de-32-bits",
+      "source": "spec/sources/standards-sources.md#c3-memoria-32-posicoes--3-gb--96-gb-e-16-controladores-de-32-bits",
       "note": "Leitura nossa, razão média: 32 posições (mem.positions) / 16 controladores (chip.mem_controllers). Só vale se as 32 posições estiverem ocupadas. Nenhuma fonte descreve como dois chips dividem um controlador; a 5090 FE mostra um chip por controlador (ver lacuna mem.chip_density_and_population)",
       "conflict": true
     },
@@ -1092,7 +1092,7 @@
       "value": "fileiras de indutores em mais de uma borda do PCB; uma delas junto ao conector de energia",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#16-observacoes-visuais-desta-rodada-2026-11-10",
-      "note": "Leitura de fotos: gn-42 mostra uma fileira ao lado do conector de energia; gn-33 mostra indutores em duas bordas opostas do quadro, pelo menos 14 numa só foto (o fact-checker não soube dizer se uma delas é a de gn-42 vista de outro ângulo). Contagem total: lacuna vrm.inductor_count. Fases do VRM: lacuna power.vrm.phases."
+      "note": "Leitura de fotos: gn-42 mostra uma fileira ao lado do conector de energia; gn-33 mostra indutores em duas bordas opostas do quadro, pelo menos 14 numa só foto (o fact-checker não soube dizer se uma delas é a de gn-42 vista de outro ângulo). gn-40 mostra uma fileira de 8 ou mais junto à borda em degrau. Tudo visto a 52% da resolução. Contagem total: lacuna vrm.inductor_count. Fases do VRM: lacuna power.vrm.phases."
     },
     {
       "id": "ada.sm_count",
@@ -1443,11 +1443,11 @@
     },
     {
       "id": "airflow.direction",
-      "description": "Por qual face o ar entra. A Gamers Nexus diz que o ar atravessa a placa e sai pelas aberturas do topo, para cima e para longe (fatos card.airflow_through e card.exhaust_slats); o datasheet diz 'dual axial pathways'. Não achamos fonte que diga por qual face ele entra. O beat a1.3 pode afirmar a saída pelo topo, citando a fonte, e não pode afirmar a face de entrada como fato."
+      "description": "Por qual face o ar entra e por onde sai todo ele. A Gamers Nexus diz que o ar atravessa a placa e que as aberturas do topo lançam ar para cima e para longe (fatos card.airflow_through e card.exhaust_slats); não diz que todo o ar sai por ali. O datasheet diz 'dual axial pathways'. Não achamos fonte que diga por qual face o ar entra. O beat a1.3 pode dizer que sai ar pelo topo, citando a fonte; não pode dizer que é a única saída nem afirmar a face de entrada como fato."
     },
     {
       "id": "pcb.plate_function",
-      "description": "Função da placa retirada com alavanca no passo 5 do teardown (cobre o PCB, com pads em volta e furo quadrado central): não achamos fonte que descreva. A Gamers Nexus só cita a peça: 'This indicates where the PCB plate ends.'"
+      "description": "Função da placa retirada com alavanca no passo 5 do teardown (cobre o PCB, com pads em volta e furo quadrado central): não achamos fonte que descreva. A Gamers Nexus cita a peça no passo 5: 'we pried a plate off of the card, exposing the PCB'. O termo 'PCB plate', que aparece uma vez na descrição do exterior, não é explicado e pode ser o próprio PCB."
     },
     {
       "id": "pcb.flat_cables_link",

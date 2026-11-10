@@ -3,7 +3,7 @@
 - Data: 2026-11-10
 - Auditor: agente `fact-checker` (Fable), em contexto separado do `spec-researcher`, que produziu o material.
 - Escopo: 36 fatos novos e 8 lacunas em `harness/spec/card.spec.json`; seções 14 a 17 de `harness/spec/sources/physical-card-sources.md`.
-- Resultado: **não aprovado na primeira passada**: 1 achado bloqueava (a classe dos fatos tirados do teardown), 13 pediam ajuste e 6 eram notas. Correções aplicadas no mesmo dia pela sessão principal. **A segunda passada ainda não foi feita.**
+- Resultado: **não aprovado na primeira passada**: 1 achado bloqueava (a classe dos fatos tirados do teardown), 13 pediam ajuste e 6 eram notas. Correções aplicadas no mesmo dia pela sessão principal. **Segunda passada feita no mesmo dia** (seção no fim): 19 achados fechados, o 13 reaberto, 1 erro novo que bloqueava e 5 ajustes, todos corrigidos. Falta a terceira passada sobre essas correções e a decisão humana da regra de classe.
 - Padrão dos erros: nenhum valor numérico errado e nenhuma citação divergente; as três contas fecham. Os problemas estavam na classe, em âncoras, em três lacunas e em redação.
 - Origem do achado que bloqueava: o briefing da sessão principal ao `spec-researcher` dizia "Gamers Nexus é sempre `derived`". Isso não está na regra escrita, que dá `confirmed` ao teardown da própria placa.
 
@@ -26,6 +26,7 @@
 - **Contas:** 4 x 150 W = 600 W; 600 W / 12 V = 50 A; 1792 / 63,015 = 28,44.
 - **Fatos sem erro de valor nem de classe:** `card.model_name`, `card.slots`, `card.power_connector_position`, `card.power_adapter`, `card.power_adapter_inputs`, `card.power_current_12v_a`, `card.airflow_pathways`, `card.face_b_layout`, `card.bracket_layout`, `card.housing_vs_5090`, `teardown.step_count`, `pcb.shape`, `ref5090.thermal_interface`, `ref5090.pcb_pieces`, `ref5090.vapor_chamber`, `card.vapor_chamber_jpr`, `card.mem_vs_pcie_ratio`, `card.dp_max_gbps`.
 - **`mem.back_layout`:** a foto sustenta. O auditor contou em gn-29 5 à esquerda, 5 à direita, 4 na borda do conector de energia e 2 na borda oposta; gn-30 e gn-31 repetem. A faixa de 15 a 16 é honesta.
+- **Outras citações:** conferem as duas da RTX 5090 (NVIDIA), a da Jon Peddie e a da Puget.
 - **Lacunas:** nenhuma diz "a NVIDIA não publica".
 
 ## Achados e resolução
@@ -43,7 +44,7 @@
 | 10 | ajusta | lacuna `pcb.plate_function` | Negativa universal | "não achamos fonte que descreva" |
 | 11 | ajusta | `card.power_per_8pin_w` | `confirmed` para valor de norma não está previsto na regra escrita | nota acrescentada; a regra entra na mesma decisão humana do achado 1. Id não renomeado |
 | 12 | ajusta | `teardown.e4`, `e5`, `e6` | Tradução imprecisa | "grampo que prende o slot PCIe à placa", "desencaixa-se com alavanca", "mola de lâmina" |
-| 13 | ajusta | `card.fins_taller_depression` | Juntava duas frases de trechos diferentes; "placa do PCB" lia-se como o PCB | separado em duas afirmações, com as frases e a ressalva da face |
+| 13 | ajusta | `card.fins_taller_depression` | Juntava duas frases de trechos diferentes; "placa do PCB" lia-se como o PCB | separado em duas afirmações, com as frases e a ressalva da face. **Reaberto na segunda passada** (N1 e N2): a redação sugerida pelo auditor afirmava que a "PCB plate" é a placa do passo 5, o que a fonte não diz |
 | 14 | ajusta | arquivo de fontes, trechos antigos | Contradiziam as seções novas | marcados como superados |
 | 15 | nota | seção 14 | Remissão à p. 9 inexata; a data vem só do nome do arquivo | corrigido |
 | 16 | nota | seção 14 | Os desenhos das p. 9 e 10 mostram dois ventiladores e o conector no topo | registrado; citado em `card.fans` |
@@ -66,7 +67,25 @@ Se a regra mudar (caminho B), os seis fatos antigos (`card.fans`, `card.power_co
 - Fotos não abertas: gn-03, gn-08, gn-09, gn-13, gn-21, gn-25 a gn-27, gn-36, gn-38, gn-40 (fendas da borda superior, a placa do passo 5, fileiras diagonais de indutores, adaptador PCIe).
 - Em gn-33, se as duas fileiras de indutores estão em bordas diferentes do PCB ou se uma é a de gn-42 vista de outro ângulo.
 - Datasheet p. 3 e whitepaper p. 30: não reabertos nesta rodada.
+- O documento "Power Guidelines" (DA-07261-001_v11) e a versão anterior do guia rápido: não abertos. A frase "foi aberto e não serve" da seção 14 do arquivo de fontes é do produtor e segue sem auditoria.
+- A citação do blog sabareesh ("the 23 still on the board"): não reaberta; vale o registro da auditoria anterior.
 - `standards-sources.md` continua não auditado como um todo; a codificação 128b/130b segue só em fonte de baixa autoridade.
 
+## Segunda passada (2026-11-10)
+Veredito do auditor: **ainda não aprovado**. Dos 20 achados, 19 fechados e 1 reaberto (o 13). A correção criou 1 erro que bloqueava e 5 ajustes, todos de redação. A classe ficou coerente com a regra escrita.
+
+| # | Severidade | Onde | Problema | Resolução |
+|---|---|---|---|---|
+| N1 | bloqueia | `card.fins_taller_depression`; seção 15; lacuna `pcb.plate_function` | O spec afirmava que a "PCB plate" é a placa do passo 5, "não o próprio PCB". A fonte usa o termo uma vez, sem explicar, antes da desmontagem. Era leitura nossa dentro de um fato `confirmed`. A redação tinha sido sugerida pelo próprio auditor na primeira passada | valor e nota reescritos com "termo da fonte" e as duas leituras possíveis; a lacuna cita a frase do passo 5 |
+| N2 | ajusta | mesma nota; seção 15 | Reticências infiéis (é uma frase só) e ordem das duas frases das aletas invertida | frases inteiras, na ordem da fonte |
+| N3 | ajusta | `card.power_connector_pins` | "gn-30 mostra o mesmo" exagerava: a foto só mostra as 12 cavidades grandes | nota corrigida |
+| N4 | ajusta | lacuna `airflow.direction`; `card.exhaust_slats` | Lia-se como se todo o ar saísse pelo topo | "lançam ar"; a lacuna diz que a fonte não afirma que é a única saída |
+| N5 | ajusta | `mem.positions_per_controller` | Única âncora do spec com acento | âncora sem acentos, como as demais |
+| N6 | ajusta | este relatório | Faltavam itens do que não foi verificado e a linha das outras citações | acrescentados |
+
+Detalhes acrescentados a partir da segunda passada: `mem.back_layout` passou a dizer "na borda oposta, do lado do adaptador PCIe" (o PCB não tem dedos PCIe; o adaptador é separado); gn-13 sustenta "na borda superior" das aberturas; gn-40 mostra uma fileira de 8 ou mais indutores. Pista sem valor de fato: um CI com marca que parece "MPS" em gn-40, a conferir pelo `visual-qa`.
+
+O auditor não verificou nesta passada: o validador (rodado pela sessão principal: passou); os consumidores da mudança de classe (beats, `assembly.json`, `proposal.json`, notas do vault); o texto da Gamers Nexus por leitura humana; as fotos gn-03, gn-08, gn-09, gn-21, gn-25 a gn-27, gn-36 e gn-38.
+
 ## Estado
-Correções aplicadas. Nada desta leva está aprovado: falta a segunda passada do `fact-checker` e a confirmação humana da regra de classe (achado 1).
+Correções das duas passadas aplicadas. Nada desta leva está aprovado: falta a terceira passada do `fact-checker` sobre N1 a N6 e a confirmação humana da regra de classe (achado 1).

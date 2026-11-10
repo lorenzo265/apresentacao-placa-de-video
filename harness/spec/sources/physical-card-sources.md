@@ -37,6 +37,7 @@ URL: https://www.nvidia.com/en-us/products/workstations/professional-desktop-gpu
 
 ## 3. Gamers Nexus, "NVIDIA RTX PRO 6000 Blackwell Benchmarks & Tear-Down" (teardown da própria placa)
 URL: https://gamersnexus.net/gpus/nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-thermals-gaming-llm-acoustic-tests (`confirmed`, teardown desta placa)
+> As linhas "Ordem de desmontagem" e "Saída de ar" da tabela abaixo são paráfrases de 2026-11-09 e foram **superadas pelos trechos literais da seção 15** (a peça do passo 1 é o bracket de I/O; o que sai para cima e para longe é o ar, não a aba). A linha "Aletas" ("placa do PCB") continua próxima do literal.
 Página aberta (resumo automático da seção de teardown). A página é texto da transcrição de vídeo, com 35 imagens sem legenda. Não li o vídeo.
 
 | Dado | Trecho ou valor | Onde |
@@ -187,7 +188,7 @@ URL: https://images.nvidia.com/aem-dam/Solutions/design-visualization/quadro-pro
 | Ventiladores e conector | os desenhos mostram dois ventiladores numa face e o conector na borda superior, entre eles: apoio oficial para `card.fans` e para o "top middle" da Jon Peddie | p. 9 e 10 (observação visual do desenho, vista pelo `fact-checker`) |
 
 Não consta no guia: potência da placa (o desenho não traz watts), nome "12VHPWR" ou "12V-2x6", peso, dimensões. Consta só "PCIe Gen5 16-pin". O guia **não resolve** a equivalência com "CEM5 16-pin" (datasheet), 12VHPWR (GN) ou 12V-2x6 (revendedores).
-O documento "Power Guidelines for Workstation Products" (www.nvidia.com/workstationpowerguidelines, DA-07261-001_v11, abril de 2022) foi aberto e **não serve**: a tabela vai até a RTX A6000 e não cita esta placa nem o conector de 16 pinos.
+O documento "Power Guidelines for Workstation Products" (www.nvidia.com/workstationpowerguidelines, DA-07261-001_v11, abril de 2022) foi aberto pelo `spec-researcher` e **não serve** (afirmação não auditada: o `fact-checker` não abriu este documento nem a versão anterior do guia): a tabela vai até a RTX A6000 e não cita esta placa nem o conector de 16 pinos.
 Conta (`derived`, nossa): 4 conectores de 8 pinos x 150 W = 600 W de capacidade nominal (150 W por 2x4: Intel 613768 Tabela 3-5, `standards-sources.md` seção 2). A NVIDIA não diz que o adaptador entrega 600 W nem que usa o teto de cada conector.
 
 ## 15. Gamers Nexus, trechos literais do teardown (releitura de 2026-11-10)
@@ -202,9 +203,9 @@ URL: a mesma da seção 3. Artigo de 2025-09-25; vídeo de 2025-06-24 (não vist
 | 5 | "From here, we pried a plate off of the card, exposing the PCB." |
 | 6 | "We then proceeded to remove ribbon cables and screws to the leaf spring to access the GPU." |
 | 7 | "Pulling off the PCB, we were expecting to see liquid metal, but we saw thermal paste instead." e "Finally, we cleaned off the thermal paste off of the GPU, exposing the GB 202-870-A1 SKU." |
-| Aletas mais altas | "This indicates where the PCB plate ends." e "you can see where the fins start to get taller." ("PCB plate" é a placa que cobre o PCB, do passo 5) |
-| Depressão nas aletas | "If you look at the backside of the card where the fans are" e "you’ll notice a slight depression down towards the middle of the fins.", seguido de "This is supposed to help with pressure drop." O texto não deixa claro qual face é essa |
-| Saída de ar | "The top of the RTX Pro 6000 retains the angle on the card’s vented slats." e, na frase seguinte, "This projects the air out at an angle that’s up and away from the card." (o que sai para cima e para longe é o ar; a seção 3 parafraseou como se as abas fossem anguladas para cima) |
+| Aletas mais altas | "The PCB is in the center of the card and you can see where the fins start to get taller." e, em seguida, "This indicates where the PCB plate ends." A fonte não explica "PCB plate": o termo aparece uma vez só, na descrição do exterior, antes da desmontagem; pode ser o próprio PCB ou a placa do passo 5 |
+| Depressão nas aletas | "If you look at the backside of the card where the fans are, you’ll notice a slight depression down towards the middle of the fins.", seguido de "This is supposed to help with pressure drop." O texto não deixa claro qual face é essa |
+| Saída de ar | "The top of the RTX Pro 6000 retains the angle on the card’s vented slats." e, na frase seguinte, "This projects the air out at an angle that’s up and away from the card." (o que sai para cima e para longe é o ar; a seção 3 parafraseou como se as abas fossem anguladas para cima; a fonte não diz que todo o ar sai por ali). gn-13 mostra duas fendas longas no painel do topo, ao lado do plugue |
 | PCB | "The PCB is in the center of the card" |
 | Fluxo | "pushes air straight through the card rather than into a PCB" |
 | Memória | "We counted 16 memory modules on the back" e "32 total memory locations" |
@@ -219,6 +220,7 @@ Identificação do passo 1 (`derived`, por foto): o texto diz "back plate"; as f
 - Catálogo (`references/index.md`, seção f): indutores "em fileira ao longo da borda superior, junto ao conector de energia" (gn-33, gn-36, gn-42), total visível "entre 10 e 20, sem contagem total segura". Não reconferi nesta rodada.
 - Indutores, visto pelo `fact-checker` em 2026-11-10: gn-42 confirma uma fileira ao lado do conector de energia; gn-33 mostra indutores em duas bordas opostas do quadro, pelo menos 14 numa só foto. Não ficou claro se uma das fileiras de gn-33 é a de gn-42 vista de outro ângulo. A faixa "entre 10 e 20" do catálogo não serve.
 - Memória no verso, recontada pelo `fact-checker`: gn-29 (5 à esquerda, 5 à direita, 4 na borda do conector de energia, 2 na borda oposta), gn-30 (os 4 da borda do conector, de perto) e gn-31 (a mesma disposição vista de cima). Os chips ficam nos quatro lados, então "em U" não descreve bem.
+- gn-40, vista pelo `fact-checker` na segunda passada: uma fileira de 8 ou mais indutores junto à borda em degrau; ao lado, um CI com marca que parece "MPS" (leitura incerta a 52%; pista para a lacuna `power.vrm.phases`, sem valor de fato, a conferir pelo `visual-qa` em resolução cheia). gn-30 mostra as 12 cavidades grandes do conector de energia; os 4 contatos de sinal não aparecem.
 - Catálogo (seção e): contorno do PCB "quase quadrado, com um degrau na borda superior junto ao conector"; sem medida (proporção grosseira em foto oblíqua).
 
 ## 17. Datasheet, trechos literais da p. 1 (releitura visual de 2026-11-10)
