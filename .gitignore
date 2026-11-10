@@ -6,6 +6,7 @@ vault/.trash/
 
 # Harness: artefatos gerados
 harness/dist/
+harness/build/
 harness/viewer/node_modules/
 harness/parts/**/__pycache__/
 __pycache__/
