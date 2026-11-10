@@ -43,6 +43,14 @@ async function main() {
   const fontes = await page.evaluate(async () => { await document.fonts.ready; return [document.fonts.check('600 28px Inter'), document.fonts.check('500 20px "JetBrains Mono"')]; });
   if (!fontes[0] || !fontes[1]) falhas.push(`fontes embutidas não carregaram (Inter ${fontes[0]}, JetBrains Mono ${fontes[1]})`);
 
+  // Se o build embutiu o GLB, ele tem de carregar e as peças têm de responder pelo id do assembly.
+  const temGlb = /window\.__TOUR_GLB__=/.test(fs.readFileSync(ARQ, 'utf8'));
+  if (temGlb) {
+    const c = await page.evaluate(() => ({ glb: window.__cena.glb, avisos: window.__cena.avisos, pecas: ['gpu.package', 'pcb.main', 'cooler.fan.1', 'io.bracket'].filter((n) => !window.__cena.temAncora(n)) }));
+    if (!c.glb) falhas.push(`o GLB embutido não carregou: ${c.avisos.join('; ')}`);
+    if (c.pecas.length) falhas.push(`peças do assembly não achadas no GLB: ${c.pecas.join(', ')}`);
+    console.log(`smoke-single: GLB embutido ${c.glb ? 'carregado' : 'NÃO carregado'}`);
+  }
   const titulo = () => page.evaluate(() => document.querySelector('#caixa h2')?.textContent ?? '');
   for (let i = 0; i < info.beats.length; i++) {
     const id = info.beats[i];

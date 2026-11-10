@@ -47,6 +47,8 @@ async function inicia() {
     medidas, temGlb: manifest.glb, pixelRatio: capture ? 1 : Math.min(2, devicePixelRatio * escala),
   });
   cena.avisos.forEach((a) => console.warn(`[3D] ${a}`));
+  // Para os testes: diz se o GLB entrou e se uma peça existe pelo id do assembly.
+  window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos };
 
   const corte = params.get('cut') ?? (storyboard.cuts.completo ? 'completo' : Object.keys(storyboard.cuts)[0]);
   const tour = criaTour({ dados: { storyboard, textos, world }, palco, cena, capture, corte });

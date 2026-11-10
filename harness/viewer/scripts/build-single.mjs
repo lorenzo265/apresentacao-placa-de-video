@@ -16,7 +16,17 @@ let html = le('index.html');
 
 // Dados: as mesmas chaves que o viewer pediria por fetch.
 const manifest = leJson('data/manifest.json');
-if (manifest.glb) throw new Error('build-single ainda não embute o GLB: falta decidir o formato (base64 + Draco)');
+// GLB embutido em base64. O decodificador Draco é um arquivo à parte e não abre por file://,
+// então o arquivo único só aceita GLB sem compressão Draco.
+let glbTxt = '';
+if (manifest.glb) {
+  const glb = fs.readFileSync(path.join(dist, 'data', 'card.glb'));
+  const tamJson = glb.readUInt32LE(12);
+  const json = JSON.parse(glb.subarray(20, 20 + tamJson).toString('utf8'));
+  const exige = json.extensionsRequired ?? [];
+  if (exige.includes('KHR_draco_mesh_compression')) throw new Error('o GLB usa compressão Draco, que o arquivo único não consegue decodificar; gere o GLB sem Draco');
+  glbTxt = `window.__TOUR_GLB__="${glb.toString('base64')}";`;
+}
 const dados = { 'data/manifest.json': manifest };
 for (const f of ['storyboard.json', 'beats.json', 'measurements.json']) dados[`data/${f}`] = leJson(`data/${f}`);
 for (const d of manifest.diagrams) dados[`data/diagrams/${d.file}`] = leJson(`data/diagrams/${d.file}`);
@@ -46,7 +56,7 @@ if (/\bimport\(/.test(js)) console.warn('build-single: o código tem import() di
 html = html.replace(mCss[0], () => `<style>${css}</style>`);
 html = html.replace(mJs[0], () => '');
 html = html.replace('</body>', () =>
-  `<script>window.__TOUR_DATA__=${dadosTxt};</script>\n<script type="module">${js}</script>\n</body>`);
+  `<script>window.__TOUR_DATA__=${dadosTxt};${glbTxt}</script>\n<script type="module">${js}</script>\n</body>`);
 html = html.replace(/<link rel="modulepreload"[^>]*>\s*/g, '');
 
 const externo = html.match(/(?:src|href)="\.\/[^"]+"/g);
@@ -54,4 +64,4 @@ if (externo) throw new Error(`a página ainda aponta para arquivo externo: ${ext
 
 fs.mkdirSync(path.dirname(saida), { recursive: true });
 fs.writeFileSync(saida, html);
-console.log(`build-single: ${path.relative(process.cwd(), saida)} (${(html.length / 1048576).toFixed(2)} MB, ${manifest.diagrams.length} diagramas)`);
+console.log(`build-single: ${path.relative(process.cwd(), saida)} (${(html.length / 1048576).toFixed(2)} MB, ${manifest.diagrams.length} diagramas, GLB ${manifest.glb ? 'embutido' : 'ausente'})`);

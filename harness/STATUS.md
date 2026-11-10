@@ -115,8 +115,9 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 
 | Peça | Arquivo | Estado |
 |---|---|---|
-| Fatos consolidados | `spec/card.spec.json` (177 fatos: 141 do chip e da ficha, 36 da placa física para os atos 0 a 3) | validado; os citados na tela foram auditados. Os 36 novos tiveram a primeira passada (`qa/fact-check-fisico-atos-0-3.md`: não aprovado, correções aplicadas); falta a segunda passada e a confirmação humana da regra de classe do teardown |
-| Montagem da placa | `design/assembly.json` (44 peças), `design/measurements.csv` (129 medidas, 96 não auditadas) | válido no schema; blockout em andamento |
+| Fatos consolidados | `spec/card.spec.json` (177 fatos: 141 do chip e da ficha, 36 da placa física para os atos 0 a 3) | validado; os citados na tela foram auditados. Os 36 novos tiveram a primeira passada (`qa/fact-check-fisico-atos-0-3.md`: não aprovado, correções aplicadas); segunda passada feita e corrigida; falta a terceira passada e a confirmação humana da regra de classe do teardown |
+| Montagem da placa | `design/assembly.json` (44 peças), `design/measurements.csv` (129 medidas, 96 não auditadas) | válido no schema |
+| Blockout da placa | `parts/blockout.py` gera `build/card.glb` (274 nós, 269 kB, determinístico; não versionado) e `build/blockout-report.json` | envelope exato (304,80 x 137,16 x 40,00 mm); 44 de 44 peças com nó; 38 peças com valor de bloqueio sem base no CSV; 5 interpenetrações no mesmo estágio. O viewer e o `.html` único já carregam o GLB, mas nenhum beat pronto mostra a placa ainda |
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
 | Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | os 11 passaram pelo gate de fatos |
 | Textos | `content/pt-BR/beats.json` (31 beats) | os 31 passaram pelo gate de fatos |

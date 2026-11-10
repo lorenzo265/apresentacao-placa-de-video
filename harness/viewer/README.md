@@ -34,7 +34,7 @@ cd harness/viewer && npm run build:single        # gera harness/dist/tour.html
 node harness/tools/smoke-single.cjs [--cut seminario] [--no-build]
 ```
 
-`harness/dist/tour.html` leva código, estilos, fontes e dados embutidos (cerca de 1,3 MB). Abre com dois cliques, sem servidor e sem internet. Teclas: seta para a direita e para a esquerda, espaço, `N` para as notas. O corte se troca no seletor da barra ou com `?cut=seminario` no fim do endereço. O `smoke-single` abre o arquivo por `file://` com a rede desligada, confere que nada é pedido de fora, que as fontes carregam, que a seta leva a cada beat e que o título na tela é o de `beats.json`. Enquanto não houver GLB o 3D é o blockout; quando houver, o script para com erro até o GLB ser embutido.
+`harness/dist/tour.html` leva código, estilos, fontes e dados embutidos (cerca de 1,3 MB). Abre com dois cliques, sem servidor e sem internet. Teclas: seta para a direita e para a esquerda, espaço, `N` para as notas. O corte se troca no seletor da barra ou com `?cut=seminario` no fim do endereço. O `smoke-single` abre o arquivo por `file://` com a rede desligada, confere que nada é pedido de fora, que as fontes carregam, que a seta leva a cada beat e que o título na tela é o de `beats.json`. Se `harness/build/card.glb` existir (gerado por `harness/parts/blockout.py`), ele vai embutido em base64 e o teste confere que carregou e que as peças respondem pelo id do assembly. O arquivo único só aceita GLB sem compressão Draco. Sem GLB, o 3D é o marcador desenhado pelo próprio viewer.
 
 ## API `window.__tour`
 

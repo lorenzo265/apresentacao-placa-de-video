@@ -68,7 +68,13 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
       draco.setDecoderPath('draco/');
       loader.setDRACOLoader(draco);
       loader.setMeshoptDecoder(MeshoptDecoder);
-      const gltf = await loader.loadAsync('data/card.glb');
+      // No arquivo único o GLB vem embutido em base64; servido, vem por fetch.
+      const embutido = window.__TOUR_GLB__;
+      const gltf = embutido
+        ? await loader.parseAsync(Uint8Array.from(atob(embutido), (c) => c.charCodeAt(0)).buffer, '')
+        : await loader.loadAsync('data/card.glb');
+      // O GLTFLoader tira os pontos dos nomes ("gpu.die" vira "gpudie"); o nome original fica em userData.
+      gltf.scene.traverse((o) => { if (o.userData?.name) o.name = o.userData.name; });
       // metros, Y para cima -> milímetros, Z para cima
       const raiz = new THREE.Group();
       raiz.add(gltf.scene);
