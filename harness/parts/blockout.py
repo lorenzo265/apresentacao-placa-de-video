@@ -288,11 +288,11 @@ def build_parts(asm):
     dp_a = A["io.board.dp"]
     yp = sorted(a[1] for a in dp_a)
     mid = [(yp[i] + yp[i + 1]) / 2 for i in range(len(yp) - 1)]
-    ys5 = [yp[0] - M("dp_port_pitch"), *mid, yp[-1] + M("dp_port_pitch")]
+    ys5 = [max(yp[0] - M("dp_port_pitch"), y0 + 15), *mid, min(yp[-1] + M("dp_port_pitch"), y1 - 15)]   # fora da parede curva dos cantos
     zc_dp = T / 2
     inst = []
-    for yy in (y0 + wall + 4, y1 - wall - 4):
-        for zz in (gT + G["screw_d_big"] / 2 + clr, T - 4):
+    for yy in (y0 + 15, y1 - 15):          # fora da parede curva dos cantos da carcaça
+        for zz in (gT + G["screw_d_big"] / 2 + clr, T - tA - G["screw_d_big"] / 2 - clr):   # entre a face B e a chapa da face A
             inst.append([cyl_x(0, hx, yy, zz, G["screw_d_big"] / 2)])
     for yy in ys5:
         for zz in (zc_dp - 9, zc_dp + 9):
@@ -303,11 +303,14 @@ def build_parts(asm):
     # placa das saídas de vídeo e portas
     depth = M("dp_receptacle_depth")
     io_x1 = depth + M("pcb_thickness")
-    io_z1 = min(T / 2 + M("io_board_outline_short") / 2, T - M("fan_axial_depth") - clr)   # abaixo do ventilador 1
+    # em z, entre a grade da face B e o duto do ventilador 1 (que desce até T - layer_end_fan_ring)
+    io_z1 = min(T / 2 + M("io_board_outline_short") / 2, T - M("layer_end_fan_ring") - clr)
+    io_z0 = max(io_z1 - M("io_board_outline_short"), gT + clr)
     R["io.board"] = {"bodies": [box(depth, io_x1,
                                     cy - M("io_board_outline_long") / 2, cy + M("io_board_outline_long") / 2,
-                                    io_z1 - M("io_board_outline_short"), io_z1)]}
-    guess("io.board", "orientação (placa normal a x, contorno longo em y, curto em z): pendência do planejador; em z, encostada por baixo do ventilador 1 (até z = %.1f), não centrada na espessura" % io_z1)
+                                    io_z0, io_z1)]}
+    guess("io.board", "orientação (placa normal a x, contorno longo em y, curto em z): pendência do planejador; em z, de %.1f a %.1f, entre a grade da face B e o duto do ventilador 1 (o contorno curto de %.0f mm fica com %.1f)"
+          % (io_z0, io_z1, M("io_board_outline_short"), io_z1 - io_z0))
     R["io.board.dp"] = {"instances": [[box(0, depth, a[1] - M("dp_receptacle_width") / 2, a[1] + M("dp_receptacle_width") / 2,
                                            a[2] - M("dp_receptacle_height") / 2, a[2] + M("dp_receptacle_height") / 2)]
                                       for a in dp_a]}
