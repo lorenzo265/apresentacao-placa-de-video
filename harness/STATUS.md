@@ -24,7 +24,7 @@ Data: **2026-11-10**.
 |---|---|---|---|
 | F0 Escopo | placa, público, duração | | feito |
 | F1 Pesquisa | 6 arquivos de fontes, 43 notas no vault, 3 exemplos `sm_120`, catálogo de 88 imagens, 3 auditorias e 1 revisão | `spec/card.spec.json`; segunda passada das auditorias; guia CUDA lido por inteiro | quase fechada |
-| F2 Arquitetura | `design/assembly-plan.md` v0.3, `design/measurements.csv` (33 medidas) | `proposal.json` (9 itens na fila), gate humano, `assembly.json` | não iniciada |
+| F2 Arquitetura | `design/assembly-plan.md` v0.3, `design/proposal.md` (aprovada em 2026-11-10), `design/assembly.json` (44 peças), `design/measurements.csv` (129 medidas) | auditoria das 96 medidas novas | feita em 2026-11-10 |
 | F3 Modelagem | | tudo | não iniciada |
 | F4 Integração | | tudo | não iniciada |
 | F5 Lookdev | | tudo | não iniciada |
@@ -115,7 +115,8 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 
 | Peça | Arquivo | Estado |
 |---|---|---|
-| Fatos consolidados | `spec/card.spec.json` (141 fatos) | validado; os citados na tela foram auditados |
+| Fatos consolidados | `spec/card.spec.json` (177 fatos: 141 do chip e da ficha, 36 da placa física para os atos 0 a 3) | validado; os citados na tela foram auditados. Os 36 novos tiveram a primeira passada (`qa/fact-check-fisico-atos-0-3.md`: não aprovado, correções aplicadas); falta a segunda passada e a confirmação humana da regra de classe do teardown |
+| Montagem da placa | `design/assembly.json` (44 peças), `design/measurements.csv` (129 medidas, 96 não auditadas) | válido no schema; blockout em andamento |
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
 | Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | os 11 passaram pelo gate de fatos |
 | Textos | `content/pt-BR/beats.json` (31 beats) | os 31 passaram pelo gate de fatos |

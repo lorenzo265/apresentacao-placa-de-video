@@ -828,7 +828,7 @@
       "value": 2,
       "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#3-gamers-nexus-nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-teardown-da-propria-placa",
-      "note": "'2-slot card with 2 large fans on the front'; 'axiais' vem do datasheet e é derived"
+      "note": "'2-slot card with 2 large fans on the front'; 'axiais' vem do datasheet e é derived. Apoio oficial por leitura de desenho: o guia rápido da NVIDIA (p. 9 e 10) mostra dois ventiladores numa face"
     },
     {
       "id": "card.thermal_interface",
@@ -848,36 +848,35 @@
       "id": "card.slots",
       "value": 2,
       "provenance": "confirmed",
-      "source": "spec/sources/physical-card-sources.md#14-nvidia-quick-start-guide-da-rtx-pro-blackwell-r14-2025-07-18",
+      "source": "spec/sources/physical-card-sources.md#14-nvidia-nvidia-rtx-pro-blackwell-architecture-quick-start-guide-r14-2025-07-18",
       "note": "Guia rápido p. 8: \"The RTX PRO 6000 ... are dual-slot GPUs and will require removing two adjacent slot covers.\" Datasheet p. 3: \"dual slot\""
     },
     {
       "id": "card.power_connector_position",
       "value": "borda superior da placa",
       "provenance": "confirmed",
-      "source": "spec/sources/physical-card-sources.md#14-nvidia-quick-start-guide-da-rtx-pro-blackwell-r14-2025-07-18",
+      "source": "spec/sources/physical-card-sources.md#14-nvidia-nvidia-rtx-pro-blackwell-architecture-quick-start-guide-r14-2025-07-18",
       "note": "Guia rápido p. 10, passo 8: \"the 16-pin PCIe Gen5 connector on the top edge of the RTX PRO 6000\". Posição ao longo do comprimento (\"top middle\", Jon Peddie) continua só de revisor: ver lacuna pcb.layout"
     },
     {
       "id": "card.power_connector_pins",
-      "value": "12 pinos de potência e 4 de sinal",
+      "value": "12 pinos de potência (6 de +12 V e 6 de retorno) e 4 de sinal",
       "provenance": "derived",
       "source": "spec/sources/standards-sources.md#2-intel-atx12vo-12v-only-desktop-power-supply-design-guide-rev-211-maio-de-2024-doc-613768",
-      "note": "Norma do 12V-2x6 (Intel, p. 63): 12 pinos de potência e 4 de sinal. O guia rápido da NVIDIA mostra um desenho de 16 posições (12 grandes e 4 pequenas) e diz só \"16-pin PCIe Gen5\". Que o conector da placa seja o da norma é derivado; a variante (12VHPWR ou 12V-2x6) segue em aberto",
-      "conflict": true
+      "note": "Norma do 12V-2x6 (Intel 613768): p. 63, os 12 pinos de potência têm de estar ligados; p. 26 e Tabela 5-10, quatro sinais laterais (S1 a S4), pinos 1 a 6 em +12 V e 7 a 12 em retorno. O guia rápido da NVIDIA mostra um desenho de 16 posições (12 grandes e 4 pequenas) e diz só \"16-pin PCIe Gen5\"; a foto gn-30 mostra o mesmo. Que o conector da placa seja o da norma é derivado. Nenhuma fonte lida discorda da divisão 12 e 4: pela Intel, 12VHPWR e 12V-2x6 são mecanicamente iguais na maior parte. O conflito aberto é o da variante e está em card.power_connector e card.power_connector_gn."
     },
     {
       "id": "card.power_adapter",
       "value": "cabo auxiliar de 4x PCIe 8-pin (fonte) para 1x PCIe Gen5 16-pin (placa), incluído com a placa",
       "provenance": "confirmed",
-      "source": "spec/sources/physical-card-sources.md#14-nvidia-quick-start-guide-da-rtx-pro-blackwell-r14-2025-07-18",
+      "source": "spec/sources/physical-card-sources.md#14-nvidia-nvidia-rtx-pro-blackwell-architecture-quick-start-guide-r14-2025-07-18",
       "note": "Guia rápido p. 5, tabela Equipment, coluna RTX PRO 6000 Workstation Edition: \"Auxiliary Power Cable (4x PCIe 8-pin (PSU) to 1x PCIe Gen5 16-pin (GPU) power adapter)\" = 1. A Max-Q traz o de 2x8 pinos"
     },
     {
       "id": "card.power_adapter_inputs",
       "value": 4,
       "provenance": "confirmed",
-      "source": "spec/sources/physical-card-sources.md#14-nvidia-quick-start-guide-da-rtx-pro-blackwell-r14-2025-07-18",
+      "source": "spec/sources/physical-card-sources.md#14-nvidia-nvidia-rtx-pro-blackwell-architecture-quick-start-guide-r14-2025-07-18",
       "note": "Guia rápido p. 10: \"connect four separate PCIe 8-pin cables from the system power supply to the NVIDIA Quad PCIe 8-pin power adapter\""
     },
     {
@@ -886,15 +885,15 @@
       "provenance": "confirmed",
       "source": "spec/sources/standards-sources.md#2-intel-atx12vo-12v-only-desktop-power-supply-design-guide-rev-211-maio-de-2024-doc-613768",
       "unit": "W",
-      "note": "Intel 613768, Tabela 3-5, p. 25: conector 2x4, 150 W (13,5 A). Valor da norma para o conector de 8 pinos, não medida do adaptador da NVIDIA"
+      "note": "Intel 613768, Tabela 3-5, p. 25: conector 2x4, 150 W (13,5 A). Valor da norma para o conector de 8 pinos, não medida do adaptador da NVIDIA. É valor de norma, não dado da placa; confirmed para valor de norma lido em guia da Intel segue o precedente de pcie.gen5_lane_gts e ainda não está escrito na regra de procedência"
     },
     {
       "id": "card.power_adapter_nominal_w",
       "value": 600,
       "provenance": "derived",
-      "source": "spec/sources/physical-card-sources.md#14-nvidia-quick-start-guide-da-rtx-pro-blackwell-r14-2025-07-18",
+      "source": "spec/sources/physical-card-sources.md#14-nvidia-nvidia-rtx-pro-blackwell-architecture-quick-start-guide-r14-2025-07-18",
       "unit": "W",
-      "note": "Conta nossa: 4 x 150 W. A NVIDIA não diz que o adaptador entrega 600 W; coincide com os 600 W de potência total da placa. Não é limite do conector de 16 pinos"
+      "note": "Conta nossa: 4 x 150 W. A NVIDIA não diz que o adaptador entrega 600 W; o número coincide com os 600 W de potência total da placa. A conta não é a origem do teto do conector de 16 pinos: pela norma (Intel, Tabela 3-5), o 12V-2x6 também tem 600 W sustentados."
     },
     {
       "id": "card.power_current_12v_a",
@@ -914,16 +913,16 @@
     {
       "id": "card.airflow_through",
       "value": "o ar atravessa a placa em vez de bater no PCB",
-      "provenance": "derived",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Gamers Nexus (terceiro): \"pushes air straight through the card\" (o resumo cortou o resto da frase; a versão completa registrada na seção 3 é \"rather than into a PCB\"). O sentido do ar (face A para face B) não consta em nenhuma fonte: ver lacuna airflow.direction"
+      "note": "Gamers Nexus, teardown desta placa: \"pushes air straight through the card rather than into a PCB\". A mesma fonte diz por onde o ar sai (ver card.exhaust_slats); não achamos fonte que diga por qual face ele entra (lacuna airflow.direction). Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "card.exhaust_slats",
-      "value": "aberturas anguladas na borda superior",
-      "provenance": "derived",
+      "value": "aberturas anguladas na borda superior, que lançam o ar para cima e para longe da placa",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Gamers Nexus: \"The top of the RTX Pro 6000 retains the angle on the card’s vented slats.\" A seção 3 registra a frase mais longa: anguladas para cima e para longe da placa"
+      "note": "Gamers Nexus, teardown desta placa: \"The top of the RTX Pro 6000 retains the angle on the card’s vented slats.\" e, na frase seguinte, \"This projects the air out at an angle that’s up and away from the card.\" O que é angulado para cima e para longe é o jato de ar, não a aba. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "card.face_b_layout",
@@ -936,7 +935,7 @@
       "id": "card.bracket_layout",
       "value": "bracket de chapa lisa, sem grade de ventilação, com as 4 DisplayPort em uma fileira",
       "provenance": "derived",
-      "source": "spec/sources/physical-card-sources.md#14-nvidia-quick-start-guide-da-rtx-pro-blackwell-r14-2025-07-18",
+      "source": "spec/sources/physical-card-sources.md#14-nvidia-nvidia-rtx-pro-blackwell-architecture-quick-start-guide-r14-2025-07-18",
       "note": "Desenho oficial do guia rápido p. 13 (\"DisplayPort Connectors (x4)\") e foto gn-11 (vista nesta rodada). Leitura visual de desenho e foto"
     },
     {
@@ -958,63 +957,63 @@
       "value": "sai o bracket de I/O (o texto da GN diz \"back plate\")",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"Starting disassembly, we removed the card’s back plate.\" A identificação da peça como bracket vem das fotos gn-14 a gn-16 (catálogo) e de gn-11 (vista aqui); não existe placa traseira lisa nesta placa"
+      "note": "Frase do teardown (classe confirmed pela regra): \"Starting disassembly, we removed the card’s back plate.\" O que rebaixa o fato a derived é a identificação da peça: o artigo não usa a palavra bracket; nas fotos vistas (gn-11, gn-15 a gn-17) a face B é grade com X central, e a peça que sai antes do aro é o bracket de I/O."
     },
     {
       "id": "teardown.e2",
       "value": "um parafuso e sai a moldura externa (um aro fino na face B)",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"Then we removed a single screw, which allowed us to pull off the card’s exterior frame.\" Forma de aro fino: foto gn-17 do catálogo. O parafuso não aparece em foto"
+      "note": "Frase do teardown (classe confirmed pela regra): \"Then we removed a single screw, which allowed us to pull off the card’s exterior frame.\" O que rebaixa o fato a derived é a forma de aro fino na face B, lida na foto gn-17. O parafuso não aparece em foto."
     },
     {
       "id": "teardown.e3",
       "value": "parafusos em volta do centro e saem as tampas centrais",
-      "provenance": "derived",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"From here, we removed some screws around the center of the card to remove the center covers.\" Quantidade e tipo de parafuso: não informados"
+      "note": "\"From here, we removed some screws around the center of the card to remove the center covers.\" Quantidade e tipo de parafuso: não informados. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "teardown.e4",
-      "value": "solta-se o grampo do suporte do slot PCIe e sai o adaptador PCIe",
-      "provenance": "derived",
+      "value": "desparafusa-se o grampo que prende o slot PCIe à placa e sai o adaptador PCIe",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"Next, we unscrewed the clamp that holds the PCIe slot to the card.\" e \"Here’s a close look at the removed PCIe adapter.\""
+      "note": "\"Next, we unscrewed the clamp that holds the PCIe slot to the card.\" e \"Here’s a close look at the removed PCIe adapter.\" Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "teardown.e5",
-      "value": "descola-se uma placa que cobria o PCB",
-      "provenance": "derived",
+      "value": "desencaixa-se com alavanca uma placa que cobria o PCB",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"From here, we pried a plate off of the card, exposing the PCB.\" A função da placa não consta em fonte nenhuma"
+      "note": "\"From here, we pried a plate off of the card, exposing the PCB.\" Não achamos fonte que descreva a função dessa placa (lacuna pcb.plate_function). Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "teardown.e6",
-      "value": "saem os cabos flat e os parafusos da mola de pressão",
-      "provenance": "derived",
+      "value": "saem os cabos flat e os parafusos da mola de lâmina",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"We then proceeded to remove ribbon cables and screws to the leaf spring to access the GPU.\""
+      "note": "\"We then proceeded to remove ribbon cables and screws to the leaf spring to access the GPU.\" Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "teardown.e7",
       "value": "sai o PCB e a pasta térmica do chip fica à vista",
-      "provenance": "derived",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"Pulling off the PCB, we were expecting to see liquid metal, but we saw thermal paste instead.\" e \"Finally, we cleaned off the thermal paste off of the GPU, exposing the GB 202-870-A1 SKU.\""
+      "note": "\"Pulling off the PCB, we were expecting to see liquid metal, but we saw thermal paste instead.\" e \"Finally, we cleaned off the thermal paste off of the GPU, exposing the GB 202-870-A1 SKU.\" Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "card.pcie_adapter_separate",
       "value": "o conector PCIe é um adaptador separado, retirado no teardown",
-      "provenance": "derived",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "\"Here’s a close look at the removed PCIe adapter.\" e \"customized pinout adapter\". O que os cabos flat ligam: lacuna"
+      "note": "\"Here’s a close look at the removed PCIe adapter.\" e \"The card’s PCIe slot is connected via a customized pinout adapter.\" O que os cabos flat ligam: lacuna pcb.flat_cables_link. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "pcb.position",
       "value": "no centro da placa, entre as duas pilhas de aletas",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Gamers Nexus: \"The PCB is in the center of the card\". \"Entre as duas pilhas de aletas\": fotos gn-27, gn-29 (vista nesta rodada) e gn-31"
+      "note": "Frase do teardown (classe confirmed pela regra): \"The PCB is in the center of the card\". O que rebaixa o fato a derived é \"entre as duas pilhas de aletas\", lido nas fotos gn-27, gn-29 e gn-31."
     },
     {
       "id": "pcb.shape",
@@ -1053,23 +1052,23 @@
     },
     {
       "id": "card.fins_taller_depression",
-      "value": "as aletas ficam mais altas onde termina a placa do PCB e têm uma leve depressão no meio",
-      "provenance": "derived",
+      "value": "as aletas ficam mais altas a partir de onde termina a placa que cobre o PCB; em outro trecho, a fonte aponta uma leve depressão no meio das aletas",
+      "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#15-gamers-nexus-trechos-literais-do-teardown-releitura-de-2026-11-10",
-      "note": "Gamers Nexus: \"you can see where the fins start to get taller.\" e \"you’ll notice a slight depression down towards the middle of the fins.\" Material e contagem de aletas: não informados"
+      "note": "Duas frases de trechos diferentes do teardown. (1) \"This indicates where the PCB plate ends.\" e \"you can see where the fins start to get taller.\" A \"PCB plate\" é a placa que cobre o PCB (passo 5), não o próprio PCB. (2) \"If you look at the backside of the card where the fans are ... you’ll notice a slight depression down towards the middle of the fins.\" O texto não deixa claro qual face é essa. Material e contagem de aletas: não informados. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
       "id": "mem.back_layout",
-      "value": "16 chips em U em volta do chip: 5, 5, 4 e 2",
+      "value": "16 chips (faixa de 15 a 16) nos quatro lados do chip: 5 e 5 nas laterais, 4 na borda do conector de energia, 2 na borda dos dedos PCIe",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#16-observacoes-visuais-desta-rodada-2026-11-10",
-      "note": "Leitura da foto gn-29 (oblíqua, chips cobertos por pads com resíduo). Catálogo: faixa de 15 a 16, 5 de cada lado, 4 na borda superior, 2 na borda dos dedos PCIe. Texto da GN: \"16 memory modules on the back\" (mem.back_modules)"
+      "note": "Leitura das fotos gn-29 (oblíqua, laterais sob resíduo de pad), gn-30 (os 4 da borda do conector, de perto) e gn-31 (a mesma disposição vista de cima); recontada pelo fact-checker em 2026-11-10 a 52% da resolução. Texto da GN: \"We counted 16 memory modules on the back\" (mem.back_modules)."
     },
     {
       "id": "mem.positions_per_controller",
       "value": 2,
       "provenance": "derived",
-      "source": "spec/sources/physical-card-sources.md#respostas-por-item-resumo",
+      "source": "spec/sources/standards-sources.md#c3-memória-32-posições--3-gb--96-gb-e-16-controladores-de-32-bits",
       "note": "Leitura nossa, razão média: 32 posições (mem.positions) / 16 controladores (chip.mem_controllers). Só vale se as 32 posições estiverem ocupadas. Nenhuma fonte descreve como dois chips dividem um controlador; a 5090 FE mostra um chip por controlador (ver lacuna mem.chip_density_and_population)",
       "conflict": true
     },
@@ -1090,10 +1089,10 @@
     },
     {
       "id": "vrm.inductor_row",
-      "value": "fileira de indutores ao longo da borda superior do PCB, junto ao conector de energia",
+      "value": "fileiras de indutores em mais de uma borda do PCB; uma delas junto ao conector de energia",
       "provenance": "derived",
       "source": "spec/sources/physical-card-sources.md#16-observacoes-visuais-desta-rodada-2026-11-10",
-      "note": "Leitura de fotos (catálogo, seção f: gn-33, gn-36, gn-42), não reconferida nesta rodada. Total visível entre 10 e 20, sem contagem segura; fases do VRM: lacuna power.vrm.phases"
+      "note": "Leitura de fotos: gn-42 mostra uma fileira ao lado do conector de energia; gn-33 mostra indutores em duas bordas opostas do quadro, pelo menos 14 numa só foto (o fact-checker não soube dizer se uma delas é a de gn-42 vista de outro ângulo). Contagem total: lacuna vrm.inductor_count. Fases do VRM: lacuna power.vrm.phases."
     },
     {
       "id": "ada.sm_count",
@@ -1340,7 +1339,7 @@
     },
     {
       "id": "power.connector_variant",
-      "description": "Se o 'PCIe CEM5 16-pin' do datasheet é o 12VHPWR (H+) ou o 12V-2x6 (H++): o datasheet não diz e as fontes divergem. O adaptador de 4x8 pinos para 16 pinos incluído na caixa foi confirmado em 2026-11-10 pelo guia rápido oficial (fato card.power_adapter); a variante do conector continua em aberto."
+      "description": "Se o 'PCIe CEM5 16-pin' do datasheet é o 12VHPWR (H+) ou o 12V-2x6 (H++): o datasheet não diz e as fontes divergem. O adaptador de 4x8 pinos para 16 pinos incluído na caixa foi confirmado em 2026-11-10 pelo guia rápido oficial (fato card.power_adapter); a variante do conector continua em aberto. Caminho para fechar: pela Intel (613768, p. 63) o cabeçote traz a marca 'H++' (12V-2x6) ou 'H+' (12VHPWR); uma foto nítida do conector (gn-21, gn-26 ou gn-30 em resolução cheia) resolveria."
     },
     {
       "id": "standards.cem5x",
@@ -1444,11 +1443,11 @@
     },
     {
       "id": "airflow.direction",
-      "description": "Sentido do ar (entra pela face dos ventiladores e sai pela face oposta e pelas pontas): nenhuma fonte diz. Datasheet: 'dual axial pathways'; Gamers Nexus: 'pushes air straight through the card'; aberturas anguladas na borda superior. Beat a1.3 não pode afirmar o sentido como fato."
+      "description": "Por qual face o ar entra. A Gamers Nexus diz que o ar atravessa a placa e sai pelas aberturas do topo, para cima e para longe (fatos card.airflow_through e card.exhaust_slats); o datasheet diz 'dual axial pathways'. Não achamos fonte que diga por qual face ele entra. O beat a1.3 pode afirmar a saída pelo topo, citando a fonte, e não pode afirmar a face de entrada como fato."
     },
     {
       "id": "pcb.plate_function",
-      "description": "Função da placa descolada no passo 5 do teardown (cobre o PCB, com pads em volta, furo quadrado central): nenhuma fonte descreve."
+      "description": "Função da placa retirada com alavanca no passo 5 do teardown (cobre o PCB, com pads em volta e furo quadrado central): não achamos fonte que descreva. A Gamers Nexus só cita a peça: 'This indicates where the PCB plate ends.'"
     },
     {
       "id": "pcb.flat_cables_link",
@@ -1464,11 +1463,11 @@
     },
     {
       "id": "vrm.inductor_count",
-      "description": "Contagem total de indutores: fotos mostram de 10 a 20, nenhuma mostra a borda inteira; a frase da Gamers Nexus sobre pads nos indutores é ambígua e não vale como contagem."
+      "description": "Contagem total de indutores: nenhuma foto mostra todas as bordas do PCB; uma só foto (gn-33) mostra pelo menos 14. Pista de baixa autoridade, que não vale como contagem: o blog sabareesh fala de um indutor 'identical to the 23 still on the board'. A frase da Gamers Nexus sobre pads nos indutores é ambígua."
     },
     {
       "id": "card.mem_pairing_mechanism",
-      "description": "Como 32 chips se ligam a 16 controladores de 32 bits (dois por controlador em modo de 2 canais, um por face): nenhuma fonte lida; a norma GDDR7 (JESD239) não foi aberta. Arranjo em pares é inferência e não entra como fato."
+      "description": "Se as 32 posições estiverem ocupadas, como os chips se ligam a 16 controladores de 32 bits (dois por controlador em modo de 2 canais, um por face?): não lemos fonte que diga; a norma GDDR7 (JESD239) não foi aberta. O arranjo em pares é inferência e não entra como fato. O que é confirmed são 32 posições, não 32 chips (ver mem.chip_density_and_population)."
     }
   ]
 }

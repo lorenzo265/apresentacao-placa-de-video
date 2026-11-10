@@ -77,6 +77,7 @@ As fontes marcadas como lidas foram abertas. As demais foram encontradas por bus
 | [[Ampere - Demystifying the Nvidia Ampere Architecture]] | lido por resumo, não auditado | mapeamento PTX para SASS |
 | Artigos da Hopper (arXiv 2501.12084) e do B200 (arXiv 2512.02189) | a ler | caches e pipeline |
 | [[NVIDIA - Datasheet da RTX PRO 6000 Workstation Edition]] | lida | conector de energia, formato, cooler, saídas |
+| [[NVIDIA - Guia de início rápido RTX PRO Blackwell]] | lida | adaptador de energia incluído, posição do conector, dois slots, desenho do bracket |
 | [[Gamers Nexus - Teardown da RTX PRO 6000 Blackwell]] | lida por resumo | ordem de desmontagem, memória, interface térmica |
 | [[Jon Peddie Research - The Nvidia RTX Pro 6000 Blackwell Edition]], [[Puget Systems - Review da RTX PRO 6000 Blackwell Workstation]], [[sabareesh - 4x RTX PRO 6000 Blackwell com water block]] | lidas por resumo | peso, posição do conector, carcaça (terceiros) |
 | [[NVIDIA - Anúncio da GeForce RTX 50 e Founders Edition da RTX 5090]], [[wccftech e Notebookcheck - RTX 5090 Founders Edition (PCB e cooler)]], [[Northridge Fix - Teardown da RTX 5090 Founders Edition (via imprensa)]] | lidas por resumo | placa irmã: três placas de circuito, câmara de vapor (derivado) |

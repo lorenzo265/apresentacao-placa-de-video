@@ -58,3 +58,6 @@
 - Duração do seminário atualizada para 22 minutos (alvo de 20) no `CLAUDE.md` do vault, no [[Briefing]], em [[Requisitos da disciplina]] e em [[Decisões do projeto]].
 - Tabela GPU contra CPU retirada do fechamento: nota [[14 - GPU contra CPU e encerramento]] ajustada no objetivo e na lista do que levantar. O nome da nota não mudou.
 - Divisão da fala registrada como definida.
+
+## 2026-11-10 (fonte nova da placa física)
+- Nota de fonte criada: [[NVIDIA - Guia de início rápido RTX PRO Blackwell]], ligada na tabela de fontes de [[Requisitos da disciplina]]. Status `revisar` até a segunda passada da auditoria.
