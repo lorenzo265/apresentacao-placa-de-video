@@ -320,7 +320,7 @@ Orçamento de camadas (não é medida):
 
 ## 5. Linhas sugeridas para `design/measurements.csv`
 
-Não editei o CSV. Estado sugerido para todas: "proposta F2, aguardando gate humano".
+Depois do gate de 2026-11-10 o `assembly-planner` acrescentou estas linhas a `design/measurements.csv`, com o estado "proposta F2 aprovada em 2026-11-10; não auditado". A altura do PCB entrou com tolerância de 10 mm, a de D8 (esta tabela dizia 8).
 
 ```csv
 feature,value_mm,tolerance_mm,method,source,provenance,status

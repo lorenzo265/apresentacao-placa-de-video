@@ -81,7 +81,7 @@ Colunas: **Existe** é a procedência de a peça existir nesta placa. **Forma** 
 | `mem.back.1..16` | 16 chips GDDR7 no verso, em U em volta do chip: 5 + 5 nos lados, 4 junto ao conector de energia, 2 do lado oposto | confirmed (texto e foto) | a derivar de norma (12 × 14 mm, `derived`) e fotos | A | teardown; gn-29 | fabricante; coordenadas |
 | `mem.front.1..16` | 16 posições na frente | derived (32 posições no total menos 16 no verso; a fonte não diz "na frente" nem que estão ocupadas) | a derivar de norma | A | Gamers Nexus ("32 total memory locations") | ocupação e posição exata |
 | `power.connector` | um conector de 16 pinos ("1x PCIe CEM5 16-pin") na borda superior, seção central, inclinado | confirmed (tipo; posição em foto) | a derivar de norma | A | datasheet, p. 3; gn-13, gn-29; norma em `standards-sources.md` | ângulo; se é 12VHPWR ou 12V-2x6 |
-| `power.inductors` | indutores em fileiras junto à borda do conector e no canto em degrau | confirmed (foto) | a propor | B | gn-33, gn-38, gn-40 | quantidade: entre 10 e 20 visíveis, sem total seguro. Pista de baixa autoridade: um blog fala em 24 de um mesmo tipo |
+| `power.inductors` | indutores em fileiras nas duas bordas longas do PCB (corrigido pela proposta da F2; antes: borda do conector e canto em degrau) | confirmed (foto) | a propor | B | gn-33, gn-38, gn-40 | quantidade: entre 10 e 20 visíveis, sem total seguro. Pista de baixa autoridade: um blog fala em 24 de um mesmo tipo |
 | `power.vrm.gpu`, `power.vrm.mem` | fases de energia | inferred | a propor | B | nenhuma fonte desta placa. Para a 5090 FE as fontes divergem (30, 27 ou 34) | **tudo** |
 | `pcb.smd` | componentes pequenos (capacitores, resistores) | confirmed ("PCB muito denso") | illustrative | C | Gamers Nexus | não serão contados |
 
@@ -95,7 +95,7 @@ A ordem vem do teardown desta placa (Gamers Nexus). Os estágios E1 a E7 são `c
 |---|---|---|---|
 | E1 | bracket (o teardown diz "back plate") | `io.bracket` | confirmed (ordem); a identificação da peça vem das fotos |
 | E2 | um parafuso, depois o aro da face B | `frame.rim` | confirmed |
-| E3 | parafusos em volta do centro e tampas centrais (o X) | `frame.center_covers` | confirmed |
+| E3 | tampas centrais (o X). Os 4 parafusos claros em volta do centro são do E5, não daqui (corrigido pela proposta da F2); a fixação das tampas não foi vista | `frame.center_covers` | confirmed |
 | E4 | grampo do slot e adaptador PCIe | `pcie.clamp`, `pcie.adapter` | confirmed |
 | E5 | placa que cobre o PCB | `pcb.plate` | confirmed |
 | E6 | cabos flat e parafusos da mola de pressão | `flex.*`, `cooler.leaf_spring` | confirmed |
@@ -156,7 +156,7 @@ Medidas por proporção: nenhuma foto do teardown nem da NVIDIA é ortogonal. A 
 
 ### 6.2 Critério de aceite da fidelidade
 
-- Envelope do GLB igual à **convenção do projeto** (137,2 × 304,8 mm, conversão exata das polegadas do datasheet), com erro de até 0,5 mm. A fonte oficial tem resolução de 0,1", ou seja, a placa real pode diferir da convenção em mais de 1 mm. A NVIDIA dá 304 × 137 mm para a 5090 FE.
+- Envelope do GLB igual à **convenção do projeto** (137,16 × 304,8 mm, conversão exata das polegadas do datasheet), com erro de até 0,5 mm. Pela decisão D2 da proposta (aprovada em 2026-11-10), os 137,16 mm incluem os contatos PCIe: 11,16 mm de contatos mais 126 mm de carcaça. A fonte oficial tem resolução de 0,1", ou seja, a placa real pode diferir da convenção em mais de 1 mm. A NVIDIA dá 304 × 137 mm para a 5090 FE.
 - Toda contagem visível em peça de nível A igual à da fonte, ou marcada "representativa" na tela.
 - Para cada vista padrão com foto de referência, o `visual-qa` recebe o render na mesma vista ao lado da foto e aprova contorno, proporção e posição relativa.
 - Toda diferença conhecida entra na lista "desvios conhecidos" do `assembly.json`, com o motivo.
@@ -187,3 +187,17 @@ Por ordem de impacto no vídeo:
 7. Ventiladores: resolvido em parte pelas fotos (7 pás, cerca de 115 mm). Falta a forma da pá.
 8. O que as 16 posições de memória da frente contêm e onde ficam (não há foto da frente sem pads).
 9. Espessura da carcaça e o que a cota oficial de 5,4" de altura inclui (a foto de terceiro dá 122 mm de carcaça e 133 mm com os contatos).
+
+## 9. Depois do gate da F2 (2026-11-10)
+
+A proposta (`design/proposal.md`) foi aprovada, e `design/assembly.json` foi escrito a partir dela: 44 peças (18 de fidelidade A, 13 B, 13 C), válido no schema. Onde este plano e a proposta divergem, vale a proposta. `measurements.csv` passou de 33 para 129 linhas; as 96 novas estão como não auditadas.
+
+O que o `assembly-planner` deixou em aberto:
+- **O schema não tem campo de interfaces.** Elas viraram linhas `iface_*` do CSV. Também falta dizer se `explode` é relativo à peça-mãe (adotado: relativo), e `count` não aceita zero.
+- **Peças fora do assembly por não terem item na proposta:** `mem.pads` e `pcie.clamp` (estão em `known_deviations`).
+- **Posições que são escolha de bloqueio, sem fonte (`inferred`):** altura dos ventiladores e do bracket, profundidade das portas e do adaptador PCIe.
+- **Dados que faltam:** contorno e espessura de `pcb.back_frame`; posição de `power.vrm.mem`, `power.controller` e `power.aux`; extensão de `cooler.fins.3`; pontas dos cabos flat; orientação de `io.board`.
+- **Possíveis interferências para o `integrator`:** a aba do adaptador com o chip `mem.back.15` e com a `pcb.plate`; o furo da placa em (204, 124) com o chanfro do PCB e o conector de energia.
+- **Desmontagem:** E1 a E7 é viável. O `flex.dp` aparece como translação, mas na foto continua preso à carcaça. O E8 separa peças soldadas e continua `inferred`.
+- **Face B:** fica como filha de `frame.shroud`, sem explodir, porque a proposta trata as grades como parte das carcaças.
+

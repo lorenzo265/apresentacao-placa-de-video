@@ -3,7 +3,7 @@
   "document": "proposta de engenharia da F2 (skill gpu-assembly-proposal)",
   "version": "0.1",
   "date": "2026-11-10",
-  "status": "aguardando gate humano; nada aqui entra em assembly.json sem aprovação",
+  "status": "aprovada no gate humano da F2 em 2026-11-10 (D1 a D8 conforme recomendado); alimenta design/assembly.json",
   "author": "architecture-inferencer",
   "inputs": [
     "harness/spec/card.spec.json (fatos e gaps)",
