@@ -49,7 +49,7 @@ G = {
     "fan_back_t": 1.5,          # espessura do disco traseiro do rotor
     "flex_t": 0.3,              # espessura dos cabos flat
     "spring_ring_w": 8.0,       # largura do anel e dos braços da mola
-    "back_ring_d": 8.0,         # diâmetro dos anéis da pcb.back_frame
+    "back_ring_d": 6.0,         # diâmetro dos anéis da pcb.back_frame
     "back_frame_t": 0.8,        # espessura da pcb.back_frame
     "smd_h": 0.8,               # altura do bloco de componentes do verso
     "substrate_t": 1.0,         # substrato do package
@@ -228,8 +228,10 @@ def build_parts(asm):
     gT = M("layer_end_face_b_grid")
     zt = T - gT                                  # topo das paredes (a grade e o aro ficam acima)
     hx = G["screw_head_h"]
-    fin_len = M("fin_stack_end_length_x")
+    fin1_len = M("fin_stack_end_1_length_x")
+    fin2_len = M("fin_stack_end_2_length_x")
     dcx, dcy = M("iface_die_center_x"), M("iface_die_center_y")
+    pcx, pcy = M("iface_pcb_center_x"), M("iface_pcb_center_y")
     cen_x0, cen_x1 = dcx - M("fin_stack_center_length_x") / 2, dcx + M("fin_stack_center_length_x") / 2
     fan_x = [M("fan1_center_from_bracket_end"), M("fan2_center_from_bracket_end")]
     fan_y = M("iface_fan_center_y")
@@ -242,9 +244,15 @@ def build_parts(asm):
     R["card"] = {"bodies": []}
 
     # --- carcaça -----------------------------------------------------------
-    sh = [box(0, L, y0, y0 + wall, 0, zt), box(0, L, y1 - wall, y1, 0, zt),
+    ox = M("iface_shroud_power_opening_x")
+    ow = M("conn16_header_width") + 2.0
+    oz0, oz1 = 19.0, 36.0
+    sh = [box(0, L, y0, y0 + wall, 0, zt),
+          box(0, ox - ow / 2, y1 - wall, y1, 0, zt), box(ox + ow / 2, L, y1 - wall, y1, 0, zt),
+          box(ox - ow / 2, ox + ow / 2, y1 - wall, y1, 0, oz0), box(ox - ow / 2, ox + ow / 2, y1 - wall, y1, oz1, zt),
           box(hx, hx + wall, y0 + wall, y1 - wall, 0, zt),
           box(L - wall, L, y0 + wall, y1 - wall, 0, zt)]
+    guess("frame.shroud", "abertura retangular da borda superior para o conector de energia: x = iface_shroud_power_opening_x, largura = conn16_header_width + 2 mm, z de %.0f a %.0f mm (valor de bloqueio)" % (oz0, oz1))
     guess("frame.shroud", "recuo da parede de extremidade (altura das cabeças dos parafusos): %.1f mm" % hx)
     guess("frame.shroud", "placas da face A só nas pontas, com o recorte do aro de %.0f mm; o centro é a pilha cooler.fins.3" % (ring_r * 2))
     for fx, xa, xb in ((fan_x[0], hx + wall, cen_x0), (fan_x[1], cen_x1, L - wall)):
@@ -253,8 +261,8 @@ def build_parts(asm):
     R["frame.shroud"] = {"bodies": sh}
 
     R["frame.face_b"] = {"bodies": [
-        box(hx + wall, fin_len, y0 + wall, y1 - wall, zt, T),
-        box(L - fin_len, L - wall, y0 + wall, y1 - wall, zt, T)]}
+        box(hx + wall, fin1_len, y0 + wall, y1 - wall, zt, T),
+        box(L - fin2_len, L - wall, y0 + wall, y1 - wall, zt, T)]}
 
     # parafusos da placa de extremidade
     dp_a = A["io.board.dp"]
@@ -301,10 +309,10 @@ def build_parts(asm):
     # aro e tampas
     R["frame.rim"] = {"bodies": frame_boxes(0, L, y0, y1, zt, T, wall, L - wall, y0 + wall, y1 - wall)}
     guess("frame.rim", "largura do aro igual à parede da carcaça")
-    R["fasteners.e2_rim"] = {"instances": [[cyl_z(wall / 2, y0 + 9, T - 0.8, T, 0.8)]]}
+    R["fasteners.e2_rim"] = {"instances": [[cyl_z(wall / 2, y0 + 9, T - 0.8, T, wall * 0.4)]]}
     guess("fasteners.e2_rim", "posição e tamanho (rente ao aro, para não passar da espessura)")
     ct = M("layer_center_covers")
-    xa, xb = fin_len, L - fin_len
+    xa, xb = fin1_len, L - fin2_len
     ylo, yhi = y0 + wall, y1 - wall
     R["frame.center_covers"] = {"instances": [
         [prism([(xa, ylo), (xb, ylo), (dcx, dcy)], T - ct, T)],
@@ -335,11 +343,11 @@ def build_parts(asm):
     pv = M("iface_plate_holes_dy") / 2
     pw = M("pcb_plate_window") / 2
     pz0, pz1 = T - M("layer_center_covers") - M("layer_pcb_plate"), T - M("layer_center_covers")
-    R["pcb.plate"] = {"bodies": frame_boxes(dcx - M("pcb_plate_outline_x") / 2, dcx + M("pcb_plate_outline_x") / 2,
-                                            dcy - M("pcb_plate_outline_y") / 2, dcy + M("pcb_plate_outline_y") / 2,
+    R["pcb.plate"] = {"bodies": frame_boxes(pcx - M("pcb_plate_outline_x") / 2, pcx + M("pcb_plate_outline_x") / 2,
+                                            pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2,
                                             pz0, pz1, dcx - pw, dcx + pw, dcy - pw, dcy + pw)}
-    guess("pcb.plate", "janela do furo centrada no die; sem as 4 abas nem os pads")
-    R["fasteners.e5_plate"] = {"instances": [[cyl_z(dcx + sx * ph, dcy + sy * pv, pz1, pz1 + 1.5, G["screw_d_big"] / 2)]
+    guess("pcb.plate", "janela do furo centrada no die; sem as 4 abas nem os pads; contorno de 104 x 108 (escala antiga) é menor que o padrão de furos de 106 x 102")
+    R["fasteners.e5_plate"] = {"instances": [[cyl_z(pcx + sx * ph, pcy + sy * pv, pz1, pz1 + 1.5, G["screw_d_big"] / 2)]
                                              for sx in (-1, 1) for sy in (-1, 1)]}
     guess("fasteners.e5_plate", "diâmetro e altura da cabeça")
 
@@ -376,8 +384,21 @@ def build_parts(asm):
     guess("fasteners.e6_spring", "diâmetro da cabeça; altura = layer_back_mem_pad menos a espessura da mola")
 
     # PCB e o que está nele
-    R["pcb.main"] = {"bodies": [box(pcb_x0, pcb_x1, pcb_y0, pcb_y1, pz_f, pz_b)]}
-    guess("pcb.main", "sem o chanfro, o entalhe e o rebaixo (só caixa); 108 x 112 com tolerância de 10 mm")
+    ca = math.radians(M("pcb_main_chamfer_angle_deg"))
+    cxp0, cyp0 = M("power_connector_center_from_bracket_end"), M("power_connector_center_y")
+    off = G["p16_depth"] / 2          # a linha do chanfro fica a meia profundidade do corpo, para fora
+    px0, py0 = cxp0 + off * math.sin(ca), cyp0 + off * math.cos(ca)
+    t_top = (py0 - pcb_y1) / math.sin(ca)
+    x_top = px0 + t_top * math.cos(ca)
+    t_r = (pcb_x1 - px0) / math.cos(ca)
+    y_r = py0 - t_r * math.sin(ca)
+    rd = M("pcb_main_contact_edge_recess_depth")
+    r0, r1 = pcb_x0 + M("pcb_main_contact_edge_recess_u_start"), pcb_x0 + M("pcb_main_contact_edge_recess_u_end")
+    R["pcb.main"] = {"bodies": [
+        prism([(pcb_x0, pcb_y0 + rd), (pcb_x1, pcb_y0 + rd), (pcb_x1, y_r), (x_top, pcb_y1), (pcb_x0, pcb_y1)], pz_f, pz_b),
+        box(pcb_x0, r0, pcb_y0, pcb_y0 + rd, pz_f, pz_b), box(r1, pcb_x1, pcb_y0, pcb_y0 + rd, pz_f, pz_b)]}
+    guess("pcb.main", "tamanho do chanfro (catetos de %.1f mm em x e %.1f mm em y): sem medida, a linha passa a meia profundidade do corpo do conector (%.0f mm, valor de bloqueio); sem o recorte em V" %
+          (pcb_x1 - x_top, pcb_y1 - y_r, G["p16_depth"]))
     R["pcb.back_frame"] = {"instances": [[cyl_z(dcx + sx * sx_, dcy + sy * sy_, pz_b, pz_b + G["back_frame_t"], G["back_ring_d"] / 2)]
                                          for sx in (-1, 1) for sy in (-1, 1)]}
     guess("pcb.back_frame", "contorno e espessura sem dados: só 4 anéis nos furos da mola")
@@ -386,7 +407,7 @@ def build_parts(asm):
     guess("pcb.smd", "bloco único atrás do chip, sem quantidade nem medidas")
 
     # package: substrato, moldura e die (z cresce para a face B; a frente do PCB é pz_f, a face A fica abaixo)
-    px, py = M("gb202_package_x") / 2, M("gb202_package_y") / 2
+    px, py = M("gb202_package_x") / 2, M("gb202_package_y") / 2   # lado longo em x
     wx, wy = M("gb202_window_x") / 2, M("gb202_window_y") / 2
     dx, dy = M("gb202_die_x") / 2, M("gb202_die_y") / 2
     die_top = pz_f - M("gb202_die_top_above_pcb")
@@ -399,7 +420,8 @@ def build_parts(asm):
     R["gpu.tim"] = {"bodies": [box(dcx - dx, dcx + dx, dcy - dy, dcy + dy, zc, die_top)]}
 
     # memória
-    gw, gl, gt = M("gddr7_package_width"), M("gddr7_package_length"), M("gddr7_package_thickness")
+    gt = M("gddr7_package_thickness")
+    gw, gl = M("mem_footprint_across_row"), M("mem_footprint_along_row")   # lateral: x atravessa a fileira, y é ao longo dela
     grid = []
     for i in range(5):
         grid.append((pcb_x0 + M("mem_side_bracket_u"), pcb_y0 + M("mem_side_v_first") + i * M("mem_side_v_pitch"), gw, gl))
@@ -419,8 +441,8 @@ def build_parts(asm):
     ang = M("power_connector_rotation_deg")
     cxp = M("power_connector_center_from_bracket_end")
     cw = M("conn16_header_width")
-    R["power.connector"] = {"bodies": [_rot_centered(cxp, pcb_y1, pz_f - G["p16_h"], pz_f, cw, G["p16_depth"], ang)]}
-    guess("power.connector", "profundidade (%.0f) e altura (%.0f) do corpo; sentido do giro de %.0f graus" % (G["p16_depth"], G["p16_h"], ang))
+    R["power.connector"] = {"bodies": [_rot_centered(cxp, M("power_connector_center_y"), pz_f - G["p16_h"], pz_f, cw, G["p16_depth"], ang)]}
+    guess("power.connector", "profundidade (%.0f) e altura (%.0f) do corpo; o centro y vem de power_connector_center_y, que o CSV declara escolha de bloqueio" % (G["p16_depth"], G["p16_h"]))
     au = M("aux_header_u")
     al = M("aux_header_length")
     R["io.aux_header"] = {"bodies": [box(pcb_x0 + au - al / 2, pcb_x0 + au + al / 2, pcb_y1 - G["aux_conn_depth"], pcb_y1,
@@ -429,16 +451,26 @@ def build_parts(asm):
 
     s = M("vrm_inductor_side")
     yc, yp_ = M("iface_contact_edge_band_y"), M("iface_power_edge_band_y")
-    pos = [(dcx + 8.0 * (k - 6), yc) for k in range(13)] + [(dcx + s * (k - 5), yp_) for k in range(11)]
+    n_ind = parts["power.inductors"]["count"]["value"]
+    n_c = int(M("power_inductors_contact_edge_count"))
+    n_t = int(M("power_inductors_top_edge_count"))
+    n_f = n_ind - n_c - n_t
+    OBS.append("power.inductors: CSV pede %d + %.1f + %d (soma %.1f), o assembly tem count %d; a ponta longe do bracket ficou com %d"
+               % (n_c, M("power_inductors_far_end_count"), n_t, n_c + M("power_inductors_far_end_count") + n_t, n_ind, n_f))
+    far_x, far_y = M("iface_far_end_inductor_band_x"), M("iface_far_end_inductor_band_y")
+    pos = ([(dcx + 8.0 * (k - n_c // 2 + 1), yc) for k in range(n_c)]
+           + [(dcx + 7.0 * (k - (n_t - 1) / 2), yp_) for k in range(n_t)]
+           + [(far_x, far_y + 8.0 * (k - (n_f - 1) / 2)) for k in range(n_f)])
+    guess("power.inductors", "passos entre indutores (8 e 7 mm) e contagem %d na ponta longe do bracket (o CSV dá %.1f; total fixado pelo assembly)" % (n_f, M("power_inductors_far_end_count")))
     R["power.inductors"] = {"instances": [[box(x - s / 2, x + s / 2, y - s / 2, y + s / 2, pz_f - G["inductor_h"], pz_f)] for x, y in pos]}
     guess("power.inductors", "altura (%.0f mm), repartição 13 + 11 e passo (8 mm na borda dos contatos): representativos" % G["inductor_h"])
     ss = G["stage_side"] / 2
     R["power.vrm.gpu"] = {"instances": [[box(x - ss, x + ss, y - ss, y + ss, pz_b, pz_b + G["stage_h"])] for x, y in pos]}
     guess("power.vrm.gpu", "posição (verso, atrás de cada indutor) e tamanho: sem fonte")
-    xb = pcb_x1 - 6.0
-    R["power.vrm.mem"] = {"instances": [[box(xb - 2.5, xb + 2.5, y - 2.5, y + 2.5, pz_f - 1.5, pz_f)] for y in (40, 50, 60, 70)]}
-    R["power.aux"] = {"instances": [[box(xb - 2, xb + 2, y - 2, y + 2, pz_f - 1.5, pz_f)] for y in (85, 95, 105)]}
-    R["power.controller"] = {"instances": [[box(pcb_x0 + 6 - 3, pcb_x0 + 6 + 3, y - 3, y + 3, pz_f - 1.0, pz_f)] for y in (50, 90)]}
+    xb = far_x + 1.2     # coluna livre perto da ponta longe do bracket, abaixo dos indutores
+    R["power.vrm.mem"] = {"instances": [[box(xb - 2.5, xb + 2.5, y - 2.5, y + 2.5, pz_f - 1.5, pz_f)] for y in (26.5, 32.0, 37.5, 43.0)]}
+    R["power.aux"] = {"instances": [[box(x - 2, x + 2, 23 - 2, 23 + 2, pz_f - 1.5, pz_f)] for x in (197.5, 202.5, 207.5)]}
+    R["power.controller"] = {"instances": [[box(pcb_x0 + 6 - 3, pcb_x0 + 6 + 3, pcb_y0 + v - 3, pcb_y0 + v + 3, pz_f - 1.0, pz_f)] for v in (9, 17)]}
     for k in ("power.vrm.mem", "power.aux", "power.controller"):
         guess(k, "posição e dimensões inventadas só para o bloqueio (a proposta não as define)")
         NOTES[k].append("position_unknown")
@@ -459,8 +491,8 @@ def build_parts(asm):
     fh = M("fin_stack_end_height_y")
     z_f0 = M("layer_end_fan_ring")
     z_f1 = z_f0 + M("fin_stack_end_depth_z")
-    R["cooler.fins.1"] = {"bodies": [box(0, fin_len, cy - fh / 2, cy + fh / 2, z_f0, z_f1)]}
-    R["cooler.fins.2"] = {"bodies": [box(L - fin_len, L, cy - fh / 2, cy + fh / 2, z_f0, z_f1)]}
+    R["cooler.fins.1"] = {"bodies": [box(0, fin1_len, cy - fh / 2, cy + fh / 2, z_f0, z_f1)]}
+    R["cooler.fins.2"] = {"bodies": [box(L - fin2_len, L, cy - fh / 2, cy + fh / 2, z_f0, z_f1)]}
     for k in ("cooler.fins.1", "cooler.fins.2"):
         guess(k, "pilha inteira em uma caixa; as 60 aletas não são modeladas")
 
@@ -468,7 +500,7 @@ def build_parts(asm):
     vx, vy = M("vapor_chamber_contact_plate_x") / 2, M("vapor_chamber_contact_plate_y") / 2
     vt = M("vapor_chamber_thickness")
     R["cooler.base"] = {"bodies": [
-        *frame_boxes(dcx - bx, dcx + bx, dcy - by, dcy + by, zc - G["base_frame_t"], zc, dcx - vx, dcx + vx, dcy - vy, dcy + vy),
+        *frame_boxes(pcx - bx, pcx + bx, pcy - by, pcy + by, zc - G["base_frame_t"], zc, dcx - vx, dcx + vx, dcy - vy, dcy + vy),
         box(dcx - vx, dcx + vx, dcy - vy, dcy + vy, zc - G["base_plate_t"], zc)]}
     guess("cooler.base", "altura da moldura e espessura da placa de contato; a placa de contato sobrepõe a câmara de vapor (peça filha)")
     R["cooler.vapor_chamber"] = {"bodies": [box(dcx - vx, dcx + vx, dcy - vy, dcy + vy, zc - vt, zc)]}
@@ -585,12 +617,14 @@ def build_scene(asm, R):
 
     for p in parts:
         pid = p["id"]
-        g = group_of(pid)
+        g = group_of(pid) if p["parent"] else None
         notes = [n for n in NOTES.get(pid, []) if n != "position_unknown"]
         ex = {"stage": p["stage"], "fidelity": p["fidelity"], "exists_provenance": p["exists_provenance"],
-              "shape_provenance": p["shape_provenance"], "group": g,
+              "shape_provenance": p["shape_provenance"],
               "blockout": True, "blockout_guess": bool(notes), "blockout_notes": notes,
               "explode_cad": p["explode"]}
+        if g:
+            ex["group"] = g
         if "position_unknown" in NOTES.get(pid, []):
             ex["position_unknown"] = True
         if "count" in p:
