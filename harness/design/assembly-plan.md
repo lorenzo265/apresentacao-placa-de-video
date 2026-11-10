@@ -269,3 +269,80 @@ Nova referência ou nova medição:
 
 Continuam sem fonte, com o aviso de tela: interior do cooler, fases de energia, alturas de componente, posição de `power.vrm.mem`, `power.controller` e `power.aux`.
 
+
+## 11. Referencial corrigido (2026-11-10)
+
+### 11.1 O problema
+
+O referencial antigo (x a partir do bracket, y para cima a partir dos contatos, face A dos ventiladores em z = 0 e face B em z = 40, sistema destro) era o **espelho** da placa real. Olhando a placa pela face dos ventiladores com os contatos embaixo (`spec/references/cache/pny/front.png`), o bracket fica à esquerda; no referencial antigo, visto de z negativo, ele ficava à direita. Formas simétricas não sofriam, mas tudo o que tem lateralidade saía trocado: o canto do conector de energia em relação à face vista, o sentido das pás, o texto "RTX PRO 6000" e o logotipo que entram no passo do Blender. Achado pelo modelador da carcaça e confirmado pela sessão principal no quadro do beat a1.1.
+
+### 11.2 O referencial adotado
+
+Mantidos x a partir do plano do bracket e y a partir da ponta dos contatos; **a face A dos ventiladores passa para z = 40 e a face B (grades e X) para z = 0**. É um espelho em z: z_novo = 40 - z_antigo. Motivos para esta escolha e não outra:
+
+1. Num sistema destro com x para a direita e y para cima, z sai da tela na direção do observador. Para o observador ver `pny/front.png` (bracket à esquerda, contatos embaixo), a face dos ventiladores tem de ficar em z alto. Não há outro jeito de manter x e y sem espelhar.
+2. Espelhar x (medir da ponta oposta) ou y (medir do topo) mudaria quase todas as 175 linhas do CSV, a proposta aprovada e as medidas do visual-qa, que são todas distâncias ao bracket e aos contatos. O espelho em z mexe só nas coordenadas de espessura: 4 linhas do CSV.
+3. Todas as medidas no plano xy (posições, ângulos, a fileira do conector a -45 graus, a caixa do texto) foram tiradas como distâncias ao bracket e aos contatos e continuam valendo. O texto da face B, lido em `pny/back.png` com os contatos para cima, agora lê certo visto de -z.
+
+Conferência: visto de +z, a placa aparece como `pny/front.png`; visto de -z com os contatos para cima, como `pny/back.png`. Ângulos no plano xy contam de +x, anti-horário visto de +z (do lado dos ventiladores). Contrato em `ARCHITECTURE.md`, seção 7.6.
+
+### 11.3 O que mudou
+
+| Onde | O quê | Quantidade |
+|---|---|---|
+| `design/measurements.csv` | coordenadas de z espelhadas: `iface_pcb_back_z` 33,9 para 6,1; `iface_pcb_front_z` 32,3 para 7,7; `iface_die_contact_z` 29,3 para 10,7; `iface_adapter_board_z_min` 37,5 para 0,93 (o mínimo agora é a face do lado da face B: 40 - 37,5 - 1,57). As linhas `layer_*` são espessuras e não mudaram | 4 linhas |
+| `design/measurements.csv` | remedição da seção 11.5 e as contas que dependem dela | 18 linhas alteradas, 1 nova (`shroud_center_section_height`) |
+| `design/measurements.csv` | interfaces da carcaça promovidas de `frame.py` para o CSV, porque as peças vizinhas dependem delas: `shroud_face_a_plate_thickness`, `shroud_channel_depth`, `shroud_end_plate_recess`, `shroud_end_plate_thickness` (todas `inferred`) | 4 linhas novas; total de 175 |
+| `design/assembly.json` | z de todas as âncoras espelhado; y de 68 âncoras deslocado pela altura remedida (+0,35 nas que seguem o centro da carcaça, +0,36 nas que seguem o PCB); x das âncoras dos ventiladores (61,2 e 243,3); sinal de z invertido em `explode.dir` (E2 a E7 e a base do E8 explodem para -z, os ventiladores do E8 para +z); 14 trechos de `rationale` e `viewer_disclaimer` e 3 de `known_deviations` com z, altura e centro dos ventiladores. Ids de peça e de âncora iguais; distâncias de explosão iguais | 77 âncoras, 40 direções |
+| `design/assembly.json` e schema | campo opcional `kind` nas âncoras: `opening` para âncora de abertura ou de vão (seção 11.6) | 2 âncoras |
+| `parts/blockout.py` | construtores reescritos no referencial novo (camadas da face B a partir de z = 0, ventilador e chapa da face A a partir de z = 40); caixas que respeitam a carcaça detalhada (`frame.keepouts()`); grava `build/blockout.glb` em vez de `build/card.glb` | |
+| `parts/frame.py` | construtores reescritos no referencial novo; lê as 4 interfaces promovidas do CSV; `keepouts()` para as vizinhas; âncora `opening` aceita na caixa da peça | |
+| `parts/frame_compare.py` | vistas e camadas no referencial novo, perspectivas sem espelhar a imagem, calibração sem a aba do bracket | |
+| `parts/integrate.py`, `parts/frame_remeasure.py` | novos (seções 11.5 e 11.7) | |
+| `story/storyboard.json` | `camera.pos` e `camera.target` com z = 40 - z nos 31 beats com câmera (o pedido falava em 32; o arquivo tem 31: atos 0 a 3, a7.5 e a7.6); `callout.box` com topo e base trocados (só a1.2 tinha um dos dois). `hold`, textos, ordem, `part`, `highlight` e beats de diagrama intactos | 31 câmeras, 1 caixa |
+
+### 11.4 Como conferir
+
+1. `python3 -I harness/parts/integrate.py` e abrir `harness/dist/integracao/01-face-a-ventiladores.png` ao lado de `pny/front.png` (bracket à esquerda, contatos embaixo, conector de energia na borda superior, à direita do centro) e `02-face-b.png` ao lado de `pny/back.png` (contatos em cima, bracket à esquerda, tampa com o texto na metade de baixo).
+2. `harness/dist/parts/frame/02-face-a-sobreposta.png` e `04-face-b-sobreposta.png`: contornos da carcaça sobre os renders, sem espelhar.
+3. Quadros do tour: `node harness/tools/frame3d.cjs --pos ... --target ... --no-build` com o `card.glb` novo em `viewer/dist/data/` (os 31 quadros conferidos estão em `harness/dist/frames3d/ref-<beat>.png`). Com `camera.up = (0, 0, 1)` fixo no viewer, cada quadro é o anterior invertido na vertical: as câmeras que olhavam a face B de cima agora olham de baixo.
+
+Ajuste além da transformação: só **a1.2** (vista frontal da face A). Invertido na vertical, o quadro mostrava a placa de cabeça para baixo (contatos em cima, bracket à direita), o contrário da referência que o beat apresenta. A câmera foi espelhada em y em torno do alvo (de y 184,6 para -39,8) e em x em torno do meio da placa (alvo e posição de x 55,1 para 249,7), para manter a composição (placa à esquerda, caixa à direita); a caixa volta a `right-bottom`. Nos outros 30, a âncora fica dentro do quadro, a caixa não a cobre e a peça destacada aparece.
+
+### 11.5 Remedição da carcaça (item 7 da F4)
+
+Script: `parts/frame_remeasure.py` (saída em `dist/parts/frame/remedicao.json`). A calibração anterior incluía a aba do bracket (cerca de 3 px a mais), o que encolhia as medidas em cerca de 0,5 %.
+
+| Grandeza | Antes | Medido (dois ou mais métodos) | Adotado |
+|---|---|---|---|
+| Altura da carcaça (módulos dos ventiladores) | 124 ± 2 (visual-qa); cerca de 122,4 (modelador) | bordas com subpixel: 123,47 (frente) e 123,26 (verso); soma do alfa: 123,24 e 123,20 | **123,3 ± 1,0** |
+| Altura da seção central | não medida | 122,05 e 122,15; 121,81 e 122,10 | **122,0 ± 1,0** (linha nova; a carcaça ainda não modela o degrau) |
+| Centro do ventilador 1 | 58,5 ± 2,5 (visual-qa); 61,19 (modelador) | crista do aro 61,13; borda externa do aro 61,14; borda do cubo 61,28 | **61,2 ± 1,0** |
+| Centro do ventilador 2 | 242,8 ± 2,5 | 243,31; 243,35; 243,29 | **243,3 ± 1,0** |
+| Entalhe da borda dos contatos | 138 a 158 | recuo visível de 146,0 a 158,5 (frente) e 145,0 a 157,5 (verso); antes de x 145 o lóbulo do adaptador esconde a borda | **145,5 a 158,0** |
+
+O 124 vinha da razão altura por comprimento; o 122,4 do modelador misturava a seção central, que é cerca de 1,3 mm mais baixa, com a calibração que incluía o bracket. Com 58,5 o rotor encostava na placa de extremidade (folga negativa de 0,6 mm); com 61,2 sobram 2,1 mm, e a borda externa do aro medida fica a 3,4 mm da ponta do bracket, quase igual ao lado oposto (3,6 mm). A foto `storagereview/sr-4.jpg` foi tentada (retificação pelas quatro bordas e pelos anéis), mas as pontas somem no fundo escuro e no bracket, e os anéis retificados saem com 8 a 10 % de excentricidade: a foto não entrou nos números. Tudo `derived`, não auditado.
+
+Contas refeitas com a altura nova: `iface_shroud_y_min` 13,86; `iface_shroud_center_y` e `iface_fan_center_y` 75,51 (o centro dos ventiladores, medido, fica 0,15 a 0,27 mm acima do centro dos módulos); `pcie_fingers_below_shroud` 12,4; `shroud_wall` 0,8 (limite (123,3 - 121,5) / 2 = 0,9); `pcb_main_card_y_min` 14,76; `iface_pcb_center_y` 75,51; `iface_die_center_y` 75,76; faixas dos indutores 23,36, 126,86 e 73,16; `fan_centers_distance` 182,1. `power_connector_center_y` ficou em 124,4 (escolha de bloqueio), para não mover o encaixe da carcaça.
+
+### 11.6 Âncoras de abertura
+
+`anchor.frame.shroud.power_opening` (centro da abertura do conector no fundo do canal, a 4,1 mm do corpo) e `anchor.frame.center_covers.1` (cruzamento do X, no vão entre as duas tampas, a 5,0 mm) ficam onde estão: marcam exatamente o que o texto aponta, e a linha de chamada não precisa de superfície. Ganharam `"kind": "opening"` no assembly; a conferência aceita âncora de abertura dentro da caixa envolvente da peça e continua exigindo 2 mm das outras.
+
+### 11.7 Integração (F4)
+
+`parts/integrate.py` gera `build/card.glb` (seção 7.2.1 da arquitetura). Resultado em 2026-11-10: envelope sem o bracket 304,80 x 137,16 x 40,00 (erro 0,00); 44 ids, 77 âncoras e nenhum nome repetido; malhas da carcaça fechadas e orientadas (31 810 triângulos); arquivo de 1,1 MB, determinístico; relatório em `build/integration-report.md`.
+
+Resolvidas no blockout (as caixas agora respeitam a carcaça): pilhas das pontas contra as paredes e os cantos (contorno recortado; a do bracket começa depois de `io.board`); `cooler.fins.3` contra a chapa da face A, o fundo do canal e a parede do entalhe; `io.aux_header` (1,7 mm para dentro da borda do PCB) e `power.connector` (profundidade de 9,9 em vez de 11) contra o fundo do canal; moldura da `cooler.base` recortada em volta do entalhe, do canal e dos dois conectores; `io.board` abaixo do duto do ventilador 1; parafusos da placa de extremidade fora da parede curva e da chapa da face A; tubos de calor acima da face de contato. Resolvidas por medida: `pcb.main` contra a parede do entalhe (entalhe remedido) e o rotor do ventilador 1 contra a placa de extremidade (centro remedido).
+
+Pendências, cada uma com dono (nenhuma corrigida em silêncio):
+- **Adaptador PCIe na espessura** (assembly-planner, modeler-complex): o adaptador (z de 0,93 a 2,5) fica dentro da camada da face B, das tampas e do aro; a face B só tem recorte para a faixa, e `pny/back` mostra a grade inteira. O J3 atravessa a `pcb.plate`; a aba cobre um furo de canto da placa; as cabeças dos parafusos do E4 ficam entre o adaptador e a face B.
+- **Parafusos do E5 sob as tampas** (modeler-complex): as tampas de 2,5 mm maciças não têm alívio para as 4 cabeças que `gn-20` mostra ao tirá-las.
+- **Orçamento do verso** (assembly-planner): mola (1,2) e memória (1,1) não cabem nos 2,1 mm de `layer_back_mem_pad`.
+- **Seção central mais baixa** (modeler-complex, pcb-layout-modeler, visual-qa): a carcaça tem 122,0 mm entre os módulos, onde fica o PCB de 121,5 ± 1,5; com parede de 0,8 não cabe. Ou o PCB é menor (a Alphacool dá 120,9), ou a parede é mais fina ali.
+- **Orientação do conector de energia** (pcb-layout-modeler, modeler-complex): o CSV põe a fileira de pinos no plano do PCB a -45 graus; a abertura da carcaça põe o lado longo em z, como em `pny/3qtr-top-right`. Um dos dois está errado.
+- **Cruzamento do X** (visual-qa): `frame_compare.py` mede 152,0 na face A e 150,4 na face B, o inverso das linhas `x_rib_cross_face_a/_b` (150,4 e 152,5).
+- **Parafuso do aro** (assembly-planner, modeler-complex): sem posição vista, fica dentro do aro sem furo.
+- **Package contra memória** (visual-qa): 1 mm, já listado na seção 10.5.
+
+Viewer (fora desta tarefa, porque outro agente edita `viewer/src/`): o chão de sombra (z = -2) e as luzes ficam do lado de z positivo, que agora é o da face A. Nos beats que olham a face B, a câmera fica abaixo do chão e a luz principal vem de trás da peça. Ver o relatório da F4.

@@ -67,14 +67,14 @@ ISSUES = {
     frozenset(("pcie.adapter", "frame.center_covers")): ("assembly-planner, modeler-complex", "mesma causa: a aba do adaptador fica sob a tampa inferior, na camada das tampas (0 a 2,5)"),
     frozenset(("pcie.adapter", "frame.rim")): ("assembly-planner, modeler-complex", "mesma causa: a faixa do adaptador cruza o aro na borda dos contatos; o recorte da face B não continua no aro"),
     frozenset(("fasteners.e4_pcie", "frame.center_covers")): ("assembly-planner", "cabeças dos parafusos do adaptador entre o adaptador e a face B: dependem da posição do adaptador na espessura"),
-    frozenset(("fasteners.e4_pcie", "frame.face_b")): ("assembly-planner", "idem"),
+    frozenset(("fasteners.e4_pcie", "frame.face_b")): ("assembly-planner", "cabeças dos parafusos do adaptador entre o adaptador e a face B: dependem da posição do adaptador na espessura"),
     frozenset(("fasteners.e5_plate", "frame.center_covers")): ("modeler-complex", "as 4 cabeças da pcb.plate ficam sob as tampas (gn-20 mostra os parafusos ao tirar as tampas); as tampas de 2,5 mm maciças não têm alívio: precisam de rebaixo por baixo ou de casca"),
-    frozenset(("fasteners.e5_plate", "frame.face_b")): ("modeler-complex", "idem, na faixa do X da face B junto às tampas"),
+    frozenset(("fasteners.e5_plate", "frame.face_b")): ("modeler-complex", "as cabeças dos 4 parafusos da pcb.plate sobem até a faixa do X da face B junto às tampas, que não tem alívio por baixo"),
     frozenset(("pcie.adapter", "pcb.plate")): ("assembly-planner", "o conector J3 do adaptador atravessa a pcb.plate (contorno de 104 x 108 na escala antiga, sem recorte para o J3)"),
     frozenset(("pcie.adapter", "fasteners.e5_plate")): ("assembly-planner", "a aba do adaptador cobre o furo de canto (106,1; 24,56) da pcb.plate"),
     frozenset(("pcie.adapter", "power.vrm.gpu")): ("assembly-planner, pcb-layout-modeler", "o J3 cai sobre os estágios de potência do verso na faixa da borda dos contatos (posição dos estágios sem fonte)"),
     frozenset(("cooler.leaf_spring", "pcb.back_frame")): ("assembly-planner", "orçamento de camadas do verso: mola (1,2) e memória (1,1) não cabem nos 2,1 mm de layer_back_mem_pad"),
-    frozenset(("cooler.leaf_spring", "mem.back")): ("assembly-planner", "idem: o anel da mola passa sobre a fileira de memória da borda de energia"),
+    frozenset(("cooler.leaf_spring", "mem.back")): ("assembly-planner", "orçamento de camadas do verso: o anel da mola passa sobre a fileira de memória da borda de energia; mola (1,2) e memória (1,1) não cabem nos 2,1 mm de layer_back_mem_pad"),
     frozenset(("frame.rim", "fasteners.e2_rim")): ("assembly-planner, modeler-complex", "o parafuso do aro (posição inferred, rente ao aro) fica dentro do aro, que não tem furo: falta a posição vista em foto para abrir o furo"),
     frozenset(("gpu.package", "mem.front")): ("visual-qa", "package de 57,5 em y contra a fileira da borda de energia (cerca de 1 mm, dentro das tolerâncias somadas; assembly-plan 10.5)"),
 }
@@ -417,7 +417,7 @@ def write_md(rep):
     w("| a | b | estágios | mm | classe | dono | motivo |")
     w("|---|---|---|---|---|---|---|")
     for q in sorted(rep["interferencias"], key=lambda q: ({"nova": 0, "pendencia": 1, "esperada": 2}[q["classe"]], -q["penetration_mm"])):
-        w("| %s | %s | %s, %s | %.2f | %s | %s | %s |" % (q["a"], q["b"], q["stage_a"], q["stage_b"], q["penetration_mm"], q["classe"],
+        w("| %s | %s | %s, %s | %.2f | %s | %s | %s |" % (q["a"], q["b"], q["stage_a"] or "fixa", q["stage_b"] or "fixa", q["penetration_mm"], q["classe"],
                                                      q.get("dono", ""), q.get("motivo", "")))
     w("")
     w("Classes: **nova** é interferência sem explicação (corrigir antes de seguir); **pendencia** é conflito de interface com dono, que depende de medida ou de decisão de outro agente (não foi corrigido em silêncio); **esperada** é sobreposição de propósito.")
