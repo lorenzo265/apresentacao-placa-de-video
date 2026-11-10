@@ -212,7 +212,7 @@
       "value": 4,
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada-sessao-principal-2026-11-09-depois-da-auditoria",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro"
+      "note": "Fig. 5 do whitepaper: quatro unidades LD/ST por bloco, ao lado de uma SFU (figura vista pela sessão principal em 2026-11-09)"
     },
     {
       "id": "sm.regfile_kb",
@@ -346,7 +346,7 @@
       "value": "PAM3, 1,5 bit por ciclo",
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#10-nvidia-whitepaper-rtx-pro-blackwell-v11",
-      "note": "p. 12: '3 levels delivering 1.5 bits per cycle'. A auditoria do físico não sabia se a sigla PAM3 é literal do whitepaper; PAM3 consta na JEDEC (comunicado em standards-sources.md, seção 8)"
+      "note": "whitepaper, p. 12, literal: \"uses PAM3 (Pulse Amplitude Modulation: 3 levels) signaling technology\""
     },
     {
       "id": "mem.positions",
@@ -1013,6 +1013,13 @@
       "provenance": "derived",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
       "note": "análogo: canais do próprio driver"
+    },
+    {
+      "id": "simt.independent_scheduling",
+      "value": "desde a compute capability 7.0, a GPU guarda o estado de execução por thread e reagrupa as threads ativas; elas podem divergir e reconvergir em grupos menores que o warp",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.1.1"
     }
   ],
   "gaps": [
@@ -1102,7 +1109,7 @@
     },
     {
       "id": "irq.exit_path",
-      "description": "Caminho físico da interrupção (a GPU 'manda pelo PCIe'): o código mostra MSI, MSI-X e recuo para linha legada, mas nenhum trecho literal diz que a interrupção sai pelo barramento PCIe. A leitura de nv.c cobriu só 100.000 de 176.317 caracteres na primeira passada."
+      "description": "O driver habilita MSI-X ou MSI e recua para \"PCIe virtual-wire interrupts\". Nenhum trecho lido descreve o caminho da interrupção dentro da GPU. O arquivo nv.c foi lido em parte."
     },
     {
       "id": "irq.sm_level",
@@ -1130,7 +1137,7 @@
     },
     {
       "id": "cuda.limits_cc120",
-      "description": "Coluna da compute capability 12.0 das Tab. 33 e 34 do Guia CUDA (threads, warps e blocos por SM) não separada pelo resumo automático; blocos por SM vem do Tuning Guide. Independent Thread Execution (3.2.2.1.1) não aberto."
+      "description": "Coluna da compute capability 12.0 das Tab. 33 e 34 do Guia CUDA (threads, warps e blocos por SM) não separada pelo resumo automático; blocos por SM vem do Tuning Guide."
     },
     {
       "id": "cuda.smem_per_sm_cc120",

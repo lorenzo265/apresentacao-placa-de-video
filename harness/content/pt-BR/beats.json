@@ -86,7 +86,8 @@
       "source_line": "Fonte: NVIDIA, PTX ISA, seções 2.2.1 e 4.5.1. Guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.2",
       "claims": [
         "warp.size",
-        "sched.warp_scheduler"
+        "sched.warp_scheduler",
+        "sched.block_to_warps"
       ]
     },
     "a5.2": {
@@ -135,7 +136,8 @@
       "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.1.1",
       "claims": [
         "warp.size",
-        "simt.divergence"
+        "simt.divergence",
+        "simt.independent_scheduling"
       ]
     },
     "t2.1": {

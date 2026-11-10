@@ -52,7 +52,7 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 | Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | PTX e Binary Utilities (auditados) e experimento `sm_120` | médio: opcodes documentados, campos de controle só pela Volta |
 | CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | lista oficial de 258 mnemônicos; whitepaper (o AMP é RISC-V) | baixo: análise do grupo, aprovada em 2026-11-10 e apresentada como tal |
 | MMU | [[10 - Memória virtual e MMU]] | código aberto do driver (57 bits, 6 níveis), documento da Pascal | médio: TLB é lacuna declarada; auditoria pendente |
-| Interrupções | [[11 - Escalonamento, CPU e interrupções]] | driver aberto (MSI, duas metades), PTX (`trap`), catálogo de Xid, whitepaper (AMP) | médio: envio de comandos pela CPU ainda não lido |
+| Interrupções | [[11 - Escalonamento, CPU e interrupções]] | driver aberto (MSI, duas metades), PTX (`trap`), catálogo de Xid, whitepaper (AMP) | médio: envio de comandos lido só para os canais do próprio driver (UVM); o caminho de um programa CUDA comum é leitura nossa |
 | Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]], [[11 - Escalonamento, CPU e interrupções]] | whitepaper (hierarquia e GDDR7); driver aberto (tabela de páginas, falha de página atendida em lote) | médio: memória unificada no guia CUDA ainda não lida |
 | Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper (Fig. 5: quatro blocos com escalonador); guia CUDA (SIMT, escalonador de warp, divergência); Tuning Guide (48 warps) | médio: **o número de estágios do pipeline é lacuna declarada** |
 | Cache | [[09 - Hierarquia de memória e caches]] | whitepaper (tamanhos); latências medidas na RTX 5080 (`derived`) | médio: **política e associatividade são lacuna declarada** |
@@ -64,7 +64,7 @@ As fontes marcadas como lidas foram abertas. As demais foram encontradas por bus
 |---|---|---|
 | [[NVIDIA - Whitepaper RTX PRO Blackwell v1.1]] | lida | chip, SM, memória, AMP, comparação com a Ada |
 | [[NVIDIA - Página da RTX PRO 6000 Blackwell]] | lida | ficha do produto |
-| [[NVIDIA - Guia de programação CUDA]] | lido em parte, por resumo | SIMT, divergência, limites |
+| [[NVIDIA - Guia de programação CUDA]] | lido em parte; o capítulo 3.2.2 por busca literal na página baixada | SIMT, divergência, escalonador de warp, troca de warp sem custo |
 | [[NVIDIA - Blackwell Tuning Guide]] | lido (trecho de ocupação por leitura direta) | 64K registradores, 255 por thread, 48 warps por SM |
 | [[NVIDIA - PTX ISA]] | lida em parte (cerca de 300.000 dos 470.000 caracteres), auditada | ISA virtual, registradores, predicação |
 | [[NVIDIA - CUDA Binary Utilities]] | lida (inclusive o apêndice final), auditada | SASS: opcodes da compute capability 12.0 |
