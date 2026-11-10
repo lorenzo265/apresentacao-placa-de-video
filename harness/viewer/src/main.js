@@ -54,6 +54,7 @@ async function inicia() {
   // Modo ferramenta (?frame3d=1): um quadro da cena 3D sem o tour, para frame3d.cjs.
   if (params.get('frame3d') === '1') {
     const chamada = criaChamada(palco);
+    chamada.caixa.style.visibility = 'hidden';      // sem âncora, nada de caixa vazia
     window.__frame3d = ({ pos, target, fov = 30, explode = 'assembled', part = null, anchor = null, box = 'right-center' }) => {
       const nivel = explode === 'assembled' ? 0 : Number(explode.slice(1));
       const f = part ? cena.fatoresDe([part], []) : null;
