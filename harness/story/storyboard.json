@@ -73,6 +73,33 @@
         1600,
         900
       ]
+    },
+    {
+      "diagram": "sys.cmd",
+      "rect": [
+        9000,
+        1400,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "close.delta",
+      "rect": [
+        6000,
+        2800,
+        1600,
+        900
+      ]
+    },
+    {
+      "diagram": "close.gaps",
+      "rect": [
+        3000,
+        2800,
+        1600,
+        900
+      ]
     }
   ],
   "beats": [
@@ -548,6 +575,7 @@
       },
       "hold": 14,
       "provenance": [
+        "confirmed",
         "illustrative"
       ],
       "speaker": "João"
@@ -584,6 +612,7 @@
       "hold": 14,
       "provenance": [
         "confirmed",
+        "derived",
         "illustrative"
       ],
       "speaker": "João"
@@ -720,6 +749,7 @@
       "hold": 17,
       "provenance": [
         "confirmed",
+        "derived",
         "illustrative"
       ],
       "speaker": "João"
@@ -762,19 +792,6 @@
       "speaker": "João"
     },
     {
-      "id": "a5.3",
-      "act": 4,
-      "section": "05",
-      "level": 2,
-      "priority": 3,
-      "status": "blocked",
-      "part": null,
-      "diagram": "chip.floorplan",
-      "hold": 0,
-      "provenance": [],
-      "speaker": "João"
-    },
-    {
       "id": "t2.1",
       "act": 5,
       "section": "06",
@@ -805,6 +822,7 @@
       },
       "hold": 22,
       "provenance": [
+        "confirmed",
         "illustrative"
       ],
       "speaker": "João"
@@ -890,6 +908,41 @@
       "speaker": "João"
     },
     {
+      "id": "a5.3",
+      "act": 4,
+      "section": "05",
+      "level": 3,
+      "priority": 2,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.block.0.sched",
+          "sm.block.0.regfile"
+        ],
+        "padding": 0.08,
+        "duration": 2.2,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "sm.block.0.sched"
+      ],
+      "callout": {
+        "anchor": "sm.block.0.sched.warp",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 24,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
       "id": "a5.1",
       "act": 4,
       "section": "05",
@@ -956,6 +1009,7 @@
       },
       "hold": 17,
       "provenance": [
+        "inferred",
         "confirmed",
         "illustrative"
       ],
@@ -1116,18 +1170,19 @@
       "view": {
         "diagram": "chip.isa",
         "focus": [
-          "isa.head.cuda",
-          "isa.count.regs"
+          "isa.count.sass",
+          "isa.count.reg_sm"
         ],
-        "padding": 0.05,
+        "padding": 0.15,
         "duration": 1.8,
         "ease": "power2.inOut"
       },
       "highlight": [
+        "tag:reg-limit",
         "isa.count.regs"
       ],
       "callout": {
-        "anchor": "isa.count.regs",
+        "anchor": "isa.count.reg_sm",
         "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
@@ -1135,6 +1190,7 @@
       "hold": 24,
       "provenance": [
         "confirmed",
+        "derived",
         "illustrative"
       ],
       "speaker": "Lorenzo"
@@ -1176,7 +1232,12 @@
         "isa.map.8",
         "isa.map.9",
         "isa.map.10",
-        "isa.map.11"
+        "isa.map.11",
+        "isa.map.12",
+        "isa.map.13",
+        "isa.map.14",
+        "isa.map.15",
+        "isa.map.16"
       ],
       "callout": {
         "anchor": "isa.sass.18",
@@ -1186,7 +1247,9 @@
       },
       "hold": 27,
       "provenance": [
+        "inferred",
         "confirmed",
+        "derived",
         "illustrative"
       ],
       "speaker": "Lorenzo"
@@ -1239,18 +1302,29 @@
       "view": {
         "diagram": "chip.risc",
         "focus": [
-          "risc.ops.head",
-          "risc.amp"
+          "risc.op.hmma",
+          "risc.mma.sass"
         ],
-        "padding": 0.08,
+        "padding": 0.12,
         "duration": 2.8,
         "ease": "power3.inOut"
       },
       "highlight": [
-        "risc.op.hmma"
+        "risc.op.hmma",
+        "tag:mma"
       ],
+      "flows": [
+        "risc.flow.mma"
+      ],
+      "callout": {
+        "anchor": "risc.mma.sass",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
       "hold": 24,
       "provenance": [
+        "inferred",
         "confirmed",
         "derived",
         "illustrative"
@@ -1340,11 +1414,35 @@
       "section": "09",
       "level": 3,
       "priority": 3,
-      "status": "blocked",
+      "status": "ready",
       "part": null,
       "diagram": "chip.memhier",
-      "hold": 0,
-      "provenance": [],
+      "view": {
+        "diagram": "chip.memhier",
+        "focus": [
+          "memh.step.l1",
+          "memh.carveout.smem",
+          "memh.carveout.gap"
+        ],
+        "padding": 0.06,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:carveout",
+        "memh.step.l1"
+      ],
+      "callout": {
+        "anchor": "memh.carveout.smem",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 24,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
       "speaker": "Arthur"
     },
     {
@@ -1400,6 +1498,7 @@
       "hold": 42,
       "provenance": [
         "confirmed",
+        "derived",
         "illustrative"
       ],
       "speaker": "Thiago"
@@ -1417,7 +1516,7 @@
         "diagram": "sys.irq",
         "focus": [
           "irq.mech3.head",
-          "irq.m3.batch"
+          "irq.m3.xid31"
         ],
         "padding": 0.05,
         "duration": 2.8,
@@ -1452,11 +1551,46 @@
       "section": "11",
       "level": 4,
       "priority": 2,
-      "status": "blocked",
+      "status": "ready",
       "part": null,
-      "diagram": "sys.irq",
-      "hold": 0,
-      "provenance": [],
+      "diagram": "sys.cmd",
+      "view": {
+        "diagram": "sys.cmd",
+        "focus": [
+          "cmd.lane.cpu",
+          "cmd.lane.gpu",
+          "cmd.note.user"
+        ],
+        "padding": 0.02,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:submit",
+        "tag:pushbuffer",
+        "tag:gpfifo",
+        "cmd.note.user"
+      ],
+      "flows": [
+        "cmd.flow.s1_pb",
+        "cmd.flow.s2_entry",
+        "cmd.flow.s3_put",
+        "cmd.flow.ptr_put",
+        "cmd.flow.ptr_get",
+        "cmd.flow.get_gpu"
+      ],
+      "callout": {
+        "anchor": "cmd.s3",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 30,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
       "speaker": "Thiago"
     },
     {
@@ -1472,11 +1606,11 @@
         "diagram": "sys.irq",
         "focus": [
           "irq.lane.gpu",
-          "irq.lane.cpu"
+          "irq.note.sm"
         ],
-        "padding": 0.05,
-        "duration": 1.8,
-        "ease": "power2.inOut"
+        "padding": 0.02,
+        "duration": 2.8,
+        "ease": "power3.inOut"
       },
       "highlight": [
         "tag:mech-1",
@@ -1494,6 +1628,12 @@
         "irq.flow.m3_stall_cpu",
         "irq.flow.m3_replay"
       ],
+      "callout": {
+        "anchor": "irq.note.sm",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
       "hold": 42,
       "provenance": [
         "inferred",
@@ -1543,14 +1683,40 @@
       "id": "a7.1",
       "act": 7,
       "section": "13",
-      "level": 0,
+      "level": 4,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
-      "diagram": null,
-      "hold": 0,
+      "diagram": "close.delta",
+      "view": {
+        "diagram": "close.delta",
+        "focus": [
+          "delta.head.item",
+          "delta.bw.bw"
+        ],
+        "padding": 0.02,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:row-sm",
+        "tag:row-l2",
+        "tag:row-mem",
+        "tag:row-tgp",
+        "tag:legend",
+        "tag:header"
+      ],
+      "callout": {
+        "anchor": "delta.sm.ratio",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 30,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "derived",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },
@@ -1558,14 +1724,35 @@
       "id": "a7.2",
       "act": 7,
       "section": "13",
-      "level": 0,
+      "level": 4,
       "priority": 3,
-      "status": "draft",
+      "status": "ready",
       "part": null,
-      "diagram": null,
-      "hold": 0,
+      "diagram": "close.delta",
+      "view": {
+        "diagram": "close.delta",
+        "focus": [
+          "delta.bw.name",
+          "delta.note.conflict"
+        ],
+        "padding": 0.04,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:row-bw"
+      ],
+      "callout": {
+        "anchor": "delta.bw.ratio",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 24,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "derived",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },
@@ -1588,13 +1775,32 @@
       "id": "a7.4",
       "act": 7,
       "section": "14",
-      "level": 0,
+      "level": 4,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
-      "diagram": null,
-      "hold": 0,
-      "provenance": [],
+      "diagram": "close.gaps",
+      "view": {
+        "diagram": "close.gaps",
+        "focus": [
+          "gaps.head.item",
+          "gaps.cache.gap"
+        ],
+        "padding": 0.02,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "callout": {
+        "anchor": "gaps.head.gap",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 30,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
       "speaker": "Vitor"
     },
     {
