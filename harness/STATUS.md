@@ -1,6 +1,6 @@
 # Acompanhamento do projeto
 
-Data: **2026-11-09**, terceira atualização do dia.
+Data: **2026-11-10**.
 
 ## 1. Resumo
 
@@ -108,6 +108,36 @@ Linhas de corte: se a proposta de engenharia não for aprovada na terça, o inte
 7. Logos da NVIDIA no modelo (recomendado: não).
 8. Regra de procedência para observação direta por terceiro.
 9. Os 15 a 20 minutos incluem perguntas?
+
+## 8.1 Animatic dos atos de chip (2026-11-10)
+
+Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura primeiro, acabamento visual depois.
+
+| Peça | Arquivo | Estado |
+|---|---|---|
+| Fatos consolidados | `spec/card.spec.json` (132 fatos) | validado; os citados na tela foram auditados |
+| Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
+| Diagramas | `diagrams/` (8 cenas, geradas por script) | validados; correções da auditoria aplicadas |
+| Textos | `content/pt-BR/beats.json` (25 beats) | validados; correções da auditoria aplicadas |
+| Storyboard | `story/storyboard.json` (63 beats: 25 prontos, 35 rascunho, 3 bloqueados) | validado |
+| Auditoria | `qa/fact-check-f6.md` | reprovou a primeira passada; falta a segunda |
+
+Tempo do corte do seminário nos atos de chip: 9:52 (orçamento de 10:00). Ato 4: 1:56. Ato 5: 4:57. Ato 6: 2:58.
+
+Decisão do diretor do storyboard: o SM aparece **antes** do warp (a ordem na tela fica seção 04, 06, 05, 12, 07...), porque o warp está desenhado dentro do escalonador do SM e assim o zoom só desce. O roteiro escrito não muda.
+
+### Fila da etapa de design (não fazer agora)
+Combinado com o autor em 2026-11-10: design e visualização vêm depois de a estrutura estar aprovada.
+
+1. Viewer: trajetória do zoom entre níveis (hoje o alvo sai da tela no meio do mergulho).
+2. Viewer: esmaecer o diagrama hospedeiro quando o foco está em um diagrama embutido.
+3. Viewer: o teste de determinismo falha em um ponto (diferença invisível de alguns pixels em nó esmaecido). Precisa fechar antes da captura final.
+4. Diagramas: SM em paisagem; números das threads e rótulos pequenos maiores; estado "ainda sem divergência" para as 4 threads laranja.
+5. Viewer: mostrar na tela a procedência por nó (hoje só o selo do beat e o aviso do diagrama aparecem).
+6. Teaser: seis beats dão quase 3 minutos; a meta é de 30 a 45 s. Falta `hold` por corte ou um teaser de 3 beats.
+7. Falas: a do ato 4 passa do tempo de tela (cerca de 168 s de fala para 116 s); as do ato 6 sobram.
+8. Placa 3D real, explosão e os três caminhos coloridos (dependem da F2 e da F3).
+9. Diagramas do fechamento (Ada contra Blackwell, GPU contra CPU) e atos 0 a 3.
 
 ## 9. Feito em 2026-11-09
 

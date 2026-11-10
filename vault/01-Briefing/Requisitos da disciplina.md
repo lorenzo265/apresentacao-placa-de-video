@@ -50,12 +50,12 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 |---|---|---|---|
 | Registradores | [[07 - Registradores]] | whitepaper (256 KB e Fig. 5: quatro bancos de 16.384), Tuning Guide (255 por thread), experimento | baixo |
 | Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | PTX e Binary Utilities (auditados) e experimento `sm_120` | médio: opcodes documentados, campos de controle só pela Volta |
-| CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | lista oficial de 258 mnemônicos; whitepaper (o AMP é RISC-V) | médio: é análise do grupo e aguarda aprovação |
+| CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | lista oficial de 258 mnemônicos; whitepaper (o AMP é RISC-V) | baixo: análise do grupo, aprovada em 2026-11-10 e apresentada como tal |
 | MMU | [[10 - Memória virtual e MMU]] | código aberto do driver (57 bits, 6 níveis), documento da Pascal | médio: TLB é lacuna declarada; auditoria pendente |
 | Interrupções | [[11 - Escalonamento, CPU e interrupções]] | driver aberto (MSI, duas metades), PTX (`trap`), catálogo de Xid, whitepaper (AMP) | médio: envio de comandos pela CPU ainda não lido |
-| Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]] | whitepaper: hierarquia e GDDR7 | médio |
-| Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper: parcial | médio |
-| Cache | [[09 - Hierarquia de memória e caches]] | whitepaper: tamanhos | médio: política e latências vêm de medições |
+| Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]], [[11 - Escalonamento, CPU e interrupções]] | whitepaper (hierarquia e GDDR7); driver aberto (tabela de páginas, falha de página atendida em lote) | médio: memória unificada no guia CUDA ainda não lida |
+| Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper (Fig. 5: quatro blocos com escalonador); guia CUDA (SIMT, escalonador de warp, divergência); Tuning Guide (48 warps) | médio: **o número de estágios do pipeline é lacuna declarada** |
+| Cache | [[09 - Hierarquia de memória e caches]] | whitepaper (tamanhos); latências medidas na RTX 5080 (`derived`) | médio: **política e associatividade são lacuna declarada** |
 
 ## Fontes
 As fontes marcadas como lidas foram abertas. As demais foram encontradas por busca e ainda não foram abertas.
