@@ -35,12 +35,12 @@ Duração informada pelo autor em 2026-11-10: **22 minutos** (antes, de 15 a 20)
 | 1. A placa por fora | 01 | 3 | 1:00 | 1:40 | orçamento |
 | 2. Desmontagem e os três caminhos | 02 | 8 | 2:20 | 4:00 | orçamento |
 | 3. Memória e barramentos | 03 | 3 | 1:10 | 5:10 | orçamento |
-| T1 e 4. O chip e SIMT | 04, 05 | 9 | 3:08 | 8:18 | medido no storyboard |
-| T2 e 5. Dentro do SM | 06 a 09, 12 | 13 | 6:03 | 14:21 | medido no storyboard |
-| 6. A GPU no sistema | 10, 11 | 5 | 3:27 | 17:48 | medido no storyboard |
-| 7. Fechamento | 13, 14 | 3 | 1:36 | 19:24 | 1:06 medido (a7.1 e a7.4) mais 0:30 de orçamento para a remontagem (a7.5) |
+| T1 e 4. O chip e SIMT | 04, 05 | 9 | 3:20 | 8:30 | medido no viewer |
+| T2 e 5. Dentro do SM | 06 a 09, 12 | 13 | 6:20 | 14:50 | medido no viewer |
+| 6. A GPU no sistema | 10, 11 | 5 | 3:33 | 18:23 | medido no viewer |
+| 7. Fechamento | 13, 14 | 3 | 1:39 | 20:02 | 1:09 medido (a7.1 e a7.4) mais 0:30 de orçamento para a remontagem (a7.5) |
 
-Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 14 minutos para os itens que o enunciado cobra. O tempo medido é o da tela (transição mais `hold`). A fala ao vivo costuma passar disso, e a margem de 2 minutos e meio existe para isso. Se o ensaio passar de 21 minutos, o corte sai primeiro dos atos 1 e 2, depois dos sete beats promovidos, nunca do resto dos atos 5 e 6.
+Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 14 minutos para os itens que o enunciado cobra. O tempo medido é o que o viewer leva tocando sozinho (transição, entrada da chamada, `hold` e saída): 14:23 nos 29 beats prontos do corte. Ao vivo quem dita o ritmo é a fala, que costuma passar disso. A margem até os 22 minutos é de cerca de 2 minutos. Se o ensaio passar de 21 minutos, o corte sai primeiro dos atos 1 e 2, depois dos sete beats promovidos, nunca do resto dos atos 5 e 6.
 
 Os beats de prioridade 2 que restaram (todos da placa física) ficam prontos como reserva: entram no viewer ao vivo se alguém perguntar, sem contar no tempo.
 
@@ -203,13 +203,13 @@ Quem fala o quê: a coluna `speaker` do storyboard recebe o nome do integrante. 
 |---|---|---|---|---|
 | 1 | Vitor | tour 3D, integração e condução | atos 0, 1 e 2: abertura, a placa por fora, desmontagem e os três caminhos | 4:00 |
 | 2 | Arthur | hierarquia de memória, caches e gerenciamento | ato 3: memória e barramentos | 1:10 |
-| 3 | João | pipeline, SIMT, latência e ocupação | T1 e ato 4 (planta do chip, SIMT); T2, a5.4 e a5.5 (o SM e as partições); a5.3 e a5.15 (do bloco ao warp, ocupação); a5.16 (divergência, com o logotipo) | 5:23 |
-| 4 | Lorenzo | registradores, instruções, RISC ou CISC | a5.6 a a5.12 | 3:19 |
-| 5 | Arthur | (continuação) | a5.13: escada de memória e latências | 0:28 |
-| 6 | Thiago | MMU, interrupções e escalonamento | ato 6, com o envio de comandos (a6.3) | 3:27 |
-| 7 | Vitor | condução | ato 7: Ada contra Blackwell, lacunas, remontagem | 1:36 |
+| 3 | João | pipeline, SIMT, latência e ocupação | T1 e ato 4 (planta do chip, SIMT); T2, a5.4 e a5.5 (o SM e as partições); a5.3 e a5.15 (do bloco ao warp, ocupação); a5.16 (divergência, com o logotipo) | 5:42 |
+| 4 | Lorenzo | registradores, instruções, RISC ou CISC | a5.6 a a5.12 | 3:29 |
+| 5 | Arthur | (continuação) | a5.13: escada de memória e latências | 0:30 |
+| 6 | Thiago | MMU, interrupções e escalonamento | ato 6, com o envio de comandos (a6.3) | 3:33 |
+| 7 | Vitor | condução | ato 7: Ada contra Blackwell, lacunas, remontagem | 1:39 |
 
-Totais: Vitor 5:36, João 5:23, Thiago 3:27, Lorenzo 3:19, Arthur 1:38. Soma: 19:23 (a diferença de um segundo para a tabela da seção 2.1 é arredondamento).
+Totais: João 5:42, Vitor 5:39, Thiago 3:33, Lorenzo 3:29, Arthur 1:40. Soma: 20:03 (a diferença de um segundo para a tabela da seção 2.1 é arredondamento).
 
 A divisão fica como está: em 2026-11-10 o autor disse que os três ajustes que estavam em aberto (dono da planta do chip, posição do beat de divergência e o tempo menor do Arthur) não precisam de decisão. A planta do chip segue com o João, e a divergência (a5.16) segue logo depois do SM.
 

@@ -7,7 +7,7 @@ Data: **2026-11-10**.
 1. **A documentação escrita foi entregue** (artigo de 13 páginas, grupo Warp 32). A revisão está em `qa/revisao-artigo.md` (segunda versão): o artigo cumpre a proposta e quase tudo tem fonte oficial. Sobram um dado desatualizado (49 bits na MMU), uma generalização na análise RISC ou CISC e cinco afirmações sem fonte ou com a fonte errada. **A primeira versão da revisão acusava o artigo de quatro erros que não eram erros**; a auditoria pegou e foi corrigido.
 2. **A pesquisa (F1) está quase fechada.** Todos os itens do enunciado têm fonte, inclusive MMU e interrupções, que estavam em branco. Falta consolidar `spec/card.spec.json`. As duas auditorias do dia reprovaram a primeira passada e tiveram as correções aplicadas; falta a segunda passada de cada uma.
 3. **A placa física agora tem base real:** teardown, datasheet, normas dos conectores e 75 fotos catalogadas. O plano de montagem está na v0.3 e mudou bastante em relação à manhã.
-4. **O seminário tem 22 minutos** (informado em 2026-11-10; antes, de 15 a 20). O corte do seminário tem 48 beats, alvo de 20 minutos e 19:24 de tela no orçamento atual.
+4. **O seminário tem 22 minutos** (informado em 2026-11-10; antes, de 15 a 20). O corte do seminário tem 48 beats, alvo de 20 minutos e 20:02 no orçamento atual (14:23 medidos no viewer para os atos 4 a 7, mais o orçamento da placa física e da remontagem).
 5. **Nada das fases F2 a F8 existe ainda**, além de planos, schemas e do validador. O seminário é em 7 dias.
 
 ## 2. Prazos
@@ -119,7 +119,7 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
 | Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | os 11 passaram pelo gate de fatos |
 | Textos | `content/pt-BR/beats.json` (31 beats) | os 31 passaram pelo gate de fatos |
-| Storyboard | `story/storyboard.json` (62 beats: 31 prontos, 31 rascunho, nenhum bloqueado; 29 dos prontos estão no corte do seminário, 13:45) | validado; o teste roda os 31 |
+| Storyboard | `story/storyboard.json` (62 beats: 31 prontos, 31 rascunho, nenhum bloqueado; 29 dos prontos estão no corte do seminário, 14:23 no viewer) | validado; o teste roda os 31 |
 | Auditoria | `qa/fact-check-f6*.md` (quatro passadas) | **aprovado com ressalvas, todas aplicadas**. Gate humano do animatic: **aprovado em 2026-11-10** |
 | Proposta da placa física | `design/proposal.md`, `design/proposal.json` | **aprovada no gate humano da F2 em 2026-11-10** (oito decisões, conforme recomendado) |
 | Entrega | um `.html` único, navegado ao vivo; sem vídeo por enquanto. Gerado por `npm run build:single` (`harness/dist/tour.html`, 1,3 MB), testado por `tools/smoke-single.cjs` nos dois cortes | decisão de 2026-11-10; o seminário tem 22 minutos |
