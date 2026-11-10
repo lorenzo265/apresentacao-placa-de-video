@@ -243,6 +243,7 @@ O risco declarado na ARCHITECTURE (render lento sem GPU) vira requisito de proje
    - Renderizar beats em paralelo (vários processos) e o cache por beat deixam de ser luxo.
    - Vale medir no piloto uma captura que leia o canvas direto, sem `page.screenshot`.
    - A medição precisa ser refeita com o GLB real e com os diagramas.
+7. **Custo medido com o viewer real (2026-11-10).** Nos beats de diagrama, a captura levou em média **188 ms por quadro** em 1920 × 1080 (1.884 quadros, cinco beats do corte do seminário). O corte dos atos de chip, com 9:52, daria cerca de 17.800 quadros a 30 fps: perto de 56 minutos em série. O 3D em blockout mediu 249 ms por quadro; com o modelo real esse número sobe. O teste de determinismo ainda falha em dois pontos e precisa fechar antes da captura final.
 
 ### 7.2 Diagramas dos níveis 2 a 4
 
