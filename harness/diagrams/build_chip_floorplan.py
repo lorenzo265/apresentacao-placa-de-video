@@ -37,15 +37,15 @@ DIE = [330, 24, 1246, 842]
 d.node("chip.die", "die", DIE, val("chip.name"), parent=None, tags=["die"], label_size=28,
        claims=["chip.name"], provenance="confirmed")
 proc = val("chip.process").split(" (")[0]
-d.node("chip.data", "note", [470, 36, 560, 50],
+d.node("chip.data", "note", [470, 34, 560, 56],
        f"{br(val('chip.die_area_mm2'))} mm² · {br(val('chip.transistors_billion'))} bilhões de transistores",
        proc, parent="chip.die", tags=["data", "die-data"], count="chip.die_area_mm2", unit="mm²",
        claims=["chip.transistors_billion", "chip.process"], provenance="confirmed")
-d.node("chip.amp", "block", [1050, 36, 210, 50], "AMP", val("chip.amp_isa"),
+d.node("chip.amp", "block", [1050, 34, 210, 56], "AMP", val("chip.amp_isa"),
        parent="chip.die", tags=["amp", "outside-gpc", "risc-v"],
        claims=["chip.amp_isa", "sched.amp"], provenance="confirmed",
        note="AI Management Processor: escalonador de contextos em processador RISC-V (whitepaper, p. 25). Posição ilustrativa.")
-d.node("chip.pcie", "block", [1278, 36, 210, 50], val("card.pcie"), "interface com a CPU",
+d.node("chip.pcie", "block", [1278, 34, 210, 56], val("card.pcie"), "interface com a CPU",
        parent="chip.die", tags=["pcie", "outside-gpc"], claims=["card.pcie"], provenance="confirmed",
        note="Interface de sistema do datasheet; posição no die ilustrativa.")
 

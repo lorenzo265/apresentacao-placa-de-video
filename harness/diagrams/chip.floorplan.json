@@ -35,9 +35,9 @@
       "kind": "note",
       "rect": [
         470,
-        36,
+        34,
         560,
-        50
+        56
       ],
       "label": "750 mm² · 92,2 bilhões de transistores",
       "sublabel": "TSMC 4N",
@@ -64,9 +64,9 @@
       "kind": "block",
       "rect": [
         1050,
-        36,
+        34,
         210,
-        50
+        56
       ],
       "label": "AMP",
       "sublabel": "RISC-V",
@@ -89,9 +89,9 @@
       "kind": "block",
       "rect": [
         1278,
-        36,
+        34,
         210,
-        50
+        56
       ],
       "label": "PCIe 5.0 x16",
       "sublabel": "interface com a CPU",

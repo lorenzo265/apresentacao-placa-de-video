@@ -67,6 +67,15 @@ def _r(v):
     return int(v) if v.is_integer() else v
 
 
+ID_RE = re.compile(r"^[a-z0-9_]+(\.[a-z0-9_]+)*$")
+TAG_RE = re.compile(r"^[a-z0-9_\-]+$")
+
+
+def _check_id(i):
+    if not ID_RE.match(i):
+        raise ValueError(f"id fora do padrão do schema: {i!r}")
+
+
 class Diagram:
     def __init__(self, did, prefix, level, title, disclaimer, size=(W, H)):
         self.id, self.prefix, self.level = did, prefix, level
@@ -82,6 +91,10 @@ class Diagram:
             raise ValueError(f"{nid}: id fora do prefixo {self.prefix}.")
         if nid in self._ids:
             raise ValueError(f"{nid}: id repetido")
+        _check_id(nid)
+        for t in tags:
+            if not TAG_RE.match(t):
+                raise ValueError(f"{nid}: tag fora do padrão: {t!r}")
         x, y, w, h = rect
         sw, sh = self.size
         if w <= 0 or h <= 0 or x < MARGIN - 1e-6 or y < MARGIN - 1e-6 \
@@ -146,6 +159,7 @@ class Diagram:
             raise ValueError(f"{fid}: id de fluxo fora do prefixo {self.prefix}.")
         if any(f["id"] == fid for f in self.flows) or fid in self._ids:
             raise ValueError(f"{fid}: id repetido")
+        _check_id(fid)
         for end in (src, dst):
             if end not in self._ids:
                 raise ValueError(f"fluxo {fid}: nó {end} não existe")

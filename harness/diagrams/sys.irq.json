@@ -1,0 +1,837 @@
+{
+  "id": "sys.irq",
+  "level": 4,
+  "title": "Interrupções: GPU, barramento e CPU",
+  "disclaimer": "Mecanismos segundo o driver oficial, o PTX ISA e o catálogo de Xid; faixas, caixas e posições ilustrativas. A preempção vem da Pascal.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_sys_irq.py",
+  "nodes": [
+    {
+      "id": "irq.lane.gpu",
+      "kind": "lane",
+      "rect": [
+        40,
+        24,
+        1140,
+        320
+      ],
+      "label": "GPU",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "lane",
+        "lane-gpu"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.lane.bus",
+      "kind": "lane",
+      "rect": [
+        40,
+        354,
+        1140,
+        70
+      ],
+      "label": "PCIe",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "lane",
+        "lane-bus"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.lane.cpu",
+      "kind": "lane",
+      "rect": [
+        40,
+        434,
+        1140,
+        290
+      ],
+      "label": "CPU (driver)",
+      "label_size": 22,
+      "parent": null,
+      "tags": [
+        "lane",
+        "lane-cpu"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mech1.head",
+      "kind": "header",
+      "rect": [
+        210,
+        32,
+        290,
+        40
+      ],
+      "label": "1 · a GPU interrompe a CPU",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-1",
+        "header"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mech2.head",
+      "kind": "header",
+      "rect": [
+        520,
+        32,
+        260,
+        40
+      ],
+      "label": "2 · o programa aborta",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-2",
+        "header"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mech3.head",
+      "kind": "header",
+      "rect": [
+        800,
+        32,
+        340,
+        40
+      ],
+      "label": "3 · falha de página e preempção",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-3",
+        "header"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.m1.s1",
+      "kind": "step",
+      "rect": [
+        210,
+        82,
+        290,
+        80
+      ],
+      "label": "1. evento na GPU",
+      "sublabel": "pedido de interrupção",
+      "label_size": 20,
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-1",
+        "step"
+      ],
+      "claims": [
+        "irq.modes"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.m1.s2",
+      "kind": "step",
+      "rect": [
+        210,
+        362,
+        290,
+        54
+      ],
+      "label": "2. MSI-X, MSI ou linha legada",
+      "parent": "irq.lane.bus",
+      "tags": [
+        "mech-1",
+        "step",
+        "msi"
+      ],
+      "claims": [
+        "irq.modes"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "MSI-X, MSI ou linha legada, conforme o driver consegue habilitar. Caminho físico da interrupção (a GPU 'manda pelo PCIe'): o código mostra MSI, MSI-X e recuo para linha legada, mas nenhum trecho literal diz que a interrupção sai pelo barramento PCIe. A leitura de nv.c cobriu só 100.000 de 176.317 caracteres na primeira passada."
+    },
+    {
+      "id": "irq.m1.s3",
+      "kind": "step",
+      "rect": [
+        210,
+        446,
+        290,
+        110
+      ],
+      "label": "3. metade de cima",
+      "sublabel": "nvidia_isr → rm_isr",
+      "label_size": 20,
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-1",
+        "step",
+        "top-half"
+      ],
+      "claims": [
+        "irq.top_half"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Roda no contexto da interrupção e faz o mínimo (nv.c)."
+    },
+    {
+      "id": "irq.m1.s4",
+      "kind": "step",
+      "rect": [
+        210,
+        576,
+        290,
+        84
+      ],
+      "label": "4. metade de baixo",
+      "sublabel": "nvidia_isr_kthread_bh → rm_isr_bh",
+      "label_size": 20,
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-1",
+        "step",
+        "bottom-half"
+      ],
+      "claims": [
+        "irq.bottom_half"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Registrada com request_threaded_irq (nv.c)."
+    },
+    {
+      "id": "irq.m1.kthread",
+      "kind": "note",
+      "rect": [
+        210,
+        668,
+        290,
+        44
+      ],
+      "label": "roda em thread do kernel",
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-1",
+        "bottom-half"
+      ],
+      "claims": [
+        "irq.bottom_half"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.m2.trap",
+      "kind": "step",
+      "rect": [
+        520,
+        82,
+        260,
+        56
+      ],
+      "label": "trap",
+      "sublabel": "instrução PTX",
+      "mono": true,
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-2",
+        "step",
+        "trap"
+      ],
+      "claims": [
+        "irq.ptx_trap",
+        "isa.op.bpt"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "No SASS da Blackwell existe BPT, 'BreakPoint/Trap' (Binary Utilities 13.5)."
+    },
+    {
+      "id": "irq.m2.quote",
+      "kind": "note",
+      "rect": [
+        520,
+        146,
+        260,
+        110
+      ],
+      "label": "“Abort execution and generate",
+      "sublabel": "an interrupt to the host CPU.”",
+      "label_size": 16,
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-2",
+        "trap",
+        "quote"
+      ],
+      "claims": [
+        "irq.ptx_trap"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "PTX ISA 9.5, 9.7.21.4."
+    },
+    {
+      "id": "irq.m2.host",
+      "kind": "step",
+      "rect": [
+        520,
+        446,
+        260,
+        60
+      ],
+      "label": "interrupção na CPU",
+      "label_size": 20,
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-2",
+        "step"
+      ],
+      "claims": [
+        "irq.ptx_trap"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.m2.xid13",
+      "kind": "cell",
+      "rect": [
+        520,
+        516,
+        260,
+        92
+      ],
+      "label": "Xid 13",
+      "sublabel": "Graphics Engine Exception",
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-2",
+        "xid"
+      ],
+      "claims": [
+        "irq.xid13"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Catálogo de Xid: falhas gerais de aplicação; catálogo geral, não cita a Blackwell."
+    },
+    {
+      "id": "irq.m2.xid31",
+      "kind": "cell",
+      "rect": [
+        520,
+        618,
+        260,
+        94
+      ],
+      "label": "Xid 31",
+      "sublabel": "GPU memory page fault",
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-2",
+        "xid",
+        "fault"
+      ],
+      "claims": [
+        "irq.xid31"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Registrado quando a MMU reporta uma falha; catálogo geral, não cita a Blackwell."
+    },
+    {
+      "id": "irq.m3.fault",
+      "kind": "step",
+      "rect": [
+        800,
+        82,
+        340,
+        44
+      ],
+      "label": "1. falha de página no acesso",
+      "label_size": 20,
+      "align": "left",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-3",
+        "step",
+        "fault"
+      ],
+      "claims": [
+        "fault.replayable_blocks_preemption"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+    },
+    {
+      "id": "irq.m3.buffer",
+      "kind": "step",
+      "rect": [
+        800,
+        132,
+        340,
+        44
+      ],
+      "label": "2. a falha vai para o buffer",
+      "label_size": 20,
+      "align": "left",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-3",
+        "step",
+        "fault"
+      ],
+      "claims": [
+        "fault.replayable_blocks_preemption"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+    },
+    {
+      "id": "irq.m3.stall",
+      "kind": "step",
+      "rect": [
+        800,
+        182,
+        340,
+        44
+      ],
+      "label": "3. o canal fica parado",
+      "label_size": 20,
+      "align": "left",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-3",
+        "step",
+        "fault"
+      ],
+      "claims": [
+        "fault.replayable_blocks_preemption"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+    },
+    {
+      "id": "irq.m3.replay",
+      "kind": "step",
+      "rect": [
+        800,
+        232,
+        340,
+        44
+      ],
+      "label": "5. a GPU repete o acesso",
+      "label_size": 20,
+      "align": "left",
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-3",
+        "step",
+        "fault"
+      ],
+      "claims": [
+        "fault.replayable_blocks_preemption"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+    },
+    {
+      "id": "irq.m3.preempt",
+      "kind": "step",
+      "rect": [
+        800,
+        286,
+        340,
+        54
+      ],
+      "label": "preempção no nível de instrução",
+      "sublabel": "Pascal; Blackwell sem fonte",
+      "label_size": 18,
+      "parent": "irq.lane.gpu",
+      "tags": [
+        "mech-3",
+        "preemption"
+      ],
+      "claims": [
+        "sched.preemption_instruction_level"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Granularidade da preempção na Blackwell: só há fonte para a Pascal (instrução)."
+    },
+    {
+      "id": "irq.m3.batch",
+      "kind": "step",
+      "rect": [
+        800,
+        446,
+        340,
+        80
+      ],
+      "label": "4. o driver resolve um lote",
+      "sublabel": "e manda a GPU repetir",
+      "label_size": 20,
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-3",
+        "step",
+        "fault"
+      ],
+      "claims": [
+        "fault.replayable_blocks_preemption"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.amp",
+      "kind": "actor",
+      "rect": [
+        1200,
+        24,
+        370,
+        130
+      ],
+      "label": "AMP (RISC-V)",
+      "sublabel": "escalonador de contextos",
+      "parent": null,
+      "tags": [
+        "amp",
+        "sched"
+      ],
+      "claims": [
+        "sched.amp",
+        "chip.amp_isa"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "AI Management Processor: escalonador de contextos programável, implementado com um processador RISC-V dedicado na frente do pipeline da GPU (whitepaper, p. 25)."
+    },
+    {
+      "id": "irq.mig",
+      "kind": "frame",
+      "rect": [
+        1200,
+        170,
+        370,
+        290
+      ],
+      "label": "MIG: até 4 instâncias",
+      "label_size": 24,
+      "parent": null,
+      "tags": [
+        "mig"
+      ],
+      "count": {
+        "value": 4,
+        "claim": "sched.mig_instances",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mig.0",
+      "kind": "block",
+      "rect": [
+        1214,
+        214,
+        166,
+        111
+      ],
+      "label": "instância 1",
+      "parent": "irq.mig",
+      "tags": [
+        "mig",
+        "mig-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mig.1",
+      "kind": "block",
+      "rect": [
+        1390,
+        214,
+        166,
+        111
+      ],
+      "label": "instância 2",
+      "parent": "irq.mig",
+      "tags": [
+        "mig",
+        "mig-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mig.2",
+      "kind": "block",
+      "rect": [
+        1214,
+        335,
+        166,
+        111
+      ],
+      "label": "instância 3",
+      "parent": "irq.mig",
+      "tags": [
+        "mig",
+        "mig-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.mig.3",
+      "kind": "block",
+      "rect": [
+        1390,
+        335,
+        166,
+        111
+      ],
+      "label": "instância 4",
+      "parent": "irq.mig",
+      "tags": [
+        "mig",
+        "mig-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "irq.note.driver",
+      "kind": "note",
+      "rect": [
+        1200,
+        476,
+        370,
+        90
+      ],
+      "label": "segundo o driver oficial",
+      "sublabel": "nv.c, nv-msi.c, UVM",
+      "parent": null,
+      "tags": [
+        "note",
+        "driver"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Código de driver mostra o que o software programa, não o circuito."
+    },
+    {
+      "id": "irq.gap.cmd",
+      "kind": "gap",
+      "rect": [
+        40,
+        740,
+        1530,
+        60
+      ],
+      "label": "Como a CPU envia comandos à GPU: ainda não lido",
+      "parent": null,
+      "tags": [
+        "gap",
+        "command-submission"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Como a CPU envia comandos à GPU (filas de canais, doorbell, buffers de comando): não coberto pelas fontes lidas."
+    },
+    {
+      "id": "irq.note.sm",
+      "kind": "note",
+      "rect": [
+        40,
+        812,
+        1530,
+        64
+      ],
+      "label": "Não achamos rotina de interrupção executada pelo próprio SM",
+      "sublabel": "análise do grupo",
+      "parent": null,
+      "tags": [
+        "note",
+        "sm-level",
+        "inferred"
+      ],
+      "provenance": "inferred",
+      "shape_provenance": "illustrative",
+      "note": "Se os SMs têm mecanismo de interrupção no sentido de uma CPU: nenhuma fonte; é inferência do grupo e não entra no spec."
+    }
+  ],
+  "flows": [
+    {
+      "id": "irq.flow.m1_12",
+      "from": "irq.m1.s1",
+      "to": "irq.m1.s2",
+      "points": [
+        [
+          355,
+          162
+        ],
+        [
+          355,
+          362
+        ]
+      ],
+      "path": "control",
+      "provenance": "inferred"
+    },
+    {
+      "id": "irq.flow.m1_23",
+      "from": "irq.m1.s2",
+      "to": "irq.m1.s3",
+      "points": [
+        [
+          355,
+          416
+        ],
+        [
+          355,
+          446
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "irq.top_half"
+    },
+    {
+      "id": "irq.flow.m1_34",
+      "from": "irq.m1.s3",
+      "to": "irq.m1.s4",
+      "points": [
+        [
+          355,
+          556
+        ],
+        [
+          355,
+          576
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "irq.bottom_half"
+    },
+    {
+      "id": "irq.flow.m2_trap",
+      "from": "irq.m2.quote",
+      "to": "irq.m2.host",
+      "points": [
+        [
+          650,
+          256
+        ],
+        [
+          650,
+          446
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "irq.ptx_trap"
+    },
+    {
+      "id": "irq.flow.m3_fault_buffer",
+      "from": "irq.m3.fault",
+      "to": "irq.m3.buffer",
+      "points": [
+        [
+          840,
+          126
+        ],
+        [
+          840,
+          132
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "fault.replayable_blocks_preemption"
+    },
+    {
+      "id": "irq.flow.m3_buffer_stall",
+      "from": "irq.m3.buffer",
+      "to": "irq.m3.stall",
+      "points": [
+        [
+          840,
+          176
+        ],
+        [
+          840,
+          182
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "fault.replayable_blocks_preemption"
+    },
+    {
+      "id": "irq.flow.m3_stall_cpu",
+      "from": "irq.m3.stall",
+      "to": "irq.m3.batch",
+      "points": [
+        [
+          1140,
+          204
+        ],
+        [
+          1160,
+          204
+        ],
+        [
+          1160,
+          486
+        ],
+        [
+          1140,
+          486
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "fault.replayable_blocks_preemption"
+    },
+    {
+      "id": "irq.flow.m3_replay",
+      "from": "irq.m3.batch",
+      "to": "irq.m3.replay",
+      "points": [
+        [
+          800,
+          486
+        ],
+        [
+          790,
+          486
+        ],
+        [
+          790,
+          254
+        ],
+        [
+          800,
+          254
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "fault.replayable_blocks_preemption"
+    }
+  ],
+  "checks": []
+}

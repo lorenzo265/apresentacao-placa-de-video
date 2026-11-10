@@ -30,7 +30,7 @@ def ptx_instructions(text):
 
 def ptx_mnemonic(ins):
     toks = ins.split()
-    return (toks[1] if toks[0].startswith("@") else toks[0]).split(".")[0]
+    return (toks[1] if toks[0].startswith("@") else toks[0]).split(".")[0].rstrip(";")
 
 
 ptx = ptx_instructions((SRC / "saxpy.ptx").read_text(encoding="utf-8"))

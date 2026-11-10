@@ -639,7 +639,7 @@
         "code",
         "ptx",
         "ptx-19",
-        "op-ret;"
+        "op-ret"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
