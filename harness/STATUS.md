@@ -121,7 +121,7 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
 | Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | os 11 passaram pelo gate de fatos |
 | Textos | `content/pt-BR/beats.json` (31 beats) | os 31 passaram pelo gate de fatos |
-| Storyboard | `story/storyboard.json` (62 beats: 31 prontos, 31 rascunho, nenhum bloqueado; 29 dos prontos estão no corte do seminário, 14:23 no viewer) | validado; o teste roda os 31 |
+| Storyboard | `story/storyboard.json` (62 beats, todos prontos desde 2026-11-10; corte do seminário com 48 beats e 20:12 no viewer, completo com 62 e 24:23) | validado; os atos 0 a 3 rodam sobre o blockout e aguardam o gate humano do animatic da placa. O ato 0 mede 64 s contra 40 s de orçamento. A ordem de a3.6 e a3.7 foi trocada para o último beat 3D terminar perto do chip |
 | Auditoria | `qa/fact-check-f6*.md` (quatro passadas) | **aprovado com ressalvas, todas aplicadas**. Gate humano do animatic: **aprovado em 2026-11-10** |
 | Proposta da placa física | `design/proposal.md`, `design/proposal.json` | **aprovada no gate humano da F2 em 2026-11-10** (oito decisões, conforme recomendado) |
 | Entrega | um `.html` único, navegado ao vivo; sem vídeo por enquanto. Gerado por `npm run build:single` (`harness/dist/tour.html`, 1,3 MB), testado por `tools/smoke-single.cjs` nos dois cortes | decisão de 2026-11-10; o seminário tem 22 minutos |
