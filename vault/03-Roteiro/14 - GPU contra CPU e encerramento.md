@@ -13,7 +13,10 @@ fontes: []
 # 14 - GPU contra CPU e encerramento
 
 ## Objetivo
-Fechar comparando, item por item do enunciado, o que a GPU faz diferente de uma CPU e o que ainda não é público, e convidar à navegação livre.
+Fechar com a síntese, item por item do enunciado, do que as fontes dão sobre a GPU e do que ainda não é público, e convidar à navegação livre.
+
+> [!note] Decisão de 2026-11-10
+> A comparação com CPU saiu do fechamento: o enunciado não pede, e o trabalho é sobre a GPU. O nome da nota ainda traz "GPU contra CPU" (ver [[Decisões do projeto]]).
 
 ## Itens do enunciado cobertos
 - síntese de todos os itens
@@ -22,7 +25,6 @@ Fechar comparando, item por item do enunciado, o que a GPU faz diferente de uma 
 - Nada nas fontes lidas até agora. Ver [[Plano de pesquisa]].
 
 ## A levantar
-- Tabela-síntese: registradores, ISA, CISC/RISC, MMU, interrupções, pipeline e cache, GPU contra CPU.
 - Lista final de lacunas declaradas, com o motivo de cada uma.
 - Que resumo de uma frase cada um dos três caminhos (energia, dados, calor) recebe?
 

@@ -32,8 +32,10 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-11-10 | **Animatic dos atos 4 a 7 aprovado** (gate humano da F6), depois de quatro passadas do `fact-checker` | 31 beats e 11 diagramas; estrutura e conteúdo aprovados, design e visualização ficam para depois |
 | 2026-11-10 | **Proposta de engenharia da placa aprovada** (gate humano da F2): as oito decisões conforme recomendado em `harness/design/proposal.md` | Libera a árvore de montagem e o modelo 3D |
 | 2026-11-10 | Entrega do tour: **um arquivo `.html` único**, que o apresentador navega ao vivo. Sem vídeo por enquanto | O vídeo ficou pesado; o HTML abre em qualquer computador, sem internet |
-| 2026-11-10 | O seminário terá **mais tempo** do que os 15 a 20 minutos | Informado pelo autor; o valor exato ainda não foi dito |
+| 2026-11-10 | Seminário de **22 minutos**; corte do seminário com alvo de 20 minutos (substitui a linha de 2026-11-09) | Informado pelo autor. O tempo a mais foi para o chip: sete beats de reserva dos atos 4 a 6 entraram no corte |
+| 2026-11-10 | **Tabela GPU contra CPU retirada** do fechamento (beat a7.3). A seção 14 fica só com as lacunas e o encerramento | O enunciado não pede comparação com CPU, e o trabalho é sobre a GPU. A tabela exigiria fonte e auditoria para o lado da CPU. A síntese item a item do enunciado já está no quadro de lacunas (a7.4) |
+| 2026-11-10 | Divisão da fala **fica como está** em `harness/story/video-plan.md`, seção 6 | O autor disse que os três ajustes em aberto não precisam de decisão |
 
 ## Em aberto
-- Duração nova do seminário (o autor disse que haverá mais tempo, sem dizer quanto).
-- Três ajustes na divisão da fala (`harness/story/video-plan.md`, seção 6).
+- Os 22 minutos incluem as perguntas do professor?
+- Renomear a nota [[14 - GPU contra CPU e encerramento]] para tirar a comparação do título (mexe em links de outras notas; fica para a próxima rotina do vault, se o autor quiser).

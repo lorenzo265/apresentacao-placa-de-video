@@ -22,7 +22,7 @@ Este material é o trabalho de Arquitetura da disciplina de Organização e Arqu
 Estudante de computação e o professor. Nível de engenharia exata, explicado de modo que um estudante acompanhe: todo termo novo é definido na primeira vez em que aparece.
 
 ## Tempo de fala / duração do tour
-O seminário tem **de 15 a 20 minutos, no máximo** (informado em 2026-11-09). O corte do seminário mira 17 minutos e usa só os beats essenciais; o resto do conteúdo fica no viewer e no artigo. Orçamento por ato em `harness/story/video-plan.md`, seção 2.1.
+O seminário tem **22 minutos** (informado em 2026-11-10; antes, de 15 a 20). O corte do seminário mira 20 minutos e usa os beats essenciais; o resto do conteúdo fica no viewer e no artigo. Orçamento por ato em `harness/story/video-plan.md`, seção 2.1.
 
 ## Prazo
 - 2026-10-26: proposta formal (0,5 ponto).
@@ -40,7 +40,7 @@ O seminário tem **de 15 a 20 minutos, no máximo** (informado em 2026-11-09). O
 - Uso comercial de marcas e logos da NVIDIA (exige revisão antes).
 
 ## Perguntas abertas
-- Os 15 a 20 minutos incluem as perguntas do professor?
+- Os 22 minutos incluem as perguntas do professor?
 - O vídeo exportado é necessário, ou o viewer basta?
 - Divisão de trabalho entre os integrantes do grupo.
 
