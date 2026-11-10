@@ -63,9 +63,9 @@ d.node("memh.carveout.smem", "memory", [826, cy0, 214, 50], "compartilhada", tag
        claims=["mem.l1_carveout", "sm.l1_shared_kb"], provenance="confirmed", label_size=20, note=CNOTE)
 d.node("memh.carveout.note", "note", [650, cy0 + 56, 390, 36], "divisão escolhida em tempo de execução",
        tags=["carveout", "l1"], claims=["mem.l1_carveout"], provenance="confirmed", label_size=18)
-d.node("memh.carveout.gap", "gap", [650, cy0 + 98, 390, 40], "tamanhos na CC 12.0: não levantados",
-       tags=["carveout", "gap"], label_size=18,
-       note="Os tamanhos listados no Tuning Guide são do H100 e do B200. " + gap("cuda.smem_per_sm_cc120")["description"])
+d.node("memh.carveout.gap", "note", [650, cy0 + 98, 390, 40], "compartilhada: 0, 8, 16, 32, 64 ou 100 KB",
+       tags=["carveout", "sizes"], claims=["mem.shared_sizes_cc120"], provenance="confirmed", label_size=18,
+       note="Guia CUDA 13.5, 3.2.6, para a compute capability 12.0. " + gap("cuda.smem_per_sm_cc120")["description"])
 assert cy0 + 138 <= STEP_Y[1] + SH
 
 d.node("memh.total.regs", "counter", [1320, STEP_Y[0] + 24, 250, SH - 48],

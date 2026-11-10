@@ -538,8 +538,8 @@
         470,
         100
       ],
-      "label": "GET: última entrada",
-      "sublabel": "concluída pela GPU",
+      "label": "GET: até onde a GPU já concluiu",
+      "sublabel": "atualizado pelo driver",
       "label_size": 24,
       "parent": "cmd.lane.gpu",
       "tags": [
@@ -572,7 +572,8 @@
       ],
       "claims": [
         "cmd.gpfifo",
-        "cmd.channel"
+        "cmd.channel",
+        "cmd.submit"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -701,7 +702,7 @@
         80
       ],
       "label": "segundo o driver oficial",
-      "sublabel": "uvm_channel.c, uvm_pushbuffer.h",
+      "sublabel": "uvm_channel.h, uvm_channel.c, uvm_pushbuffer.h",
       "label_size": 20,
       "parent": null,
       "tags": [
@@ -719,7 +720,7 @@
         390,
         70
       ],
-      "label": "a entrada é reservada",
+      "label": "uma entrada é reservada",
       "sublabel": "ao começar o push",
       "label_size": 20,
       "parent": null,
@@ -857,8 +858,7 @@
         ]
       ],
       "path": "data",
-      "provenance": "confirmed",
-      "claim": "cmd.gpfifo"
+      "provenance": "illustrative"
     }
   ],
   "checks": []

@@ -79,11 +79,11 @@ for name, idx in (("get", GET_I), ("put", PUT_I)):
            provenance="illustrative")
 
 # ---------------- a GPU lê a fila ----------------
-d.node("cmd.get_note", "note", [210, 628, 470, 100], "GET: última entrada", "concluída pela GPU",
+d.node("cmd.get_note", "note", [210, 628, 470, 100], "GET: até onde a GPU já concluiu", "atualizado pelo driver",
        parent="cmd.lane.gpu", tags=["gpfifo", "ptr-get"], claims=[RING], provenance="confirmed", label_size=24,
        note="No trecho lido, gpu_get é 'Latest GPFIFO entry completed by the GPU', atualizado pelo driver.")
 d.node("cmd.s4", "step", [700, 628, 420, 100], "4. a GPU lê a fila do canal", parent="cmd.lane.gpu",
-       tags=["step", "gpfifo", "channel"], claims=[RING, CHAN], provenance="confirmed", label_size=24)
+       tags=["step", "gpfifo", "channel"], claims=[RING, CHAN, "cmd.submit"], provenance="confirmed", label_size=24)
 
 s1, s2, s3 = srect
 d.flow("cmd.flow.s1_pb", "cmd.s1", "cmd.pushbuffer", path="data", provenance="confirmed", claim=SUBMIT,
@@ -100,7 +100,7 @@ d.flow("cmd.flow.s3_put", "cmd.s3", "cmd.ptr.put", path="control", provenance="c
        points=[(s3[0] + 210, s3[1] + s3[3]), (s3[0] + 210, p[1] + p[3] / 2), (p[0] + p[2], p[1] + p[3] / 2)])
 g = d.get("cmd.ptr.get")["rect"]
 gx = g[0] + g[2] / 2
-d.flow("cmd.flow.get_gpu", "cmd.ptr.get", "cmd.s4", path="data", provenance="confirmed", claim=RING,
+d.flow("cmd.flow.get_gpu", "cmd.ptr.get", "cmd.s4", path="data", provenance="illustrative",
        points=[(gx, g[1] + g[3]), (gx, 600), (900, 600), (900, 628)])
 
 # ---------------- ao lado ----------------
@@ -115,9 +115,9 @@ d.node("cmd.note.user", "note", [PX, 290, PW, 120], "descrito para os canais do 
        provenance="inferred", label_size=18,
        note="Descrito para os canais do próprio driver (UVM). Supor o mesmo esquema de canal e GPFIFO "
             "para um programa CUDA comum é leitura nossa, sem trecho de fonte.")
-d.node("cmd.note.driver", "note", [PX, 426, PW, 80], "segundo o driver oficial", "uvm_channel.c, uvm_pushbuffer.h",
+d.node("cmd.note.driver", "note", [PX, 426, PW, 80], "segundo o driver oficial", "uvm_channel.h, uvm_channel.c, uvm_pushbuffer.h",
        tags=["note", "driver"], label_size=20)
-d.node("cmd.note.reserve", "note", [PX, 522, PW, 70], "a entrada é reservada", "ao começar o push",
+d.node("cmd.note.reserve", "note", [PX, 522, PW, 70], "uma entrada é reservada", "ao começar o push",
        tags=["note", "gpfifo", "submit"], claims=[SUBMIT], provenance="confirmed", label_size=20)
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 - Auditor: agente `fact-checker` (Fable), em contexto separado.
 - Escopo: o que chegou depois das duas primeiras passadas: os beats a5.3, a5.14, a6.3, a7.1, a7.2 e a7.4; os diagramas `close.delta`, `close.gaps` e `sys.cmd`; os nós novos de `chip.memhier`, `chip.isa`, `chip.sm` e `sys.irq`; e as ressalvas N1 a N12 da segunda passada.
 - **Veredito: não aprovado**, por quatro erros em `a6.3`/`sys.cmd` e `a7.4`/`close.gaps`. Passam, com ajustes: a5.3, a5.14, a7.1, a7.2, `close.delta` e os nós novos dos diagramas já auditados.
-- Correções aplicadas no mesmo dia. **Falta nova passada sobre `a6.3`, `sys.cmd`, `a7.4` e `close.gaps`.**
+- Correções aplicadas no mesmo dia. A nova passada sobre `a6.3`, `sys.cmd`, `a7.4` e `close.gaps` está em `fact-check-f6-quarta-passada.md`.
 
 ## Conferido e certo
 - `close.delta`: os cinco pares batem com o spec e com a Tab. 4 do whitepaper. As razões (× 1,32, × 1,33, × 2,00, × 2,00, × 1,87, e × 1,78 pela Tab. 1) estão certas e marcadas como conta nossa.
@@ -46,4 +46,4 @@ N2, N3, N4, N6, N7, N8, N9, N10 e N12: fechadas. N1: fechada nos 25 beats antigo
 |---|---|
 | 25 beats e 8 diagramas dos atos 4 a 6 (primeira leva) | aprovado com ressalvas; ressalvas fechadas |
 | a5.3, a5.14, a7.1, a7.2, `close.delta` | passam com ajustes; ajustes aplicados |
-| a6.3, `sys.cmd`, a7.4, `close.gaps` | reprovados; corrigidos; **aguardam nova passada** |
+| a6.3, `sys.cmd`, a7.4, `close.gaps` | reprovados; corrigidos; aprovados com ressalvas na quarta passada (`fact-check-f6-quarta-passada.md`) |

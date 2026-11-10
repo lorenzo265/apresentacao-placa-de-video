@@ -169,7 +169,7 @@
     "a5.5": {
       "headline": "Quatro partições, cada uma com escalonador",
       "caption": "O SM se divide em 4 partições. Cada uma tem o seu escalonador de warp, que escolhe qual warp avança e despacha 32 threads por ciclo. Pipeline: o número de estágios não é público.",
-      "fala": "A figura da NVIDIA não dá nome a essas quatro divisões. Partições é o nome que adotamos. Quatro partições vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
+      "fala": "O whitepaper não dá nome a essas quatro divisões. Partições é o nome que adotamos. Quatro partições vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5, p. 10. Guia de programação CUDA 13.5, 3.2.2.2. Latências: Jarmusch et al., Tab. III (RTX 5080)",
       "claims": [
         "sm.blocks",
@@ -183,7 +183,7 @@
     "a5.6": {
       "headline": "65.536 registradores por SM",
       "caption": "Cada partição tem um banco de 16.384 registradores de 32 bits. Os quatro somam 65.536, ou 256 KB por SM.",
-      "fala": "Numa CPU, a troca de contexto salva os registradores na memória. Aqui os 256 KB do SM guardam os registradores de todos os warps residentes. Por isso, diz o guia CUDA, trocar de warp não tem custo: não há o que salvar. Na placa inteira são 48.128 KB, 188 vezes 256. Como o banco é organizado por dentro, em bancos e portas, a NVIDIA não publica para a Blackwell.",
+      "fala": "Numa CPU, a troca de contexto salva os registradores na memória. Aqui os 256 KB do SM guardam os registradores de todos os warps residentes. Por isso, diz o guia CUDA, trocar de warp não tem custo: não há o que salvar. Na placa inteira são 48.128 KB, 188 vezes 256. Como o banco é organizado por dentro, em bancos e portas, não achamos fonte para a Blackwell.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Fig. 5, p. 10. Blackwell Tuning Guide 13.5, 1.4.1.1. Guia de programação CUDA 13.5, 3.2.2.2",
       "claims": [
         "sm.blocks",
@@ -271,7 +271,7 @@
     "a5.13": {
       "headline": "A escada de memória",
       "caption": "Do registrador à GDDR7, cada degrau é maior e mais lento. As latências são medidas na RTX 5080, não nesta placa.",
-      "fala": "Na 5080, medida por terceiros, a L1 leva de 30 a 40 ciclos, o L2 cerca de 358 e a memória global cerca de 877. Do L2 à memória, a latência é 2,4 vezes maior, conta nossa. Quem viu cache na matéria reconhece o padrão: quanto maior, mais lento. Associatividade, política de escrita e tamanho de linha dos caches desta placa a NVIDIA não publica.",
+      "fala": "Na 5080, medida por terceiros, a L1 leva de 30 a 40 ciclos, o L2 cerca de 358 e a memória global cerca de 877. Do L2 à memória, a latência é 2,4 vezes maior, conta nossa. Quem viu cache na matéria reconhece o padrão: quanto maior, mais lento. Associatividade, política de escrita e tamanho de linha dos caches desta placa, não achamos nas fontes lidas.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4. Latências: Jarmusch et al., seção VI (RTX 5080)",
       "claims": [
         "sm.regfile_kb",
@@ -285,18 +285,19 @@
     },
     "a5.14": {
       "headline": "L1 e memória compartilhada dividem 128 KB",
-      "caption": "Os 128 KB do SM se dividem entre L1 e memória compartilhada. A parte da memória compartilhada, o carveout, é escolhida em tempo de execução. Os tamanhos possíveis nesta placa não levantamos.",
-      "fala": "Memória compartilhada é a memória do SM que o programa endereça diretamente. A divisão não é fixa no chip: o guia de ajuste diz que o carveout é escolhido em tempo de execução. Os valores do guia são do H100 e do B200, não da compute capability 12.0, então não os citamos. Associatividade e política de substituição do L1, a NVIDIA não publica.",
-      "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.2.3. Whitepaper RTX PRO Blackwell v1.1, p. 9",
+      "caption": "Os 128 KB do SM se dividem entre L1 e memória compartilhada. A parte da memória compartilhada, o carveout, é escolhida em tempo de execução: 0, 8, 16, 32, 64 ou 100 KB.",
+      "fala": "Memória compartilhada é a memória do SM que o programa endereça diretamente. A divisão não é fixa no chip: o carveout é escolhido em tempo de execução. Segundo o guia CUDA, na compute capability 12.0 ele pode ter 0, 8, 16, 32, 64 ou 100 KB. O guia de ajuste fala em 128 KB por SM, e a diferença entre os dois números não está explicada. Associatividade e política de substituição do L1, não achamos nas fontes lidas.",
+      "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.6. Blackwell Tuning Guide 13.5, 1.4.2.3. Whitepaper RTX PRO Blackwell v1.1, p. 9",
       "claims": [
         "mem.l1_carveout",
-        "sm.l1_shared_kb"
+        "sm.l1_shared_kb",
+        "mem.shared_sizes_cc120"
       ]
     },
     "a6.1": {
       "headline": "Endereço virtual de 57 bits, 6 níveis",
       "caption": "Segundo o driver oficial, a MMU da GPU traduz 57 bits em 6 níveis de tabela. As páginas vão de 4 KB a 512 MB.",
-      "fala": "MMU é a unidade que traduz endereço virtual em físico, como a da CPU. Os índices têm 1, 9, 9, 9 e 8 bits, mais 9 no último nível para página de 4 KB e 12 de deslocamento: 57 no total. Páginas de 2 MB e 512 MB terminam antes. A TLB, a cache de traduções, e o espaço por programa não são públicos.",
+      "fala": "MMU é a unidade que traduz endereço virtual em físico, como a da CPU. Os índices têm 1, 9, 9, 9 e 8 bits, mais 9 no último nível para página de 4 KB e 12 de deslocamento: 57 no total. Páginas de 2 MB e 512 MB terminam antes. Sobre a TLB, a cache de traduções, e sobre o espaço por programa, não achamos nada nas fontes lidas.",
       "source_line": "Fonte: driver aberto da NVIDIA (open-gpu-kernel-modules): ctrl2080mc.h, uvm_hal.c, uvm_hopper_mmu.c, uvm_ampere_mmu.c",
       "claims": [
         "mmu.va_bits",
@@ -308,7 +309,7 @@
     "a6.2": {
       "headline": "Falha de página: a CPU resolve",
       "caption": "Segundo o driver oficial, a falha vai para um buffer e o canal não pode ser trocado até ser atendido (fault and stall). A CPU resolve um lote e a GPU repete o acesso.",
-      "fala": "Na CPU, a falha de página interrompe a instrução, o sistema operacional carrega a página e a instrução é repetida. Na GPU é parecido, mas quem resolve é o driver, na CPU. Canal, segundo o driver, é uma das filas de execução da GPU. Enquanto o driver não atende, esse canal não pode ser trocado e os outros esperam. Um acesso a endereço ilegal aparece no log como Xid 31, GPU memory page fault. Quantas entradas tem a TLB, a NVIDIA não publica.",
+      "fala": "Na CPU, a falha de página interrompe a instrução, o sistema operacional carrega a página e a instrução é repetida. Na GPU é parecido, mas quem resolve é o driver, na CPU. Canal, segundo o driver, é uma das filas de execução da GPU. Enquanto o driver não atende, esse canal não pode ser trocado e os outros esperam. Um acesso a endereço ilegal aparece no log como Xid 31, GPU memory page fault. Quantas entradas tem a TLB, não achamos em nenhuma fonte.",
       "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_non_replayable_faults.c e uvm_gpu_replayable_faults.c. Catálogo de Xid",
       "claims": [
         "fault.stall",
@@ -322,7 +323,7 @@
     "a6.3": {
       "headline": "Como a CPU entrega trabalho à GPU",
       "caption": "No driver oficial, a CPU grava comandos num pushbuffer, aponta para eles numa entrada da GPFIFO do canal e avança o ponteiro PUT. A GPU lê a fila. Vale para os canais do próprio driver.",
-      "fala": "Isso é uma fila produtor e consumidor, como o buffer circular da matéria: a CPU produz avançando o PUT, e o GET marca até onde a GPU já consumiu. Canal, segundo o driver, é uma das filas de execução independentes da GPU. Só lemos os canais do próprio driver. O caminho de um programa CUDA comum não lemos. Supor o mesmo esquema é leitura nossa. O número de entradas no desenho é ilustrativo.",
+      "fala": "Isso é uma fila produtor e consumidor, como o buffer circular da matéria: a CPU produz avançando o PUT, e o GET marca até onde a GPU já concluiu. Canal, segundo o driver, é uma das filas de execução independentes da GPU. Só lemos os canais do próprio driver. O caminho de um programa CUDA comum não lemos. Supor o mesmo esquema é leitura nossa. O número de entradas no desenho é ilustrativo.",
       "source_line": "Fonte: driver aberto da NVIDIA, uvm_channel.h, uvm_channel.c e uvm_pushbuffer.h",
       "claims": [
         "cmd.channel",
@@ -360,7 +361,7 @@
     "a7.1": {
       "headline": "Ada contra Blackwell: o que mudou",
       "caption": "De uma geração para a outra: 142 para 188 SMs, L2 de 98.304 para 131.072 KB, memória de 48 para 96 GB e 300 para 600 W. As razões são conta nossa.",
-      "fala": "A Ada é a geração anterior, com o chip AD102. Dividindo cada número: 188 por 142 dá 1,32, o L2 dá 1,33, a memória e a potência dão 2,00. Todas as razões são conta nossa. Note que a potência é o TGP, Total Graphics Power, da mesma tabela, na Workstation Edition. A Max-Q fica em 300 W. Ela cresceu mais do que o número de SMs.",
+      "fala": "A Ada é a geração anterior, com o chip AD102. Dividindo cada número: 188 por 142 dá 1,32, o L2 dá 1,33, a memória e a potência dão 2,00. Todas as razões são conta nossa. Note que a potência é o TGP, Total Graphics Power, da mesma tabela, na Workstation Edition. A Max-Q fica em 300 W. A potência da Workstation Edition cresceu mais do que o número de SMs: 2,00 contra 1,32.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4. Razões: contas nossas",
       "claims": [
         "ada.sm_count",

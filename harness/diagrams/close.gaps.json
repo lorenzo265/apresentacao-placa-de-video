@@ -181,8 +181,8 @@
         590,
         88
       ],
-      "label": "bits de controle do sm_120: nada público",
-      "sublabel": "a NVIDIA não documenta nem dá acesso",
+      "label": "bits de controle do sm_120: sem fonte da Blackwell",
+      "sublabel": "medidos só em Volta, Turing e Ampere",
       "label_size": 19,
       "align": "left",
       "parent": null,
@@ -443,7 +443,7 @@
         88
       ],
       "label": "espaço por programa: sem fonte",
-      "sublabel": "tamanhos do carveout: não levantamos",
+      "sublabel": "memória unificada: não levantamos",
       "label_size": 19,
       "align": "left",
       "parent": null,
@@ -452,7 +452,7 @@
         "gap"
       ],
       "shape_provenance": "illustrative",
-      "note": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa. | Memória compartilhada por SM na CC 12.0: Tuning Guide diz 128 KB por SM, Guia CUDA Tab. 35 (resumo) dá cache unificado de 128 KB e compartilhada até 100 KB, e 99 KB por bloco. Divergência de significado não resolvida por leitura direta."
+      "note": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa. | Memória compartilhada na compute capability 12.0: o guia CUDA 13.5 (3.2.6) dá tamanhos de 0 a 100 KB, com máximo de 100 KB; o Tuning Guide 13.5 (1.4.1.1) diz 128 KB de capacidade por SM. A diferença de significado entre os dois números não está explicada em nenhuma fonte lida."
     },
     {
       "id": "gaps.pipeline.item",

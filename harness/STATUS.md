@@ -115,12 +115,13 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 
 | Peça | Arquivo | Estado |
 |---|---|---|
-| Fatos consolidados | `spec/card.spec.json` (138 fatos) | validado; os citados na tela foram auditados |
+| Fatos consolidados | `spec/card.spec.json` (141 fatos) | validado; os citados na tela foram auditados |
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
-| Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | 8 aprovados com ressalvas no gate de fatos; 3 novos em auditoria |
-| Textos | `content/pt-BR/beats.json` (31 beats) | 25 aprovados com ressalvas no gate de fatos; 6 novos em auditoria |
+| Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | os 11 passaram pelo gate de fatos |
+| Textos | `content/pt-BR/beats.json` (31 beats) | os 31 passaram pelo gate de fatos |
 | Storyboard | `story/storyboard.json` (63 beats: 31 prontos, 32 rascunho, nenhum bloqueado) | validado; o teste roda os 31 |
-| Auditoria | `qa/fact-check-f6.md`, `qa/fact-check-f6-segunda-passada.md` | segunda passada: **aprovado com ressalvas**; ressalvas fechadas; terceira rodada cobre o material novo |
+| Auditoria | `qa/fact-check-f6*.md` (quatro passadas) | **aprovado com ressalvas, todas aplicadas**. Falta só o gate humano do animatic |
+| Proposta da placa física | `design/proposal.md`, `design/proposal.json` | pronta; **aguarda o gate humano da F2** (oito decisões) |
 
 Tempo do corte do seminário: ato 4 com 1:56, ato 5 com 4:57, ato 6 com 2:59, ato 7 com 1:09 (só dois dos quatro beats essenciais existem). Atos 4 a 7: 11:03, para um orçamento de 11:50. O corte completo desses atos dá 15:17.
 

@@ -744,7 +744,7 @@
       "id": "card.tgp_w",
       "value": 600,
       "provenance": "confirmed",
-      "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
+      "source": "spec/sources/nvidia-rtx-pro-blackwell-architecture-v1.1.md#numeros-conferidos",
       "unit": "W",
       "note": "whitepaper, Tab. 4, linha \"TGP (Total Graphics Power)\": 600 W na Workstation Edition e 300 W na Max-Q e na RTX 6000 Ada. O datasheet chama os 600 W de \"Total board power\"; não se sabe se inclui o slot"
     },
@@ -1029,6 +1029,14 @@
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
       "note": "whitepaper, Tab. 4, linha \"Memory Clock (Data Rate)\": 20 Gbps na RTX 6000 Ada"
+    },
+    {
+      "id": "mem.shared_sizes_cc120",
+      "value": "0, 8, 16, 32, 64 ou 100 KB",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
+      "conflict": true,
+      "note": "guia CUDA 13.5, 3.2.6: tamanhos de memória compartilhada na compute capability 12.0, máximo de 100 KB. O Tuning Guide 13.5 diz 128 KB de capacidade por SM para a mesma compute capability"
     }
   ],
   "gaps": [
@@ -1150,7 +1158,7 @@
     },
     {
       "id": "cuda.smem_per_sm_cc120",
-      "description": "Memória compartilhada por SM na CC 12.0: Tuning Guide diz 128 KB por SM, Guia CUDA Tab. 35 (resumo) dá cache unificado de 128 KB e compartilhada até 100 KB, e 99 KB por bloco. Divergência de significado não resolvida por leitura direta."
+      "description": "Memória compartilhada na compute capability 12.0: o guia CUDA 13.5 (3.2.6) dá tamanhos de 0 a 100 KB, com máximo de 100 KB; o Tuning Guide 13.5 (1.4.1.1) diz 128 KB de capacidade por SM. A diferença de significado entre os dois números não está explicada em nenhuma fonte lida."
     },
     {
       "id": "mem.gddr7_standard",
