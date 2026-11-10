@@ -64,3 +64,6 @@
 
 ## 2026-11-10 (decisões de modelagem)
 - Cinco decisões do autor registradas em [[Decisões do projeto]]: cadeia de modelagem com Blender, design igual ao da placa original, sem compras, vídeo generativo como experimento posterior, placa irmã e water blocks como referência.
+
+## 2026-11-10 (estilo visual)
+- Decisão do autor registrada em [[Decisões do projeto]]: tema Keynote, com a placa hiper-realista.

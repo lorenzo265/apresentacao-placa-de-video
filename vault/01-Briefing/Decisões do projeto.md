@@ -40,6 +40,7 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-11-10 | **Sem compra** de modelo 3D pronto nem de serviço pago | Sem orçamento. Modelos gratuitos só como comparação visual |
 | 2026-11-10 | Vídeo generativo (Higgsfield): **experimento para depois**, só em abertura ou teaser, a partir de renders do nosso modelo, marcado como ilustrativo | O autor vê como possibilidade se o modelo servir de base. Não entra nos beats que explicam |
 | 2026-11-10 | A RTX 5090 Founders Edition e fabricantes de water block entram como **referência de modelagem**, classe `derived` | Faltam vistas ortogonais desta placa; a busca achou o PCB nu com régua e desenhos cotados |
+| 2026-11-10 | Estilo visual do tour: **Keynote hiper-realista** (fundo quase preto, verde de acento, fluxos como luz nos diagramas; a placa o mais realista possível) | Escolhido pelo autor entre três direções (`harness/dist/estilo/comparacao.png`). Prioridade do autor: "acima de tudo bonito" |
 
 ## Em aberto
 - Os 22 minutos incluem as perguntas do professor?
