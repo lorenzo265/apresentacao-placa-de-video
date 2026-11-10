@@ -919,10 +919,10 @@
       "view": {
         "diagram": "chip.sm",
         "focus": [
-          "sm.block.0.sched",
-          "sm.block.0.regfile"
+          "sm.count.blocks",
+          "sm.block.0"
         ],
-        "padding": 0.08,
+        "padding": 0.04,
         "duration": 2.2,
         "ease": "power2.inOut"
       },
@@ -1170,10 +1170,10 @@
       "view": {
         "diagram": "chip.isa",
         "focus": [
-          "isa.count.sass",
+          "isa.count.ptx",
           "isa.count.reg_sm"
         ],
-        "padding": 0.15,
+        "padding": 0.3,
         "duration": 1.8,
         "ease": "power2.inOut"
       },
@@ -1302,10 +1302,10 @@
       "view": {
         "diagram": "chip.risc",
         "focus": [
-          "risc.op.hmma",
-          "risc.mma.sass"
+          "risc.ops.head",
+          "risc.amp"
         ],
-        "padding": 0.12,
+        "padding": 0.05,
         "duration": 2.8,
         "ease": "power3.inOut"
       },
@@ -1318,7 +1318,7 @@
       ],
       "callout": {
         "anchor": "risc.mma.sass",
-        "box": "left-center",
+        "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -1558,18 +1558,16 @@
         "diagram": "sys.cmd",
         "focus": [
           "cmd.lane.cpu",
-          "cmd.lane.gpu",
-          "cmd.note.user"
+          "cmd.lane.gpu"
         ],
-        "padding": 0.02,
+        "padding": 0.03,
         "duration": 2.8,
         "ease": "power3.inOut"
       },
       "highlight": [
         "tag:submit",
         "tag:pushbuffer",
-        "tag:gpfifo",
-        "cmd.note.user"
+        "tag:gpfifo"
       ],
       "flows": [
         "cmd.flow.s1_pb",
@@ -1692,6 +1690,7 @@
         "diagram": "close.delta",
         "focus": [
           "delta.head.item",
+          "delta.bw.ratio",
           "delta.bw.bw"
         ],
         "padding": 0.02,
