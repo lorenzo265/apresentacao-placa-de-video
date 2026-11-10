@@ -60,7 +60,7 @@ As 14 seções do roteiro v2 não mudam (a tabela de cobertura do enunciado cont
 | 4. O chip | 2 | 04, 05 | GPC, TPC, SM, L2, controladores, SIMT | confirmado (contagens), ilustrativo (forma) |
 | T2. Mergulho no SM | 2 para 3 | 06 | zoom em um SM | ilustrativo |
 | 5. Dentro do SM | 3 e 4 | 06 a 09, 12 | unidades, registradores, instruções, RISC ou CISC, caches, ocupação | confirmado, derivado, análise do grupo |
-| 6. A GPU no sistema | 4 | 10, 11 | MMU, CPU, interrupções, AMP, MIG | confirmado (driver aberto) e derivado (Pascal); auditoria pendente |
+| 6. A GPU no sistema | 4 | 10, 11 | MMU, envio de comandos, interrupções, AMP, MIG | confirmado (driver aberto), derivado (Pascal) e leitura do grupo onde indicado |
 | 7. Fechamento | 0 | 13, 14 | Ada contra Blackwell, GPU contra CPU, lacunas, remontagem, fontes | confirmado e derivado |
 
 ### 3.1 Os três caminhos como fio condutor
@@ -127,7 +127,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a4.5 | 04 | blocos fora dos GPCs: AMP, vídeo, PCIe | o AMP é um processador RISC-V que escalona contextos | confirmed (existência), illustrative (posição) | whitepaper, p. 25 | 2 |
 | a5.1 | 05 | grade de threads vira blocos, blocos viram warps de 32 | grid, bloco, warp; `WARP_SZ` = 32 | confirmed | PTX ISA, 4.5.1 | 1 |
 | a5.2 | 05 | um warp recebe uma instrução, 32 threads executam juntas | SIMT: uma instrução, 32 threads, cada uma com seu contador de instrução e seus registradores; até 48 warps por SM | confirmed | Blackwell Tuning Guide 13.5, 1.4.1.1; guia CUDA 13.5, 3.2.2.1 | 1 |
-| a5.3 | 05 | blocos sendo distribuídos pelos 188 SMs | como um bloco é atribuído a um SM | **bloqueado** | guia CUDA (a ler) | 3 |
+| a5.3 | 05 | o SM e a miniatura do warp dentro do escalonador | o SM recebe blocos de threads e os divide em warps; quem escolhe o SM de cada bloco, o trecho lido não diz | confirmed; lacuna declarada | guia CUDA 13.5, 3.2.2.2 | 2 |
 
 ### Transição T2 e ato 5: dentro do SM (seções 06 a 09 e 12)
 
@@ -135,7 +135,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 |---|---|---|---|---|---|---|
 | t2.1 | 06 | zoom de um SM entre os 188 | "Um dos 188" | illustrative | regra do harness | 1 |
 | a5.4 | 06 | o SM redesenhado a partir da Fig. 5 do whitepaper: quatro blocos e as unidades comuns | 128 núcleos CUDA, 4 Tensor Cores, 1 RT Core, 4 unidades de textura, 2 núcleos FP64 | confirmed | whitepaper, p. 8 e 9 e Fig. 5, p. 10 | 1 |
-| a5.5 | 06 | cada bloco acende: escalonador de warp, banco de registradores, núcleos, Tensor Core | 4 blocos, cada um com escalonador de warp e despacho de 32 threads por ciclo; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | confirmed (4 blocos, escalonador, 32 threads por ciclo); derived (latências, GB203) | whitepaper, Fig. 5, p. 10; Jarmusch et al., Tab. III | 1 |
+| a5.5 | 06 | cada partição acende: escalonador de warp, banco de registradores, núcleos, Tensor Core | 4 partições, cada uma com escalonador de warp e despacho de 32 threads por ciclo; 4 ciclos em INT32 e FP32 (FP64 leva cerca de 64) | confirmed (4 blocos, escalonador, 32 threads por ciclo); derived (latências, GB203) | whitepaper, Fig. 5, p. 10; Jarmusch et al., Tab. III | 1 |
 | a5.6 | 07 | quatro bancos de registradores, um por bloco | 4 × 16.384 = 65.536 registradores de 32 bits, 256 KB por SM | confirmed | whitepaper, p. 9 e Fig. 5; Tuning Guide 13.5 | 1 |
 | a5.7 | 07 | listagem SASS real com `R`, `UR`, `P` e `SR` coloridos | famílias de registradores; SAXPY usa 10 por thread, 0 de spill | confirmed (medido e reproduzido) | `harness/examples/saxpy-cu/` | 1 |
 | a5.8 | 07 | uma thread pedindo registradores até o teto | até 255 registradores por thread; 64K por SM | confirmed | Blackwell Tuning Guide 13.5, 1.4.1.1 | 2 |
@@ -144,7 +144,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a5.11 | 08 | `HMMA.16816.F32` dispara uma grade de multiplicações | uma instrução, 2.048 multiplicações-acumulações | confirmed (a instrução gerada), derived (2.048 é conta nossa) | `harness/examples/mma/` | 2 |
 | a5.12 | 08 | tabela de critérios preenchendo linha a linha; ao lado, `LDGSTS`, `TEX` e `HMMA` com a descrição oficial; selo "análise do grupo" na tela | RISC no formato, com instruções próprias de acelerador | inferred (análise do grupo sobre fatos `confirmed`) | seção 08, aprovada em 2026-11-10; Binary Utilities 13.5 | 1 |
 | a5.13 | 09 | escada de memória com tamanho e latência por degrau | registradores, L1 de 128 KB, L2 de 128 MB, GDDR7 de 96 GB | confirmed (tamanhos), derived (latências da GB203) | whitepaper, Tab. 4; Jarmusch et al., VI | 1 |
-| a5.14 | 09 | L1 dividida entre cache e memória compartilhada | divisão configurável | confirmed (existe), **bloqueado** (como) | guia CUDA (a ler) | 3 |
+| a5.14 | 09 | o degrau do L1 dividido entre cache e memória compartilhada | a divisão (carveout) é escolhida em tempo de execução; os tamanhos nesta placa não foram levantados | confirmed; lacuna declarada | Blackwell Tuning Guide 13.5, 1.4.2.3 | 3 |
 | a5.15 | 12 | SM enchendo de warps até o teto de 48 | 48 warps × 32 threads = 1.536 threads por SM; 288.768 na placa | confirmed (48), derived (contas) | Blackwell Tuning Guide 13.5, 1.4.1.1 | 2 |
 | a5.16 | 12 | um warp de 32 threads; 4 ficam laranja e seguem outro caminho; a imagem vira o logotipo do grupo | divergência: o warp executa cada caminho, com as threads do outro caminho desabilitadas | confirmed. Ressalva do guia: o hardware pode diferir | guia CUDA 13.5, 3.2.2.1 | 1 |
 
@@ -154,7 +154,7 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 |---|---|---|---|---|---|---|
 | a6.1 | 10 | um endereço de 57 bits fatiado em seis índices mais o deslocamento, descendo PDE4, PDE3, PDE2, PDE1, PDE0 e PTE até a GDDR7; páginas de 2 MB e 512 MB param antes | 57 bits, 6 níveis, páginas de 4 KB a 512 MB | confirmed, com o escopo "segundo o driver oficial" | driver aberto: `ctrl2080mc.h`, `uvm_hal.c`, `uvm_hopper_mmu.c`, `uvm_ampere_mmu.c` | 1 |
 | a6.2 | 10 | a tradução falha; a falha vai para um buffer e o canal fica parado; a CPU resolve um lote e a GPU repete o acesso. Ao lado, a Pascal (49 bits, 5 níveis) para comparar | falha de página: grava, para o canal, interrompe a CPU, resolve em lote, repete | confirmed (driver); derived (Pascal); TLB é lacuna declarada | driver aberto; documento da Pascal; Xid 31 | 1 |
-| a6.3 | 11 | CPU, PCIe, canal de comandos, GPU | como o trabalho chega | **bloqueado**: o driver cita canais e GPFIFO, falta ler | driver aberto (a ler) | 2 |
+| a6.3 | 11 | faixas CPU e GPU, pushbuffer, anel da GPFIFO com GET e PUT | o driver grava comandos, aponta uma entrada da GPFIFO e avança o PUT; vale para os canais do próprio driver | confirmed (canais do driver); inferred (programa CUDA comum) | driver aberto, `uvm_channel.c` e `uvm_pushbuffer.h` | 2 |
 | a6.4 | 11 | sinal de interrupção da GPU para a CPU; metade de cima, metade de baixo; ao lado, `trap` e os códigos Xid 13 e 31 | três mecanismos documentados: a GPU interrompe a CPU, o programa aborta com `trap`, ou é preemptado. Não achamos rotina de interrupção executada pelo próprio SM | confirmed (os três mecanismos: driver, PTX, Xid); derived (preempção, Pascal); **inferred** (a leitura de que o SM não trata interrupções, selo "provável") | driver aberto, `nv.c` e `nv-msi.c`; PTX ISA 9.5, 9.7.21.4; catálogo de Xid | 1 |
 | a6.5 | 11 | AMP na frente do pipeline; chip dividido em 4 | AMP RISC-V escalona contextos; MIG com até 4 instâncias | confirmed | whitepaper, p. 25 e 44 | 1 |
 
@@ -164,7 +164,7 @@ O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupç
 
 | Beat | Seção | O que se vê | Texto na tela (ideia) | Procedência | Fonte | Prio |
 |---|---|---|---|---|---|---|
-| a7.1 | 13 | barras Ada contra Blackwell | 142 para 188 SMs; L2 de 98.304 para 131.072 KB; 48 para 96 GB; 300 para 600 W | confirmed (Blackwell); **a registrar** (a coluna da Ada não está no excerto local do whitepaper) | whitepaper, Tab. 4 | 1 |
+| a7.1 | 13 | barras RTX 6000 Ada contra RTX PRO 6000 Blackwell Workstation Edition | 142 para 188 SMs; L2 de 98.304 para 131.072 KB; 48 para 96 GB; TGP de 300 para 600 W | confirmed (valores); derived (razões) | whitepaper, Tab. 4 | 1 |
 | a7.2 | 13 | nota sobre a banda da Ada | 1.008 GB/s na Tab. 1 e 960 GB/s na Tab. 4: a razão cita a tabela usada | confirmed (com conflito declarado) | whitepaper, Tab. 1 e 4 | 3 |
 | a7.3 | 14 | tabela-síntese GPU contra CPU, um item do enunciado por linha | registradores, instruções, RISC ou CISC, MMU, interrupções, memória, pipeline, cache | derived | todas as seções | 1 |
 | a7.4 | 14 | lista de lacunas declaradas | o que não é público e por quê | não se aplica | todas as seções | 1 |
@@ -285,6 +285,6 @@ Os atos 4 a 6 valem a nota. Definido em 2026-11-10 (contrato completo em `harnes
 - Viewer ao vivo ou vídeo corrido (grupo).
 - Narração gravada e trilha: sim ou não (grupo).
 - Uso de logos da NVIDIA (grupo).
-- Fontes para os beats bloqueados dos atos 3, 4, 5 e 6.
+- Nenhum beat está bloqueado por falta de fonte desde 2026-11-10. Faltam imagem e texto para os atos 0 a 3 e para a7.3, a7.5 e a7.6.
 - Segunda passada do `fact-checker` sobre a seção 4 (a primeira não aprovou; correções em `harness/qa/fact-check-fisico.md`).
 - Registrar no excerto local do whitepaper a coluna da RTX 6000 Ada (beat a7.1).

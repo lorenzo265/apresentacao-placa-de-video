@@ -1559,7 +1559,9 @@
         "diagram": "sys.cmd",
         "focus": [
           "cmd.lane.cpu",
-          "cmd.lane.gpu"
+          "cmd.lane.gpu",
+          "cmd.note.user",
+          "cmd.channels"
         ],
         "padding": 0.03,
         "duration": 2.8,
@@ -1586,6 +1588,7 @@
       },
       "hold": 30,
       "provenance": [
+        "inferred",
         "confirmed",
         "derived",
         "illustrative"
@@ -1799,7 +1802,8 @@
       "hold": 30,
       "provenance": [
         "confirmed",
-        "illustrative"
+        "illustrative",
+        "derived"
       ],
       "speaker": "Vitor"
     },

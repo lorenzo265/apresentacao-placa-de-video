@@ -377,5 +377,11 @@ Busca literal nas cópias baixadas do guia CUDA 13.5, do Blackwell Tuning Guide 
 | Envio do trabalho | a função `internal_channel_submit_work(uvm_push_t *push, NvU32 push_size, NvU32 new_gpu_put)` termina em `gpu->parent->host_hal->write_gpu_put(channel, new_gpu_put);` | `uvm_channel.c`, linhas 984 a 1014 |
 | Reserva | "Beginning a push on a channel implies reserving a GPFIFO entry in that channel and hence there can only be as many on-going pushes per channel as there are free GPFIFO entries." | `uvm_channel.h` |
 
-Ressalva: esses trechos descrevem os canais que o **próprio driver** usa (os canais da UVM). O caminho de um programa CUDA comum passa pela parte fechada do driver. Aplicar a ele o mesmo esquema é `derived`.
+| Aponta a entrada | "4) The methods are queued to be read by the GPU (by referencing them in a GPFIFO entry)"; no código, `gpu->parent->host_hal->set_gpfifo_entry(gpfifo_entry, pushbuffer_va, push_size, UVM_GPFIFO_SYNC_PROCEED);` vem antes de `write_gpu_put` | `uvm_pushbuffer.h`, linha 47; `uvm_channel.c`, linha 1006 |
+| Ponteiro GET | "Latest GPFIFO entry completed by the GPU. Updated by uvm_channel_update_progress() after checking pending GPFIFOs for completion." | `uvm_channel.h`, linhas 308 a 311 |
+| O pushbuffer é por GPU | "Each pushbuffer is usable only with a specific channel manager and hence a specific GPU"; "each chunk can service pushes from multiple channels" | `uvm_pushbuffer.h`, linhas 36 a 38 e 78 a 79 |
+
+**Ordem dos passos (corrigida em 2026-11-10, depois da auditoria):** o driver reserva a entrada de GPFIFO ao começar o push, grava os comandos no pushbuffer, aponta a entrada para eles (`set_gpfifo_entry`) e só então avança o PUT (`write_gpu_put`). O primeiro registro deste bloco dava a reserva depois da gravação, o que estava errado.
+
+Ressalva: esses trechos descrevem os canais que o **próprio driver** usa (os canais da UVM). O caminho de um programa CUDA comum **não foi lido**. Aplicar a ele o mesmo esquema é leitura nossa (`inferred`), e por isso não é fato do spec.
 

@@ -746,7 +746,7 @@
       "provenance": "confirmed",
       "source": "spec/sources/physical-card-sources.md#1-nvidia-datasheet-da-rtx-pro-6000-blackwell-workstation-edition-pdf",
       "unit": "W",
-      "note": "'Total board power: 600 W' (datasheet p. 3); Max-Q é 300 W. Não se sabe se inclui a potência do slot"
+      "note": "whitepaper, Tab. 4, linha \"TGP (Total Graphics Power)\": 600 W na Workstation Edition e 300 W na Max-Q e na RTX 6000 Ada. O datasheet chama os 600 W de \"Total board power\"; não se sabe se inclui o slot"
     },
     {
       "id": "card.pcie",
@@ -998,11 +998,11 @@
       "value": "a GPFIFO do hardware é um buffer em anel com ponteiros GET e PUT",
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
-      "note": "segundo o driver oficial, uvm_pushbuffer.h"
+      "note": "segundo o driver oficial, uvm_pushbuffer.h e uvm_channel.h. O GET guarda a última entrada concluída pela GPU e é atualizado pelo driver"
     },
     {
       "id": "cmd.submit",
-      "value": "o driver grava os comandos em um pushbuffer, reserva uma entrada de GPFIFO e avança o ponteiro PUT da GPU (write_gpu_put)",
+      "value": "o driver reserva uma entrada de GPFIFO ao começar o push, grava os comandos no pushbuffer, aponta a entrada para eles (set_gpfifo_entry) e avança o ponteiro PUT (write_gpu_put)",
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
       "note": "segundo o driver oficial, uvm_channel.c, internal_channel_submit_work. Vale para os canais do próprio driver"
@@ -1013,6 +1013,22 @@
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
       "note": "guia CUDA 13.5, 3.2.2.1.1"
+    },
+    {
+      "id": "ada.bus_bits",
+      "value": 384,
+      "unit": "bits",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "note": "whitepaper, Tab. 4, linha \"Memory Interface\": 384-bit na RTX 6000 Ada"
+    },
+    {
+      "id": "ada.pin_rate_gbps",
+      "value": 20,
+      "unit": "Gbps",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#coluna-da-rtx-6000-ada-na-tab-4-p-46-a-48-transcrita-inteira",
+      "note": "whitepaper, Tab. 4, linha \"Memory Clock (Data Rate)\": 20 Gbps na RTX 6000 Ada"
     }
   ],
   "gaps": [
@@ -1147,6 +1163,18 @@
     {
       "id": "cmd.user_path",
       "description": "Os trechos lidos do driver descrevem só os canais do próprio driver (UVM). O caminho de um programa CUDA comum não foi lido; supor o mesmo esquema de canal e GPFIFO é leitura nossa."
+    },
+    {
+      "id": "isa.microcode",
+      "description": "Não achamos nenhuma informação pública sobre microcódigo no SM."
+    },
+    {
+      "id": "isa.addressing_modes",
+      "description": "Não levantamos a lista dos modos de endereçamento do SASS. Jia et al. (Volta) e os exemplos do Binary Utilities descrevem operandos de memória; falta ler."
+    },
+    {
+      "id": "sched.block_to_sm",
+      "description": "O trecho lido do guia CUDA (3.2.2.2) diz que o SM recebe blocos de threads e os divide em warps, mas não diz quem escolhe qual SM recebe qual bloco, nem com que regra."
     }
   ]
 }

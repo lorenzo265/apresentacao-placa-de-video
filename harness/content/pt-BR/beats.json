@@ -105,7 +105,7 @@
     },
     "a5.3": {
       "headline": "Do bloco ao warp",
-      "caption": "O SM recebe blocos de threads e os divide em warps. Cada warp é escalonado por um escalonador de warp. Como os blocos são distribuídos entre os 188 SMs, a fonte não diz.",
+      "caption": "O SM recebe blocos de threads e os divide em warps. Cada warp é escalonado por um escalonador de warp. Como os blocos são distribuídos entre os 188 SMs, o trecho que lemos não diz.",
       "fala": "O guia CUDA descreve o SM como quem recebe blocos de threads e os divide em warps. Isso fecha com a figura do SM: cada warp é escalonado por um dos quatro escalonadores. O que o guia, no trecho que lemos, não diz é quem decide qual SM recebe qual bloco, nem com que regra. Não vamos supor. É uma lacuna declarada.",
       "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.2.2. Whitepaper RTX PRO Blackwell v1.1, Fig. 5 (p. 10)",
       "claims": [
@@ -169,7 +169,7 @@
     "a5.5": {
       "headline": "Quatro partições, cada uma com escalonador",
       "caption": "O SM se divide em 4 partições. Cada uma tem o seu escalonador de warp, que escolhe qual warp avança e despacha 32 threads por ciclo. Pipeline: o número de estágios não é público.",
-      "fala": "Quatro partições vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
+      "fala": "A figura da NVIDIA não dá nome a essas quatro divisões. Partições é o nome que adotamos. Quatro partições vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5, p. 10. Guia de programação CUDA 13.5, 3.2.2.2. Latências: Jarmusch et al., Tab. III (RTX 5080)",
       "claims": [
         "sm.blocks",
@@ -308,21 +308,22 @@
     "a6.2": {
       "headline": "Falha de página: a CPU resolve",
       "caption": "Segundo o driver oficial, a falha vai para um buffer e o canal não pode ser trocado até ser atendido (fault and stall). A CPU resolve um lote e a GPU repete o acesso.",
-      "fala": "Na CPU, a falha de página interrompe a instrução, o sistema operacional carrega a página e a instrução é repetida. Na GPU é parecido, mas quem resolve é o driver, na CPU. O canal é, no nosso entendimento, a fila de trabalho de um programa na GPU. Enquanto o driver não atende, esse canal não pode ser trocado e os outros esperam. Um acesso a endereço ilegal aparece no log como Xid 31, GPU memory page fault. Quantas entradas tem a TLB, a NVIDIA não publica.",
+      "fala": "Na CPU, a falha de página interrompe a instrução, o sistema operacional carrega a página e a instrução é repetida. Na GPU é parecido, mas quem resolve é o driver, na CPU. Canal, segundo o driver, é uma das filas de execução da GPU. Enquanto o driver não atende, esse canal não pode ser trocado e os outros esperam. Um acesso a endereço ilegal aparece no log como Xid 31, GPU memory page fault. Quantas entradas tem a TLB, a NVIDIA não publica.",
       "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_non_replayable_faults.c e uvm_gpu_replayable_faults.c. Catálogo de Xid",
       "claims": [
         "fault.stall",
         "fault.buffer_batch",
         "fault.replay",
         "fault.replayable_blocks_preemption",
-        "irq.xid31"
+        "irq.xid31",
+        "cmd.channel"
       ]
     },
     "a6.3": {
       "headline": "Como a CPU entrega trabalho à GPU",
-      "caption": "Segundo o driver oficial, a CPU grava comandos num pushbuffer, reserva uma entrada da GPFIFO do canal e avança o ponteiro PUT. A GPU consome a fila. Vale para os canais do próprio driver.",
-      "fala": "Isso é uma fila produtor e consumidor, como o buffer circular da matéria: a CPU produz avançando o PUT e a GPU consome avançando o GET. Canal é uma fila de execução da GPU. Um programa CUDA passa pela parte fechada do driver. Supor que seja o mesmo esquema é leitura nossa. O número de entradas no desenho é ilustrativo.",
-      "source_line": "Fonte: driver aberto da NVIDIA, uvm_channel.c e uvm_pushbuffer.h",
+      "caption": "No driver oficial, a CPU grava comandos num pushbuffer, aponta para eles numa entrada da GPFIFO do canal e avança o ponteiro PUT. A GPU lê a fila. Vale para os canais do próprio driver.",
+      "fala": "Isso é uma fila produtor e consumidor, como o buffer circular da matéria: a CPU produz avançando o PUT, e o GET marca até onde a GPU já consumiu. Canal, segundo o driver, é uma das filas de execução independentes da GPU. Só lemos os canais do próprio driver. O caminho de um programa CUDA comum não lemos. Supor o mesmo esquema é leitura nossa. O número de entradas no desenho é ilustrativo.",
+      "source_line": "Fonte: driver aberto da NVIDIA, uvm_channel.h, uvm_channel.c e uvm_pushbuffer.h",
       "claims": [
         "cmd.channel",
         "cmd.gpfifo",
@@ -359,7 +360,7 @@
     "a7.1": {
       "headline": "Ada contra Blackwell: o que mudou",
       "caption": "De uma geração para a outra: 142 para 188 SMs, L2 de 98.304 para 131.072 KB, memória de 48 para 96 GB e 300 para 600 W. As razões são conta nossa.",
-      "fala": "A Ada é a geração anterior, com o chip AD102. Dividindo cada número: 188 por 142 dá 1,32, o L2 dá 1,33, a memória e a potência dão 2,00. Todas as razões são conta nossa. Note que a potência é a da placa inteira, e que ela cresceu mais do que o número de SMs.",
+      "fala": "A Ada é a geração anterior, com o chip AD102. Dividindo cada número: 188 por 142 dá 1,32, o L2 dá 1,33, a memória e a potência dão 2,00. Todas as razões são conta nossa. Note que a potência é o TGP, Total Graphics Power, da mesma tabela, na Workstation Edition. A Max-Q fica em 300 W. Ela cresceu mais do que o número de SMs.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4. Razões: contas nossas",
       "claims": [
         "ada.sm_count",
@@ -381,14 +382,16 @@
         "ada.bandwidth_gbs",
         "ada.bandwidth_gbs_tab1",
         "ada.mem_gb",
-        "mem.bandwidth_gbs"
+        "mem.bandwidth_gbs",
+        "ada.bus_bits",
+        "ada.pin_rate_gbps"
       ]
     },
     "a7.4": {
       "headline": "O que sabemos e o que falta",
-      "caption": "Para cada item do enunciado, a tabela mostra o que a fonte dá e onde ela para. O que não é público fica declarado.",
+      "caption": "Para cada item do enunciado, a tabela mostra o que a fonte dá e onde ela para. Separamos o que não achamos publicado do que não levantamos.",
       "fala": "O padrão é este. Tamanhos, contagens e formatos costumam ser públicos: a largura da instrução, os níveis da tabela de páginas, o tamanho das caches. O funcionamento interno costuma não ser: organização do banco de registradores, microcódigo, TLB, política dos caches, profundidade do pipeline. Lacuna declarada é resultado do trabalho, não falha dele.",
-      "source_line": "Fonte: harness/spec/card.spec.json, fatos e lacunas declaradas, com as fontes de cada seção",
+      "source_line": "Fonte: síntese do grupo a partir das fontes citadas em cada seção (whitepaper, guias CUDA, Binary Utilities, driver aberto, artigos de medição)",
       "claims": [
         "isa.instruction_bytes",
         "mmu.levels",
