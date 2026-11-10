@@ -201,3 +201,71 @@ O que o `assembly-planner` deixou em aberto:
 - **Desmontagem:** E1 a E7 é viável. O `flex.dp` aparece como translação, mas na foto continua preso à carcaça. O E8 separa peças soldadas e continua `inferred`.
 - **Face B:** fica como filha de `frame.shroud`, sem explodir, porque a proposta trata as grades como parte das carcaças.
 
+## 10. Revisão com as medidas do visual-qa (2026-11-10)
+
+Base: `harness/qa/visual-qa-referencias-modelagem.md` (PCB nu sobre régua do Chiphell, PCB com componentes do blog sabareesh, desenho do PCB no manual da Alphacool, renders quase ortogonais da PNY). Revisão feita pelo `assembly-planner` em `design/measurements.csv` e `design/assembly.json`. Nenhum `id` de peça ou de âncora mudou. A proposta aprovada (`proposal.md`, `proposal.json`) não foi editada: ela continua sendo o registro do que foi aprovado, e as linhas do CSV citam o valor antigo.
+
+### 10.1 O que D8 passa a ser
+
+D8 aprovou 108 x 112 mm com tolerância de 10 mm só para bloquear volumes, com a condição de medir antes de travar. A medição foi feita: **119,6 x 121,5 mm, tolerância de 1,5 mm**, por duas fontes independentes (foto retificada e desenho da Alphacool, que dá 117,6 x 120,9). Os 108 x 112 deixam de valer. D8 fica cumprida, não revogada: era a decisão de medir, e a medida entrou. O que continua aberto dentro de D8: o tamanho do chanfro e do recorte em V do conector, e a identidade da foto do Chiphell (sem SKU; nada nela contradiz a Workstation Edition).
+
+### 10.2 Referencial
+
+O relatório usa x' no comprimento e y' na altura, com origem no canto entre a borda do lado do bracket e a borda dos contatos. É o mesmo referencial (u, v) da proposta (seção 2: "u a partir da borda do lado do bracket, v a partir da borda dos contatos"), então **u = x' e v = y'**, sem troca de eixo nem espelhamento. Na placa: x = `pcb_main_card_x_min` + u e y = `pcb_main_card_y_min` + v. O eixo trocado que o relatório aponta é do package (a proposta pôs os 63 mm em y; a medida põe o lado longo em x), não do referencial. Ângulos no plano xy contam a partir de +x, no sentido anti-horário visto de +z.
+
+### 10.3 O que mudou
+
+| Tema | Antes | Agora | Procedência |
+|---|---|---|---|
+| PCB | 108 x 112, centrado em x 152 | 119,6 x 121,5; x de 99,3 a 218,9; y de 14,4 a 135,9 | derived |
+| Chip no PCB | (54; 56), centro do PCB | (52,7; 61,0); na placa (152; 75,4) | derived |
+| Package | 56 x 63, lado longo em y | 67 x 57,5, lado longo em x | derived |
+| Furos da mola | 78 x 84, iguais ao contorno da mola | 63,7 x 77,8, centrados no chip | derived |
+| Furos da `pcb.plate` | 104 x 108, centrados no chip | 106 x 102 (furos de canto), centrados no PCB | posição derived, função inferred |
+| Memória | grade regular com passo de 15 | grade medida, passo de 13,3 e 13,0; lado de 14 mm atravessado na fileira | derived |
+| Conector de energia | 195, 40 ± 20 graus, no topo do PCB | 192, giro de 45 ± 4 graus (−45 no CSV), centro em y 124,4 | x e ângulo derived; y inferred |
+| Carcaça | 126 | 124 ± 2; parede de 1 mm para o PCB caber | derived; parede inferred |
+| Ventiladores | 61 e 244, aro de 115 | 58,5 e 242,8, aro de 116,8 | derived |
+| Pilhas das pontas | 98 e 98 | 99,3 (bracket) e 85,9 (ponta oposta) | derived |
+| Indutores | duas fileiras | três fileiras: contatos, ponta longe do bracket (nova) e borda superior | derived (contagem); posição inferred |
+| Explosão | `cooler.base` 40; `fins.1` e `.2` 120 | `cooler.base` 20; `fins.1` e `.2` 140 | illustrative |
+
+**Ponto 9 (assimetria das pilhas), conta refeita.** Com o chip em x 152 e u 52,7, o PCB começa em 152 − 52,7 = 99,3 e termina em 218,9; sobram 99,3 mm do lado do bracket e 85,9 mm do outro. Centrar o PCB (92,6 a 212,2) poria o chip em 145,3, a 6,2 mm do cruzamento do X (151,5 ± 2,5) e a 7,2 mm do cruzamento da face B (152,5), onde o furo da `pcb.plate` mostra o verso do chip. O ponto médio dos ventiladores (150,65) também aponta para cerca de 151. Decisão: o chip fica sob o X, em 152 (dentro da tolerância das duas faces), e as pilhas ficam assimétricas. Por fora a placa continua quase simétrica (ventiladores a 58,5 e 62 mm das pontas); a assimetria é interna.
+
+**Peças novas: nenhuma.** O canal da borda superior com as duas fendas, o logotipo da borda superior e o X da face A entram como feições de `frame.shroud`; o X da face B, como feição de `frame.face_b` e `frame.center_covers`; o texto "RTX PRO 6000", como feição de `frame.center_covers`. Motivos: (1) são forma ou superfície de peças que já existem e não se separam delas em nenhum estágio; (2) texto e logotipo são detalhe de superfície, que a seção 5.2 da arquitetura põe no passo do Blender; (3) o schema não tem campo de feições e o `blockout.py` para com erro se o assembly tiver peça sem construtor. Cada feição ganhou linhas no CSV e, quando há número, uma âncora: `anchor.frame.shroud.power_opening` e `anchor.frame.center_covers.text`. Âncora nova também em `anchor.power.inductors.far_end`.
+
+**Âncoras corrigidas.** `anchor.pcb.plate.1` saiu do furo da chapa para a chapa (152; 100,4). `anchor.cooler.leaf_spring.1` saiu da janela para o anel (152; 101,4). `anchor.pcb.back_frame.1` foi para o anel do primeiro furo (120,15; 36,5), onde há corpo da peça.
+
+**Explosão de E7 e E8.** Com o PCB a +40 (E7) e a base a +40 (E8), a face de contato encostava no die. A base passou para +20: sobram 20 mm até o die e 16 mm até o componente mais baixo do PCB. O PCB continua a +40, abaixo da mola (+80), então a ordem e as câmeras de E7 não mudam. As pilhas das pontas passaram de 120 para 140 mm: a 120 a pilha do bracket atravessava o bracket, que saiu 40 mm no E1. A ordem dos estágios não mudou.
+
+### 10.4 O que o blockout precisa para acompanhar
+
+O `blockout.py` não foi editado (fora do escopo desta revisão). Ele lê as chaves do CSV pelos nomes, e nenhuma chave que ele usa foi renomeada ou removida. Mas ele tem posições fixas no código que as medidas novas contradizem:
+
+1. **Conector de energia no topo do PCB.** O script centra o conector em `pcb_main_card_y_min + pcb_main_height` (135,9). Girado 45 graus, o corpo sobe 10,55 mm e passa do envelope (cerca de 146,5 contra 137,16). **A conferência do envelope em y vai falhar até o script usar `power_connector_center_y`.**
+2. **Giro dos chips de memória.** O script põe o lado de 14 mm ao longo das fileiras laterais e atravessado nas das bordas; a medida pede o contrário. Com o passo de 13,3 e 13,0, os chips vizinhos se sobrepõem no blockout.
+3. **Centro dos padrões.** `pcb.plate`, `fasteners.e5_plate` e a moldura de `cooler.base` são centrados no die no script; o assembly os centra no PCB (`iface_pcb_center_x`, `iface_pcb_center_y`). As âncoras `anchor.fasteners.e5_plate.*` vão aparecer a cerca de 4,6 mm dos corpos do blockout.
+4. **Pilhas assimétricas.** O script usa `fin_stack_end_length_x` nas duas pontas (agora 85,9); as linhas `fin_stack_end_1_length_x` e `fin_stack_end_2_length_x` têm os comprimentos reais.
+5. **Fileira de indutores da ponta longe do bracket.** O script tem 13 + 11 posições fixas; a fileira nova (`iface_far_end_inductor_band_x`, `_y`) não tem corpo, e a âncora dela vai aparecer longe da peça.
+6. **Contorno do PCB.** Continua caixa, sem chanfro, recorte e rebaixo (`pcb_main_chamfer_angle_deg`, `pcb_main_contact_edge_recess_*`).
+
+A cópia `viewer/public/data/measurements.json` também precisa ser regenerada.
+
+### 10.5 Em aberto
+
+Decisão humana:
+- **Indutores:** a contagem visível (cerca de 10 + 10 a 11 + 7, mais os escondidos na ponta do bracket) passa dos 24 representativos de D4. Subir ou manter é decisão de D4.
+- **Pilhas assimétricas** (99,3 e 85,9): consequência direta das medidas, mas muda a leitura "duas pontas iguais" da proposta. Confirmar ou pedir referência.
+
+Nova referência ou nova medição:
+- Orientação do die dentro do package: a proposta leu o die mais comprido na altura (gn-42), a mesma leitura que errou o package. Em gn-41 a moldura mede 2,4 vezes a largura do die, cerca de 58 mm, que agora bate com o lado curto do package (57,5): isso sugere o die também com o lado longo em x. Reconferir no sabareesh e em gn-42.
+- Package contra memória: com o package de 57,5 em y centrado em v 61,0, a fileira da borda de energia fica cerca de 1 mm sobre ele (dentro das tolerâncias somadas). O desenho da Alphacool pode desempatar.
+- Tamanho do chanfro e do recorte em V do conector, e a distância do conector à borda (`power_connector_center_y` é escolha de bloqueio).
+- Canal da borda superior, as duas fendas e o logotipo: vistos, sem cota.
+- Contorno da `pcb.plate` (104 x 108, escala antiga), janela e anel da mola, posição do conector auxiliar: medidos com a escala do PCB antigo.
+- Furos cobreados de canto: centro do padrão não informado (adotado o centro do PCB), um dos quatro não confirmado, e não está provado que prendam a `pcb.plate`.
+- Altura dos ventiladores e da fileira de DisplayPort na carcaça: continuam centradas por escolha de bloqueio.
+- Catálogo: a imagem 89589 da Puget não é desta placa (tem grade no bracket). O assembly não a cita; `spec/references/index.md` precisa da correção (fora desta revisão).
+
+Continuam sem fonte, com o aviso de tela: interior do cooler, fases de energia, alturas de componente, posição de `power.vrm.mem`, `power.controller` e `power.aux`.
+
