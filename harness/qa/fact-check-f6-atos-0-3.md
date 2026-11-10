@@ -3,7 +3,7 @@
 - Data: 2026-11-10
 - Auditor: agente `fact-checker` (Fable), em contexto separado do `technical-writer`, que escreveu os textos.
 - Escopo: as 32 entradas novas de `harness/content/pt-BR/beats.json` (a0.1 a a0.4, a1.1 a a1.6, a2.1 a a2.12, a3.1 a a3.7, a7.5 e a7.6). Na mesma rodada, a terceira passada dos fatos físicos do spec (`fact-check-fisico-atos-0-3.md`).
-- Resultado dos textos: **não aprovado na primeira passada**: 2 achados bloqueavam (a3.3 e a2.10), 11 pediam ajuste. Correções aplicadas no mesmo dia pela sessão principal. **A segunda passada ainda não foi feita.**
+- Resultado dos textos: **não aprovado na primeira passada**: 2 achados bloqueavam (a3.3 e a2.10), 11 pediam ajuste. Correções aplicadas no mesmo dia pela sessão principal. **Segunda passada no mesmo dia: aprovado com ressalvas**, com a condição de aplicar literalmente a correção N1 (seção no fim), o que foi feito.
 - Resultado do spec (terceira passada): **aprovado com ressalvas**. N1 a N6 fechados, sem erro novo. Ressalvas: a regra de classe do teardown espera decisão humana; o texto da Gamers Nexus foi conferido só por extração dirigida; `standards-sources.md` não foi auditado como um todo.
 - Padrão dos erros: todos os números na tela batem com o spec. Os problemas eram de redação que ia além da fonte (posição tratada como chip, trajeto de cabo afirmado sem fonte), de classe ("provável" onde a regra dá "derivado") e de negativa universal.
 
@@ -48,5 +48,23 @@ Cada beat dos atos 0 a 3 diz o que o plano pede. Os cortes têm justificativa (p
 - O texto da Gamers Nexus sobre a 5090 FE que `proposal.md` cita para o cabo flat: não está em `spec/sources/`.
 - `standards-sources.md` como um todo; a codificação 128b/130b segue só em fonte secundária (o beat a3.6 vale com ou sem ela: 28,4 ou 28,0 vezes).
 
+## Segunda passada (2026-11-10)
+Veredito do auditor: **aprovado com ressalvas, sob uma condição**. Os 13 achados e as notas fecharam. A correção criou um erro pequeno de precisão (N1), em parte vindo dos textos substitutos do próprio auditor. Com N1 aplicado literalmente, os 32 textos ficam aprovados sem nova passada.
+
+| # | Severidade | Onde | Problema | Resolução |
+|---|---|---|---|---|
+| N1 | ajusta | a2.10 (fala e fonte), a2.11 (caption e fala), a2.7 (fala) | "RTX 5090" sem "Founders Edition". O PCB em três peças, a câmara de vapor e o metal líquido são da Founders Edition; as RTX 5090 de outros fabricantes têm projeto próprio | "RTX 5090 Founders Edition" nos cinco lugares, com os textos do auditor |
+
+Sugestões do auditor que não bloqueavam, aplicadas com o texto dele: a1.4 voltou a dizer "conector de energia" (35 palavras); a3.3, fala, com "se todas tiverem chip"; a7.5, fala, com "o caminho do calor dentro do cooler" como exemplo de provável. `video-plan.md`: linhas a1.4 e a3.3 atualizadas.
+
+Ressalvas que continuam:
+- decisão humana da regra de classe do teardown (afeta a definição de "confirmado" em a7.5);
+- decisão do grupo sobre o título de a0.1;
+- a lista de fontes nos créditos, que a7.6 promete e ainda não existe (`STATUS.md`, fila de design, item 11);
+- o texto da Gamers Nexus conferido só por extração;
+- a classe do destino do cabo flat tem dois rótulos no projeto (`STATUS.md`, item 14).
+
+Faltava neste relatório, segundo o auditor: a nota de a2.9 (a fala pode dizer que a divisão da energia com o slot não está nas fontes lidas; não aplicada, por tempo de fala) e a nota de a7.6 (os nomes dos integrantes batem com a proposta formal). Não verificado nesta passada: nenhuma fonte foi reaberta; o validador (rodado pela sessão principal: passou); a cópia do viewer e o storyboard, que segue em rascunho.
+
 ## Estado
-Correções aplicadas. Os 32 textos não estão aprovados: falta a segunda passada do `fact-checker` e, depois, o storyboard desses beats e o gate humano do animatic da placa.
+Os 32 textos estão **aprovados com ressalvas** no gate de fatos. Faltam o storyboard desses beats e o gate humano do animatic da placa.

@@ -145,6 +145,11 @@ Combinado com o autor em 2026-11-10: design e visualização vêm depois de a es
 8. Placa 3D real, explosão e os três caminhos coloridos (dependem da F2 e da F3).
 9. Atos 0 a 3 (dependem da placa 3D). A tabela GPU contra CPU (a7.3) foi retirada em 2026-11-10: o enunciado não pede comparação com CPU.
 10. Viewer: o texto do aviso do diagrama quebra em duas linhas e sai da faixa em alguns beats.
+11. Créditos do tour (a7.6): a linha de fonte promete a lista completa de fontes com data de acesso; a lista ainda não existe na tela.
+12. Cabeçalho: a trilha tem quatro nomes (Placa, Chip, SM, Conceito) e o a0.4 fala em cinco níveis.
+13. Viewer 3D: esmaecimento com aspecto de vidro; a âncora não testa oclusão; `overlay.path` aceito mas sem desenho (falta o mapeamento de peças por caminho).
+14. Classe do destino do cabo flat (`flex.dp`): o beat a2.10 diz "proposta nossa, provável" e `proposal.json`/`assembly.json` dizem `derived`, por um texto sobre a 5090 FE que não está em `spec/sources/`. Registrar a fonte ou descer a proposta para `inferred`.
+15. O beat t1.1 (já aprovado) diz "a NVIDIA não publica"; a redação que as auditorias seguintes adotaram é "não achamos nas fontes lidas".
 
 ## 9. Feito em 2026-11-09
 

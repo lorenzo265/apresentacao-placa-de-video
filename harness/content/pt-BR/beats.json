@@ -78,7 +78,7 @@
     },
     "a1.4": {
       "headline": "Um conector de 16 pinos no topo",
-      "caption": "O conector fica na borda superior, com 16 pinos. Pela norma, 12 de potência e 4 de sinal. Os 600 W são a potência total da placa. Quanto passa pelo conector, não achamos.",
+      "caption": "O conector de energia fica na borda superior, com 16 pinos. Pela norma, 12 de potência e 4 de sinal. Os 600 W são a potência total da placa. Quanto passa pelo conector, não achamos.",
       "fala": "No topo, o conector de energia, de 16 pinos. Pela norma, 12 levam potência e 4 levam sinal. Os 600 W são a potência total da placa. Se tudo viesse em 12 V, seriam cerca de 50 A, conta nossa. A variante, 12VHPWR ou 12V-2x6, está em aberto.",
       "source_line": "Fonte: NVIDIA, datasheet, p. 3, e guia rápido, p. 10. Pinos: norma PCIe CEM 5.1, via guia da Intel. Corrente: conta nossa",
       "claims": [
@@ -172,7 +172,7 @@
     "a2.7": {
       "headline": "Pasta térmica, não metal líquido",
       "caption": "Ao tirar o PCB, a Gamers Nexus esperava metal líquido e achou pasta térmica sobre o chip. A RTX 5090 Founders Edition usa metal líquido, então derivar da placa irmã pode errar.",
-      "fala": "No último passo sai o PCB. Nas fotos ele é quase quadrado e fica no centro, entre as duas pilhas de aletas. Sobre o chip, pasta térmica. A Gamers Nexus esperava metal líquido, como na RTX 5090, e achou pasta. Placa irmã é pista, não prova.",
+      "fala": "No último passo sai o PCB. Nas fotos ele é quase quadrado e fica no centro, entre as duas pilhas de aletas. Sobre o chip, pasta térmica. A Gamers Nexus esperava metal líquido, como na RTX 5090 Founders Edition, e achou pasta. Placa irmã é pista, não prova.",
       "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090 Founders Edition",
       "claims": [
         "teardown.e7",
@@ -207,8 +207,8 @@
     "a2.10": {
       "headline": "Caminho dos dados",
       "caption": "Em ciano: contatos PCIe, adaptador, chip, memória e saídas de vídeo. Que um cabo flat leve o vídeo até as saídas é proposta nossa, provável: a outra ponta não aparece nas fotos.",
-      "fala": "Ciano são os dados. Entram pelos contatos PCIe, passam pelo adaptador e chegam ao chip e à memória. O vídeo sai pelas quatro portas. Há um cabo flat, mas a outra ponta não aparece nas fotos. Supomos que leve o vídeo às saídas: a RTX 5090 tem PCB em três peças. É provável.",
-      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090. Cabo flat: proposta do grupo",
+      "fala": "Ciano são os dados. Entram pelos contatos PCIe, passam pelo adaptador e chegam ao chip e à memória. O vídeo sai pelas quatro portas. Há um cabo flat, mas a outra ponta não aparece nas fotos. Supomos que leve o vídeo às saídas: a RTX 5090 Founders Edition tem PCB em três peças. É provável.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090 Founders Edition. Cabo flat: proposta do grupo",
       "claims": [
         "card.pcie",
         "card.pcie_adapter_separate",
@@ -220,8 +220,8 @@
     },
     "a2.11": {
       "headline": "Caminho do calor",
-      "caption": "Em vermelho: chip, pasta térmica, aletas e ar. A câmara de vapor é derivada da RTX 5090 e de um revisor. Não achamos fonte que mostre o interior do cooler desta placa.",
-      "fala": "Vermelho é o calor. O chip passa o calor pela pasta térmica às aletas, e o ar o leva embora. Câmara de vapor espalha o calor numa chapa selada com líquido. A 5090 tem uma, e um revisor a cita nesta placa. O teardown que lemos não abre o cooler. A câmara é derivada da placa irmã, e o caminho do calor lá dentro é proposta nossa, provável.",
+      "caption": "Em vermelho: chip, pasta térmica, aletas e ar. A câmara de vapor é derivada da RTX 5090 Founders Edition e de um revisor. Não achamos fonte que mostre o interior do cooler desta placa.",
+      "fala": "Vermelho é o calor. O chip passa o calor pela pasta térmica às aletas, e o ar o leva embora. Câmara de vapor espalha o calor numa chapa selada com líquido. A 5090 Founders Edition tem uma, e um revisor a cita nesta placa. O teardown que lemos não abre o cooler. A câmara é derivada da placa irmã, e o caminho do calor lá dentro é proposta nossa, provável.",
       "source_line": "Fonte: Gamers Nexus, teardown (2025). NVIDIA, página da GeForce RTX 5090. Jon Peddie Research, análise da RTX PRO 6000 (2025)",
       "claims": [
         "card.thermal_interface",
@@ -270,7 +270,7 @@
     "a3.3": {
       "headline": "16 controladores de 32 bits",
       "caption": "16 controladores de memória de 32 bits: 512 bits no total. São 32 posições, em média 2 por controlador. Se todas tiverem chip, como dois chips dividem um controlador é proposta nossa, provável.",
-      "fala": "São 16 controladores de 32 bits, 512 bits de barramento. Com 32 posições, a média é de duas por controlador. Não achamos fonte que descreva como dois chips dividem um controlador. Nossa hipótese, provável: cada chip usa 16 dos 32 bits do controlador.",
+      "fala": "São 16 controladores de 32 bits, 512 bits de barramento. Com 32 posições, a média é de duas por controlador. Se todas tiverem chip, não achamos fonte que descreva como dois chips dividem um controlador. Nossa hipótese, provável: cada chip usa 16 dos 32 bits do controlador.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, e datasheet, p. 3. Gamers Nexus, teardown (2025). Razão 2 para 1: conta nossa",
       "claims": [
         "chip.mem_controllers",
@@ -328,7 +328,7 @@
     "a7.5": {
       "headline": "Remontagem e os quatro selos",
       "caption": "A placa se remonta na ordem inversa. Cada afirmação do tour tem um selo: confirmado, derivado, provável ou ilustrativo. Eles separam fato, conta e proposta.",
-      "fala": "Montamos tudo de volta, na ordem inversa. Para fechar, os quatro selos. Confirmado é o que uma fonte oficial ou o teardown desta placa diz. Derivado é o que vem da placa irmã, conta nossa, leitura de foto ou o que só um revisor afirma. Provável é proposta do grupo, como o interior do cooler e as fases de energia. Ilustrativo é desenho, como a planta do chip.",
+      "fala": "Montamos tudo de volta, na ordem inversa. Para fechar, os quatro selos. Confirmado é o que uma fonte oficial ou o teardown desta placa diz. Derivado é o que vem da placa irmã, conta nossa, leitura de foto ou o que só um revisor afirma. Provável é proposta do grupo, como o caminho do calor dentro do cooler e as fases de energia. Ilustrativo é desenho, como a planta do chip.",
       "source_line": "",
       "claims": []
     },
