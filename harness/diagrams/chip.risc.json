@@ -687,13 +687,61 @@
       "note": "Descrição oficial: CUDA Binary Utilities 13.5, 'Blackwell and Rubin Instruction Set'."
     },
     {
+      "id": "risc.mma.ptx",
+      "kind": "codeline",
+      "rect": [
+        1160,
+        516,
+        410,
+        56
+      ],
+      "label": "mma.sync.aligned.m16n8k16",
+      "sublabel": ".row.col.f32.f16.f16.f32",
+      "label_size": 18,
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "mma",
+        "ptx"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "harness/examples/mma/mma.ptx, kernel mma_f16 (operandos omitidos)."
+    },
+    {
+      "id": "risc.mma.sass",
+      "kind": "codeline",
+      "rect": [
+        1160,
+        578,
+        410,
+        40
+      ],
+      "label": "HMMA.16816.F32 R4, R4, R2, RZ ;",
+      "align": "left",
+      "mono": true,
+      "parent": null,
+      "tags": [
+        "mma",
+        "sass",
+        "op-hmma"
+      ],
+      "claims": [
+        "ex.mma.hmma"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "harness/examples/mma/mma.sm_120.sass: uma instrução SASS por mma.sync."
+    },
+    {
       "id": "risc.amp",
       "kind": "note",
       "rect": [
         1160,
-        520,
+        626,
         410,
-        90
+        88
       ],
       "label": "AMP: RISC-V",
       "sublabel": "um RISC por projeto, fora do SM",
@@ -726,6 +774,25 @@
       "note": "Microcódigo: nenhuma informação pública. Modos de endereçamento: lista completa não levantada."
     }
   ],
-  "flows": [],
+  "flows": [
+    {
+      "id": "risc.flow.mma",
+      "from": "risc.mma.ptx",
+      "to": "risc.mma.sass",
+      "points": [
+        [
+          1550,
+          572
+        ],
+        [
+          1550,
+          578
+        ]
+      ],
+      "path": "data",
+      "provenance": "confirmed",
+      "claim": "ex.mma.hmma"
+    }
+  ],
   "checks": []
 }

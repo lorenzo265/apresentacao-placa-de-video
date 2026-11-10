@@ -346,7 +346,9 @@
         "code",
         "ptx",
         "ptx-6",
-        "op-mov"
+        "op-mov",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -481,7 +483,9 @@
         "code",
         "ptx",
         "ptx-12",
-        "op-mul"
+        "op-mul",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -503,7 +507,9 @@
         "code",
         "ptx",
         "ptx-13",
-        "op-add"
+        "op-add",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -548,7 +554,9 @@
         "code",
         "ptx",
         "ptx-15",
-        "op-add"
+        "op-add",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -693,7 +701,9 @@
         "op-s2r",
         "reg-r",
         "reg-sr",
-        "useful"
+        "useful",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -988,7 +998,9 @@
         "addr-00c0",
         "op-imad",
         "reg-r",
-        "useful"
+        "useful",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -1041,7 +1053,9 @@
         "addr-00e0",
         "op-imad",
         "reg-r",
-        "useful"
+        "useful",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -1183,9 +1197,9 @@
       "kind": "counter",
       "rect": [
         30,
-        334,
+        330,
         170,
-        74
+        68
       ],
       "label": "20 instruções",
       "sublabel": "PTX",
@@ -1206,9 +1220,9 @@
       "kind": "counter",
       "rect": [
         210,
-        334,
+        330,
         170,
-        74
+        68
       ],
       "label": "19 úteis",
       "sublabel": "SASS, até o EXIT",
@@ -1230,9 +1244,9 @@
       "kind": "counter",
       "rect": [
         390,
-        334,
+        330,
         170,
-        74
+        68
       ],
       "label": "10 registradores",
       "sublabel": "por thread",
@@ -1254,11 +1268,61 @@
       "note": "'Used 10 registers' do ptxas -v; 0 bytes de spill."
     },
     {
+      "id": "isa.count.reg_max_thread",
+      "kind": "counter",
+      "rect": [
+        210,
+        404,
+        170,
+        46
+      ],
+      "label": "até 255",
+      "sublabel": "por thread",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "counter",
+        "reg-limit",
+        "regs"
+      ],
+      "count": {
+        "value": 255,
+        "claim": "sm.max_regs_per_thread",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "isa.count.reg_sm",
+      "kind": "counter",
+      "rect": [
+        390,
+        404,
+        170,
+        46
+      ],
+      "label": "65.536",
+      "sublabel": "por SM",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "counter",
+        "reg-limit",
+        "regs"
+      ],
+      "count": {
+        "value": 65536,
+        "claim": "sm.regfile_entries",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
       "id": "isa.word.ins",
       "kind": "header",
       "rect": [
         30,
-        424,
+        462,
         530,
         40
       ],
@@ -1277,9 +1341,9 @@
       "kind": "field",
       "rect": [
         30,
-        470,
+        508,
         261,
-        66
+        64
       ],
       "label": "0x0000000602077c23",
       "sublabel": "1ª palavra de 64 bits",
@@ -1299,9 +1363,9 @@
       "kind": "field",
       "rect": [
         299,
-        470,
+        508,
         261,
-        66
+        64
       ],
       "label": "0x004fca0008000007",
       "sublabel": "2ª palavra de 64 bits",
@@ -1321,9 +1385,9 @@
       "kind": "counter",
       "rect": [
         30,
-        544,
+        578,
         530,
-        48
+        46
       ],
       "label": "16 bytes = 128 bits por instrução",
       "parent": null,
@@ -1341,99 +1405,23 @@
       "shape_provenance": "illustrative"
     },
     {
-      "id": "isa.field.opcode",
-      "kind": "field",
-      "rect": [
-        30,
-        602,
-        101.2,
-        68
-      ],
-      "label": "opcode",
-      "sublabel": "10 a 13 bits",
-      "parent": null,
-      "tags": [
-        "word",
-        "volta-field",
-        "field-opcode"
-      ],
-      "claims": [
-        "isa.volta.opcode_bits"
-      ],
-      "provenance": "derived",
-      "shape_provenance": "illustrative",
-      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
-    },
-    {
-      "id": "isa.field.pred",
-      "kind": "field",
-      "rect": [
-        137.2,
-        602,
-        101.2,
-        68
-      ],
-      "label": "predicado",
-      "sublabel": "4 bits",
-      "parent": null,
-      "tags": [
-        "word",
-        "volta-field",
-        "field-pred"
-      ],
-      "count": {
-        "value": 4,
-        "unit": "bits",
-        "claim": "isa.volta.predicate_bits",
-        "provenance": "derived"
-      },
-      "provenance": "derived",
-      "shape_provenance": "illustrative",
-      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
-    },
-    {
-      "id": "isa.field.control",
-      "kind": "field",
-      "rect": [
-        244.4,
-        602,
-        101.2,
-        68
-      ],
-      "label": "controle",
-      "sublabel": "≥ 23 bits",
-      "parent": null,
-      "tags": [
-        "word",
-        "volta-field",
-        "field-control"
-      ],
-      "count": {
-        "value": 23,
-        "unit": "bits",
-        "claim": "isa.volta.control_bits_min",
-        "provenance": "derived"
-      },
-      "provenance": "derived",
-      "shape_provenance": "illustrative",
-      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
-    },
-    {
       "id": "isa.field.instr",
       "kind": "field",
       "rect": [
-        351.6,
-        602,
-        101.2,
-        68
+        30,
+        632,
+        300,
+        54
       ],
       "label": "instrução",
       "sublabel": "≥ 91 bits",
+      "label_size": 20,
       "parent": null,
       "tags": [
         "word",
         "volta-field",
-        "field-instr"
+        "field-instr",
+        "field-row-1"
       ],
       "count": {
         "value": 91,
@@ -1446,21 +1434,52 @@
       "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
     },
     {
-      "id": "isa.field.unused",
+      "id": "isa.field.control",
       "kind": "field",
       "rect": [
-        458.8,
-        602,
-        101.2,
-        68
+        336,
+        632,
+        120,
+        54
       ],
-      "label": "sem uso",
-      "sublabel": "14 bits",
+      "label": "controle",
+      "sublabel": "≥ 23 bits",
+      "label_size": 20,
       "parent": null,
       "tags": [
         "word",
         "volta-field",
-        "field-unused"
+        "field-control",
+        "field-row-1"
+      ],
+      "count": {
+        "value": 23,
+        "unit": "bits",
+        "claim": "isa.volta.control_bits_min",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.unused",
+      "kind": "field",
+      "rect": [
+        462,
+        632,
+        98,
+        54
+      ],
+      "label": "sem uso",
+      "sublabel": "14 bits",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-unused",
+        "field-row-1"
       ],
       "count": {
         "value": 14,
@@ -1473,11 +1492,107 @@
       "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
     },
     {
+      "id": "isa.field.inside",
+      "kind": "frame",
+      "rect": [
+        30,
+        688,
+        300,
+        108
+      ],
+      "label": "dentro da instrução",
+      "label_size": 16,
+      "parent": null,
+      "tags": [
+        "word",
+        "volta-field",
+        "field-inside"
+      ],
+      "claims": [
+        "isa.volta.instruction_bits_min"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.field.opcode",
+      "kind": "field",
+      "rect": [
+        38,
+        718,
+        138,
+        70
+      ],
+      "label": "opcode",
+      "sublabel": "10 a 13 bits",
+      "parent": "isa.field.inside",
+      "tags": [
+        "word",
+        "volta-field",
+        "field-opcode",
+        "field-row-2"
+      ],
+      "claims": [
+        "isa.volta.opcode_bits"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120. Nos bits menos significativos da primeira metade de 64 bits."
+    },
+    {
+      "id": "isa.field.pred",
+      "kind": "field",
+      "rect": [
+        184,
+        718,
+        138,
+        70
+      ],
+      "label": "predicado",
+      "sublabel": "4 bits",
+      "parent": "isa.field.inside",
+      "tags": [
+        "word",
+        "volta-field",
+        "field-pred",
+        "field-row-2"
+      ],
+      "count": {
+        "value": 4,
+        "unit": "bits",
+        "claim": "isa.volta.predicate_bits",
+        "provenance": "derived"
+      },
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+    },
+    {
+      "id": "isa.gap.control",
+      "kind": "gap",
+      "rect": [
+        340,
+        688,
+        220,
+        108
+      ],
+      "label": "Bits de controle",
+      "sublabel": "no sm_120: não documentados",
+      "parent": null,
+      "tags": [
+        "gap",
+        "word"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Bits de controle, contadores de dependência e cache de reúso na Blackwell: as medidas são de Volta (Jia) e Ampere/Turing (Huerta); nenhuma Blackwell foi medida, e a NVIDIA não dá acesso aos bits pelas ferramentas."
+    },
+    {
       "id": "isa.field.note",
       "kind": "note",
       "rect": [
         30,
-        678,
+        804,
         530,
         44
       ],
@@ -1493,25 +1608,6 @@
       ],
       "provenance": "derived",
       "shape_provenance": "illustrative"
-    },
-    {
-      "id": "isa.gap.control",
-      "kind": "gap",
-      "rect": [
-        30,
-        730,
-        530,
-        54
-      ],
-      "label": "Bits de controle no sm_120",
-      "sublabel": "não documentados",
-      "parent": null,
-      "tags": [
-        "gap",
-        "word"
-      ],
-      "shape_provenance": "illustrative",
-      "note": "Bits de controle, contadores de dependência e cache de reúso na Blackwell: as medidas são de Volta (Jia) e Ampere/Turing (Huerta); nenhuma Blackwell foi medida, e a NVIDIA não dá acesso aos bits pelas ferramentas."
     }
   ],
   "flows": [
@@ -1720,6 +1816,91 @@
       "provenance": "derived"
     },
     {
+      "id": "isa.map.12",
+      "from": "isa.ptx.6",
+      "to": "isa.sass.1",
+      "points": [
+        [
+          990,
+          298
+        ],
+        [
+          1080,
+          128
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.13",
+      "from": "isa.ptx.12",
+      "to": "isa.sass.12",
+      "points": [
+        [
+          990,
+          502
+        ],
+        [
+          1080,
+          502
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.14",
+      "from": "isa.ptx.12",
+      "to": "isa.sass.14",
+      "points": [
+        [
+          990,
+          502
+        ],
+        [
+          1080,
+          570
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.15",
+      "from": "isa.ptx.13",
+      "to": "isa.sass.12",
+      "points": [
+        [
+          990,
+          536
+        ],
+        [
+          1080,
+          502
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
+      "id": "isa.map.16",
+      "from": "isa.ptx.15",
+      "to": "isa.sass.14",
+      "points": [
+        [
+          990,
+          604
+        ],
+        [
+          1080,
+          570
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
       "id": "isa.flow.ffma_word",
       "from": "isa.sass.16",
       "to": "isa.word.w1",
@@ -1742,11 +1923,11 @@
         ],
         [
           578,
-          503
+          540
         ],
         [
           560,
-          503
+          540
         ]
       ],
       "path": "control",
@@ -1769,6 +1950,10 @@
     {
       "expr": "isa.field.instr + isa.field.control + isa.field.unused",
       "expect": 128
+    },
+    {
+      "expr": "isa.count.reg_sm / 4",
+      "expect": 16384
     }
   ]
 }

@@ -305,60 +305,13 @@
       "shape_provenance": "illustrative"
     },
     {
-      "id": "irq.m2.xid13",
-      "kind": "cell",
-      "rect": [
-        520,
-        516,
-        260,
-        92
-      ],
-      "label": "Xid 13",
-      "sublabel": "Graphics Engine Exception",
-      "parent": "irq.lane.cpu",
-      "tags": [
-        "mech-2",
-        "xid"
-      ],
-      "claims": [
-        "irq.xid13"
-      ],
-      "provenance": "confirmed",
-      "shape_provenance": "illustrative",
-      "note": "Catálogo de Xid: falhas gerais de aplicação; catálogo geral, não cita a Blackwell."
-    },
-    {
-      "id": "irq.m2.xid31",
-      "kind": "cell",
-      "rect": [
-        520,
-        618,
-        260,
-        94
-      ],
-      "label": "Xid 31",
-      "sublabel": "GPU memory page fault",
-      "parent": "irq.lane.cpu",
-      "tags": [
-        "mech-2",
-        "xid",
-        "fault"
-      ],
-      "claims": [
-        "irq.xid31"
-      ],
-      "provenance": "confirmed",
-      "shape_provenance": "illustrative",
-      "note": "Registrado quando a MMU reporta uma falha; catálogo geral, não cita a Blackwell."
-    },
-    {
       "id": "irq.m3.fault",
       "kind": "step",
       "rect": [
         800,
         82,
         340,
-        44
+        40
       ],
       "label": "1. falha de página no acesso",
       "label_size": 20,
@@ -374,16 +327,16 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+      "note": "Segundo o driver oficial (UVM). "
     },
     {
       "id": "irq.m3.buffer",
       "kind": "step",
       "rect": [
         800,
-        132,
+        128,
         340,
-        44
+        40
       ],
       "label": "2. a falha vai para o buffer",
       "label_size": 20,
@@ -395,22 +348,23 @@
         "fault"
       ],
       "claims": [
-        "fault.replayable_blocks_preemption"
+        "fault.buffer_batch"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+      "note": "Segundo o driver oficial (UVM). o driver lê um lote de falhas do buffer e junta as repetidas"
     },
     {
       "id": "irq.m3.stall",
       "kind": "step",
       "rect": [
         800,
-        182,
+        174,
         340,
-        44
+        60
       ],
-      "label": "3. o canal fica parado",
+      "label": "3. o canal não pode ser trocado",
+      "sublabel": "os outros esperam (fault and stall)",
       "label_size": 20,
       "align": "left",
       "parent": "irq.lane.gpu",
@@ -420,20 +374,21 @@
         "fault"
       ],
       "claims": [
+        "fault.stall",
         "fault.replayable_blocks_preemption"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+      "note": "Segundo o driver oficial (UVM). a falha reproduzível impede a preempção do canal até o driver atender (fault and stall); os outros canais ficam parados"
     },
     {
       "id": "irq.m3.replay",
       "kind": "step",
       "rect": [
         800,
-        232,
+        240,
         340,
-        44
+        40
       ],
       "label": "5. a GPU repete o acesso",
       "label_size": 20,
@@ -445,11 +400,11 @@
         "fault"
       ],
       "claims": [
-        "fault.replayable_blocks_preemption"
+        "fault.replay"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Segundo o driver oficial (UVM): falhas 'replayable' seguram a preempção do canal até o driver resolver."
+      "note": "Segundo o driver oficial (UVM). depois de atender, o driver manda a GPU repetir os acessos (push_replay_on_gpu)"
     },
     {
       "id": "irq.m3.preempt",
@@ -494,10 +449,36 @@
         "fault"
       ],
       "claims": [
-        "fault.replayable_blocks_preemption"
+        "fault.buffer_batch",
+        "fault.replay"
       ],
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "Segundo o driver oficial (UVM)."
+    },
+    {
+      "id": "irq.m3.xid31",
+      "kind": "cell",
+      "rect": [
+        800,
+        540,
+        340,
+        94
+      ],
+      "label": "Xid 31",
+      "sublabel": "GPU memory page fault",
+      "parent": "irq.lane.cpu",
+      "tags": [
+        "mech-3",
+        "xid",
+        "fault"
+      ],
+      "claims": [
+        "irq.xid31"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Catálogo de Xid: registrado quando a MMU reporta uma falha, como acesso a endereço ilegal; catálogo geral, não cita a Blackwell."
     },
     {
       "id": "irq.amp",
@@ -620,7 +601,7 @@
         1200,
         476,
         370,
-        90
+        86
       ],
       "label": "segundo o driver oficial",
       "sublabel": "nv.c, nv-msi.c, UVM",
@@ -631,6 +612,50 @@
       ],
       "shape_provenance": "illustrative",
       "note": "Código de driver mostra o que o software programa, não o circuito."
+    },
+    {
+      "id": "irq.xidlog",
+      "kind": "frame",
+      "rect": [
+        1200,
+        576,
+        370,
+        148
+      ],
+      "label": "como o erro aparece no log do driver",
+      "label_size": 16,
+      "parent": null,
+      "tags": [
+        "xid-log"
+      ],
+      "claims": [
+        "irq.xid13"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Nenhuma fonte liga o trap a um código Xid específico."
+    },
+    {
+      "id": "irq.xid13",
+      "kind": "cell",
+      "rect": [
+        1214,
+        608,
+        342,
+        102
+      ],
+      "label": "Xid 13",
+      "sublabel": "Graphics Engine Exception",
+      "parent": "irq.xidlog",
+      "tags": [
+        "xid-log",
+        "xid"
+      ],
+      "claims": [
+        "irq.xid13"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Catálogo de Xid: falhas gerais de aplicação do usuário; catálogo geral, não cita a Blackwell."
     },
     {
       "id": "irq.gap.cmd",
@@ -688,7 +713,7 @@
         ]
       ],
       "path": "control",
-      "provenance": "inferred"
+      "provenance": "derived"
     },
     {
       "id": "irq.flow.m1_23",
@@ -751,16 +776,16 @@
       "points": [
         [
           840,
-          126
+          122
         ],
         [
           840,
-          132
+          128
         ]
       ],
       "path": "control",
       "provenance": "confirmed",
-      "claim": "fault.replayable_blocks_preemption"
+      "claim": "fault.buffer_batch"
     },
     {
       "id": "irq.flow.m3_buffer_stall",
@@ -769,16 +794,16 @@
       "points": [
         [
           840,
-          176
+          168
         ],
         [
           840,
-          182
+          174
         ]
       ],
       "path": "control",
       "provenance": "confirmed",
-      "claim": "fault.replayable_blocks_preemption"
+      "claim": "fault.stall"
     },
     {
       "id": "irq.flow.m3_stall_cpu",
@@ -804,7 +829,7 @@
       ],
       "path": "control",
       "provenance": "confirmed",
-      "claim": "fault.replayable_blocks_preemption"
+      "claim": "fault.buffer_batch"
     },
     {
       "id": "irq.flow.m3_replay",
@@ -821,16 +846,16 @@
         ],
         [
           790,
-          254
+          260
         ],
         [
           800,
-          254
+          260
         ]
       ],
       "path": "control",
       "provenance": "confirmed",
-      "claim": "fault.replayable_blocks_preemption"
+      "claim": "fault.replay"
     }
   ],
   "checks": []

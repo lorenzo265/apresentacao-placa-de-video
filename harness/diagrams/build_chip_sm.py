@@ -77,7 +77,7 @@ for b, (x, y, w, h) in enumerate(blocks):
                claims=["sm.block_ldst_units"],
                note=fact("sm.block_ldst_units")["note"] + ". Desenhadas como na Fig. 5, quatro por bloco.")
     d.node(f"{bid}.sfu", "sfu", units[LDST], "SFU", parent=bid, tags=["sfu", bt],
-           note="Presente na Fig. 5; o spec não tem fato com a contagem de SFUs.")
+           claims=["sm.block_sfu"], provenance="confirmed", note="Uma SFU por bloco (Fig. 5).")
 
 # unidades comuns aos quatro blocos
 d.node("sm.l1", "cache", [40, 1164, 920, 76], "L1 / memória compartilhada",
@@ -90,6 +90,7 @@ d.node("sm.rt", "rt", [40, 1314, 920, 220], "RT Core", "4ª geração", parent="
        tags=["rt"], count="sm.rt_cores", provenance="confirmed")
 d.node("sm.fp64", "note", [40, 1550, 920, 110], f"{val('sm.fp64_cores')} núcleos FP64",
        "não aparecem na Fig. 5", parent="sm.frame", tags=["fp64", "note"], count="sm.fp64_cores",
+       claims=["sm.fp64_rate"],
        note=fact("sm.fp64_cores")["note"] + ". A Fig. 5 não os desenha; posição ilustrativa.")
 
 d.check("sm.count.blocks * sm.block.0.regfile", val("sm.regfile_entries"))

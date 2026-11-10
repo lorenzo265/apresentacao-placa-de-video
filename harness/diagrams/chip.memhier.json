@@ -183,9 +183,8 @@
         240,
         120
       ],
-      "label": "sem medida",
-      "sublabel": "no spec",
-      "label_size": 24,
+      "label": "sem medida levantada",
+      "label_size": 19,
       "parent": null,
       "tags": [
         "latency",

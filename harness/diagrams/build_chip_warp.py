@@ -20,7 +20,7 @@ d = Diagram(
 cells = grid(130, 28, 1340, 660, COLS, ROWS, 20, 20)
 for i, cr in enumerate(cells):
     alt = i in DIVERGED
-    d.node(f"warp.thread.{i}", "thread-alt" if alt else "thread", cr, str(i),
+    d.node(f"warp.thread.{i}", "thread-alt" if alt else "thread", cr, str(i), label_size=84,
            tags=["thread", f"thread-{i}", f"lane-row-{i // COLS}"] + (["diverged"] if alt else ["converged"]),
            note="Seguiu o outro caminho do desvio: executa enquanto as demais ficam desabilitadas."
            if alt else None)

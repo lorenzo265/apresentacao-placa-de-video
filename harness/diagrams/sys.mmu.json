@@ -400,7 +400,7 @@
         92
       ],
       "label": "página de 4 KB",
-      "sublabel": "GDDR7",
+      "sublabel": "memória física",
       "label_size": 22,
       "parent": null,
       "tags": [
@@ -408,11 +408,11 @@
         "dram"
       ],
       "claims": [
-        "mem.type",
         "mmu.page_sizes"
       ],
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "Destino da tradução: endereço físico. Onde a página está (GDDR7 ou memória do sistema) não tem fonte."
     },
     {
       "id": "mmu.stop.2m",
@@ -593,8 +593,8 @@
         600,
         90
       ],
-      "label": "Pascal: 49 bits, 5 níveis",
-      "sublabel": "geração anterior, para comparar",
+      "label": "Pascal (2016): 49 bits, 5 níveis",
+      "sublabel": "geração antiga, para comparar",
       "parent": null,
       "tags": [
         "pascal"

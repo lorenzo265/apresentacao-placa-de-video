@@ -872,8 +872,12 @@
         "sfu",
         "block-0"
       ],
+      "claims": [
+        "sm.block_sfu"
+      ],
+      "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+      "note": "Uma SFU por bloco (Fig. 5)."
     },
     {
       "id": "sm.block.1",
@@ -1605,8 +1609,12 @@
         "sfu",
         "block-1"
       ],
+      "claims": [
+        "sm.block_sfu"
+      ],
+      "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+      "note": "Uma SFU por bloco (Fig. 5)."
     },
     {
       "id": "sm.block.2",
@@ -2338,8 +2346,12 @@
         "sfu",
         "block-2"
       ],
+      "claims": [
+        "sm.block_sfu"
+      ],
+      "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+      "note": "Uma SFU por bloco (Fig. 5)."
     },
     {
       "id": "sm.block.3",
@@ -3071,8 +3083,12 @@
         "sfu",
         "block-3"
       ],
+      "claims": [
+        "sm.block_sfu"
+      ],
+      "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+      "note": "Uma SFU por bloco (Fig. 5)."
     },
     {
       "id": "sm.l1",
@@ -3223,6 +3239,9 @@
         "claim": "sm.fp64_cores",
         "provenance": "confirmed"
       },
+      "claims": [
+        "sm.fp64_rate"
+      ],
       "shape_provenance": "illustrative",
       "note": "Nota da Fig. 3, p. 8; taxa de 1/64 da FP32. A Fig. 5 não os desenha; posição ilustrativa."
     }

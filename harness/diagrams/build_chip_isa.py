@@ -135,17 +135,30 @@ def only(pat, items, key=lambda v: v):
 
 
 PX1, SX0 = COL["ptx"][0] + COL["ptx"][1], COL["sass"][0]
-for k, (pp, sp) in enumerate(TABLE3):
+# Correspondências além da Tabela 3, lidas da própria listagem (derived): %tid.x vira S2R, e o
+# endereço (mul.wide + add.s64) vira as duas IMAD.WIDE. Ids isa.map.12 em diante.
+EXTRA = [
+    (r"^mov\.u32 %r\d+, %tid\.x", r"^S2R R0, SR_TID\.X$"),
+    (r"^mul\.wide\.s32 ", r"^IMAD\.WIDE R2,"),
+    (r"^mul\.wide\.s32 ", r"^IMAD\.WIDE R4,"),
+    (r"^add\.s64 %rd6,", r"^IMAD\.WIDE R2,"),
+    (r"^add\.s64 %rd7,", r"^IMAD\.WIDE R4,"),
+]
+for k, (pp, sp) in enumerate(TABLE3 + EXTRA):
     pi = only(pp, ptx)
     si = only(sp, sass, key=lambda s: s["ins"])
     for nid in (f"isa.ptx.{pi}", f"isa.sass.{si}"):
-        d.get(nid)["tags"].append("mapped")
+        tags = d.get(nid)["tags"]
+        if "mapped" not in tags:
+            tags.append("mapped")
+        if k >= len(TABLE3) and "map-extra" not in tags:
+            tags.append("map-extra")
     d.flow(f"isa.map.{k}", f"isa.ptx.{pi}", f"isa.sass.{si}", path="data", provenance="derived",
            points=[(PX1, Y0 + pi * LS + LH / 2), (SX0, Y0 + si * LS + LH / 2)])
 
 # ---------------- contadores ----------------
-cy = 334
-c = row(30, cy, 530, 74, 3, 10)
+cy = 330
+c = row(30, cy, 530, 68, 3, 10)
 d.node("isa.count.ptx", "counter", c[0], f"{val('ex.saxpy.ptx_instructions')} instruções", "PTX",
        tags=["counter", "ptx"], count="ex.saxpy.ptx_instructions")
 d.node("isa.count.sass", "counter", c[1], f"{val('ex.saxpy.sass_useful')} úteis", "SASS, até o EXIT",
@@ -154,50 +167,77 @@ d.node("isa.count.sass", "counter", c[1], f"{val('ex.saxpy.sass_useful')} úteis
 d.node("isa.count.regs", "counter", c[2], f"{val('ex.saxpy.registers')} registradores", "por thread",
        tags=["counter", "reg-r", "regs"], count="ex.saxpy.registers",
        claims=["ex.saxpy.spill_bytes"], note="'Used 10 registers' do ptxas -v; 0 bytes de spill.")
+# limite de registradores (beat a5.8)
+lim = row(c[1][0], cy + 74, 530 - (c[1][0] - 30), 46, 2, 10)
+d.node("isa.count.reg_max_thread", "counter", lim[0], f"até {val('sm.max_regs_per_thread')}", "por thread",
+       tags=["counter", "reg-limit", "regs"], count="sm.max_regs_per_thread", label_size=20)
+d.node("isa.count.reg_sm", "counter", lim[1], f"{br(val('sm.regfile_entries'))}", "por SM",
+       tags=["counter", "reg-limit", "regs"], count="sm.regfile_entries", label_size=20)
 
 # ---------------- a palavra de 128 bits (FFMA) ----------------
 fi = only(r"^FFMA ", sass, key=lambda s: s["ins"])
 ffma = sass[fi]
 d.get(f"isa.sass.{fi}")["tags"].append("ffma")
-wy = 424
+wy = 462
 d.node("isa.word.ins", "header", [30, wy, 530, 40], ffma["ins"] + " ;", mono=True,
        tags=["word", "ffma"], provenance="confirmed")
-halves = row(30, wy + 46, 530, 66, 2, 8)
+halves = row(30, wy + 46, 530, 64, 2, 8)
 for j, hr in enumerate(halves):
     d.node(f"isa.word.w{j}", "field", hr, ffma["words"][j], f"{j + 1}ª palavra de 64 bits", mono=True,
            tags=["word", "ffma", "word-hex"], provenance="confirmed",
            note=f"Lida de saxpy.sm_120.sass, endereço 0x{ffma['addr']}.")
-d.node("isa.word.bytes", "counter", [30, wy + 120, 530, 48],
+d.node("isa.word.bytes", "counter", [30, wy + 116, 530, 46],
        f"{val('isa.instruction_bytes')} bytes = 128 bits por instrução",
        tags=["word", "counter", "word-size"], count="isa.instruction_bytes")
+
+VOLTA_NOTE = "Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120."
+# linha 1: as três partes que somam 128 bits (larguras não proporcionais: são mínimos, sem posição)
 FIELDS = [
-    ("opcode", "opcode", f"{val('isa.volta.opcode_bits')} bits", "isa.volta.opcode_bits"),
-    ("pred", "predicado", f"{val('isa.volta.predicate_bits')} bits", "isa.volta.predicate_bits"),
-    ("control", "controle", f"≥ {val('isa.volta.control_bits_min')} bits", "isa.volta.control_bits_min"),
-    ("instr", "instrução", f"≥ {val('isa.volta.instruction_bits_min')} bits", "isa.volta.instruction_bits_min"),
-    ("unused", "sem uso", f"{val('isa.volta.unused_bits')} bits", "isa.volta.unused_bits"),
+    ("instr", "instrução", f"≥ {val('isa.volta.instruction_bits_min')} bits", "isa.volta.instruction_bits_min", 300),
+    ("control", "controle", f"≥ {val('isa.volta.control_bits_min')} bits", "isa.volta.control_bits_min", 120),
+    ("unused", "sem uso", f"{val('isa.volta.unused_bits')} bits", "isa.volta.unused_bits", 98),
 ]
-fr = row(30, wy + 178, 530, 68, len(FIELDS), 6)
-for (fid, name, size, claim), rr in zip(FIELDS, fr):
-    numeric = isinstance(val(claim), (int, float))
-    d.node(f"isa.field.{fid}", "field", rr, name, size, tags=["word", "volta-field", f"field-{fid}"],
-           count=claim if numeric else None, claims=() if numeric else [claim], provenance="derived",
-           note="Campo descrito para a Volta (Jia et al., 2018); sem posição de bit exata em sm_120.")
-d.node("isa.field.note", "note", [30, wy + 254, 530, 44], "campos descritos para a Volta (2018)",
-       tags=["word", "volta-field", "note"], claims=["isa.volta.instruction_bits_min"], provenance="derived")
-d.node("isa.gap.control", "gap", [30, wy + 306, 530, 54], "Bits de controle no sm_120", "não documentados",
+fy = wy + 170
+x = 30
+for fid, name, size, claim, w in FIELDS:
+    d.node(f"isa.field.{fid}", "field", [x, fy, w, 54], name, size,
+           tags=["word", "volta-field", f"field-{fid}", "field-row-1"], count=claim, provenance="derived",
+           label_size=20,
+           note=VOLTA_NOTE)
+    x += w + 6
+assert abs(x - 6 - 560) < 1e-6
+# linha 2: o que fica dentro dos bits de instrução, aninhado sob a caixa "instrução"
+iy = fy + 56
+d.node("isa.field.inside", "frame", [30, iy, 300, 108], "dentro da instrução",
+       tags=["word", "volta-field", "field-inside"], label_size=16, provenance="derived",
+       claims=["isa.volta.instruction_bits_min"], note=VOLTA_NOTE)
+inner = row(38, iy + 30, 284, 70, 2, 8)
+d.node("isa.field.opcode", "field", inner[0], "opcode", f"{val('isa.volta.opcode_bits')} bits",
+       parent="isa.field.inside", tags=["word", "volta-field", "field-opcode", "field-row-2"],
+       claims=["isa.volta.opcode_bits"], provenance="derived",
+       note=VOLTA_NOTE + " Nos bits menos significativos da primeira metade de 64 bits.")
+d.node("isa.field.pred", "field", inner[1], "predicado", f"{val('isa.volta.predicate_bits')} bits",
+       parent="isa.field.inside", tags=["word", "volta-field", "field-pred", "field-row-2"],
+       count="isa.volta.predicate_bits", provenance="derived", note=VOLTA_NOTE)
+d.node("isa.gap.control", "gap", [340, iy, 220, 108], "Bits de controle", "no sm_120: não documentados",
        tags=["gap", "word"], note=gap("isa.control_bits_blackwell")["description"])
+d.node("isa.field.note", "note", [30, iy + 116, 530, 44], "campos descritos para a Volta (2018)",
+       tags=["word", "volta-field", "note"], claims=["isa.volta.instruction_bits_min"], provenance="derived")
+assert iy + 116 + 44 <= 888
 
 ffma_y = Y0 + fi * LS + LH / 2
+w1y = halves[1][1] + halves[1][3] / 2
 d.flow("isa.flow.ffma_word", f"isa.sass.{fi}", "isa.word.w1", path="control", provenance="confirmed",
-       points=[(SX0, ffma_y), (1050, ffma_y), (1050, 776), (578, 776), (578, wy + 79), (560, wy + 79)])
+       points=[(SX0, ffma_y), (1050, ffma_y), (1050, 776), (578, 776), (578, w1y), (560, w1y)])
 
 # 20 PTX -> 19 SASS úteis: cvta some (-2), mul.wide + 2 add.s64 viram 2 IMAD.WIDE (-1), 2 sem par (+2)
 d.check("isa.count.ptx - 2 - 1 + 2", val("ex.saxpy.sass_useful"))
 # listagem completa: úteis + BRA + NOPs
 d.check(f"isa.count.sass + 1 + {n_nop}", val("ex.saxpy.sass_instructions"))
 d.check("isa.word.bytes * 8", 128)
+# linha 1 da palavra: 91 + 23 + 14 = 128 (opcode e predicado ficam dentro dos 91)
 d.check("isa.field.instr + isa.field.control + isa.field.unused", 128)
+d.check("isa.count.reg_sm / 4", val("sm.block_regfile_entries"))
 
 if __name__ == "__main__":
     d.write(__file__)

@@ -184,7 +184,16 @@ class ISA(unittest.TestCase):
         m = re.search(r"FFMA[^/]*/\* (0x[0-9a-f]{16}) \*/\s*/\* (0x[0-9a-f]{16}) \*/", text)
         words = [n["label"] for n in nodes("chip.isa", tag="word-hex")]
         self.assertEqual(words, [m.group(1), m.group(2)])
-        self.assertEqual(len(D["chip.isa"]["flows"]) - 1, 12)        # Tabela 3 + FFMA -> palavra
+        maps = [f for f in D["chip.isa"]["flows"] if f["id"].startswith("isa.map.")]
+        self.assertEqual(len(maps), 12 + 5)                          # Tabela 3 + tid, mul.wide, 2 add.s64
+        self.assertTrue(all(f["provenance"] == "derived" for f in maps))
+        row1 = nodes("chip.isa", tag="field-row-1")
+        self.assertEqual(sum(n["count"]["value"] for n in row1), 8 * SPEC["isa.instruction_bytes"])  # 91+23+14
+        row2 = nodes("chip.isa", tag="field-row-2")
+        instr = [n for n in row1 if "field-instr" in n["tags"]][0]["rect"]
+        for n in row2:   # opcode e predicado aninhados sob a caixa "instrução"
+            self.assertTrue(n["rect"][0] >= instr[0] and n["rect"][0] + n["rect"][2] <= instr[0] + instr[2])
+            self.assertGreater(n["rect"][1], instr[1] + instr[3] - 1e-6)
         for n in sass:
             reg_r = bool(re.search(r"(?<![A-Z_])R\d+", n["label"]))
             self.assertEqual(reg_r, "reg-r" in n["tags"], n["label"])
@@ -214,6 +223,16 @@ class MMU(unittest.TestCase):
 
 
 class Sistema(unittest.TestCase):
+    def test_xid_sem_ligacao_com_trap(self):
+        xid13 = [n for n in D["sys.irq"]["nodes"] if n.get("label") == "Xid 13"][0]
+        xid31 = [n for n in D["sys.irq"]["nodes"] if n.get("label") == "Xid 31"][0]
+        self.assertNotIn("mech-2", xid13["tags"])
+        self.assertIn("xid-log", xid13["tags"])
+        self.assertIn("mech-3", xid31["tags"])
+        trap = {n["id"] for n in nodes("sys.irq", tag="trap")}
+        for f in D["sys.irq"]["flows"]:
+            self.assertFalse(f["from"] in trap and f["to"] in (xid13["id"], xid31["id"]))
+
     def test_tres_mecanismos_e_lacunas(self):
         for k in (1, 2, 3):
             self.assertTrue(nodes("sys.irq", tag=f"mech-{k}"))

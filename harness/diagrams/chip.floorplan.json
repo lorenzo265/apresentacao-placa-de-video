@@ -1,8 +1,8 @@
 {
   "id": "chip.floorplan",
   "level": 2,
-  "title": "Planta do GB202 nesta placa",
-  "disclaimer": "Diagrama ilustrativo: as contagens são oficiais (whitepaper, Tab. 4); posições, formas e quais TPCs estão apagados não são.",
+  "title": "Diagrama de blocos do GB202",
+  "disclaimer": "Redesenho do diagrama de blocos da NVIDIA (whitepaper, Fig. 3). As contagens são oficiais; a planta física do die não é pública. A grade de TPCs dentro de cada GPC e quais posições ficam de fora são ilustrativas.",
   "size": [
     1600,
     900
@@ -25,10 +25,12 @@
         "die"
       ],
       "claims": [
-        "chip.name"
+        "chip.name",
+        "chip.block_diagram"
       ],
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "Arranjo da Fig. 3 do whitepaper (duas fileiras de 6 GPCs, L2 no centro, controladores nas laterais); é diagrama de blocos, não a planta física."
     },
     {
       "id": "chip.data",
@@ -5282,6 +5284,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5308,6 +5311,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5334,6 +5338,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5360,6 +5365,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5386,6 +5392,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5412,6 +5419,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5438,6 +5446,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5464,6 +5473,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5490,6 +5500,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5516,6 +5527,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5542,6 +5554,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5568,6 +5581,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5594,6 +5608,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5620,6 +5635,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5646,6 +5662,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5672,6 +5689,7 @@
       ],
       "label": "MC",
       "sublabel": "32 bits",
+      "label_size": 24,
       "parent": "chip.die",
       "tags": [
         "memctl",
@@ -5720,7 +5738,7 @@
         70
       ],
       "label": "94 TPCs",
-      "sublabel": "habilitados nesta placa",
+      "sublabel": "nesta placa (Tab. 4)",
       "parent": null,
       "tags": [
         "counter",
@@ -5743,7 +5761,7 @@
         70
       ],
       "label": "188 SMs",
-      "sublabel": "habilitados (94 × 2)",
+      "sublabel": "94 × 2",
       "parent": null,
       "tags": [
         "counter",
@@ -5921,7 +5939,7 @@
         290,
         84
       ],
-      "label": "2 posições de TPC apagadas",
+      "label": "2 TPCs a menos que o chip completo",
       "sublabel": "quais: escolha ilustrativa",
       "parent": null,
       "tags": [

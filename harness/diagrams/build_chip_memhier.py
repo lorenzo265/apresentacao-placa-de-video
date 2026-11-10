@@ -44,7 +44,7 @@ LAT = [
 for i, item in enumerate(LAT):
     r = [1060, STEP_Y[i] + 14, 240, SH - 28]
     if item is None:
-        d.node("memh.lat.regs", "gap", r, "sem medida", "no spec", tags=["latency", "regs", "gap"], label_size=24,
+        d.node("memh.lat.regs", "gap", r, "sem medida levantada", None, tags=["latency", "regs", "gap"], label_size=19,
                note="O spec não tem latência de acesso ao banco de registradores. lat.int_fp_cycles "
                     "(4 ciclos) é latência de instrução, não de acesso.")
         continue
