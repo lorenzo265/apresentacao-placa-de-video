@@ -68,13 +68,14 @@ Variante: Workstation Edition (600 W). A Max-Q (300 W) e a Server Edition têm o
 
 | Camada | Escolha | Motivo |
 |---|---|---|
-| Geometria | **build123d** (Python, CAD paramétrico) | Medidas exatas, STEP + glTF, sem Blender |
+| Geometria | **build123d** (Python, CAD paramétrico) | Medidas exatas, STEP + glTF. Forma e medidas nascem aqui |
+| Detalhe de superfície | **Blender por script** (`bpy` 5.3.0, sem interface) | Chanfros, UV, oclusão e normais assadas, texturas do PCB, texto gravado. Decisão do autor em 2026-11-10 (seção 5.2) |
 | Malha / pós-processo | trimesh, gltf-transform (Node) | Simplificação, Draco/meshopt, validação |
 | Viewer | **Three.js + GSAP + camera-controls** (versões fixadas no build) | Timeline, câmera cinematográfica |
 | Linhas de chamada | SVG sobreposto, âncora 3D projetada por frame, `stroke-dashoffset` | Linha "desenha" e segue a peça |
 | Texto | DOM overlay (PT-BR) | Acessível e fácil de editar |
 | QA visual e vídeo | Playwright + Chromium headless + ffmpeg (já instalados) | Capturas e render da tour sem GPU |
-| Blender | **opcional**, não instalado | Só entra se precisarmos de render offline de alta qualidade |
+| Render offline | Blender (Cycles), opcional | Mesmos movimentos de câmera do storyboard com traçado de raios, se o grupo quiser imagem de cinema. Não substitui o viewer |
 
 Verificado em 2026-11-09: `build123d` 0.13.0 e `trimesh` 5.2.0 instalam em Python 3.13 e exportam STEP e GLB; Node 22, Playwright 1.63 e ffmpeg 6.1 estão no ambiente. As dependências Python estão em `requirements.txt`; o `package.json` do viewer é pendência. Achados do teste em `design/assembly-plan.md`, seção 7, e custo de captura em `story/video-plan.md`, seção 7.1.
 
@@ -115,6 +116,22 @@ Regras novas:
 1. **Animatic antes do detalhe.** A F3 começa por um *blockout*: cada peça é uma caixa com as dimensões do `assembly.json`. O viewer já roda o storyboard inteiro com o blockout. Câmeras, tempos e textos são aprovados aí (gate humano da F6), antes de qualquer peça detalhada.
 2. **A trilha D começa junto com a F2.** O esqueleto do viewer e a captura determinística não dependem do modelo final.
 3. **Prioridade em caso de aperto:** A, depois B, depois D, depois C. A placa física só recebe detalhe onde a câmera passa (níveis de fidelidade em `design/assembly-plan.md`, seção 4).
+
+### 5.2 Cadeia de fidelidade da placa (decisão do autor em 2026-11-10)
+
+O autor pediu o modelo mais fiel e detalhado possível. A fidelidade vem das referências e das medidas, não do renderizador. A cadeia tem três camadas, e cada uma só acrescenta o que a anterior não dá:
+
+1. **Forma e medidas: build123d.** Cada peça é gerada das linhas de `design/measurements.csv`. Nenhuma medida nasce no Blender.
+2. **Detalhe de superfície: Blender por script.** Recebe o GLB ou STEP do passo 1 e acrescenta chanfros, UV, mapas assados (oclusão, normais), texturas procedurais do PCB (trilhas, máscara de solda, serigrafia) e o texto gravado. O script é versionado e determinístico; nada é editado à mão na interface. O Blender não muda dimensão: o `integrator` confere o envelope depois do passo.
+3. **Imagem: three.js no viewer.** Materiais PBR, iluminação por ambiente, sombra de contato. É a etapa de design, depois da estrutura.
+
+Regras desta cadeia:
+- **Referência antes de modelar.** Cada peça de fidelidade A tem de citar as imagens de referência usadas (`spec/references/`) e as linhas do CSV. O `visual-qa` compara o render da peça com a referência antes de a peça entrar no GLB final.
+- **Design igual ao da placa original** (decisão do autor): textos e marcas visíveis na placa real, como "RTX PRO 6000" no X central e o logotipo lateral, entram no modelo onde uma referência os mostra. Isso substitui a regra anterior de "sem logos". Uso educacional; exige revisão antes de qualquer uso comercial (seção 10).
+- **Placa irmã.** A GeForce RTX 5090 Founders Edition (mesmo chip, mesmo conceito de fluxo duplo) serve de referência onde esta placa não tem fonte. Tudo o que vier dela é `derived` e leva o selo.
+- **Sem compra de modelo pronto.** Modelos de terceiros não são fonte de medida. Só entram como comparação visual, e só os gratuitos, com a licença registrada.
+- **GLB para o arquivo único:** sem compressão Draco (o decodificador não abre por `file://`). Para reduzir tamanho, meshopt, cujo decodificador já vai embutido no viewer.
+- **Vídeo generativo** (Higgsfield e parecidos): fica como experimento posterior ao seminário, só para abertura ou teaser, gerado a partir de renders do nosso modelo como quadro inicial e final, e sempre marcado como ilustrativo. Não entra nos beats que explicam, porque redesenha a placa a cada quadro.
 
 ## 6. Roster de agentes e modelos
 

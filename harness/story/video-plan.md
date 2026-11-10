@@ -182,7 +182,7 @@ O ato 6 concentra os dois itens de **risco alto** do enunciado (MMU e interrupç
 7. **Selo de procedência.** Quatro estados com cor, ícone e palavra: confirmado, derivado, provável, ilustrativo. Nos níveis 2 a 4 aparece também uma faixa fixa "diagrama ilustrativo".
 8. **Cabeçalho.** Trilha de nível (Placa, Chip, SM, Conceito), número e nome da seção do texto escrito, barra de progresso.
 9. **Tipografia.** Uma família sem serifa para texto e uma monoespaçada para código, as duas de licença aberta e embarcadas no viewer (sem CDN). Corpo mínimo de 28 px em 1080p, para leitura em projetor.
-10. **Marcas.** Sem logos da NVIDIA na geometria nem nas texturas, até decisão humana em contrário (ver ARCHITECTURE, seção 10).
+10. **Marcas.** O modelo segue o design da placa original (decisão do autor em 2026-11-10): textos e marcas entram onde uma referência os mostra na placa real (ver ARCHITECTURE, seção 5.2). Uso educacional.
 
 ## 6. Texto e fala
 

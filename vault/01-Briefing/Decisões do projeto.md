@@ -35,6 +35,11 @@ Registro curto de decisões já tomadas. Detalhes técnicos em `harness/ARCHITEC
 | 2026-11-10 | Seminário de **22 minutos**; corte do seminário com alvo de 20 minutos (substitui a linha de 2026-11-09) | Informado pelo autor. O tempo a mais foi para o chip: sete beats de reserva dos atos 4 a 6 entraram no corte |
 | 2026-11-10 | **Tabela GPU contra CPU retirada** do fechamento (beat a7.3). A seção 14 fica só com as lacunas e o encerramento | O enunciado não pede comparação com CPU, e o trabalho é sobre a GPU. A tabela exigiria fonte e auditoria para o lado da CPU. A síntese item a item do enunciado já está no quadro de lacunas (a7.4) |
 | 2026-11-10 | Divisão da fala **fica como está** em `harness/story/video-plan.md`, seção 6 | O autor disse que os três ajustes em aberto não precisam de decisão |
+| 2026-11-10 | **Cadeia de modelagem da placa:** build123d para forma e medidas, Blender por script para o detalhe de superfície, three.js para a imagem | O autor quer o modelo o mais fiel e detalhado possível. Registro em `harness/ARCHITECTURE.md`, seção 5.2 |
+| 2026-11-10 | O modelo **segue o design da placa original**, com os textos e marcas visíveis na placa real | Decisão do autor; substitui a regra "sem logos". Uso educacional |
+| 2026-11-10 | **Sem compra** de modelo 3D pronto nem de serviço pago | Sem orçamento. Modelos gratuitos só como comparação visual |
+| 2026-11-10 | Vídeo generativo (Higgsfield): **experimento para depois**, só em abertura ou teaser, a partir de renders do nosso modelo, marcado como ilustrativo | O autor vê como possibilidade se o modelo servir de base. Não entra nos beats que explicam |
+| 2026-11-10 | A RTX 5090 Founders Edition e fabricantes de water block entram como **referência de modelagem**, classe `derived` | Faltam vistas ortogonais desta placa; a busca achou o PCB nu com régua e desenhos cotados |
 
 ## Em aberto
 - Os 22 minutos incluem as perguntas do professor?

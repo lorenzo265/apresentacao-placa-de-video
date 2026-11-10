@@ -105,7 +105,7 @@ Linhas de corte: se a proposta de engenharia não for aprovada na terça, o inte
 4. **Tamanho do grupo:** a proposta entregue e o artigo têm cinco integrantes; a nota do enunciado no vault diz até quatro. Corrigir a nota?
 5. **Versionar o PDF do artigo?** A proposta entregue já foi versionada a seu pedido. O artigo traz os mesmos nomes completos; depende de o repositório ser público.
 6. Viewer ao vivo ou vídeo corrido (recomendado: ao vivo, com MP4 de reserva).
-7. Logos da NVIDIA no modelo (recomendado: não).
+7. Logos da NVIDIA no modelo: **resolvido em 2026-11-10**, o modelo segue o design da placa original.
 8. Regra de procedência para observação direta por terceiro.
 9. Os 22 minutos incluem perguntas?
 

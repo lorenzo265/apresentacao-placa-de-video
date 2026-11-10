@@ -61,3 +61,6 @@
 
 ## 2026-11-10 (fonte nova da placa física)
 - Nota de fonte criada: [[NVIDIA - Guia de início rápido RTX PRO Blackwell]], ligada na tabela de fontes de [[Requisitos da disciplina]]. Status `revisar` até a segunda passada da auditoria.
+
+## 2026-11-10 (decisões de modelagem)
+- Cinco decisões do autor registradas em [[Decisões do projeto]]: cadeia de modelagem com Blender, design igual ao da placa original, sem compras, vídeo generativo como experimento posterior, placa irmã e water blocks como referência.
