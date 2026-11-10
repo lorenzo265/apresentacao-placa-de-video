@@ -1,0 +1,3241 @@
+{
+  "id": "chip.sm",
+  "level": 3,
+  "title": "Um SM da Blackwell",
+  "disclaimer": "Redesenho ilustrativo da Fig. 5 do whitepaper (p. 10): as contagens são oficiais, tamanhos e posições não.",
+  "size": [
+    1000,
+    1700
+  ],
+  "generated_by": "diagrams/build_chip_sm.py",
+  "nodes": [
+    {
+      "id": "sm.frame",
+      "kind": "frame",
+      "rect": [
+        20,
+        20,
+        960,
+        1660
+      ],
+      "label": "SM",
+      "label_size": 40,
+      "parent": null,
+      "tags": [
+        "sm-frame"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.count.blocks",
+      "kind": "counter",
+      "rect": [
+        150,
+        30,
+        197,
+        70
+      ],
+      "label": "4",
+      "sublabel": "blocos",
+      "parent": "sm.frame",
+      "tags": [
+        "counter",
+        "block"
+      ],
+      "count": {
+        "value": 4,
+        "claim": "sm.blocks",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.count.cores",
+      "kind": "counter",
+      "rect": [
+        357,
+        30,
+        197,
+        70
+      ],
+      "label": "128",
+      "sublabel": "núcleos CUDA",
+      "parent": "sm.frame",
+      "tags": [
+        "counter",
+        "core"
+      ],
+      "count": {
+        "value": 128,
+        "claim": "sm.cuda_cores",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.count.regs",
+      "kind": "counter",
+      "rect": [
+        564,
+        30,
+        197,
+        70
+      ],
+      "label": "65.536",
+      "sublabel": "registradores de 32 bits",
+      "parent": "sm.frame",
+      "tags": [
+        "counter",
+        "regfile"
+      ],
+      "count": {
+        "value": 65536,
+        "claim": "sm.regfile_entries",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "sm.block_regfile_entries",
+        "sm.blocks"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.count.regkb",
+      "kind": "counter",
+      "rect": [
+        771,
+        30,
+        197,
+        70
+      ],
+      "label": "256 KB",
+      "sublabel": "de registradores",
+      "parent": "sm.frame",
+      "tags": [
+        "counter",
+        "regfile"
+      ],
+      "count": {
+        "value": 256,
+        "unit": "KB",
+        "claim": "sm.regfile_kb",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0",
+      "kind": "block",
+      "rect": [
+        40,
+        112,
+        450,
+        506
+      ],
+      "label": "Bloco 0",
+      "label_size": 18,
+      "parent": "sm.frame",
+      "tags": [
+        "block",
+        "block-0"
+      ],
+      "claims": [
+        "sm.blocks"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.sched",
+      "kind": "sched",
+      "rect": [
+        50,
+        146,
+        430,
+        64
+      ],
+      "label": "L0 i-Cache + Warp Scheduler",
+      "sublabel": "Dispatch (32 thread/clk)",
+      "label_size": 20,
+      "align": "left",
+      "parent": "sm.block.0",
+      "tags": [
+        "sched",
+        "block-0"
+      ],
+      "claims": [
+        "sm.block_dispatch_threads_per_clk"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Texto da Fig. 5: 'L0 i-Cache + Warp Scheduler + Dispatch (32 thread/clk)'."
+    },
+    {
+      "id": "sm.block.0.sched.warp",
+      "kind": "frame",
+      "rect": [
+        382,
+        152,
+        92,
+        52
+      ],
+      "parent": "sm.block.0",
+      "tags": [
+        "warp-zoom",
+        "sched",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative",
+      "embed": "chip.warp",
+      "note": "Um warp de 32 threads, despachado por este escalonador."
+    },
+    {
+      "id": "sm.block.0.regfile",
+      "kind": "regfile",
+      "rect": [
+        50,
+        220,
+        430,
+        58
+      ],
+      "label": "Banco de registradores",
+      "sublabel": "16.384 × 32 bits",
+      "label_size": 22,
+      "parent": "sm.block.0",
+      "tags": [
+        "regfile",
+        "block-0"
+      ],
+      "count": {
+        "value": 16384,
+        "claim": "sm.block_regfile_entries",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.cores",
+      "kind": "frame",
+      "rect": [
+        50,
+        288,
+        250,
+        268
+      ],
+      "label": "FP32 / INT32 × 32",
+      "label_size": 17,
+      "parent": "sm.block.0",
+      "tags": [
+        "core",
+        "core-group",
+        "block-0"
+      ],
+      "claims": [
+        "sm.cuda_cores",
+        "sm.blocks"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+    },
+    {
+      "id": "sm.block.0.core.0",
+      "kind": "core",
+      "rect": [
+        56,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.1",
+      "kind": "core",
+      "rect": [
+        116.5,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.2",
+      "kind": "core",
+      "rect": [
+        177,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.3",
+      "kind": "core",
+      "rect": [
+        237.5,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.4",
+      "kind": "core",
+      "rect": [
+        56,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.5",
+      "kind": "core",
+      "rect": [
+        116.5,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.6",
+      "kind": "core",
+      "rect": [
+        177,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.7",
+      "kind": "core",
+      "rect": [
+        237.5,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.8",
+      "kind": "core",
+      "rect": [
+        56,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.9",
+      "kind": "core",
+      "rect": [
+        116.5,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.10",
+      "kind": "core",
+      "rect": [
+        177,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.11",
+      "kind": "core",
+      "rect": [
+        237.5,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.12",
+      "kind": "core",
+      "rect": [
+        56,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.13",
+      "kind": "core",
+      "rect": [
+        116.5,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.14",
+      "kind": "core",
+      "rect": [
+        177,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.15",
+      "kind": "core",
+      "rect": [
+        237.5,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.16",
+      "kind": "core",
+      "rect": [
+        56,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.17",
+      "kind": "core",
+      "rect": [
+        116.5,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.18",
+      "kind": "core",
+      "rect": [
+        177,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.19",
+      "kind": "core",
+      "rect": [
+        237.5,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.20",
+      "kind": "core",
+      "rect": [
+        56,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.21",
+      "kind": "core",
+      "rect": [
+        116.5,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.22",
+      "kind": "core",
+      "rect": [
+        177,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.23",
+      "kind": "core",
+      "rect": [
+        237.5,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.24",
+      "kind": "core",
+      "rect": [
+        56,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.25",
+      "kind": "core",
+      "rect": [
+        116.5,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.26",
+      "kind": "core",
+      "rect": [
+        177,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.27",
+      "kind": "core",
+      "rect": [
+        237.5,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.28",
+      "kind": "core",
+      "rect": [
+        56,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.29",
+      "kind": "core",
+      "rect": [
+        116.5,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.30",
+      "kind": "core",
+      "rect": [
+        177,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.core.31",
+      "kind": "core",
+      "rect": [
+        237.5,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.0.cores",
+      "tags": [
+        "core",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.0.tensor",
+      "kind": "tensor",
+      "rect": [
+        310,
+        288,
+        170,
+        268
+      ],
+      "label": "Tensor Core",
+      "sublabel": "5ª geração",
+      "parent": "sm.block.0",
+      "tags": [
+        "tensor",
+        "block-0"
+      ],
+      "claims": [
+        "sm.tensor_cores"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+    },
+    {
+      "id": "sm.block.0.ldst.0",
+      "kind": "ldst",
+      "rect": [
+        50,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.0",
+      "tags": [
+        "ldst",
+        "block-0"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.0.ldst.1",
+      "kind": "ldst",
+      "rect": [
+        137.2,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.0",
+      "tags": [
+        "ldst",
+        "block-0"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.0.ldst.2",
+      "kind": "ldst",
+      "rect": [
+        224.4,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.0",
+      "tags": [
+        "ldst",
+        "block-0"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.0.ldst.3",
+      "kind": "ldst",
+      "rect": [
+        311.6,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.0",
+      "tags": [
+        "ldst",
+        "block-0"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.0.sfu",
+      "kind": "sfu",
+      "rect": [
+        398.8,
+        566,
+        81.2,
+        46
+      ],
+      "label": "SFU",
+      "parent": "sm.block.0",
+      "tags": [
+        "sfu",
+        "block-0"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+    },
+    {
+      "id": "sm.block.1",
+      "kind": "block",
+      "rect": [
+        510,
+        112,
+        450,
+        506
+      ],
+      "label": "Bloco 1",
+      "label_size": 18,
+      "parent": "sm.frame",
+      "tags": [
+        "block",
+        "block-1"
+      ],
+      "claims": [
+        "sm.blocks"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.sched",
+      "kind": "sched",
+      "rect": [
+        520,
+        146,
+        430,
+        64
+      ],
+      "label": "L0 i-Cache + Warp Scheduler",
+      "sublabel": "Dispatch (32 thread/clk)",
+      "label_size": 20,
+      "align": "left",
+      "parent": "sm.block.1",
+      "tags": [
+        "sched",
+        "block-1"
+      ],
+      "claims": [
+        "sm.block_dispatch_threads_per_clk"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Texto da Fig. 5: 'L0 i-Cache + Warp Scheduler + Dispatch (32 thread/clk)'."
+    },
+    {
+      "id": "sm.block.1.regfile",
+      "kind": "regfile",
+      "rect": [
+        520,
+        220,
+        430,
+        58
+      ],
+      "label": "Banco de registradores",
+      "sublabel": "16.384 × 32 bits",
+      "label_size": 22,
+      "parent": "sm.block.1",
+      "tags": [
+        "regfile",
+        "block-1"
+      ],
+      "count": {
+        "value": 16384,
+        "claim": "sm.block_regfile_entries",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.cores",
+      "kind": "frame",
+      "rect": [
+        520,
+        288,
+        250,
+        268
+      ],
+      "label": "FP32 / INT32 × 32",
+      "label_size": 17,
+      "parent": "sm.block.1",
+      "tags": [
+        "core",
+        "core-group",
+        "block-1"
+      ],
+      "claims": [
+        "sm.cuda_cores",
+        "sm.blocks"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+    },
+    {
+      "id": "sm.block.1.core.0",
+      "kind": "core",
+      "rect": [
+        526,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.1",
+      "kind": "core",
+      "rect": [
+        586.5,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.2",
+      "kind": "core",
+      "rect": [
+        647,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.3",
+      "kind": "core",
+      "rect": [
+        707.5,
+        316,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.4",
+      "kind": "core",
+      "rect": [
+        526,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.5",
+      "kind": "core",
+      "rect": [
+        586.5,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.6",
+      "kind": "core",
+      "rect": [
+        647,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.7",
+      "kind": "core",
+      "rect": [
+        707.5,
+        345.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.8",
+      "kind": "core",
+      "rect": [
+        526,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.9",
+      "kind": "core",
+      "rect": [
+        586.5,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.10",
+      "kind": "core",
+      "rect": [
+        647,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.11",
+      "kind": "core",
+      "rect": [
+        707.5,
+        375.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.12",
+      "kind": "core",
+      "rect": [
+        526,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.13",
+      "kind": "core",
+      "rect": [
+        586.5,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.14",
+      "kind": "core",
+      "rect": [
+        647,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.15",
+      "kind": "core",
+      "rect": [
+        707.5,
+        405.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.16",
+      "kind": "core",
+      "rect": [
+        526,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.17",
+      "kind": "core",
+      "rect": [
+        586.5,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.18",
+      "kind": "core",
+      "rect": [
+        647,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.19",
+      "kind": "core",
+      "rect": [
+        707.5,
+        435,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.20",
+      "kind": "core",
+      "rect": [
+        526,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.21",
+      "kind": "core",
+      "rect": [
+        586.5,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.22",
+      "kind": "core",
+      "rect": [
+        647,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.23",
+      "kind": "core",
+      "rect": [
+        707.5,
+        464.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.24",
+      "kind": "core",
+      "rect": [
+        526,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.25",
+      "kind": "core",
+      "rect": [
+        586.5,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.26",
+      "kind": "core",
+      "rect": [
+        647,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.27",
+      "kind": "core",
+      "rect": [
+        707.5,
+        494.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.28",
+      "kind": "core",
+      "rect": [
+        526,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.29",
+      "kind": "core",
+      "rect": [
+        586.5,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.30",
+      "kind": "core",
+      "rect": [
+        647,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.core.31",
+      "kind": "core",
+      "rect": [
+        707.5,
+        524.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.1.cores",
+      "tags": [
+        "core",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.1.tensor",
+      "kind": "tensor",
+      "rect": [
+        780,
+        288,
+        170,
+        268
+      ],
+      "label": "Tensor Core",
+      "sublabel": "5ª geração",
+      "parent": "sm.block.1",
+      "tags": [
+        "tensor",
+        "block-1"
+      ],
+      "claims": [
+        "sm.tensor_cores"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+    },
+    {
+      "id": "sm.block.1.ldst.0",
+      "kind": "ldst",
+      "rect": [
+        520,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.1",
+      "tags": [
+        "ldst",
+        "block-1"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.1.ldst.1",
+      "kind": "ldst",
+      "rect": [
+        607.2,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.1",
+      "tags": [
+        "ldst",
+        "block-1"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.1.ldst.2",
+      "kind": "ldst",
+      "rect": [
+        694.4,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.1",
+      "tags": [
+        "ldst",
+        "block-1"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.1.ldst.3",
+      "kind": "ldst",
+      "rect": [
+        781.6,
+        566,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.1",
+      "tags": [
+        "ldst",
+        "block-1"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.1.sfu",
+      "kind": "sfu",
+      "rect": [
+        868.8,
+        566,
+        81.2,
+        46
+      ],
+      "label": "SFU",
+      "parent": "sm.block.1",
+      "tags": [
+        "sfu",
+        "block-1"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+    },
+    {
+      "id": "sm.block.2",
+      "kind": "block",
+      "rect": [
+        40,
+        638,
+        450,
+        506
+      ],
+      "label": "Bloco 2",
+      "label_size": 18,
+      "parent": "sm.frame",
+      "tags": [
+        "block",
+        "block-2"
+      ],
+      "claims": [
+        "sm.blocks"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.sched",
+      "kind": "sched",
+      "rect": [
+        50,
+        672,
+        430,
+        64
+      ],
+      "label": "L0 i-Cache + Warp Scheduler",
+      "sublabel": "Dispatch (32 thread/clk)",
+      "label_size": 20,
+      "align": "left",
+      "parent": "sm.block.2",
+      "tags": [
+        "sched",
+        "block-2"
+      ],
+      "claims": [
+        "sm.block_dispatch_threads_per_clk"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Texto da Fig. 5: 'L0 i-Cache + Warp Scheduler + Dispatch (32 thread/clk)'."
+    },
+    {
+      "id": "sm.block.2.regfile",
+      "kind": "regfile",
+      "rect": [
+        50,
+        746,
+        430,
+        58
+      ],
+      "label": "Banco de registradores",
+      "sublabel": "16.384 × 32 bits",
+      "label_size": 22,
+      "parent": "sm.block.2",
+      "tags": [
+        "regfile",
+        "block-2"
+      ],
+      "count": {
+        "value": 16384,
+        "claim": "sm.block_regfile_entries",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.cores",
+      "kind": "frame",
+      "rect": [
+        50,
+        814,
+        250,
+        268
+      ],
+      "label": "FP32 / INT32 × 32",
+      "label_size": 17,
+      "parent": "sm.block.2",
+      "tags": [
+        "core",
+        "core-group",
+        "block-2"
+      ],
+      "claims": [
+        "sm.cuda_cores",
+        "sm.blocks"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+    },
+    {
+      "id": "sm.block.2.core.0",
+      "kind": "core",
+      "rect": [
+        56,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.1",
+      "kind": "core",
+      "rect": [
+        116.5,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.2",
+      "kind": "core",
+      "rect": [
+        177,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.3",
+      "kind": "core",
+      "rect": [
+        237.5,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.4",
+      "kind": "core",
+      "rect": [
+        56,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.5",
+      "kind": "core",
+      "rect": [
+        116.5,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.6",
+      "kind": "core",
+      "rect": [
+        177,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.7",
+      "kind": "core",
+      "rect": [
+        237.5,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.8",
+      "kind": "core",
+      "rect": [
+        56,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.9",
+      "kind": "core",
+      "rect": [
+        116.5,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.10",
+      "kind": "core",
+      "rect": [
+        177,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.11",
+      "kind": "core",
+      "rect": [
+        237.5,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.12",
+      "kind": "core",
+      "rect": [
+        56,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.13",
+      "kind": "core",
+      "rect": [
+        116.5,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.14",
+      "kind": "core",
+      "rect": [
+        177,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.15",
+      "kind": "core",
+      "rect": [
+        237.5,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.16",
+      "kind": "core",
+      "rect": [
+        56,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.17",
+      "kind": "core",
+      "rect": [
+        116.5,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.18",
+      "kind": "core",
+      "rect": [
+        177,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.19",
+      "kind": "core",
+      "rect": [
+        237.5,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.20",
+      "kind": "core",
+      "rect": [
+        56,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.21",
+      "kind": "core",
+      "rect": [
+        116.5,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.22",
+      "kind": "core",
+      "rect": [
+        177,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.23",
+      "kind": "core",
+      "rect": [
+        237.5,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.24",
+      "kind": "core",
+      "rect": [
+        56,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.25",
+      "kind": "core",
+      "rect": [
+        116.5,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.26",
+      "kind": "core",
+      "rect": [
+        177,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.27",
+      "kind": "core",
+      "rect": [
+        237.5,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.28",
+      "kind": "core",
+      "rect": [
+        56,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.29",
+      "kind": "core",
+      "rect": [
+        116.5,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.30",
+      "kind": "core",
+      "rect": [
+        177,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.core.31",
+      "kind": "core",
+      "rect": [
+        237.5,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.2.cores",
+      "tags": [
+        "core",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.2.tensor",
+      "kind": "tensor",
+      "rect": [
+        310,
+        814,
+        170,
+        268
+      ],
+      "label": "Tensor Core",
+      "sublabel": "5ª geração",
+      "parent": "sm.block.2",
+      "tags": [
+        "tensor",
+        "block-2"
+      ],
+      "claims": [
+        "sm.tensor_cores"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+    },
+    {
+      "id": "sm.block.2.ldst.0",
+      "kind": "ldst",
+      "rect": [
+        50,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.2",
+      "tags": [
+        "ldst",
+        "block-2"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.2.ldst.1",
+      "kind": "ldst",
+      "rect": [
+        137.2,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.2",
+      "tags": [
+        "ldst",
+        "block-2"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.2.ldst.2",
+      "kind": "ldst",
+      "rect": [
+        224.4,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.2",
+      "tags": [
+        "ldst",
+        "block-2"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.2.ldst.3",
+      "kind": "ldst",
+      "rect": [
+        311.6,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.2",
+      "tags": [
+        "ldst",
+        "block-2"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.2.sfu",
+      "kind": "sfu",
+      "rect": [
+        398.8,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "SFU",
+      "parent": "sm.block.2",
+      "tags": [
+        "sfu",
+        "block-2"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+    },
+    {
+      "id": "sm.block.3",
+      "kind": "block",
+      "rect": [
+        510,
+        638,
+        450,
+        506
+      ],
+      "label": "Bloco 3",
+      "label_size": 18,
+      "parent": "sm.frame",
+      "tags": [
+        "block",
+        "block-3"
+      ],
+      "claims": [
+        "sm.blocks"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.sched",
+      "kind": "sched",
+      "rect": [
+        520,
+        672,
+        430,
+        64
+      ],
+      "label": "L0 i-Cache + Warp Scheduler",
+      "sublabel": "Dispatch (32 thread/clk)",
+      "label_size": 20,
+      "align": "left",
+      "parent": "sm.block.3",
+      "tags": [
+        "sched",
+        "block-3"
+      ],
+      "claims": [
+        "sm.block_dispatch_threads_per_clk"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Texto da Fig. 5: 'L0 i-Cache + Warp Scheduler + Dispatch (32 thread/clk)'."
+    },
+    {
+      "id": "sm.block.3.regfile",
+      "kind": "regfile",
+      "rect": [
+        520,
+        746,
+        430,
+        58
+      ],
+      "label": "Banco de registradores",
+      "sublabel": "16.384 × 32 bits",
+      "label_size": 22,
+      "parent": "sm.block.3",
+      "tags": [
+        "regfile",
+        "block-3"
+      ],
+      "count": {
+        "value": 16384,
+        "claim": "sm.block_regfile_entries",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.cores",
+      "kind": "frame",
+      "rect": [
+        520,
+        814,
+        250,
+        268
+      ],
+      "label": "FP32 / INT32 × 32",
+      "label_size": 17,
+      "parent": "sm.block.3",
+      "tags": [
+        "core",
+        "core-group",
+        "block-3"
+      ],
+      "claims": [
+        "sm.cuda_cores",
+        "sm.blocks"
+      ],
+      "provenance": "derived",
+      "shape_provenance": "illustrative",
+      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+    },
+    {
+      "id": "sm.block.3.core.0",
+      "kind": "core",
+      "rect": [
+        526,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.1",
+      "kind": "core",
+      "rect": [
+        586.5,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.2",
+      "kind": "core",
+      "rect": [
+        647,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.3",
+      "kind": "core",
+      "rect": [
+        707.5,
+        842,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.4",
+      "kind": "core",
+      "rect": [
+        526,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.5",
+      "kind": "core",
+      "rect": [
+        586.5,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.6",
+      "kind": "core",
+      "rect": [
+        647,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.7",
+      "kind": "core",
+      "rect": [
+        707.5,
+        871.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.8",
+      "kind": "core",
+      "rect": [
+        526,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.9",
+      "kind": "core",
+      "rect": [
+        586.5,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.10",
+      "kind": "core",
+      "rect": [
+        647,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.11",
+      "kind": "core",
+      "rect": [
+        707.5,
+        901.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.12",
+      "kind": "core",
+      "rect": [
+        526,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.13",
+      "kind": "core",
+      "rect": [
+        586.5,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.14",
+      "kind": "core",
+      "rect": [
+        647,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.15",
+      "kind": "core",
+      "rect": [
+        707.5,
+        931.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.16",
+      "kind": "core",
+      "rect": [
+        526,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.17",
+      "kind": "core",
+      "rect": [
+        586.5,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.18",
+      "kind": "core",
+      "rect": [
+        647,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.19",
+      "kind": "core",
+      "rect": [
+        707.5,
+        961,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.20",
+      "kind": "core",
+      "rect": [
+        526,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.21",
+      "kind": "core",
+      "rect": [
+        586.5,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.22",
+      "kind": "core",
+      "rect": [
+        647,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.23",
+      "kind": "core",
+      "rect": [
+        707.5,
+        990.75,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.24",
+      "kind": "core",
+      "rect": [
+        526,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.25",
+      "kind": "core",
+      "rect": [
+        586.5,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.26",
+      "kind": "core",
+      "rect": [
+        647,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.27",
+      "kind": "core",
+      "rect": [
+        707.5,
+        1020.5,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.28",
+      "kind": "core",
+      "rect": [
+        526,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.29",
+      "kind": "core",
+      "rect": [
+        586.5,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.30",
+      "kind": "core",
+      "rect": [
+        647,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.core.31",
+      "kind": "core",
+      "rect": [
+        707.5,
+        1050.25,
+        56.5,
+        25.75
+      ],
+      "parent": "sm.block.3.cores",
+      "tags": [
+        "core",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.block.3.tensor",
+      "kind": "tensor",
+      "rect": [
+        780,
+        814,
+        170,
+        268
+      ],
+      "label": "Tensor Core",
+      "sublabel": "5ª geração",
+      "parent": "sm.block.3",
+      "tags": [
+        "tensor",
+        "block-3"
+      ],
+      "claims": [
+        "sm.tensor_cores"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+    },
+    {
+      "id": "sm.block.3.ldst.0",
+      "kind": "ldst",
+      "rect": [
+        520,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.3",
+      "tags": [
+        "ldst",
+        "block-3"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.3.ldst.1",
+      "kind": "ldst",
+      "rect": [
+        607.2,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.3",
+      "tags": [
+        "ldst",
+        "block-3"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.3.ldst.2",
+      "kind": "ldst",
+      "rect": [
+        694.4,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.3",
+      "tags": [
+        "ldst",
+        "block-3"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.3.ldst.3",
+      "kind": "ldst",
+      "rect": [
+        781.6,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "LD/ST",
+      "parent": "sm.block.3",
+      "tags": [
+        "ldst",
+        "block-3"
+      ],
+      "claims": [
+        "sm.block_ldst_units"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+    },
+    {
+      "id": "sm.block.3.sfu",
+      "kind": "sfu",
+      "rect": [
+        868.8,
+        1092,
+        81.2,
+        46
+      ],
+      "label": "SFU",
+      "parent": "sm.block.3",
+      "tags": [
+        "sfu",
+        "block-3"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Presente na Fig. 5; o spec não tem fato com a contagem de SFUs."
+    },
+    {
+      "id": "sm.l1",
+      "kind": "cache",
+      "rect": [
+        40,
+        1164,
+        920,
+        76
+      ],
+      "label": "L1 / memória compartilhada",
+      "sublabel": "128 KB",
+      "parent": "sm.frame",
+      "tags": [
+        "l1",
+        "cache"
+      ],
+      "count": {
+        "value": 128,
+        "unit": "KB",
+        "claim": "sm.l1_shared_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.tex.0",
+      "kind": "tex",
+      "rect": [
+        40,
+        1252,
+        222.5,
+        50
+      ],
+      "label": "Tex",
+      "parent": "sm.frame",
+      "tags": [
+        "tex"
+      ],
+      "claims": [
+        "sm.tex_units"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.tex.1",
+      "kind": "tex",
+      "rect": [
+        272.5,
+        1252,
+        222.5,
+        50
+      ],
+      "label": "Tex",
+      "parent": "sm.frame",
+      "tags": [
+        "tex"
+      ],
+      "claims": [
+        "sm.tex_units"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.tex.2",
+      "kind": "tex",
+      "rect": [
+        505,
+        1252,
+        222.5,
+        50
+      ],
+      "label": "Tex",
+      "parent": "sm.frame",
+      "tags": [
+        "tex"
+      ],
+      "claims": [
+        "sm.tex_units"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.tex.3",
+      "kind": "tex",
+      "rect": [
+        737.5,
+        1252,
+        222.5,
+        50
+      ],
+      "label": "Tex",
+      "parent": "sm.frame",
+      "tags": [
+        "tex"
+      ],
+      "claims": [
+        "sm.tex_units"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.rt",
+      "kind": "rt",
+      "rect": [
+        40,
+        1314,
+        920,
+        220
+      ],
+      "label": "RT Core",
+      "sublabel": "4ª geração",
+      "parent": "sm.frame",
+      "tags": [
+        "rt"
+      ],
+      "count": {
+        "value": 1,
+        "claim": "sm.rt_cores",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "sm.fp64",
+      "kind": "note",
+      "rect": [
+        40,
+        1550,
+        920,
+        110
+      ],
+      "label": "2 núcleos FP64",
+      "sublabel": "não aparecem na Fig. 5",
+      "parent": "sm.frame",
+      "tags": [
+        "fp64",
+        "note"
+      ],
+      "count": {
+        "value": 2,
+        "claim": "sm.fp64_cores",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative",
+      "note": "Nota da Fig. 3, p. 8; taxa de 1/64 da FP32. A Fig. 5 não os desenha; posição ilustrativa."
+    }
+  ],
+  "flows": [],
+  "checks": [
+    {
+      "expr": "sm.count.blocks * sm.block.0.regfile",
+      "expect": 65536
+    },
+    {
+      "expr": "sm.count.blocks * 32",
+      "expect": 128
+    }
+  ]
+}

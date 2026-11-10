@@ -1,0 +1,6393 @@
+{
+  "id": "chip.floorplan",
+  "level": 2,
+  "title": "Planta do GB202 nesta placa",
+  "disclaimer": "Diagrama ilustrativo: as contagens são oficiais (whitepaper, Tab. 4); posições, formas e quais TPCs estão apagados não são.",
+  "size": [
+    1600,
+    900
+  ],
+  "generated_by": "diagrams/build_chip_floorplan.py",
+  "nodes": [
+    {
+      "id": "chip.die",
+      "kind": "die",
+      "rect": [
+        330,
+        24,
+        1246,
+        842
+      ],
+      "label": "GB202",
+      "label_size": 28,
+      "parent": null,
+      "tags": [
+        "die"
+      ],
+      "claims": [
+        "chip.name"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.data",
+      "kind": "note",
+      "rect": [
+        470,
+        36,
+        560,
+        50
+      ],
+      "label": "750 mm² · 92,2 bilhões de transistores",
+      "sublabel": "TSMC 4N",
+      "parent": "chip.die",
+      "tags": [
+        "data",
+        "die-data"
+      ],
+      "count": {
+        "value": 750,
+        "unit": "mm²",
+        "claim": "chip.die_area_mm2",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.transistors_billion",
+        "chip.process"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.amp",
+      "kind": "block",
+      "rect": [
+        1050,
+        36,
+        210,
+        50
+      ],
+      "label": "AMP",
+      "sublabel": "RISC-V",
+      "parent": "chip.die",
+      "tags": [
+        "amp",
+        "outside-gpc",
+        "risc-v"
+      ],
+      "claims": [
+        "chip.amp_isa",
+        "sched.amp"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "AI Management Processor: escalonador de contextos em processador RISC-V (whitepaper, p. 25). Posição ilustrativa."
+    },
+    {
+      "id": "chip.pcie",
+      "kind": "block",
+      "rect": [
+        1278,
+        36,
+        210,
+        50
+      ],
+      "label": "PCIe 5.0 x16",
+      "sublabel": "interface com a CPU",
+      "parent": "chip.die",
+      "tags": [
+        "pcie",
+        "outside-gpc"
+      ],
+      "claims": [
+        "card.pcie"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "Interface de sistema do datasheet; posição no die ilustrativa."
+    },
+    {
+      "id": "chip.gpc.0",
+      "kind": "gpc",
+      "rect": [
+        418,
+        96,
+        170,
+        316
+      ],
+      "label": "GPC 0",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-0",
+        "gpc-row-top"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        426,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        506,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        426,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        506,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        426,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        506,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        426,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        506,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.0",
+      "tags": [
+        "tpc",
+        "gpc-0",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.0.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.0.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-0",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1",
+      "kind": "gpc",
+      "rect": [
+        598,
+        96,
+        170,
+        316
+      ],
+      "label": "GPC 1",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-1",
+        "gpc-row-top"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        606,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        686,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        606,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        686,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        606,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        686,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        606,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        686,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.1",
+      "tags": [
+        "tpc",
+        "gpc-1",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.1.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.1.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-1",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2",
+      "kind": "gpc",
+      "rect": [
+        778,
+        96,
+        170,
+        316
+      ],
+      "label": "GPC 2",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-2",
+        "gpc-row-top"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        786,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        866,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        786,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        866,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        786,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        866,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        786,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        866,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.2",
+      "tags": [
+        "tpc",
+        "gpc-2",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.2.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.2.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-2",
+        "sm-enabled",
+        "sm-zoom"
+      ],
+      "shape_provenance": "illustrative",
+      "embed": "chip.sm"
+    },
+    {
+      "id": "chip.gpc.3",
+      "kind": "gpc",
+      "rect": [
+        958,
+        96,
+        170,
+        316
+      ],
+      "label": "GPC 3",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-3",
+        "gpc-row-top"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        966,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        966,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        966,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        966,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.3",
+      "tags": [
+        "tpc",
+        "gpc-3",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.3.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.3.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-3",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4",
+      "kind": "gpc",
+      "rect": [
+        1138,
+        96,
+        170,
+        316
+      ],
+      "label": "GPC 4",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-4",
+        "gpc-row-top"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-disabled"
+      ],
+      "state": "disabled",
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gpc.4.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-disabled"
+      ],
+      "state": "disabled",
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gpc.4.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-disabled"
+      ],
+      "state": "disabled",
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gpc.4.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.4",
+      "tags": [
+        "tpc",
+        "gpc-4",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.4.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.4.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-4",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5",
+      "kind": "gpc",
+      "rect": [
+        1318,
+        96,
+        170,
+        316
+      ],
+      "label": "GPC 5",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-5",
+        "gpc-row-top"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        124,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        127,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        195.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        198.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        267,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        270,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        338.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.5",
+      "tags": [
+        "tpc",
+        "gpc-5",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.5.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        341.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.5.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-5",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6",
+      "kind": "gpc",
+      "rect": [
+        418,
+        532,
+        170,
+        316
+      ],
+      "label": "GPC 6",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-6",
+        "gpc-row-bottom"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        426,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        506,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        426,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        506,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        426,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        506,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        426,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        429,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        464.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        506,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.6",
+      "tags": [
+        "tpc",
+        "gpc-6",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        509,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.6.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        544.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.6.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-6",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7",
+      "kind": "gpc",
+      "rect": [
+        598,
+        532,
+        170,
+        316
+      ],
+      "label": "GPC 7",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-7",
+        "gpc-row-bottom"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        606,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        686,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-disabled"
+      ],
+      "state": "disabled",
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gpc.7.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-disabled"
+      ],
+      "state": "disabled",
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gpc.7.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-disabled"
+      ],
+      "state": "disabled",
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gpc.7.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        606,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        686,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        606,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        686,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        606,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        609,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        644.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        686,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.7",
+      "tags": [
+        "tpc",
+        "gpc-7",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        689,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.7.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        724.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.7.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-7",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8",
+      "kind": "gpc",
+      "rect": [
+        778,
+        532,
+        170,
+        316
+      ],
+      "label": "GPC 8",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-8",
+        "gpc-row-bottom"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        786,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        866,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        786,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        866,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        786,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        866,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        786,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        789,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        824.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        866,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.8",
+      "tags": [
+        "tpc",
+        "gpc-8",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        869,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.8.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        904.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.8.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-8",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9",
+      "kind": "gpc",
+      "rect": [
+        958,
+        532,
+        170,
+        316
+      ],
+      "label": "GPC 9",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-9",
+        "gpc-row-bottom"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        966,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        966,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        966,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        966,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        969,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        1004.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        1046,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.9",
+      "tags": [
+        "tpc",
+        "gpc-9",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        1049,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.9.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        1084.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.9.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-9",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10",
+      "kind": "gpc",
+      "rect": [
+        1138,
+        532,
+        170,
+        316
+      ],
+      "label": "GPC 10",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-10",
+        "gpc-row-bottom"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        1146,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        1149,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        1184.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        1226,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.10",
+      "tags": [
+        "tpc",
+        "gpc-10",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        1229,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.10.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        1264.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.10.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-10",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11",
+      "kind": "gpc",
+      "rect": [
+        1318,
+        532,
+        170,
+        316
+      ],
+      "label": "GPC 11",
+      "label_size": 16,
+      "parent": "chip.die",
+      "tags": [
+        "gpc",
+        "gpc-11",
+        "gpc-row-bottom"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.0",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.0.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.0.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.0",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.1",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        560,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.1.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.1.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        563,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.1",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.2",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.2.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.2.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.2",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.3",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        631.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.3.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.3.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        634.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.3",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.4",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.4.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.4.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.4",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.5",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        703,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.5.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.5.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        706,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.5",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.6",
+      "kind": "tpc",
+      "rect": [
+        1326,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.6.sm.0",
+      "kind": "sm",
+      "rect": [
+        1329,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.6.sm.1",
+      "kind": "sm",
+      "rect": [
+        1364.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.6",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.7",
+      "kind": "tpc",
+      "rect": [
+        1406,
+        774.5,
+        74,
+        65.5
+      ],
+      "parent": "chip.gpc.11",
+      "tags": [
+        "tpc",
+        "gpc-11",
+        "tpc-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.7.sm.0",
+      "kind": "sm",
+      "rect": [
+        1409,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.gpc.11.tpc.7.sm.1",
+      "kind": "sm",
+      "rect": [
+        1444.5,
+        777.5,
+        32.5,
+        59.5
+      ],
+      "parent": "chip.gpc.11.tpc.7",
+      "tags": [
+        "sm",
+        "gpc-11",
+        "sm-enabled"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.l2",
+      "kind": "cache",
+      "rect": [
+        418,
+        424,
+        1070,
+        96
+      ],
+      "label": "L2",
+      "sublabel": "128 MB, compartilhado pelos GPCs",
+      "parent": "chip.die",
+      "tags": [
+        "l2",
+        "cache",
+        "memory-path"
+      ],
+      "count": {
+        "value": 131072,
+        "unit": "KB",
+        "claim": "chip.l2_kb",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.0",
+      "kind": "memctl",
+      "rect": [
+        342,
+        96,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.1",
+      "kind": "memctl",
+      "rect": [
+        342,
+        191.25,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.2",
+      "kind": "memctl",
+      "rect": [
+        342,
+        286.5,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.3",
+      "kind": "memctl",
+      "rect": [
+        342,
+        381.75,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.4",
+      "kind": "memctl",
+      "rect": [
+        342,
+        477,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.5",
+      "kind": "memctl",
+      "rect": [
+        342,
+        572.25,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.6",
+      "kind": "memctl",
+      "rect": [
+        342,
+        667.5,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.7",
+      "kind": "memctl",
+      "rect": [
+        342,
+        762.75,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-left"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.8",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        96,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.9",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        191.25,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.10",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        286.5,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.11",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        381.75,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.12",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        477,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.13",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        572.25,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.14",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        667.5,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.memctl.15",
+      "kind": "memctl",
+      "rect": [
+        1504,
+        762.75,
+        60,
+        85.25
+      ],
+      "label": "MC",
+      "sublabel": "32 bits",
+      "parent": "chip.die",
+      "tags": [
+        "memctl",
+        "memory-path",
+        "memctl-right"
+      ],
+      "count": {
+        "value": 32,
+        "unit": "bits",
+        "claim": "chip.mem_controller_bits",
+        "provenance": "confirmed"
+      },
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.count.gpc",
+      "kind": "counter",
+      "rect": [
+        24,
+        24,
+        290,
+        70
+      ],
+      "label": "12 GPCs",
+      "sublabel": "Graphics Processing Clusters",
+      "parent": null,
+      "tags": [
+        "counter",
+        "count-gpc"
+      ],
+      "count": {
+        "value": 12,
+        "claim": "chip.gpc_count",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.count.tpc",
+      "kind": "counter",
+      "rect": [
+        24,
+        104,
+        290,
+        70
+      ],
+      "label": "94 TPCs",
+      "sublabel": "habilitados nesta placa",
+      "parent": null,
+      "tags": [
+        "counter",
+        "count-tpc"
+      ],
+      "count": {
+        "value": 94,
+        "claim": "chip.tpc_count",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.count.sm",
+      "kind": "counter",
+      "rect": [
+        24,
+        184,
+        290,
+        70
+      ],
+      "label": "188 SMs",
+      "sublabel": "habilitados (94 × 2)",
+      "parent": null,
+      "tags": [
+        "counter",
+        "count-sm"
+      ],
+      "count": {
+        "value": 188,
+        "claim": "chip.sm_count",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.tpc_count",
+        "chip.sm_per_tpc"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.count.cores",
+      "kind": "counter",
+      "rect": [
+        24,
+        264,
+        290,
+        70
+      ],
+      "label": "24.064 núcleos CUDA",
+      "sublabel": "188 × 128",
+      "parent": null,
+      "tags": [
+        "counter",
+        "count-cores"
+      ],
+      "count": {
+        "value": 24064,
+        "claim": "chip.cuda_cores",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.sm_count",
+        "sm.cuda_cores"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.count.mc",
+      "kind": "counter",
+      "rect": [
+        24,
+        344,
+        290,
+        70
+      ],
+      "label": "16 controladores",
+      "sublabel": "16 × 32 bits = 512 bits",
+      "parent": null,
+      "tags": [
+        "counter",
+        "count-mc",
+        "memory-path"
+      ],
+      "count": {
+        "value": 16,
+        "claim": "chip.mem_controllers",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.mem_controller_bits",
+        "mem.bus_bits"
+      ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.key.tpc_per_gpc",
+      "kind": "note",
+      "rect": [
+        24,
+        426,
+        290,
+        44
+      ],
+      "label": "1 GPC = 8 TPCs",
+      "parent": null,
+      "tags": [
+        "key",
+        "key-gpc"
+      ],
+      "count": {
+        "value": 8,
+        "claim": "chip.tpc_per_gpc",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative",
+      "note": "Valor do chip completo (p. 9). Com 94 TPCs a divisão por GPC não é inteira."
+    },
+    {
+      "id": "chip.key.sm_per_tpc",
+      "kind": "note",
+      "rect": [
+        24,
+        478,
+        290,
+        44
+      ],
+      "label": "1 TPC = 2 SMs",
+      "parent": null,
+      "tags": [
+        "key",
+        "key-tpc"
+      ],
+      "count": {
+        "value": 2,
+        "claim": "chip.sm_per_tpc",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.key.cores_per_sm",
+      "kind": "note",
+      "rect": [
+        24,
+        530,
+        290,
+        44
+      ],
+      "label": "1 SM = 128 núcleos CUDA",
+      "parent": null,
+      "tags": [
+        "key",
+        "key-sm"
+      ],
+      "count": {
+        "value": 128,
+        "claim": "sm.cuda_cores",
+        "provenance": "confirmed"
+      },
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "chip.note.conflict",
+      "kind": "note",
+      "rect": [
+        24,
+        588,
+        290,
+        84
+      ],
+      "label": "Chip completo: 192 SMs",
+      "sublabel": "Tab. 4 desta placa: 188 SMs",
+      "parent": null,
+      "tags": [
+        "note",
+        "conflict",
+        "full-chip"
+      ],
+      "count": {
+        "value": 192,
+        "claim": "chip.sm_count_full",
+        "provenance": "confirmed"
+      },
+      "claims": [
+        "chip.sm_count",
+        "chip.tpc_count_full",
+        "chip.tpc_count"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "p. 8: 'The RTX PRO 6000 GPUs use the full GB202 GPU' (192 SMs), contra 188 nas Tab. 1 e 4. Valor adotado: 188 (Tab. 4, confere com 94 × 2 e com o datasheet)."
+    },
+    {
+      "id": "chip.note.disabled",
+      "kind": "note",
+      "rect": [
+        24,
+        684,
+        290,
+        84
+      ],
+      "label": "2 posições de TPC apagadas",
+      "sublabel": "quais: escolha ilustrativa",
+      "parent": null,
+      "tags": [
+        "note",
+        "disabled-key"
+      ],
+      "claims": [
+        "chip.tpc_count",
+        "chip.tpc_count_full"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+    },
+    {
+      "id": "chip.gap.sm_reason",
+      "kind": "gap",
+      "rect": [
+        24,
+        780,
+        290,
+        86
+      ],
+      "label": "Por que 188 e não 192?",
+      "sublabel": "o whitepaper não explica",
+      "parent": null,
+      "tags": [
+        "gap"
+      ],
+      "shape_provenance": "illustrative",
+      "note": "Por que 188 SMs e não 192: o whitepaper não explica (não fala em partes com defeito nem em rendimento). A explicação do artigo do grupo é inferência."
+    }
+  ],
+  "flows": [
+    {
+      "id": "chip.flow.l2_mc0",
+      "from": "chip.l2",
+      "to": "chip.memctl.0",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          138.62
+        ],
+        [
+          402,
+          138.62
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc1",
+      "from": "chip.l2",
+      "to": "chip.memctl.1",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          233.88
+        ],
+        [
+          402,
+          233.88
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc2",
+      "from": "chip.l2",
+      "to": "chip.memctl.2",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          329.12
+        ],
+        [
+          402,
+          329.12
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc3",
+      "from": "chip.l2",
+      "to": "chip.memctl.3",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          424.38
+        ],
+        [
+          402,
+          424.38
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc4",
+      "from": "chip.l2",
+      "to": "chip.memctl.4",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          519.62
+        ],
+        [
+          402,
+          519.62
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc5",
+      "from": "chip.l2",
+      "to": "chip.memctl.5",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          614.88
+        ],
+        [
+          402,
+          614.88
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc6",
+      "from": "chip.l2",
+      "to": "chip.memctl.6",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          710.12
+        ],
+        [
+          402,
+          710.12
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc7",
+      "from": "chip.l2",
+      "to": "chip.memctl.7",
+      "points": [
+        [
+          418,
+          472
+        ],
+        [
+          410,
+          472
+        ],
+        [
+          410,
+          805.38
+        ],
+        [
+          402,
+          805.38
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc8",
+      "from": "chip.l2",
+      "to": "chip.memctl.8",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          138.62
+        ],
+        [
+          1504,
+          138.62
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc9",
+      "from": "chip.l2",
+      "to": "chip.memctl.9",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          233.88
+        ],
+        [
+          1504,
+          233.88
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc10",
+      "from": "chip.l2",
+      "to": "chip.memctl.10",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          329.12
+        ],
+        [
+          1504,
+          329.12
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc11",
+      "from": "chip.l2",
+      "to": "chip.memctl.11",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          424.38
+        ],
+        [
+          1504,
+          424.38
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc12",
+      "from": "chip.l2",
+      "to": "chip.memctl.12",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          519.62
+        ],
+        [
+          1504,
+          519.62
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc13",
+      "from": "chip.l2",
+      "to": "chip.memctl.13",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          614.88
+        ],
+        [
+          1504,
+          614.88
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc14",
+      "from": "chip.l2",
+      "to": "chip.memctl.14",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          710.12
+        ],
+        [
+          1504,
+          710.12
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    },
+    {
+      "id": "chip.flow.l2_mc15",
+      "from": "chip.l2",
+      "to": "chip.memctl.15",
+      "points": [
+        [
+          1488,
+          472
+        ],
+        [
+          1496,
+          472
+        ],
+        [
+          1496,
+          805.38
+        ],
+        [
+          1504,
+          805.38
+        ]
+      ],
+      "path": "data",
+      "provenance": "illustrative",
+      "claim": "chip.mem_controller_bits"
+    }
+  ],
+  "checks": [
+    {
+      "expr": "chip.count.tpc * chip.key.sm_per_tpc",
+      "expect": 188
+    },
+    {
+      "expr": "chip.count.sm * chip.key.cores_per_sm",
+      "expect": 24064
+    },
+    {
+      "expr": "chip.count.gpc * chip.key.tpc_per_gpc",
+      "expect": 96
+    },
+    {
+      "expr": "chip.count.mc * chip.memctl.0",
+      "expect": 512
+    }
+  ]
+}
