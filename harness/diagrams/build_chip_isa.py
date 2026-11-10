@@ -143,6 +143,7 @@ EXTRA = [
     (r"^mul\.wide\.s32 ", r"^IMAD\.WIDE R4,"),
     (r"^add\.s64 %rd6,", r"^IMAD\.WIDE R2,"),
     (r"^add\.s64 %rd7,", r"^IMAD\.WIDE R4,"),
+    (r"^mov\.u32 %r\d+, %ntid\.x", r"^LDC R7, c\[0x0\]\[0x360\]$"),   # blockDim.x (README do exemplo)
 ]
 for k, (pp, sp) in enumerate(TABLE3 + EXTRA):
     pi = only(pp, ptx)
@@ -168,17 +169,17 @@ d.node("isa.count.regs", "counter", c[2], f"{val('ex.saxpy.registers')} registra
        tags=["counter", "reg-r", "regs"], count="ex.saxpy.registers",
        claims=["ex.saxpy.spill_bytes"], note="'Used 10 registers' do ptxas -v; 0 bytes de spill.")
 # limite de registradores (beat a5.8)
-lim = row(c[1][0], cy + 74, 530 - (c[1][0] - 30), 46, 2, 10)
-d.node("isa.count.reg_max_thread", "counter", lim[0], f"até {val('sm.max_regs_per_thread')}", "por thread",
+lim = row(30, cy + 74, 530, 54, 2, 10)
+d.node("isa.count.reg_max_thread", "counter", lim[0], f"até {val('sm.max_regs_per_thread')}", "registradores por thread (limite)",
        tags=["counter", "reg-limit", "regs"], count="sm.max_regs_per_thread", label_size=20)
-d.node("isa.count.reg_sm", "counter", lim[1], f"{br(val('sm.regfile_entries'))}", "por SM",
+d.node("isa.count.reg_sm", "counter", lim[1], f"{br(val('sm.regfile_entries'))}", "registradores por SM",
        tags=["counter", "reg-limit", "regs"], count="sm.regfile_entries", label_size=20)
 
 # ---------------- a palavra de 128 bits (FFMA) ----------------
 fi = only(r"^FFMA ", sass, key=lambda s: s["ins"])
 ffma = sass[fi]
 d.get(f"isa.sass.{fi}")["tags"].append("ffma")
-wy = 462
+wy = 470
 d.node("isa.word.ins", "header", [30, wy, 530, 40], ffma["ins"] + " ;", mono=True,
        tags=["word", "ffma"], provenance="confirmed")
 halves = row(30, wy + 46, 530, 64, 2, 8)

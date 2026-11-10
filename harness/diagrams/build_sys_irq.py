@@ -127,8 +127,8 @@ d.node("irq.xid13", "cell", [PX + 14, 608, PW - 28, 102], "Xid 13", val("irq.xid
        note="Catálogo de Xid: falhas gerais de aplicação do usuário; catálogo geral, não cita a Blackwell.")
 
 # ---------------- lacunas e leitura do grupo ----------------
-d.node("irq.gap.cmd", "note", [40, 740, 1530, 60], "envio de comandos: ver o quadro de canais e GPFIFO",
-       tags=["note", "command-submission"], claims=["cmd.submit"], provenance="confirmed",
+d.node("irq.gap.cmd", "note", [40, 740, 1530, 60], "envio de comandos: fora deste quadro",
+       tags=["note", "command-submission"],
        note="Id mantido por compatibilidade com o storyboard; o envio de comandos está em sys.cmd.")
 d.node("irq.note.sm", "note", [40, 812, 1530, 64], "Não achamos rotina de interrupção executada pelo próprio SM",
        "análise do grupo", tags=["note", "sm-level", "inferred"], provenance="inferred",

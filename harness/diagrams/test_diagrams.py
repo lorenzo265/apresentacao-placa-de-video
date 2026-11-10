@@ -186,7 +186,7 @@ class ISA(unittest.TestCase):
         words = [n["label"] for n in nodes("chip.isa", tag="word-hex")]
         self.assertEqual(words, [m.group(1), m.group(2)])
         maps = [f for f in D["chip.isa"]["flows"] if f["id"].startswith("isa.map.")]
-        self.assertEqual(len(maps), 12 + 5)                          # Tabela 3 + tid, mul.wide, 2 add.s64
+        self.assertEqual(len(maps), 12 + 6)                          # Tabela 3 + tid, mul.wide, 2 add.s64, ntid
         self.assertTrue(all(f["provenance"] == "derived" for f in maps))
         row1 = nodes("chip.isa", tag="field-row-1")
         self.assertEqual(sum(n["count"]["value"] for n in row1), 8 * SPEC["isa.instruction_bytes"])  # 91+23+14
@@ -274,8 +274,11 @@ class Fechamento(unittest.TestCase):
     def test_gpfifo(self):
         self.assertEqual(len(nodes("sys.cmd", tag="pointer")), 2)
         self.assertTrue(nodes("sys.cmd", tag="gpfifo-entry"))
-        user = [n for n in D["sys.cmd"]["nodes"] if "cmd.user_path" in n.get("claims", [])]
-        self.assertEqual([n["provenance"] for n in user], ["derived"])
+        for d in D.values():   # cmd.user_path saiu do spec: ninguém cita
+            for item in d["nodes"] + d["flows"]:
+                self.assertNotIn("cmd.user_path", item.get("claims", []) + [item.get("claim")], item["id"])
+        user = [n for n in D["sys.cmd"]["nodes"] if n["id"] == "cmd.note.user"][0]
+        self.assertEqual(user["provenance"], "inferred")
         for n in nodes("sys.cmd", "step"):
             self.assertTrue(any(c.startswith("cmd.") for c in n.get("claims", [])), n["id"])
 

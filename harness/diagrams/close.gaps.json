@@ -382,7 +382,7 @@
         "gap"
       ],
       "shape_provenance": "illustrative",
-      "note": "Granularidade da preempção na Blackwell: só há fonte para a Pascal (instrução). | Se os SMs têm mecanismo de interrupção no sentido de uma CPU: nenhuma fonte; é inferência do grupo e não entra no spec. | Caminho físico da interrupção (a GPU 'manda pelo PCIe'): o código mostra MSI, MSI-X e recuo para linha legada, mas nenhum trecho literal diz que a interrupção sai pelo barramento PCIe. A leitura de nv.c cobriu só 100.000 de 176.317 caracteres na primeira passada."
+      "note": "Granularidade da preempção na Blackwell: só há fonte para a Pascal (instrução). | Se os SMs têm mecanismo de interrupção no sentido de uma CPU: nenhuma fonte; é inferência do grupo e não entra no spec. | O driver habilita MSI-X ou MSI e recua para \"PCIe virtual-wire interrupts\". Nenhum trecho lido descreve o caminho da interrupção dentro da GPU. O arquivo nv.c foi lido em parte."
     },
     {
       "id": "gaps.memoria.item",

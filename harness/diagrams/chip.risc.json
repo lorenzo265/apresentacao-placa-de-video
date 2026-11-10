@@ -617,11 +617,11 @@
         1160,
         90,
         410,
-        130
+        116
       ],
       "label": "LDGSTS",
       "sublabel": "“Asynchronous Global to Shared Memcopy”",
-      "label_size": 30,
+      "label_size": 22,
       "mono": true,
       "parent": null,
       "tags": [
@@ -640,13 +640,13 @@
       "kind": "codeline",
       "rect": [
         1160,
-        232,
+        216,
         410,
-        130
+        116
       ],
       "label": "TEX",
       "sublabel": "“Texture Fetch”",
-      "label_size": 30,
+      "label_size": 22,
       "mono": true,
       "parent": null,
       "tags": [
@@ -665,13 +665,13 @@
       "kind": "codeline",
       "rect": [
         1160,
-        374,
+        342,
         410,
-        130
+        116
       ],
       "label": "HMMA",
       "sublabel": "“Matrix Multiply and Accumulate”",
-      "label_size": 30,
+      "label_size": 22,
       "mono": true,
       "parent": null,
       "tags": [
@@ -691,7 +691,7 @@
       "kind": "codeline",
       "rect": [
         1160,
-        516,
+        470,
         410,
         56
       ],
@@ -714,7 +714,7 @@
       "kind": "codeline",
       "rect": [
         1160,
-        578,
+        562,
         410,
         40
       ],
@@ -781,12 +781,12 @@
       "to": "risc.mma.sass",
       "points": [
         [
-          1550,
-          572
+          1540,
+          526
         ],
         [
-          1550,
-          578
+          1540,
+          562
         ]
       ],
       "path": "data",

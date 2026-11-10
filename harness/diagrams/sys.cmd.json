@@ -631,20 +631,17 @@
         390,
         120
       ],
-      "label": "descrito para os canais do driver",
-      "sublabel": "CUDA: parte fechada do driver",
-      "label_size": 20,
+      "label": "descrito para os canais do próprio driver",
+      "sublabel": "para um programa CUDA comum, é leitura nossa",
+      "label_size": 18,
       "parent": null,
       "tags": [
         "note",
         "user-path"
       ],
-      "claims": [
-        "cmd.user_path"
-      ],
-      "provenance": "derived",
+      "provenance": "inferred",
       "shape_provenance": "illustrative",
-      "note": "Descrito para os canais do próprio driver; o caminho de um programa CUDA passa pela parte fechada do driver. Supor o mesmo esquema de canal e GPFIFO é leitura nossa."
+      "note": "Descrito para os canais do próprio driver (UVM). Supor o mesmo esquema de canal e GPFIFO para um programa CUDA comum é leitura nossa, sem trecho de fonte."
     },
     {
       "id": "cmd.note.driver",

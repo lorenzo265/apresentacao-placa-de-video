@@ -4,7 +4,7 @@
 O driver grava comandos num pushbuffer, reserva uma entrada da GPFIFO do canal e avança
 o ponteiro PUT (write_gpu_put); a GPU consome a fila do canal. A GPFIFO é um anel com
 GET e PUT. Descrito para os canais do próprio driver (UVM); o caminho de um programa
-CUDA comum passa pela parte fechada do driver (cmd.user_path, derived).
+CUDA comum é leitura nossa (inferred, sem trecho de fonte).
 """
 import math
 
@@ -91,11 +91,11 @@ d.node("cmd.channels", "frame", [PX, 24, PW, 250], "canais: filas de execução 
 for i, r in enumerate(grid(PX + 16, 66, PW - 32, 190, 2, 2, 10)):
     d.node(f"cmd.channels.c{i}", "block", r, "canal" if i < 3 else "…", parent="cmd.channels",
            tags=["channel"], label_size=20, note="Quantidade de canais: ilustrativa.")
-d.node("cmd.note.user", "note", [PX, 290, PW, 120], "descrito para os canais do driver",
-       "CUDA: parte fechada do driver", tags=["note", "user-path"],
-       claims=["cmd.user_path"], provenance="derived", label_size=20,
-       note="Descrito para os canais do próprio driver; o caminho de um programa CUDA passa pela parte "
-            "fechada do driver. Supor o mesmo esquema de canal e GPFIFO é leitura nossa.")
+d.node("cmd.note.user", "note", [PX, 290, PW, 120], "descrito para os canais do próprio driver",
+       "para um programa CUDA comum, é leitura nossa", tags=["note", "user-path"],
+       provenance="inferred", label_size=18,
+       note="Descrito para os canais do próprio driver (UVM). Supor o mesmo esquema de canal e GPFIFO "
+            "para um programa CUDA comum é leitura nossa, sem trecho de fonte.")
 d.node("cmd.note.driver", "note", [PX, 426, PW, 80], "segundo o driver oficial", "uvm_channel.c, uvm_pushbuffer.h",
        tags=["note", "driver"], label_size=20)
 

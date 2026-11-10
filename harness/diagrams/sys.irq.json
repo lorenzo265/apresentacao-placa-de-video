@@ -158,7 +158,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "MSI-X, MSI ou linha legada, conforme o driver consegue habilitar. Caminho físico da interrupção (a GPU 'manda pelo PCIe'): o código mostra MSI, MSI-X e recuo para linha legada, mas nenhum trecho literal diz que a interrupção sai pelo barramento PCIe. A leitura de nv.c cobriu só 100.000 de 176.317 caracteres na primeira passada."
+      "note": "MSI-X, MSI ou linha legada, conforme o driver consegue habilitar. O driver habilita MSI-X ou MSI e recua para \"PCIe virtual-wire interrupts\". Nenhum trecho lido descreve o caminho da interrupção dentro da GPU. O arquivo nv.c foi lido em parte."
     },
     {
       "id": "irq.m1.s3",
@@ -666,16 +666,12 @@
         1530,
         60
       ],
-      "label": "envio de comandos: ver o quadro de canais e GPFIFO",
+      "label": "envio de comandos: fora deste quadro",
       "parent": null,
       "tags": [
         "note",
         "command-submission"
       ],
-      "claims": [
-        "cmd.submit"
-      ],
-      "provenance": "confirmed",
       "shape_provenance": "illustrative",
       "note": "Id mantido por compatibilidade com o storyboard; o envio de comandos está em sys.cmd."
     },

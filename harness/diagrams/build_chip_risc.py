@@ -68,10 +68,10 @@ PX, PW = 1160, 410
 d.node("risc.ops.head", "header", [PX, 30, PW, 50], "Instruções de acelerador", tags=["header", "ops"])
 OPS = [("LDGSTS", "isa.op.ldgsts", "op-ldgsts"), ("TEX", "isa.op.tex", "op-tex"),
        ("HMMA", "isa.op.hmma", "op-hmma")]
-for (name, claim, tag), r in zip(OPS, [[PX, 90 + k * 142, PW, 130] for k in range(3)]):
+for (name, claim, tag), r in zip(OPS, [[PX, 90 + k * 126, PW, 116] for k in range(3)]):
     d.node(f"risc.op.{name.lower()}", "codeline", r, name, f"“{val(claim)}”", mono=True,
            tags=["ops", tag], claims=[claim] + (["ex.mma.hmma"] if name == "HMMA" else []),
-           provenance="confirmed", label_size=30,
+           provenance="confirmed", label_size=22,
            note="Descrição oficial: CUDA Binary Utilities 13.5, 'Blackwell and Rubin Instruction Set'.")
 # par PTX -> SASS da HMMA (beat a5.11), lido de harness/examples/mma/
 MMA = EXAMPLES / "mma"
@@ -82,14 +82,14 @@ sass_mma = [re.sub(r"\s+", " ", m.group(1)).strip() for m in
             re.finditer(r"/\*[0-9a-f]{4}\*/\s+(" + re.escape(hmma) + r" [^;]*;)", (MMA / "mma.sm_120.sass").read_text(encoding="utf-8"))]
 assert len(ptx_mma) == 1 and len(sass_mma) == 1, (ptx_mma, sass_mma)
 head, tail = ptx_mma[0].split(".row", 1)
-d.node("risc.mma.ptx", "codeline", [PX, 516, PW, 56], head, ".row" + tail, mono=True, align="left",
+d.node("risc.mma.ptx", "codeline", [PX, 470, PW, 56], head, ".row" + tail, mono=True, align="left",
        label_size=18, tags=["mma", "ptx"], provenance="confirmed",
        note="harness/examples/mma/mma.ptx, kernel mma_f16 (operandos omitidos).")
-d.node("risc.mma.sass", "codeline", [PX, 578, PW, 40], sass_mma[0], mono=True, align="left",
+d.node("risc.mma.sass", "codeline", [PX, 562, PW, 40], sass_mma[0], mono=True, align="left",
        tags=["mma", "sass", "op-hmma"], claims=["ex.mma.hmma"], provenance="confirmed",
        note="harness/examples/mma/mma.sm_120.sass: uma instrução SASS por mma.sync.")
 d.flow("risc.flow.mma", "risc.mma.ptx", "risc.mma.sass", path="data", provenance="confirmed",
-       points=[(PX + PW - 20, 572), (PX + PW - 20, 578)], claim="ex.mma.hmma")
+       points=[(PX + PW - 30, 526), (PX + PW - 30, 562)], claim="ex.mma.hmma")
 d.node("risc.amp", "note", [PX, 626, PW, 88], f"AMP: {val('chip.amp_isa')}", "um RISC por projeto, fora do SM",
        tags=["amp"], claims=["chip.amp_isa"], provenance="confirmed")
 d.node("risc.gap.microcode", "gap", [PX, cy, PW, 116], "Microcódigo, modos completos", "sem fonte pública",

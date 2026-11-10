@@ -324,7 +324,9 @@
         "code",
         "ptx",
         "ptx-5",
-        "op-mov"
+        "op-mov",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -783,7 +785,9 @@
         "op-ldc",
         "reg-r",
         "const",
-        "useful"
+        "useful",
+        "mapped",
+        "map-extra"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -1271,13 +1275,13 @@
       "id": "isa.count.reg_max_thread",
       "kind": "counter",
       "rect": [
-        210,
+        30,
         404,
-        170,
-        46
+        260,
+        54
       ],
       "label": "até 255",
-      "sublabel": "por thread",
+      "sublabel": "registradores por thread (limite)",
       "label_size": 20,
       "parent": null,
       "tags": [
@@ -1296,13 +1300,13 @@
       "id": "isa.count.reg_sm",
       "kind": "counter",
       "rect": [
-        390,
+        300,
         404,
-        170,
-        46
+        260,
+        54
       ],
       "label": "65.536",
-      "sublabel": "por SM",
+      "sublabel": "registradores por SM",
       "label_size": 20,
       "parent": null,
       "tags": [
@@ -1322,7 +1326,7 @@
       "kind": "header",
       "rect": [
         30,
-        462,
+        470,
         530,
         40
       ],
@@ -1341,7 +1345,7 @@
       "kind": "field",
       "rect": [
         30,
-        508,
+        516,
         261,
         64
       ],
@@ -1363,7 +1367,7 @@
       "kind": "field",
       "rect": [
         299,
-        508,
+        516,
         261,
         64
       ],
@@ -1385,7 +1389,7 @@
       "kind": "counter",
       "rect": [
         30,
-        578,
+        586,
         530,
         46
       ],
@@ -1409,7 +1413,7 @@
       "kind": "field",
       "rect": [
         30,
-        632,
+        640,
         300,
         54
       ],
@@ -1438,7 +1442,7 @@
       "kind": "field",
       "rect": [
         336,
-        632,
+        640,
         120,
         54
       ],
@@ -1467,7 +1471,7 @@
       "kind": "field",
       "rect": [
         462,
-        632,
+        640,
         98,
         54
       ],
@@ -1496,7 +1500,7 @@
       "kind": "frame",
       "rect": [
         30,
-        688,
+        696,
         300,
         108
       ],
@@ -1520,7 +1524,7 @@
       "kind": "field",
       "rect": [
         38,
-        718,
+        726,
         138,
         70
       ],
@@ -1545,7 +1549,7 @@
       "kind": "field",
       "rect": [
         184,
-        718,
+        726,
         138,
         70
       ],
@@ -1573,7 +1577,7 @@
       "kind": "gap",
       "rect": [
         340,
-        688,
+        696,
         220,
         108
       ],
@@ -1592,7 +1596,7 @@
       "kind": "note",
       "rect": [
         30,
-        804,
+        812,
         530,
         44
       ],
@@ -1901,6 +1905,23 @@
       "provenance": "derived"
     },
     {
+      "id": "isa.map.17",
+      "from": "isa.ptx.5",
+      "to": "isa.sass.4",
+      "points": [
+        [
+          990,
+          264
+        ],
+        [
+          1080,
+          230
+        ]
+      ],
+      "path": "data",
+      "provenance": "derived"
+    },
+    {
       "id": "isa.flow.ffma_word",
       "from": "isa.sass.16",
       "to": "isa.word.w1",
@@ -1923,11 +1944,11 @@
         ],
         [
           578,
-          540
+          548
         ],
         [
           560,
-          540
+          548
         ]
       ],
       "path": "control",

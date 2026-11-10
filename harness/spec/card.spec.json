@@ -1008,13 +1008,6 @@
       "note": "segundo o driver oficial, uvm_channel.c, internal_channel_submit_work. Vale para os canais do próprio driver"
     },
     {
-      "id": "cmd.user_path",
-      "value": "o caminho de um programa CUDA comum passa pela parte fechada do driver; supor o mesmo esquema de canal e GPFIFO é leitura nossa",
-      "provenance": "derived",
-      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
-      "note": "análogo: canais do próprio driver"
-    },
-    {
       "id": "simt.independent_scheduling",
       "value": "desde a compute capability 7.0, a GPU guarda o estado de execução por thread e reagrupa as threads ativas; elas podem divergir e reconvergir em grupos menores que o warp",
       "provenance": "confirmed",
@@ -1150,6 +1143,10 @@
     {
       "id": "display.dp_phys",
       "description": "Dimensões do receptáculo DisplayPort só em Wikipedia (baixa autoridade); como a placa chega a UHBR20 (cabo, certificação) não está nas fontes."
+    },
+    {
+      "id": "cmd.user_path",
+      "description": "Os trechos lidos do driver descrevem só os canais do próprio driver (UVM). O caminho de um programa CUDA comum não foi lido; supor o mesmo esquema de canal e GPFIFO é leitura nossa."
     }
   ]
 }

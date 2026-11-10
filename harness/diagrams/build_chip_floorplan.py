@@ -2,8 +2,8 @@
 """chip.floorplan (nível 2): planta do GB202 nesta placa, a partir do spec.
 
 A grade nasce de chip.gpc_count x chip.tpc_per_gpc x chip.sm_per_tpc (posições do
-chip completo); chip.tpc_count diz quantas estão habilitadas. As posições
-desabilitadas são escolha ilustrativa: a NVIDIA não diz quais são.
+chip completo); chip.tpc_count diz quantas estão nesta placa. As posições
+fora desta placa são escolha ilustrativa: a NVIDIA não diz quais são.
 """
 from _kit import Diagram, br, center, fact, gap, grid, kb_to_mb, val
 
@@ -23,7 +23,7 @@ N_OFF = TPC_FULL - TPC_ON
 DISABLED = [(4, 6), (7, 1)][:N_OFF]
 assert len(DISABLED) == N_OFF, "o spec mudou: rever as posições apagadas"
 ZOOM = (2, 7, 1)  # GPC 2, TPC 7, SM 1
-DISABLED_NOTE = ("A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa "
+DISABLED_NOTE = ("A NVIDIA não informa quais posições de TPC ficam fora desta placa "
                  "(lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa.")
 
 d = Diagram(
@@ -87,7 +87,7 @@ for g, gr in enumerate(gpc_rects):
                    state="disabled" if off else None, note=DISABLED_NOTE if off else None,
                    embed="chip.sm" if zoom else None)
             sm_seen += 0 if off else 1
-assert sm_seen == SM_ON, f"desenhei {sm_seen} SMs habilitados, o spec diz {SM_ON}"
+assert sm_seen == SM_ON, f"desenhei {sm_seen} SMs nesta placa, o spec diz {SM_ON}"
 
 # ---------------- L2 e controladores de memória ----------------
 L2 = [GX, 424, GW, 96]

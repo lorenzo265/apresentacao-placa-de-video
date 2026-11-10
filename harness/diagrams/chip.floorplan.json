@@ -2161,7 +2161,7 @@
       ],
       "state": "disabled",
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gpc.4.tpc.6.sm.0",
@@ -2180,7 +2180,7 @@
       ],
       "state": "disabled",
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gpc.4.tpc.6.sm.1",
@@ -2199,7 +2199,7 @@
       ],
       "state": "disabled",
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gpc.4.tpc.7",
@@ -3193,7 +3193,7 @@
       ],
       "state": "disabled",
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gpc.7.tpc.1.sm.0",
@@ -3212,7 +3212,7 @@
       ],
       "state": "disabled",
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gpc.7.tpc.1.sm.1",
@@ -3231,7 +3231,7 @@
       ],
       "state": "disabled",
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gpc.7.tpc.2",
@@ -5951,7 +5951,7 @@
         "chip.tpc_count_full"
       ],
       "shape_provenance": "illustrative",
-      "note": "A NVIDIA não informa quais posições de TPC estão desabilitadas nesta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
+      "note": "A NVIDIA não informa quais posições de TPC ficam fora desta placa (lacuna chip.tpc_gpc_distribution); a escolha desta posição é ilustrativa."
     },
     {
       "id": "chip.gap.sm_reason",

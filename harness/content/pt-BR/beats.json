@@ -326,8 +326,7 @@
       "claims": [
         "cmd.channel",
         "cmd.gpfifo",
-        "cmd.submit",
-        "cmd.user_path"
+        "cmd.submit"
       ]
     },
     "a6.4": {

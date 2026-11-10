@@ -36,7 +36,7 @@
         70
       ],
       "label": "4",
-      "sublabel": "blocos",
+      "sublabel": "partições",
       "parent": "sm.frame",
       "tags": [
         "counter",
@@ -132,7 +132,7 @@
         450,
         506
       ],
-      "label": "Bloco 0",
+      "label": "Partição 0",
       "label_size": 18,
       "parent": "sm.frame",
       "tags": [
@@ -236,7 +236,7 @@
       ],
       "provenance": "derived",
       "shape_provenance": "illustrative",
-      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+      "note": "128 núcleos por SM / 4 partições = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
     },
     {
       "id": "sm.block.0.core.0",
@@ -771,7 +771,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+      "note": "4 por SM (p. 9), um por partição na Fig. 5."
     },
     {
       "id": "sm.block.0.ldst.0",
@@ -792,7 +792,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.0.ldst.1",
@@ -813,7 +813,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.0.ldst.2",
@@ -834,7 +834,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.0.ldst.3",
@@ -855,7 +855,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.0.sfu",
@@ -877,7 +877,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Uma SFU por bloco (Fig. 5)."
+      "note": "Uma SFU por partição (Fig. 5)."
     },
     {
       "id": "sm.block.1",
@@ -888,7 +888,7 @@
         450,
         506
       ],
-      "label": "Bloco 1",
+      "label": "Partição 1",
       "label_size": 18,
       "parent": "sm.frame",
       "tags": [
@@ -973,7 +973,7 @@
       ],
       "provenance": "derived",
       "shape_provenance": "illustrative",
-      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+      "note": "128 núcleos por SM / 4 partições = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
     },
     {
       "id": "sm.block.1.core.0",
@@ -1508,7 +1508,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+      "note": "4 por SM (p. 9), um por partição na Fig. 5."
     },
     {
       "id": "sm.block.1.ldst.0",
@@ -1529,7 +1529,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.1.ldst.1",
@@ -1550,7 +1550,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.1.ldst.2",
@@ -1571,7 +1571,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.1.ldst.3",
@@ -1592,7 +1592,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.1.sfu",
@@ -1614,7 +1614,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Uma SFU por bloco (Fig. 5)."
+      "note": "Uma SFU por partição (Fig. 5)."
     },
     {
       "id": "sm.block.2",
@@ -1625,7 +1625,7 @@
         450,
         506
       ],
-      "label": "Bloco 2",
+      "label": "Partição 2",
       "label_size": 18,
       "parent": "sm.frame",
       "tags": [
@@ -1710,7 +1710,7 @@
       ],
       "provenance": "derived",
       "shape_provenance": "illustrative",
-      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+      "note": "128 núcleos por SM / 4 partições = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
     },
     {
       "id": "sm.block.2.core.0",
@@ -2245,7 +2245,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+      "note": "4 por SM (p. 9), um por partição na Fig. 5."
     },
     {
       "id": "sm.block.2.ldst.0",
@@ -2266,7 +2266,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.2.ldst.1",
@@ -2287,7 +2287,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.2.ldst.2",
@@ -2308,7 +2308,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.2.ldst.3",
@@ -2329,7 +2329,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.2.sfu",
@@ -2351,7 +2351,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Uma SFU por bloco (Fig. 5)."
+      "note": "Uma SFU por partição (Fig. 5)."
     },
     {
       "id": "sm.block.3",
@@ -2362,7 +2362,7 @@
         450,
         506
       ],
-      "label": "Bloco 3",
+      "label": "Partição 3",
       "label_size": 18,
       "parent": "sm.frame",
       "tags": [
@@ -2447,7 +2447,7 @@
       ],
       "provenance": "derived",
       "shape_provenance": "illustrative",
-      "note": "128 núcleos por SM / 4 blocos = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
+      "note": "128 núcleos por SM / 4 partições = 32 (conta nossa). Cada núcleo opera como FP32 ou INT32 em cada ciclo (p. 11)."
     },
     {
       "id": "sm.block.3.core.0",
@@ -2982,7 +2982,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "4 por SM (p. 9), um por bloco na Fig. 5."
+      "note": "4 por SM (p. 9), um por partição na Fig. 5."
     },
     {
       "id": "sm.block.3.ldst.0",
@@ -3003,7 +3003,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.3.ldst.1",
@@ -3024,7 +3024,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.3.ldst.2",
@@ -3045,7 +3045,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.3.ldst.3",
@@ -3066,7 +3066,7 @@
         "sm.block_ldst_units"
       ],
       "shape_provenance": "illustrative",
-      "note": "Fig. 5, p. 10: quatro 'LD/ST'; a transcrição não diz se são por bloco ou no SM inteiro. Desenhadas como na Fig. 5, quatro por bloco."
+      "note": "Fig. 5 do whitepaper: quatro LD/ST por partição, ao lado de uma SFU."
     },
     {
       "id": "sm.block.3.sfu",
@@ -3088,7 +3088,7 @@
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Uma SFU por bloco (Fig. 5)."
+      "note": "Uma SFU por partição (Fig. 5)."
     },
     {
       "id": "sm.l1",
