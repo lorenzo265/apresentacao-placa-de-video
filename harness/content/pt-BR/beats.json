@@ -117,7 +117,7 @@
     "a5.15": {
       "headline": "A conta da ocupação",
       "caption": "48 warps × 32 threads dão 1.536 threads por SM. Com 188 SMs, a placa pode manter 288.768 threads residentes. As contas são nossas.",
-      "fala": "O 48 é o limite oficial de warps por SM na compute capability 12.0. As multiplicações são nossas. Residente quer dizer que a thread está no SM, não que executa a cada ciclo: cada bloco despacha 32 threads por ciclo. O recurso em jogo são os 65.536 registradores do SM. Dividindo por 1.536 threads, cabem no máximo 42 por thread, conta nossa.",
+      "fala": "O 48 é o limite oficial de warps por SM na compute capability 12.0. As multiplicações são nossas. Residente quer dizer que a thread está no SM, não que executa a cada ciclo: cada partição do SM despacha 32 threads por ciclo. O recurso em jogo são os 65.536 registradores do SM. Dividindo por 1.536 threads, cabem no máximo 42 por thread, conta nossa.",
       "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.1.1. Contas nossas",
       "claims": [
         "sm.max_warps",
@@ -167,9 +167,9 @@
       ]
     },
     "a5.5": {
-      "headline": "Quatro blocos, cada um com escalonador",
-      "caption": "O SM se divide em 4 blocos. Cada um tem o seu escalonador de warp, que escolhe qual warp avança e despacha 32 threads por ciclo. Pipeline: o número de estágios não é público.",
-      "fala": "Quatro blocos vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
+      "headline": "Quatro partições, cada uma com escalonador",
+      "caption": "O SM se divide em 4 partições. Cada uma tem o seu escalonador de warp, que escolhe qual warp avança e despacha 32 threads por ciclo. Pipeline: o número de estágios não é público.",
+      "fala": "Quatro partições vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5, p. 10. Guia de programação CUDA 13.5, 3.2.2.2. Latências: Jarmusch et al., Tab. III (RTX 5080)",
       "claims": [
         "sm.blocks",
@@ -182,7 +182,7 @@
     },
     "a5.6": {
       "headline": "65.536 registradores por SM",
-      "caption": "Cada bloco tem um banco de 16.384 registradores de 32 bits. Os quatro somam 65.536, ou 256 KB por SM.",
+      "caption": "Cada partição tem um banco de 16.384 registradores de 32 bits. Os quatro somam 65.536, ou 256 KB por SM.",
       "fala": "Numa CPU, a troca de contexto salva os registradores na memória. Aqui os 256 KB do SM guardam os registradores de todos os warps residentes. Por isso, diz o guia CUDA, trocar de warp não tem custo: não há o que salvar. Na placa inteira são 48.128 KB, 188 vezes 256. Como o banco é organizado por dentro, em bancos e portas, a NVIDIA não publica para a Blackwell.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Fig. 5, p. 10. Blackwell Tuning Guide 13.5, 1.4.1.1. Guia de programação CUDA 13.5, 3.2.2.2",
       "claims": [
