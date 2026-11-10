@@ -40,7 +40,7 @@ Duração informada pelo autor em 2026-11-10: **22 minutos** (antes, de 15 a 20)
 | 6. A GPU no sistema | 10, 11 | 5 | 3:33 | 18:23 | medido no viewer |
 | 7. Fechamento | 13, 14 | 3 | 1:39 | 20:02 | 1:09 medido (a7.1 e a7.4) mais 0:30 de orçamento para a remontagem (a7.5) |
 
-Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 14 minutos para os itens que o enunciado cobra. O tempo medido é o que o viewer leva tocando sozinho (transição, entrada da chamada, `hold` e saída): 14:23 nos 29 beats prontos do corte. Ao vivo quem dita o ritmo é a fala, que costuma passar disso. A margem até os 22 minutos é de cerca de 2 minutos. Se o ensaio passar de 21 minutos, o corte sai primeiro dos atos 1 e 2, depois dos sete beats promovidos, nunca do resto dos atos 5 e 6.
+Leitura do orçamento: 5 minutos para a placa física (o gancho visual) e 15 minutos para os itens que o enunciado cobra. O tempo medido é o que o viewer leva tocando sozinho (transição, entrada da chamada, `hold` e saída): 14:23 nos 29 beats prontos do corte. Ao vivo quem dita o ritmo é a fala, que costuma passar disso. A margem até os 22 minutos é de cerca de 2 minutos. Se o ensaio passar de 21 minutos, o corte sai primeiro dos atos 1 e 2, depois dos sete beats promovidos, nunca do resto dos atos 5 e 6.
 
 Os beats de prioridade 2 que restaram (todos da placa física) ficam prontos como reserva: entram no viewer ao vivo se alguém perguntar, sem contar no tempo.
 
