@@ -901,6 +901,76 @@
       "source": "spec/sources/standards-sources.md#c4-pcie-50-x16",
       "unit": "GB/s",
       "note": "Conta nossa: 32 GT/s x 128/130 / 8 x 16 = 63,015. A codificação 128b/130b para 5.0 só consta em Wikipedia (baixa autoridade). Teto por direção; sem codificação seriam 64 GB/s"
+    },
+    {
+      "id": "simt.per_thread_state",
+      "value": "cada thread de um warp tem o seu contador de instrução e o seu estado de registradores",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.1: \"they have their own instruction address counter and register state\""
+    },
+    {
+      "id": "simt.divergence",
+      "value": "o warp executa cada caminho tomado, desabilitando as threads que não estão nele",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.1: \"the warp executes each branch path taken, disabling threads that are not on that path\""
+    },
+    {
+      "id": "sched.warp_scheduler",
+      "value": "a cada ciclo de emissão, o escalonador de warp escolhe um warp com threads prontas e emite a instrução para elas",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.2. O critério entre os warps prontos não é público"
+    },
+    {
+      "id": "sched.warp_switch_no_cost",
+      "value": true,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "guia CUDA 13.5, 3.2.2.2: o contexto de cada warp fica no chip; \"switching between warps incurs no cost\""
+    },
+    {
+      "id": "fault.stall",
+      "value": "a falha reproduzível impede a preempção do canal até o driver atender (fault and stall); os outros canais ficam parados",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "segundo o driver oficial, uvm_gpu_non_replayable_faults.c"
+    },
+    {
+      "id": "fault.buffer_batch",
+      "value": "o driver lê um lote de falhas do buffer e junta as repetidas",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "segundo o driver oficial, uvm_gpu_replayable_faults.c"
+    },
+    {
+      "id": "fault.replay",
+      "value": "depois de atender, o driver manda a GPU repetir os acessos (push_replay_on_gpu)",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "segundo o driver oficial, uvm_gpu_replayable_faults.c"
+    },
+    {
+      "id": "chip.block_diagram",
+      "value": "Fig. 3 do whitepaper: duas fileiras de 6 GPCs, L2 no centro, controladores de memória nas laterais",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "é diagrama de blocos esquemático, não a planta física do die"
+    },
+    {
+      "id": "sm.fp64_rate",
+      "value": "1/64 da taxa de FP32",
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-terceira-rodada",
+      "note": "nota da Fig. 3 do whitepaper"
+    },
+    {
+      "id": "sm.block_sfu",
+      "value": 1,
+      "provenance": "confirmed",
+      "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-segunda-rodada",
+      "note": "Fig. 5 do whitepaper: uma SFU por bloco, ao lado de quatro LD/ST"
     }
   ],
   "gaps": [

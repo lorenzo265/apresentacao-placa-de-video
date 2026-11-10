@@ -344,3 +344,22 @@ A auditoria (`harness/qa/fact-check-segunda-leva.md`) apontou trechos que precis
 
 Contas (`derived`): 4 × 16.384 = 65.536 registradores por SM; índices de 1 + 9 + 9 + 9 + 8 bits, mais 9 (4 KB) ou 5 (64 KB) no último nível; 4 KB: 45 + 12; 64 KB: 41 + 16; 2 MB: 36 + 21; 512 MB: 28 + 29; sempre 57.
 
+## Conferência direta, terceira rodada (sessão principal, 2026-11-10, depois da auditoria da F6)
+
+Trechos pedidos pela auditoria `harness/qa/fact-check-f6.md`, conferidos com busca literal nos arquivos baixados (`uvm_gpu_non_replayable_faults.c`, `uvm_gpu_replayable_faults.c`, a página do guia CUDA 13.5 "Advanced Kernel Programming" e o texto do whitepaper).
+
+| Dado | Trecho literal | Onde |
+|---|---|---|
+| Falha reproduzível segura o canal | "replayable faults block preemption of the channel until software (UVM) services the fault. This is sometimes known as \"fault and stall\". Note that replayable faults prevent the execution of other channels, which are stalled until the fault is serviced." | `uvm_gpu_non_replayable_faults.c`, linhas 75 a 78 |
+| Lote de falhas | "Fetch a batch of faults from the buffer. Stop at the first entry that is"; "When possible, we coalesce duplicate entries to minimize the fault handling" | `uvm_gpu_replayable_faults.c`, linhas 728 e 809 |
+| Repetição | função `push_replay_on_gpu` | `uvm_gpu_replayable_faults.c`, linha 490 |
+| Estado por thread | "Individual threads composing a warp start together at the same program address, but they have their own instruction address counter and register state and are therefore free to branch and execute independently." | guia CUDA 13.5, 3.2.2.1 |
+| Divergência | "A warp executes one common instruction at a time ... If threads of a warp diverge via a data-dependent conditional branch, the warp executes each branch path taken, disabling threads that are not on that path." | guia CUDA 13.5, 3.2.2.1 |
+| Antes e depois da compute capability 7.0 | "On GPUs with compute capability lower than 7.0, warps used a single program counter shared amongst all 32 threads in the warp together with an active mask specifying the active threads of the warp." | guia CUDA 13.5, 3.2.2.1.1 |
+| Troca de warp sem custo | "The execution context (program counters, registers, etc.) for each warp processed by an SM is maintained on-chip throughout the warp's lifetime. Therefore, switching between warps incurs no cost." | guia CUDA 13.5, 3.2.2.2 |
+| Escalonador de warp | "At each instruction issue cycle, a warp scheduler selects a warp with threads ready to execute its next instruction (the active threads of the warp) and issues the instruction to those threads." | guia CUDA 13.5, 3.2.2.2 |
+| Registradores e memória partilhados | "Each SM has a set of 32-bit registers that are partitioned among the warps, and a shared memory that is partitioned among the thread blocks." | guia CUDA 13.5, 3.2.2.2 |
+| Diagrama de blocos oficial | "Figure 3. GB202 GPU block diagram (full chip)." O auditor viu a figura (p. 8): duas fileiras de 6 GPCs, L2 no centro, controladores de memória nas laterais | whitepaper RTX PRO Blackwell v1.1, p. 8 |
+| FP64 | "The FP64 TFLOP rate is 1/64th the TFLOP rate of FP32 operations." | whitepaper, nota da Fig. 3 |
+| PAM3 | "uses PAM3 (Pulse Amplitude Modulation: 3 levels) signaling technology" | whitepaper, p. 12 |
+
