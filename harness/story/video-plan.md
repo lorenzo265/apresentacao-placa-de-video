@@ -89,9 +89,9 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a0.2 | 01 | giro lento da placa montada | RTX PRO 6000 Blackwell Workstation Edition | confirmed | datasheet | 1 |
 | a0.3 | 01 | ficha entra linha a linha | 96 GB GDDR7 com ECC, 600 W, 24.064 núcleos CUDA, PCIe 5.0 x16 | confirmed | datasheet, p. 3 | 1 |
 | a0.4 | 01 | mapa do tour | cinco níveis, três caminhos, quatro selos | não se aplica | | 1 |
-| a1.1 | 01 | face A: dois ventiladores de 7 pás e o X central | dois ventiladores na mesma face | confirmed (dois, na frente, texto da GN); derived (7 pás contadas em foto, faixa de 7 a 8; axiais) | GN, foto gn-02; datasheet | 1 |
+| a1.1 | 01 | face dos ventiladores: dois ventiladores (o número de pás não entra no texto: é lacuna do spec) | dois ventiladores na mesma face | confirmed (dois, na frente, texto da GN); derived (axiais) | GN, foto gn-02; datasheet | 1 |
 | a1.2 | 01 | réguas no comprimento e na altura | 5,4" × 12,0" (137,2 × 304,8 mm), dois slots | confirmed (polegadas), derived (mm) | datasheet, p. 3 | 2 |
-| a1.3 | 01 | a placa gira para a face B (duas grades e o X com "RTX PRO 6000"); o ar entra pela face A e sai pela face B nas duas pontas | "double-flow-through": o ar atravessa a placa em vez de bater no PCB | confirmed (atravessa a placa; grades na face B); derived (sentido da face A para a B) | datasheet, p. 1 e 3; GN ("pushes air straight through the card rather than into a PCB"), fotos gn-03 e gn-08 | 1 |
+| a1.3 | 01 | a placa gira para a face B (duas grades e o X com "RTX PRO 6000"); o ar atravessa a placa e sai ar pelas aberturas do topo (a face de entrada e as outras saídas não têm fonte: se a animação mostrar o sentido do ar, leva selo "provável") | "double-flow-through": o ar atravessa a placa em vez de bater no PCB | confirmed (atravessa a placa; grades na face B); inferred (sentido do ar na animação) | datasheet, p. 1 e 3; GN ("pushes air straight through the card rather than into a PCB"), fotos gn-03 e gn-08 | 1 |
 | a1.4 | 01 | topo, conector de energia: 12 pinos de potência e 4 de sinal | um conector de 16 pinos (PCIe CEM5); a placa inteira consome até 600 W, cerca de 50 A se tudo viesse em 12 V (conta nossa) | confirmed (tipo; 600 W de potência total da placa); derived (posição no topo, JPR) | datasheet, p. 3; JPR | 1 |
 | a1.5 | 01 | bracket de chapa lisa com 4 portas em fileira | 4 DisplayPort 2.1b | confirmed | datasheet, p. 3; foto gn-16 | 2 |
 | a1.6 | 01 | placa ao lado do contorno da 5090 FE | carcaça quase idêntica, segundo a Puget; outro propósito: 96 GB com ECC | derived | Puget Systems | 3 |
@@ -100,14 +100,14 @@ Fontes abreviadas: "datasheet" é o PDF oficial da placa, "GN" é o teardown des
 | a2.3 | 02 | E3: parafusos e tampas centrais | | confirmed | GN | 2 |
 | a2.4 | 02 | E4: grampo e adaptador PCIe | o conector PCIe é uma peça separada | confirmed | GN | 1 |
 | a2.5 | 02 | E5: placa que cobre o PCB | | confirmed (existe); função é lacuna | GN | 2 |
-| a2.6 | 02 | E6: cabos flat e mola de pressão | | confirmed | GN | 2 |
+| a2.6 | 02 | E6: cabos flat e mola de lâmina | | confirmed | GN | 2 |
 | a2.7 | 02 | E7: sai o PCB quase quadrado do centro da placa, entre as duas pilhas de aletas; close na pasta sobre o die | pasta térmica, não metal líquido como na 5090 FE: derivar da placa irmã pode errar | confirmed | GN; 5090 FE (NVIDIA) | 1 |
 | a2.8 | 02 | vista explodida inteira, pausa | os três caminhos | não se aplica | | 1 |
 | a2.9 | 02 | caminho da energia em âmbar: conector, indutores, die | 600 W de potência total da placa; não achamos fonte com o número de fases | confirmed (conector, 600 W totais), **inferred** (fases, a propor na F2) | datasheet; lacuna | 1 |
-| a2.10 | 02 | caminho dos dados em ciano: contatos PCIe, adaptador, cabo flat, GPU, memória, saídas | o trajeto pelos cabos é o da placa irmã | confirmed (as peças existem), derived (o que os cabos ligam e as três placas, 5090 FE) | GN; NVIDIA (5090 FE) | 1 |
+| a2.10 | 02 | caminho dos dados em ciano: contatos PCIe, adaptador (encaixe de placa a placa), GPU, memória, saídas; o cabo flat levando o vídeo às saídas é proposta do grupo | o cabo flat até as saídas é proposta nossa, provável | confirmed (as peças existem), derived (três placas, 5090 FE), inferred (o que o cabo flat liga) | GN; NVIDIA (5090 FE) | 1 |
 | a2.11 | 02 | E8 e caminho do calor em vermelho: die, pasta, câmara de vapor, aletas, ar | não achamos fonte que mostre o interior do cooler desta placa | confirmed (pasta, aletas), derived (câmara de vapor), inferred (E8: ordem e interior) | GN; 5090 FE | 1 |
 | a2.12 | 02 | close no package | GB202-870-A1 | confirmed (texto da GN: "GB 202-870-A1"); na foto a marcação é legível só em parte | GN, foto gn-42 | 2 |
-| a3.1 | 03 | verso do PCB: 16 chips em U em volta do chip (5, 5, 4 e 2) | 16 chips GDDR7 no verso | confirmed (16 no verso, texto da GN); derived (disposição 5, 5, 4 e 2, de foto oblíqua) | GN, foto gn-29 | 1 |
+| a3.1 | 03 | verso do PCB: 16 chips nos quatro lados do chip (5 e 5 nas laterais, 4 na borda do conector de energia, 2 na borda oposta) | 16 chips GDDR7 no verso | confirmed (16 no verso, texto da GN); derived (disposição 5, 5, 4 e 2, de foto oblíqua) | GN, foto gn-29 | 1 |
 | a3.2 | 03 | contador sobre as 32 posições | 32 posições; se todas ocupadas, 32 × 3 GB = 96 GB | confirmed (32 posições, 96 GB), derived (32 chips de 3 GB, dedução da GN) | GN; datasheet | 1 |
 | a3.3 | 03 | linhas ciano dos chips até os 16 controladores | 16 controladores × 32 bits = 512 bits; em média dois chips por controlador, e como eles dividem o controlador é proposta | confirmed (512, 16), derived (razão 2:1, se as 32 posições estiverem ocupadas), **inferred** (arranjo em pares, selo "provável") | whitepaper, p. 8 (só 16 × 32); GN (32 posições) | 1 |
 | a3.4 | 03 | sinal de três níveis | 28 Gbps × 512 ÷ 8 = 1.792 GB/s; PAM3 | confirmed | whitepaper, Tab. 4 e p. 12 | 2 |

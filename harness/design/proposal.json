@@ -712,7 +712,7 @@
         "geometry": "apertado na borda de energia (Q3)",
         "thermal": "ok: pads sobre os estágios (gn-36) e pad dos indutores para a pilha central (gn-30)"
       },
-      "viewer_disclaimer": "Estrutura provável: a NVIDIA não publica o número de fases e nenhuma foto mostra as fileiras inteiras. A quantidade no modelo é representativa."
+      "viewer_disclaimer": "Estrutura provável: não achamos fonte com o número de fases, e nenhuma foto vista mostra as fileiras inteiras. A quantidade no modelo é representativa."
     },
     {
       "id": "power.vrm.mem",

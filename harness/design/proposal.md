@@ -210,7 +210,7 @@ No total, vi de 18 a 20 indutores do tipo principal, sem ver nenhuma borda intei
 
 **Verificações.** Energia: fecha com folga nos conversores e com folga pequena no conector (Q8). Geometria: apertada (Q3). Térmica: pads sobre os estágios e pad dos indutores para a pilha central.
 
-**Aviso para a tela.** "Estrutura provável: a NVIDIA não publica o número de fases. A quantidade no modelo é representativa."
+**Aviso para a tela.** "Estrutura provável: não achamos fonte com o número de fases. A quantidade no modelo é representativa." (redação corrigida em 2026-11-10: a anterior dizia "a NVIDIA não publica", que as fontes lidas não sustentam)
 
 ### Item 5. Package do GB202
 

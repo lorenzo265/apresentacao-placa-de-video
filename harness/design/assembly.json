@@ -591,7 +591,7 @@
       "explode": {"dir": [0, 0, 1], "distance": 0, "order": 7},
       "anchors": [{"id": "anchor.power.vrm.gpu.1", "pos": [152, 19.25, 32.3]}],
       "fasteners": [],
-      "viewer_disclaimer": "Estrutura provável: a NVIDIA não publica o número de fases e nenhuma foto mostra as fileiras inteiras. A quantidade no modelo é representativa."
+      "viewer_disclaimer": "Estrutura provável: não achamos fonte com o número de fases, e nenhuma foto vista mostra as fileiras inteiras. A quantidade no modelo é representativa."
     },
     {
       "id": "power.vrm.mem",
@@ -829,7 +829,7 @@
     {"part": "card", "description": "Espessura de 40 mm.", "reason": "Banco de dados de terceiro legível em gn-05 e placa irmã; a NVIDIA só informa dois slots."},
     {"part": "pcb.main", "description": "108 x 112 mm com tolerância de 10 mm, só para bloqueio de volumes.", "reason": "D8: travar depois da medição do visual-qa em recortes de resolução cheia de gn-29 e gn-25 (Q2)."},
     {"part": "cooler.fins.1", "description": "60 aletas por pilha nas duas pontas (fins.1 e fins.2), quantidade representativa.", "reason": "Não contadas em foto; passo de 1,6 mm é prática de mercado."},
-    {"part": "power.vrm.gpu", "description": "24 fases de núcleo e 24 indutores, quantidade representativa.", "reason": "D4: nenhuma foto mostra as bordas inteiras e a NVIDIA não publica o número (Q7)."},
+    {"part": "power.vrm.gpu", "description": "24 fases de núcleo e 24 indutores, quantidade representativa.", "reason": "D4: nenhuma foto vista mostra as bordas inteiras e não achamos fonte com o número (Q7)."},
     {"part": "power.vrm.mem", "description": "4 fases de memória, quantidade representativa e sem posição.", "reason": "D4: nenhuma fonte desta placa."},
     {"part": "flex.dp", "description": "No E6 o cabo é modelado como translação para +z.", "reason": "Na placa real a ponta do lado das portas continua presa na carcaça e o cabo só é erguido (gn-31, gn-32)."},
     {"part": "cooler.base", "description": "O E8 separa peças soldadas (tubos nas aletas, câmara na base); a explosão não corresponde a uma desmontagem possível.", "reason": "Estágio didático com ordem inferred: os ventiladores nunca saem nas fotos e não há imagem do interior."},

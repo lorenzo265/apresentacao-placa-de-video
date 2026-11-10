@@ -3,7 +3,7 @@
 - Data: 2026-11-10
 - Auditor: agente `fact-checker` (Fable), em contexto separado do `spec-researcher`, que produziu o material.
 - Escopo: 36 fatos novos e 8 lacunas em `harness/spec/card.spec.json`; seções 14 a 17 de `harness/spec/sources/physical-card-sources.md`.
-- Resultado: **não aprovado na primeira passada**: 1 achado bloqueava (a classe dos fatos tirados do teardown), 13 pediam ajuste e 6 eram notas. Correções aplicadas no mesmo dia pela sessão principal. **Segunda passada feita no mesmo dia** (seção no fim): 19 achados fechados, o 13 reaberto, 1 erro novo que bloqueava e 5 ajustes, todos corrigidos. Falta a terceira passada sobre essas correções e a decisão humana da regra de classe.
+- Resultado: **não aprovado na primeira passada**: 1 achado bloqueava (a classe dos fatos tirados do teardown), 13 pediam ajuste e 6 eram notas. Correções aplicadas no mesmo dia pela sessão principal. **Segunda passada feita no mesmo dia** (seção no fim): 19 achados fechados, o 13 reaberto, 1 erro novo que bloqueava e 5 ajustes, todos corrigidos. Terceira passada: aprovado com ressalvas (ver Estado). Falta a decisão humana da regra de classe.
 - Padrão dos erros: nenhum valor numérico errado e nenhuma citação divergente; as três contas fecham. Os problemas estavam na classe, em âncoras, em três lacunas e em redação.
 - Origem do achado que bloqueava: o briefing da sessão principal ao `spec-researcher` dizia "Gamers Nexus é sempre `derived`". Isso não está na regra escrita, que dá `confirmed` ao teardown da própria placa.
 
@@ -88,4 +88,4 @@ Detalhes acrescentados a partir da segunda passada: `mem.back_layout` passou a d
 O auditor não verificou nesta passada: o validador (rodado pela sessão principal: passou); os consumidores da mudança de classe (beats, `assembly.json`, `proposal.json`, notas do vault); o texto da Gamers Nexus por leitura humana; as fotos gn-03, gn-08, gn-09, gn-21, gn-25 a gn-27, gn-36 e gn-38.
 
 ## Estado
-Correções das duas passadas aplicadas. Nada desta leva está aprovado: falta a terceira passada do `fact-checker` sobre N1 a N6 e a confirmação humana da regra de classe (achado 1).
+Terceira passada feita em 2026-11-10 (registrada em `fact-check-f6-atos-0-3.md`): **aprovado com ressalvas**. N1 a N6 fechados, sem erro novo. Ressalvas: a confirmação humana da regra de classe (achado 1); o texto da Gamers Nexus conferido só por extração dirigida; `standards-sources.md` não auditado como um todo.

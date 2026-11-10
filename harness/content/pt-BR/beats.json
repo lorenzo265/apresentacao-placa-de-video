@@ -4,7 +4,7 @@
       "headline": "Anatomia de uma GPU: da placa ao chip",
       "caption": "Disciplina de Organização e Arquitetura de Computadores. Grupo Warp 32. Um tour pela NVIDIA RTX PRO 6000 Blackwell Workstation Edition, da placa até o interior do chip.",
       "fala": "Somos o grupo Warp 32. Vamos abrir uma placa de vídeo profissional, peça por peça, até chegar ao chip.",
-      "source_line": "Trabalho do grupo Warp 32 para a disciplina de Organização e Arquitetura de Computadores",
+      "source_line": "Tour do trabalho \"Estudo da arquitetura da GPU NVIDIA RTX PRO 6000 Blackwell (chip GB202)\", grupo Warp 32",
       "claims": []
     },
     "a0.2": {
@@ -15,7 +15,8 @@
       "claims": [
         "card.model_name",
         "card.slots",
-        "card.thermal"
+        "card.thermal",
+        "card.airflow_pathways"
       ]
     },
     "a0.3": {
@@ -34,15 +35,15 @@
     },
     "a0.4": {
       "headline": "O mapa do tour",
-      "caption": "Cinco níveis, da placa até os conceitos. Três caminhos o acompanham: energia, dados e calor. Quatro selos dizem se cada afirmação é confirmada, derivada, provável ou ilustrativa.",
-      "fala": "O tour tem cinco níveis, da placa até os conceitos. Três caminhos o acompanham: energia, dados e calor. E quatro selos mostram a procedência de cada afirmação.",
+      "caption": "Cinco níveis: placa montada, placa aberta, chip, SM e conceitos. Três caminhos o acompanham: energia, dados e calor. Quatro selos dizem se cada afirmação é confirmada, derivada, provável ou ilustrativa.",
+      "fala": "O tour tem cinco níveis: placa montada, placa aberta, chip, SM e conceitos. Três caminhos o acompanham: energia, dados e calor. E quatro selos mostram a procedência de cada afirmação.",
       "source_line": "",
       "claims": []
     },
     "a1.1": {
       "headline": "Dois ventiladores na mesma face",
-      "caption": "A face A tem dois ventiladores grandes. O datasheet fala em dois caminhos de ar axiais, ou seja, na direção do eixo do ventilador, e a placa ocupa dois slots.",
-      "fala": "Começamos pela face dos ventiladores. São dois, na frente da placa, segundo a Gamers Nexus. O datasheet fala em dois caminhos de ar axiais: o ar corre na direção do eixo. A placa ocupa dois slots.",
+      "caption": "Numa face, dois ventiladores grandes. O datasheet fala em dois caminhos de ar axiais. Num ventilador axial, o ar segue a direção do eixo. A placa ocupa dois slots.",
+      "fala": "Começamos pela face dos ventiladores. São dois, na frente da placa, segundo a Gamers Nexus. O datasheet fala em dois caminhos de ar axiais. Num ventilador axial, o ar segue a direção do eixo. A placa ocupa dois slots.",
       "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 1 e 3",
       "claims": [
         "card.fans",
@@ -77,9 +78,9 @@
     },
     "a1.4": {
       "headline": "Um conector de 16 pinos no topo",
-      "caption": "O conector de energia fica na borda superior: 16 pinos, sendo 12 de potência e 4 de sinal. Os 600 W são a potência total da placa, não do conector.",
+      "caption": "O conector fica na borda superior, com 16 pinos. Pela norma, 12 de potência e 4 de sinal. Os 600 W são a potência total da placa. Quanto passa pelo conector, não achamos.",
       "fala": "No topo, o conector de energia, de 16 pinos. Pela norma, 12 levam potência e 4 levam sinal. Os 600 W são a potência total da placa. Se tudo viesse em 12 V, seriam cerca de 50 A, conta nossa. A variante, 12VHPWR ou 12V-2x6, está em aberto.",
-      "source_line": "Fonte: NVIDIA, datasheet, p. 3, e guia rápido, p. 10. Pinos: norma Intel ATX12VO. Corrente: conta nossa",
+      "source_line": "Fonte: NVIDIA, datasheet, p. 3, e guia rápido, p. 10. Pinos: norma PCIe CEM 5.1, via guia da Intel. Corrente: conta nossa",
       "claims": [
         "card.power_connector",
         "card.power_connector_gn",
@@ -114,8 +115,8 @@
     },
     "a2.1": {
       "headline": "Desmontagem na ordem de um teardown real",
-      "caption": "Seguimos os sete passos do teardown da Gamers Nexus. O primeiro a sair é o bracket de I/O, que o texto da fonte chama de back plate. A identificação vem das fotos.",
-      "fala": "Teardown é desmontar para ver o que há dentro. Seguimos o da Gamers Nexus, em sete passos. Sai primeiro o bracket de I/O. O texto diz back plate, e a identificação como bracket é nossa, pelas fotos.",
+      "caption": "Seguimos o teardown da Gamers Nexus, em sete passos na nossa contagem. O primeiro a sair é o bracket de I/O, que o texto da fonte chama de back plate. A identificação vem das fotos.",
+      "fala": "Teardown é desmontar para ver o que há dentro. Seguimos o da Gamers Nexus, em sete passos na nossa contagem. Sai primeiro o bracket de I/O. O texto diz back plate, e a identificação como bracket é nossa, pelas fotos.",
       "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Identificação pelas fotos: leitura nossa",
       "claims": [
         "teardown.step_count",
@@ -191,8 +192,8 @@
     "a2.9": {
       "headline": "Caminho da energia",
       "caption": "A energia entra pelo conector de 16 pinos e passa por indutores antes de chegar ao chip. São 600 W de potência total da placa. Não achamos fonte com o número de fases.",
-      "fala": "Âmbar é a energia. O cabo liga quatro conectores de 8 pinos ao de 16 da placa. Quatro vezes 150 W dão 600 W, conta nossa. Fases de energia, não achamos nas fontes. Nossa proposta, provável: 24 para o chip e 4 para a memória.",
-      "source_line": "Fonte: NVIDIA, guia rápido, p. 5 e 10, e datasheet, p. 3. Fases: proposta do grupo, sem fonte",
+      "fala": "Âmbar é a energia. O cabo liga quatro conectores de 8 pinos ao de 16 da placa. Pela norma, cada um vale 150 W: quatro dão 600 W, conta nossa. O guia da NVIDIA não diz quanto o adaptador entrega. Fases, não achamos nas fontes. Nossa proposta, provável: 24 para o chip e 4 para a memória.",
+      "source_line": "Fonte: NVIDIA, guia rápido, p. 5 e 10, e datasheet, p. 3. 150 W por conector: norma PCIe CEM 5.1, via guia da Intel. Fases: proposta do grupo, sem fonte",
       "claims": [
         "card.power_connector",
         "card.power_adapter",
@@ -205,9 +206,9 @@
     },
     "a2.10": {
       "headline": "Caminho dos dados",
-      "caption": "Em ciano: contatos PCIe, adaptador, cabos flat, chip, memória e saídas de vídeo. As peças existem na placa. O trajeto dos cabos é o da RTX 5090 Founders Edition, e por isso é provável.",
-      "fala": "Ciano são os dados. Entram pelo PCIe, passam pelo adaptador e pelos cabos flat, chegam ao chip e à memória e saem pelas quatro portas de vídeo. O que cada cabo flat liga não aparece nas fotos. O trajeto vem da RTX 5090, então é provável.",
-      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090 Founders Edition",
+      "caption": "Em ciano: contatos PCIe, adaptador, chip, memória e saídas de vídeo. Que um cabo flat leve o vídeo até as saídas é proposta nossa, provável: a outra ponta não aparece nas fotos.",
+      "fala": "Ciano são os dados. Entram pelos contatos PCIe, passam pelo adaptador e chegam ao chip e à memória. O vídeo sai pelas quatro portas. Há um cabo flat, mas a outra ponta não aparece nas fotos. Supomos que leve o vídeo às saídas: a RTX 5090 tem PCB em três peças. É provável.",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090. Cabo flat: proposta do grupo",
       "claims": [
         "card.pcie",
         "card.pcie_adapter_separate",
@@ -219,8 +220,8 @@
     },
     "a2.11": {
       "headline": "Caminho do calor",
-      "caption": "Em vermelho: chip, pasta térmica, aletas e ar. A câmara de vapor é da RTX 5090 e aqui é provável. Não achamos fonte que mostre o interior do cooler desta placa.",
-      "fala": "Vermelho é o calor. O chip passa o calor pela pasta térmica às aletas, e o ar o leva embora. Câmara de vapor espalha o calor numa chapa selada com líquido. A 5090 tem uma, e um revisor a cita nesta placa. Nenhum teardown mostra o interior, então o cooler é proposta nossa, provável.",
+      "caption": "Em vermelho: chip, pasta térmica, aletas e ar. A câmara de vapor é derivada da RTX 5090 e de um revisor. Não achamos fonte que mostre o interior do cooler desta placa.",
+      "fala": "Vermelho é o calor. O chip passa o calor pela pasta térmica às aletas, e o ar o leva embora. Câmara de vapor espalha o calor numa chapa selada com líquido. A 5090 tem uma, e um revisor a cita nesta placa. O teardown que lemos não abre o cooler. A câmara é derivada da placa irmã, e o caminho do calor lá dentro é proposta nossa, provável.",
       "source_line": "Fonte: Gamers Nexus, teardown (2025). NVIDIA, página da GeForce RTX 5090. Jon Peddie Research, análise da RTX PRO 6000 (2025)",
       "claims": [
         "card.thermal_interface",
@@ -232,7 +233,7 @@
       ]
     },
     "a2.12": {
-      "headline": "A marcação do chip: GB202-870-A1",
+      "headline": "A marcação do chip: GB 202-870-A1",
       "caption": "Com a pasta limpa, a Gamers Nexus lê no chip a marcação GB 202-870-A1. Na foto, ela só é legível em parte.",
       "fala": "Com a pasta limpa, a Gamers Nexus lê no chip a marcação GB 202-870-A1. Na foto, ela só é legível em parte, então confiamos na leitura do texto da fonte. GB202 é o nome do chip, o mesmo do whitepaper.",
       "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8",
@@ -268,8 +269,8 @@
     },
     "a3.3": {
       "headline": "16 controladores de 32 bits",
-      "caption": "O chip tem 16 controladores de memória de 32 bits, 512 bits no total. Com 32 posições, são em média 2 chips por controlador. Como eles dividem o controlador é proposta nossa, provável.",
-      "fala": "São 16 controladores de 32 bits, 512 bits de barramento. Com 32 posições, a média é de dois chips por controlador, se todas estiverem ocupadas. Nenhuma fonte descreve como dois chips dividem um controlador. Nossa hipótese, provável, é dois canais por controlador, um por chip.",
+      "caption": "16 controladores de memória de 32 bits: 512 bits no total. São 32 posições, em média 2 por controlador. Se todas tiverem chip, como dois chips dividem um controlador é proposta nossa, provável.",
+      "fala": "São 16 controladores de 32 bits, 512 bits de barramento. Com 32 posições, a média é de duas por controlador. Não achamos fonte que descreva como dois chips dividem um controlador. Nossa hipótese, provável: cada chip usa 16 dos 32 bits do controlador.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, e datasheet, p. 3. Gamers Nexus, teardown (2025). Razão 2 para 1: conta nossa",
       "claims": [
         "chip.mem_controllers",
@@ -282,7 +283,7 @@
     "a3.4": {
       "headline": "Largura vezes taxa dá a banda",
       "caption": "28 Gbps por pino, vezes 512 bits, divididos por 8, dão 1.792 GB/s. A GDDR7 usa sinalização PAM3: três níveis, 1,5 bit por ciclo.",
-      "fala": "28 Gbps por pino, vezes 512 pinos de dados, divididos por 8 bits por byte, dão 1.792 GB/s. A GDDR7 usa PAM3, com três níveis por sinal, que carregam 1,5 bit por ciclo.",
+      "fala": "28 Gbps por pino, vezes 512 bits de interface, divididos por 8 bits por byte, dão 1.792 GB/s. A GDDR7 usa PAM3, com três níveis por sinal, que carregam 1,5 bit por ciclo.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e p. 12",
       "claims": [
         "mem.pin_rate_gbps",
@@ -327,15 +328,15 @@
     "a7.5": {
       "headline": "Remontagem e os quatro selos",
       "caption": "A placa se remonta na ordem inversa. Cada afirmação do tour tem um selo: confirmado, derivado, provável ou ilustrativo. Eles separam fato, conta e proposta.",
-      "fala": "Montamos tudo de volta, na ordem inversa. Para fechar, os quatro selos. Confirmado é o que uma fonte oficial ou o teardown desta placa diz. Derivado é conta nossa, leitura de foto ou o que só um revisor afirma. Provável é proposta do grupo, como o interior do cooler e as fases de energia. Ilustrativo é desenho, como a planta do chip.",
+      "fala": "Montamos tudo de volta, na ordem inversa. Para fechar, os quatro selos. Confirmado é o que uma fonte oficial ou o teardown desta placa diz. Derivado é o que vem da placa irmã, conta nossa, leitura de foto ou o que só um revisor afirma. Provável é proposta do grupo, como o interior do cooler e as fases de energia. Ilustrativo é desenho, como a planta do chip.",
       "source_line": "",
       "claims": []
     },
     "a7.6": {
       "headline": "Créditos e fontes",
-      "caption": "Grupo Warp 32. Fontes: NVIDIA (datasheet, whitepaper e guias), Gamers Nexus, Jon Peddie Research, Puget Systems, Intel, PCI-SIG e o código aberto do driver.",
-      "fala": "Obrigado. Este trabalho é do grupo Warp 32: Vitor, Arthur, João, Lorenzo e Thiago. As fontes passam na tela: NVIDIA, Gamers Nexus, Jon Peddie Research, Puget Systems, Intel, PCI-SIG e o código aberto do driver.",
-      "source_line": "Lista completa de fontes: ver a documentação escrita do grupo Warp 32",
+      "caption": "Grupo Warp 32. Fontes principais: NVIDIA (datasheet, whitepaper e guias), Gamers Nexus, Jon Peddie Research, Puget Systems, Intel, PCI-SIG, artigos acadêmicos de medição e o código aberto do driver.",
+      "fala": "Obrigado. Este trabalho é do grupo Warp 32: Vitor, Arthur, João, Lorenzo e Thiago. As fontes principais passam na tela: NVIDIA, Gamers Nexus, Jon Peddie Research, Puget Systems, Intel, PCI-SIG, artigos acadêmicos de medição e o código aberto do driver.",
+      "source_line": "Lista completa de fontes, com data de acesso: créditos do tour",
       "claims": []
     },
     "t1.1": {
