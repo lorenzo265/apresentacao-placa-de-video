@@ -119,12 +119,22 @@ export const TEMAS = {
   },
 };
 
-/** Tema pedido na URL (ou embutido), ou null. Nome desconhecido é ignorado com aviso. */
+/**
+ * Tema pedido na URL, ou null. Nome desconhecido é ignorado com aviso.
+ * ?leve=1 desliga os efeitos caros do tema: desfoque de fundo da caixa, brilho do nó-alvo,
+ * halo das arestas 3D e halo dos fluxos (para notebook fraco ou projetor com placa integrada).
+ */
 export function temaDaUrl(params) {
   const nome = params.get('tema');
   if (!nome) return null;
   if (!TEMAS[nome]) { console.warn(`[tema] tema desconhecido: ${nome}; usando o padrão`); return null; }
-  return { nome, ...TEMAS[nome] };
+  const t = { nome, ...TEMAS[nome], leve: params.get('leve') === '1' };
+  if (t.leve) {
+    t.cena = { ...t.cena, arestas: t.cena.arestas && { ...t.cena.arestas, halo: 0 } };
+    const fx = t.diagramas.fluxo;
+    t.diagramas = { ...t.diagramas, fluxo: fx && { ...fx, camadas: fx.camadas.filter((c) => c.cls !== 'f-halo') } };
+  }
+  return t;
 }
 
 /** Gerador pseudoaleatório fixo: o pontilhado do fundo é o mesmo em toda execução. */

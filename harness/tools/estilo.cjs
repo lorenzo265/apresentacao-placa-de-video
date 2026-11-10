@@ -18,10 +18,12 @@ const arg = (k, def) => { const a = process.argv.slice(2); return a.includes(k) 
 /** Quadros por segundo ao vivo (laço do GSAP ligado), tocando a entrada de cada beat. */
 async function perf(chromium, url, temas, beats, corte) {
   const linhas = [];
-  for (const tema of ['atual', ...temas]) {
+  // cada tema também com ?leve=1 (sem os efeitos caros)
+  for (const tema of ['atual', ...temas.flatMap((t) => [t, `${t}+leve`])]) {
     const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
     const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
-    await page.goto(`${url}?cut=${corte}${tema === 'atual' ? '' : `&tema=${tema}`}`);
+    const [nome, leve] = tema.split('+');
+    await page.goto(`${url}?cut=${corte}${tema === 'atual' ? '' : `&tema=${nome}`}${leve ? '&leve=1' : ''}`);
     await page.waitForFunction('window.__tourReady === true', null, { timeout: 60000 });
     const r = { tema };
     for (const id of beats) {
@@ -41,8 +43,8 @@ async function perf(chromium, url, temas, beats, corte) {
     await browser.close();
   }
   console.log('quadros por segundo ao vivo (SwiftShader, CPU, 1920 x 1080; só vale a comparação entre colunas):');
-  console.log(['tema', ...beats].map((x) => x.padEnd(11)).join(''));
-  for (const r of linhas) console.log([r.tema, ...beats.map((b) => r[b].toFixed(1))].map((x) => String(x).padEnd(11)).join(''));
+  console.log(['tema', ...beats].map((x) => x.padEnd(16)).join(''));
+  for (const r of linhas) console.log([r.tema, ...beats.map((b) => r[b].toFixed(1))].map((x) => String(x).padEnd(16)).join(''));
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'perf.json'), JSON.stringify(linhas, null, 1));
 }

@@ -229,3 +229,9 @@
 :root[data-tema] #controles { border-radius: 14px; }
 :root[data-tema=keynote] #controles { background: #0a0d0fd0; border-color: #ffffff1a; }
 :root[data-tema=blueprint] #controles { border-radius: 0; background: #051124f0; border-color: #8fb4e877; }
+
+/* ?leve=1: sem os efeitos caros (ver temaDaUrl em src/temas.js) */
+:root[data-leve] #caixa { backdrop-filter: none !important; }
+:root[data-leve][data-tema=keynote] #caixa { background: #0a0d0ff2; }
+:root[data-leve] #diagramas .n.alvo rect.corpo { filter: none !important; }
+:root[data-leve] #chamada .halo { display: none !important; }

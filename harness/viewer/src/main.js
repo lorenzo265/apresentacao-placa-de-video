@@ -31,6 +31,7 @@ async function inicia() {
   if (capture) document.body.classList.add('capture');
   if (tema) {
     document.documentElement.dataset.tema = tema.nome;
+    if (tema.leve) document.documentElement.dataset.leve = '1';
     // Fundo do tema: imagem fixa sob a cena 3D e os diagramas (os dois são transparentes por cima).
     const fundo = document.createElement('canvas');
     fundo.id = 'fundo';
