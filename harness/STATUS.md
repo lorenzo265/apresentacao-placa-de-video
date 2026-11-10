@@ -115,14 +115,16 @@ Existe e roda. É a **primeira versão de ponta a ponta**: conteúdo e estrutura
 
 | Peça | Arquivo | Estado |
 |---|---|---|
-| Fatos consolidados | `spec/card.spec.json` (132 fatos) | validado; os citados na tela foram auditados |
+| Fatos consolidados | `spec/card.spec.json` (138 fatos) | validado; os citados na tela foram auditados |
 | Viewer | `viewer/`, `tools/smoke.cjs`, `tools/capture.cjs` | roda; placa ainda em blockout |
-| Diagramas | `diagrams/` (8 cenas, geradas por script) | validados; correções da auditoria aplicadas |
-| Textos | `content/pt-BR/beats.json` (25 beats) | validados; correções da auditoria aplicadas |
-| Storyboard | `story/storyboard.json` (63 beats: 25 prontos, 35 rascunho, 3 bloqueados) | validado |
-| Auditoria | `qa/fact-check-f6.md` | reprovou a primeira passada; falta a segunda |
+| Diagramas | `diagrams/` (11 cenas, geradas por script, 21 testes) | 8 aprovados com ressalvas no gate de fatos; 3 novos em auditoria |
+| Textos | `content/pt-BR/beats.json` (31 beats) | 25 aprovados com ressalvas no gate de fatos; 6 novos em auditoria |
+| Storyboard | `story/storyboard.json` (63 beats: 31 prontos, 32 rascunho, nenhum bloqueado) | validado; o teste roda os 31 |
+| Auditoria | `qa/fact-check-f6.md`, `qa/fact-check-f6-segunda-passada.md` | segunda passada: **aprovado com ressalvas**; ressalvas fechadas; terceira rodada cobre o material novo |
 
-Tempo do corte do seminário nos atos de chip: 9:52 (orçamento de 10:00). Ato 4: 1:56. Ato 5: 4:57. Ato 6: 2:58.
+Tempo do corte do seminário: ato 4 com 1:56, ato 5 com 4:57, ato 6 com 2:59, ato 7 com 1:09 (só dois dos quatro beats essenciais existem). Atos 4 a 7: 11:03, para um orçamento de 11:50. O corte completo desses atos dá 15:17.
+
+Nas telas, as quatro divisões do SM se chamam "partições", para não confundir com "bloco de threads".
 
 Decisão do diretor do storyboard: o SM aparece **antes** do warp (a ordem na tela fica seção 04, 06, 05, 12, 07...), porque o warp está desenhado dentro do escalonador do SM e assim o zoom só desce. O roteiro escrito não muda.
 
@@ -137,7 +139,8 @@ Combinado com o autor em 2026-11-10: design e visualização vêm depois de a es
 6. Teaser: seis beats dão quase 3 minutos; a meta é de 30 a 45 s. Falta `hold` por corte ou um teaser de 3 beats.
 7. Falas: a do ato 4 passa do tempo de tela (cerca de 168 s de fala para 116 s); as do ato 6 sobram.
 8. Placa 3D real, explosão e os três caminhos coloridos (dependem da F2 e da F3).
-9. Diagramas do fechamento (Ada contra Blackwell, GPU contra CPU) e atos 0 a 3.
+9. Atos 0 a 3 (dependem da placa 3D) e a tabela GPU contra CPU do fechamento, que precisa de fonte registrada para o lado da CPU.
+10. Viewer: o texto do aviso do diagrama quebra em duas linhas e sai da faixa em alguns beats.
 
 ## 9. Feito em 2026-11-09
 
