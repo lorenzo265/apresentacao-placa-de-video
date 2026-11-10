@@ -15,3 +15,8 @@ node_modules/
 
 # Referências visuais de terceiros (só o índice é versionado)
 harness/spec/references/cache/
+
+# Viewer: dados sincronizados e build
+harness/viewer/public/data/
+harness/viewer/public/draco/
+harness/viewer/dist/
