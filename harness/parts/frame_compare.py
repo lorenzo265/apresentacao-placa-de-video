@@ -112,6 +112,10 @@ def ref_calibration(path, flip):
     big = runs[(runs[:, 2] - runs[:, 1]) >= 0.95 * (runs[:, 2] - runs[:, 1]).max()]
     x0, x1 = float(np.median(big[:, 1])), float(np.median(big[:, 2]) + 1)
     yrow = int(np.median(big[:, 0]))
+    # essas linhas incluem a aba do bracket (cerca de 3 px a mais); a calibração de
+    # frame_remeasure.py usa só as linhas da carcaça, com subpixel (correção de 2026-11-10)
+    import frame_remeasure as RM
+    x0, x1, _ = RM.length_px(a[:, :, 3] / 255.0)
     s = (x1 - x0) / F.L
     W_ = x1 - x0
     mid = slice(int(x0 + 0.6 * W_), int(x0 + 0.9 * W_))          # sem contatos nem bracket
@@ -137,12 +141,12 @@ def ortho_face(tr, cal, size, from_b):
     x = (gx - cal["x0"]) / cal["s"]
     sy = 1 if cal["flip"] else -1
     y = F.YC + (gy - cal["pyc"]) / (sy * cal["s"])
-    if from_b:
-        o = np.c_[x.ravel(), y.ravel(), np.full(x.size, F.T + 100)]
-        d = np.tile([0, 0, -1.0], (x.size, 1))
-    else:
+    if from_b:      # face B em z = 0: vista de -z
         o = np.c_[x.ravel(), y.ravel(), np.full(x.size, -100.0)]
         d = np.tile([0, 0, 1.0], (x.size, 1))
+    else:           # face A em z = T: vista de +z
+        o = np.c_[x.ravel(), y.ravel(), np.full(x.size, F.T + 100)]
+        d = np.tile([0, 0, -1.0], (x.size, 1))
     t, n, p = tr.cast(o, d)
     return t.reshape(H, W), n.reshape(H, W, 3), p.reshape(H, W), d[0]
 
@@ -453,14 +457,14 @@ def main():
         bg = Image.new("RGBA", ref.size, (255, 255, 255, 255))
         ref = Image.alpha_composite(bg, ref).convert("RGB")
         t, n, p, vd = ortho_face(tr, cal, ref.size, from_b)
-        light = np.array([-0.45, 0.55, 0.70 if from_b else -0.70])
+        light = np.array([-0.45, 0.55, -0.70 if from_b else 0.70])
         light /= np.linalg.norm(light)
         img = shade(t, n, p, ids, vd, light)
         e = edges(t, n, p)
         # só contornos da camada vista (face A ou face B) e da silhueta: o que se vê pelas
         # aberturas (o outro lado da carcaça) não entra na sobreposição
-        zhit = np.where(np.isnan(t), np.nan, (F.T + 100 - t) if from_b else (t - 100))
-        layer = (zhit >= F.Z_FACE_B - 0.6) if from_b else (zhit <= F.g("face_a_plate_t") + F.g("lam_depth_a") + 0.6)
+        zhit = np.where(np.isnan(t), np.nan, (t - 100) if from_b else (F.T + 100 - t))
+        layer = (zhit <= F.Z_FACE_B + 0.6) if from_b else (zhit >= F.T - F.T_A - F.g("lam_depth_a") - 0.6)
         from scipy.ndimage import binary_fill_holes
         sil = np.zeros_like(e)
         hit = binary_fill_holes(~np.isnan(t))
@@ -584,7 +588,7 @@ def main():
     img *= np.clip(1 - 0.12 * depth, 0.25, 1)[..., None]
     top = Image.fromarray((img * 255).clip(0, 255).astype(np.uint8))
     dtop = ImageDraw.Draw(top)
-    dtop.text((6, 4), "modelo, borda superior vista de cima (face B em cima, bracket à esquerda), %.0f px/mm" % s, fill=(235, 235, 235))
+    dtop.text((6, 4), "modelo, borda superior vista de cima (face A, dos ventiladores, em cima; bracket à esquerda), %.0f px/mm" % s, fill=(235, 235, 235))
     persp = [Image.open(REF / "pny" / "3qtr-top-right.png").convert("RGBA"), Image.open(REF / "pny" / "3qtr-top-left.png").convert("RGBA")]
     persp = [Image.alpha_composite(Image.new("RGBA", q.size, (255, 255, 255, 255)), q).convert("RGB").resize((460, 460)) for q in persp]
     sheet = Image.new("RGB", (max(top.width, 920), top.height + 490), (20, 20, 24))
@@ -594,21 +598,21 @@ def main():
     ImageDraw.Draw(sheet).text((6, top.height + 10), "referências em perspectiva (sem escala): pny/3qtr-top-right e pny/3qtr-top-left", fill=(235, 235, 235))
     sheet.save(DIST / "05-topo.png")
 
-    # perspectiva de conferência (espelhada para ficar como a placa real, ver relatório)
+    # perspectiva de conferência (referencial corrigido: sem espelhar a imagem)
     c = np.array([F.L / 2, (F.Y0 + F.Y1) / 2, F.T / 2])
-    t, n, p, f = perspective(tr, c + np.array([-260, 330, -330]), c, [0, 1, 0], 34, (1100, 800))
-    light = np.array([-0.4, 0.8, -0.45])
+    t, n, p, f = perspective(tr, c + np.array([-260, 330, 330]), c, [0, 1, 0], 34, (1100, 800))
+    light = np.array([-0.4, 0.8, 0.45])
     light /= np.linalg.norm(light)
     img = shade(t, n, p, ids, f, light)
-    im = Image.fromarray((img * 255).clip(0, 255).astype(np.uint8)).transpose(Image.FLIP_LEFT_RIGHT)
-    ImageDraw.Draw(im).text((8, 8), "modelo em três quartos (face A e borda superior), imagem espelhada para corresponder à placa real", fill=(235, 235, 235))
+    im = Image.fromarray((img * 255).clip(0, 255).astype(np.uint8))
+    ImageDraw.Draw(im).text((8, 8), "modelo em três quartos (face A e borda superior), como pny/3qtr-top-right", fill=(235, 235, 235))
     im.save(DIST / "06-perspectiva.png")
-    t, n, p, f = perspective(tr, c + np.array([260, 330, 400]), c, [0, 1, 0], 34, (1100, 800))
-    light = np.array([0.4, 0.8, 0.45])
+    t, n, p, f = perspective(tr, c + np.array([260, 330, -400]), c, [0, 1, 0], 34, (1100, 800))
+    light = np.array([0.4, 0.8, -0.45])
     light /= np.linalg.norm(light)
     img = shade(t, n, p, ids, f, light)
-    im = Image.fromarray((img * 255).clip(0, 255).astype(np.uint8)).transpose(Image.FLIP_LEFT_RIGHT)
-    ImageDraw.Draw(im).text((8, 8), "modelo em três quartos (face B e borda superior), imagem espelhada", fill=(235, 235, 235))
+    im = Image.fromarray((img * 255).clip(0, 255).astype(np.uint8))
+    ImageDraw.Draw(im).text((8, 8), "modelo em três quartos (face B e borda superior)", fill=(235, 235, 235))
     im.save(DIST / "07-perspectiva-face-b.png")
 
     rep["folgas"] = clearances(meshes)

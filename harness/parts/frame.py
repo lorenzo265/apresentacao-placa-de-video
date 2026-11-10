@@ -12,9 +12,15 @@ com os mesmos ids e as mesmas âncoras do assembly:
   frame.rim             aro fino que contorna a face B (E2)
 
 Contrato: CAD em mm, Z para cima, origem em card.envelope_min (x a partir do plano do
-bracket, y a partir da ponta dos contatos PCIe, z da face A para a face B). O GLB sai em
-metros com Y para cima, (x, y, z) -> (x, z, -y) / 1000, como no blockout; a conversão
-não é corrigida aqui. Um nó por id; as âncoras do assembly viram nós vazios filhos.
+bracket, y a partir da ponta dos contatos PCIe, z da face B, em z = 0, para a face A dos
+ventiladores, em z = card_thickness; sistema destro). Visto de +z, a placa aparece como em
+pny/front: bracket à esquerda, contatos embaixo. As camadas layer_* são espessuras: a face B
+e o aro ocupam de z = 0 a layer_end_face_b_grid; a chapa da face A, de card_thickness menos
+a espessura da chapa até card_thickness. (Referencial corrigido em 2026-11-10: antes a face A
+ficava em z = 0, o que espelhava a placa; assembly-plan, seção 11.) O GLB sai em metros com
+Y para cima, (x, y, z) -> (x, z, -y) / 1000, como no blockout. Um nó por id; as âncoras do
+assembly viram nós vazios filhos. harness/parts/integrate.py troca as caixas do blockout por
+estas peças em build/card.glb.
 
 Toda medida vem do CSV (pela chave) ou do assembly. O que não tem linha no CSV está em G,
 no topo, com a procedência: "derived" quando foi medido nesta tarefa nos renders da PNY
@@ -56,7 +62,6 @@ TRI_BUDGET = 200_000   # triângulos, carcaça inteira
 # ---------------------------------------------------------------------------
 G = {
     # face A
-    "face_a_plate_t": (2.0, "inferred", "espessura da chapa da face A; nenhuma foto de perfil"),
     "edge_fillet_a": (3.0, "inferred", "arredondamento da aresta entre a face A e as laterais; os renders mostram aresta macia, sem cota"),
     "bracket_bottom_corner_r": (3.0, "derived", "canto entre a ponta do bracket e a borda dos contatos: quase reto nos dois renders (pny/front, pny/back); o CSV dá um raio só, lido nos outros cantos"),
     "pod_frame_w": (5.0, "derived", "moldura das cápsulas dos ventiladores, da borda até a grade: 4,8 a 5,2 mm (pny/front)"),
@@ -71,8 +76,6 @@ G = {
     "lam_recess_a": (0.4, "inferred", "recuo das lâminas da face A em relação à chapa"),
     "lam_depth_a": (1.0, "inferred", "quanto as lâminas da face A entram na carcaça além da chapa"),
     # extremidade do lado das portas
-    "end_plate_recess": (1.2, "inferred", "recuo da placa de extremidade dentro das bordas laterais; igual à altura das cabeças dos parafusos do blockout (screw_head_h)"),
-    "end_plate_t": (1.5, "inferred", "espessura da placa de extremidade"),
     "dp_clear": (0.3, "inferred", "folga das aberturas dos DisplayPort na placa de extremidade"),
     # face B, aro e tampas
     "rim_w": (2.2, "derived", "largura do aro visto de frente: faixa clara de 2,2 mm no contorno (pny/back)"),
@@ -89,16 +92,15 @@ G = {
     # borda inferior
     "notch_r": (1.5, "inferred", "raio dos cantos do entalhe ao lado dos contatos PCIe"),
     # canal da borda superior
-    "ch_lip_a": (4.0, "inferred", "borda do lado da face A entre a aresta e o canal"),
+    "ch_lip_a": (4.0, "inferred", "borda do lado da face A entre a aresta e o canal, medida da face A para dentro"),
     "ch_pcb_clear": (1.5, "inferred", "folga entre o fim do canal (lado da face B) e a face do PCB, para o fundo do canal não cruzar o PCB"),
-    "ch_depth": (1.5, "inferred", "profundidade do canal; as referências mostram o rebaixo sem cota (parece maior, 2 a 4 mm); limitada pela âncora anchor.frame.shroud.1 (2 mm)"),
     "ch_corner_r": (2.0, "inferred", "raio dos cantos do canal no plano xz"),
     "slot_w": (2.0, "inferred", "largura das duas fendas do canal (proporção em perspectiva, pny/3qtr-top-right)"),
-    "slot_z": ((7.5, 11.5), "inferred", "centros das fendas em z, perto da face A (perspectiva, pny/3qtr-top-right)"),
+    "slot_z": ((7.5, 11.5), "inferred", "centros das fendas, medidos da face A para dentro (perspectiva, pny/3qtr-top-right)"),
     "slot_x_margin": (8.0, "inferred", "distância do começo do canal ao começo das fendas"),
     "slot_end_gap": (5.0, "inferred", "distância do fim das fendas à abertura do conector"),
     "pad_len_x": (40.0, "inferred", "comprimento da placa lisa elevada do canal, do lado do bracket"),
-    "pad_z": ((15.0, 28.0), "inferred", "faixa em z da placa lisa do canal, do lado da face B"),
+    "pad_z": ((15.0, 28.0), "inferred", "faixa da placa lisa do canal, medida da face A para dentro (do lado da face B)"),
     "pad_h": (0.4, "inferred", "altura da placa lisa sobre o fundo do canal"),
     "open_x_depth": (8.0, "inferred", "abertura do conector ao longo de x (profundidade do cabeçote entre as fileiras; sem cota)"),
     "open_clear": (1.5, "inferred", "folga da abertura do conector além da largura do cabeçote (conn16_header_width), em z"),
@@ -142,7 +144,8 @@ WALL = M("shroud_wall")
 RC = M("shroud_corner_radius")
 ANG = math.radians(M("x_rib_angle_deg"))
 K = math.tan(ANG)
-Z_FACE_B = T - M("layer_end_face_b_grid")       # topo das paredes; a face B fica acima
+Z_FACE_B = M("layer_end_face_b_grid")           # base das paredes; a face B (grade e aro) fica de 0 até aqui
+T_A = M("shroud_face_a_plate_thickness")         # chapa da face A, de T - T_A a T
 BIG = 600.0                                     # extensão dos semiplanos auxiliares
 
 
@@ -256,6 +259,32 @@ def channel_x_range():
     return XA - dx, XA + dx
 
 
+def channel_z_range():
+    """Faixa em z do canal (sem a parede): da face A menos a borda ch_lip_a até a frente do
+    PCB mais a folga, para o fundo do canal não cruzar o PCB."""
+    return M("iface_pcb_front_z") + g("ch_pcb_clear") + WALL, T - g("ch_lip_a")
+
+
+def keepouts():
+    """Volumes internos da carcaça que as peças vizinhas não podem ocupar, em caixas
+    alinhadas aos eixos (x0, x1, y0, y1, z0, z1). Usado pelo blockout e pela integração."""
+    cx0, cx1 = channel_x_range()
+    cz0, cz1 = channel_z_range()
+    floor = Y1 - M("shroud_channel_depth") - WALL
+    nx0, nx1 = M("shroud_pcie_side_notch_x_start"), M("shroud_pcie_side_notch_x_end")
+    nd = M("shroud_pcie_side_notch_depth")
+    rec, tE = M("shroud_end_plate_recess"), M("shroud_end_plate_thickness")
+    return {
+        "canal": (cx0 - WALL, cx1 + WALL, floor, Y1, cz0 - WALL, cz1 + WALL),
+        "entalhe": (nx0 - WALL, nx1 + WALL, Y0, Y0 + nd + WALL, Z_FACE_B, T - T_A),
+        "parede_inferior": (0, L, Y0, Y0 + WALL, Z_FACE_B, T),
+        "parede_superior": (0, L, Y1 - WALL, Y1, Z_FACE_B, T),
+        "placa_de_extremidade": (0, rec + tE, Y0, Y1, Z_FACE_B, T),
+        "parede_da_ponta": (L - WALL, L, Y0, Y1, Z_FACE_B, T),
+        "chapa_da_face_a": (0, L, Y0, Y1, T - T_A, T),
+    }
+
+
 # ---------------------------------------------------------------------------
 # Peças
 # ---------------------------------------------------------------------------
@@ -269,20 +298,20 @@ def note(pid, txt):
 def build_shroud():
     pid = "frame.shroud"
     O = outline()
-    tA = g("face_a_plate_t")
+    tA = T_A
     inner = inset(O, WALL)
 
-    # corpo: casca aberta do lado da face B (z = Z_FACE_B), aresta da face A arredondada
-    body = ext(O, 0, Z_FACE_B)
-    body = fillet(body.edges().filter_by(lambda e: e.center().Z < 1e-3), g("edge_fillet_a"))
-    body = body - ext(inner, tA, Z_FACE_B + 1)
+    # corpo: casca aberta do lado da face B (z = Z_FACE_B), aresta da face A (z = T) arredondada
+    body = ext(O, Z_FACE_B, T)
+    body = fillet(body.edges().filter_by(lambda e: e.center().Z > T - 1e-3), g("edge_fillet_a"))
+    body = body - ext(inner, Z_FACE_B - 1, T - tA)
 
     # placa de extremidade do lado das portas, recuada dentro das bordas laterais
-    rec, tE = g("end_plate_recess"), g("end_plate_t")
+    rec, tE = M("shroud_end_plate_recess"), M("shroud_end_plate_thickness")
     # o vão do recuo é o contorno interno deslocado até x = 0: sobram as bordas de cima e de
     # baixo e a parede curva do canto
-    body = body - (ext(Pos(-WALL - 0.5, 0) * inner, tA, Z_FACE_B + 1) & box3(-1, rec, Y0 - 1, Y1 + 1, -1, T + 1))
-    plate = ext(inner, tA, Z_FACE_B) & box3(rec, rec + tE, Y0 - 1, Y1 + 1, -1, T + 1)
+    body = body - (ext(Pos(-WALL - 0.5, 0) * inner, Z_FACE_B - 1, T - tA) & box3(-1, rec, Y0 - 1, Y1 + 1, -1, T + 1))
+    plate = ext(inner, Z_FACE_B, T - tA) & box3(rec, rec + tE, Y0 - 1, Y1 + 1, -1, T + 1)
     cl = g("dp_clear")
     for a in PARTS["io.board.dp"]["anchors"]:
         _, ay, az = a["pos"]
@@ -294,10 +323,10 @@ def build_shroud():
     # aberturas dos ventiladores e dutos curtos atrás do anel
     duct_z = M("layer_end_fan_ring")
     for fx in FAN_X:
-        body = body - ext(Pos(fx, FAN_Y) * Circle(R_OPEN), -1, tA + 0.01)
+        body = body - ext(Pos(fx, FAN_Y) * Circle(R_OPEN), T - tA - 0.01, T + 1)
         ring = Pos(fx, FAN_Y) * Circle(R_OPEN + WALL) - Pos(fx, FAN_Y) * Circle(R_OPEN)
-        body = body + (ext(ring, tA - 0.01, duct_z) & ext(inner, tA - 0.02, duct_z + 1))
-    note(pid, "duto cilíndrico de parede %.1f mm atrás de cada anel, de z = %.1f a layer_end_fan_ring (%.0f mm): interior da carcaça sem foto" % (WALL, tA, duct_z))
+        body = body + (ext(ring, T - duct_z, T - tA + 0.01) & ext(inner, T - duct_z - 1, T - tA + 0.02))
+    note(pid, "duto cilíndrico de parede %.1f mm atrás de cada anel, de z = %.1f (layer_end_fan_ring = %.0f mm abaixo da face A) a %.1f: interior da carcaça sem foto" % (WALL, T - duct_z, duct_z, T - tA))
 
     # X da face A: tampas lisas rebaixadas, faixa lisa e grades
     pod = inset(O, g("pod_frame_w"))
@@ -305,7 +334,7 @@ def build_shroud():
     tris_exp = face_a_triangles(g("rib_w_a"))
     disks = [Pos(fx, FAN_Y) * Circle(R_RING) for fx in FAN_X]
     rec_reg = (tris[0] + tris[1]) & inset(O, g("tri_rim_a"))
-    body = body - ext(rec_reg, -1, g("tri_recess_a"))
+    body = body - ext(rec_reg, T - g("tri_recess_a"), T + 1)
     half_t = 90.0 - math.degrees(ANG)          # setor até o ponto de tangência do X com o anel
     w_x = pod - tris_exp[0] - tris_exp[1] - disks[0] - disks[1]
     w_x = w_x & sector(FAN_X[0], FAN_Y, 0.0, half_t) & sector(FAN_X[1], FAN_Y, 180.0, half_t)
@@ -313,9 +342,9 @@ def build_shroud():
     w_x = round_convex(w_x, g("win_r_a"))
     w_c = ((pod - disks[0]) & rect(-1, FAN_X[0], Y0, Y1)) + ((pod - disks[1]) & rect(FAN_X[1], L + 1, Y0, Y1))
     w_c = round_convex(w_c, g("win_r_a"))
-    body = body - ext(w_x, -1, tA + 0.01) - ext(w_c, -1, tA + 0.01)
+    body = body - ext(w_x, T - tA - 0.01, T + 1) - ext(w_c, T - tA - 0.01, T + 1)
     lam = strips(0, L, g("lam_pitch_a"), g("lam_t_a")) & w_c
-    body = body + ext(lam, g("lam_recess_a"), tA + g("lam_depth_a"))
+    body = body + ext(lam, T - tA - g("lam_depth_a"), T - g("lam_recess_a"))
     note(pid, "janelas do X da face A abertas, sem lâminas: no cruzamento a referência mostra as aletas centrais (cooler.fins.3) pela abertura")
     note(pid, "lâminas das grades dos cantos: espessura %.1f, recuo %.1f e profundidade são palpite; podem ser as próprias aletas vistas pela grade" % (g("lam_t_a"), g("lam_recess_a")))
 
@@ -330,16 +359,15 @@ def build_shroud():
     body = body - ext(notch, -1, T + 1)
     # parede em U em volta do entalhe, para a carcaça continuar fechada
     u_wall = (offset(notch, WALL, kind=Kind.ARC) - notch) & inner
-    body = body + ext(u_wall, tA - 0.01, Z_FACE_B)
+    body = body + ext(u_wall, Z_FACE_B, T - tA + 0.01)
 
     # canal da borda superior
     cx0, cx1 = channel_x_range()
-    cz0 = g("ch_lip_a")
-    cz1 = M("iface_pcb_front_z") - g("ch_pcb_clear") - WALL
-    d = g("ch_depth")
+    cz0, cz1 = channel_z_range()          # z0 do lado do PCB, z1 do lado da face A
+    d = M("shroud_channel_depth")
     r = g("ch_corner_r")
     tub = xz_extrude(rrect_xz(cx0 - WALL, cx1 + WALL, cz0 - WALL, cz1 + WALL, r + WALL), Y1, d + WALL)
-    body = body + (tub & ext(O, 0, Z_FACE_B))
+    body = body + (tub & ext(O, Z_FACE_B, T))
     body = body - xz_extrude(rrect_xz(cx0, cx1, cz0, cz1, r), Y1 + 1, d + 1)
     floor_y = Y1 - d
     sx0 = cx0 + g("slot_x_margin")
@@ -349,10 +377,11 @@ def build_shroud():
     ow_z = M("conn16_header_width") + 2 * g("open_clear")
     od_x = g("open_x_depth")
     sx1 = ox - od_x / 2 - g("slot_end_gap")
-    for zc in g("slot_z"):
+    for dz in g("slot_z"):
+        zc = T - dz
         body = body - xz_extrude(rrect_xz(sx0, sx1, zc - g("slot_w") / 2, zc + g("slot_w") / 2, g("slot_w") / 2 - 0.01), floor_y + 0.5, WALL + 1)
-    pz0, pz1 = g("pad_z")
-    body = body + xz_extrude(rrect_xz(sx0, sx0 + g("pad_len_x"), pz0, pz1, r), floor_y + g("pad_h"), g("pad_h") + 0.01)
+    pd0, pd1 = g("pad_z")
+    body = body + xz_extrude(rrect_xz(sx0, sx0 + g("pad_len_x"), T - pd1, T - pd0, r), floor_y + g("pad_h"), g("pad_h") + 0.01)
     body = body - xz_extrude(rrect_xz(ox - od_x / 2, ox + od_x / 2, oz - ow_z / 2, oz + ow_z / 2, 1.0), floor_y + 0.5, WALL + 1)
     note(pid, "canal da borda superior de x = %.1f a %.1f (onde as bordas da tampa lisa da face A chegam ao topo) e z = %.1f a %.1f; profundidade, fendas, placa lisa e abertura do conector com medidas de palpite (sem cota nas referências)" % (cx0, cx1, cz0, cz1))
     note(pid, "abertura do conector centrada em iface_shroud_power_opening_x e no z da âncora; o lado longo (largura do cabeçote, %.2f mm) fica em z, como a fileira de 6 pinos em pny/3qtr-top-right" % M("conn16_header_width"))
@@ -376,26 +405,26 @@ def face_b_regions():
 def build_face_b():
     pid = "frame.face_b"
     O, in_rim, covers, wins = face_b_regions()
-    z0 = Z_FACE_B
-    frame = ext(in_rim - covers[0] - covers[1], z0, T)
-    frame = frame - ext(wins, z0 - 1, T + 1)
+    z1 = Z_FACE_B                         # a face B vai de z = 0 (face externa) a z1
+    frame = ext(in_rim - covers[0] - covers[1], 0, z1)
+    frame = frame - ext(wins, -1, z1 + 1)
     lam = strips(0, L, g("lam_pitch_b"), g("lam_t_b")) & wins
-    part = frame + ext(lam, z0, T - g("lam_recess_b"))
+    part = frame + ext(lam, g("lam_recess_b"), z1)
     # recorte do adaptador PCIe (gn-20 mostra a placa adaptadora num rebaixo da face B)
     c = g("adapter_clear")
     f0 = M("pcie_fingers_start_from_bracket_end")
-    az = M("iface_adapter_board_z_min")
+    az = M("iface_adapter_board_z_min") + M("pcb_thickness")    # face do adaptador do lado do PCB
     # só a faixa ao longo da borda; a aba (pcie_adapter_tab_width x pcie_adapter_total_height)
     # cairia sobre a grade e o X, que pny/back mostra inteiros: a interferência fica no relatório
-    part = part - box3(f0 - c, f0 + M("pcie_adapter_length") + c, -1, M("pcie_adapter_strip_height") + c, az - c, T + 1)
-    # a face B não desce sobre a pcb.plate (que vai até T - layer_center_covers)
+    part = part - box3(f0 - c, f0 + M("pcie_adapter_length") + c, -1, M("pcie_adapter_strip_height") + c, -1, az + c)
+    # a face B não passa da pcb.plate (que começa em z = layer_center_covers)
     pcx, pcy = M("iface_pcb_center_x"), M("iface_pcb_center_y")
-    ztop_plate = T - M("layer_center_covers")
+    ztop_plate = M("layer_center_covers")
     part = part - box3(pcx - M("pcb_plate_outline_x") / 2, pcx + M("pcb_plate_outline_x") / 2,
-                       pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2, z0 - 1, ztop_plate)
+                       pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2, ztop_plate, z1 + 1)
     note(pid, "estrutura do X e moldura das grades na mesma peça; as grades são lâminas reais (passo %.2f, espessura %.1f; espessura e recuo são palpite)" % (g("lam_pitch_b"), g("lam_t_b")))
     note(pid, "recorte para a faixa do adaptador PCIe ao longo da borda dos contatos (folga %.1f mm), aberto até a face: forma vista em gn-20, sem cota; a aba do adaptador não tem recorte" % c)
-    note(pid, "a parte da face B sobre a pcb.plate começa em z = %.1f (topo da placa), não em %.1f: escolha para não cruzar a pcb.plate" % (ztop_plate, z0))
+    note(pid, "a parte da face B sobre a pcb.plate vai só até z = %.1f (face da placa), não até %.1f: escolha para não cruzar a pcb.plate" % (ztop_plate, z1))
     note(pid, "divisão: as grades das duas pontas e o X ficam numa peça só, como no assembly; na placa real elas parecem fazer parte das carcaças das pontas (gn-27), sem foto da junção")
     return part
 
@@ -403,9 +432,9 @@ def build_face_b():
 def build_center_covers():
     pid = "frame.center_covers"
     _, _, covers, _ = face_b_regions()
-    z0 = T - M("layer_center_covers")
-    lower = ext(covers[1], z0, T)
-    upper = ext(covers[0], z0, T)
+    z1 = M("layer_center_covers")
+    lower = ext(covers[1], 0, z1)
+    upper = ext(covers[0], 0, z1)
     note(pid, "duas tampas, inferior (instância 1, borda dos contatos) e superior (instância 2, com o texto), espessura layer_center_covers; vértices arredondados; a tampa da foto gn-20 tem uma aba na borda que não foi modelada (sem cota)")
     note(pid, "texto RTX PRO 6000 não gravado: só a caixa em extras (passo do Blender)")
     return [lower, upper]
@@ -414,13 +443,13 @@ def build_center_covers():
 def build_rim():
     pid = "frame.rim"
     O = outline()
-    rim = ext(O - inset(O, g("rim_w")), Z_FACE_B, T)
+    rim = ext(O - inset(O, g("rim_w")), 0, Z_FACE_B)
     try:
-        top_outer = [e for e in rim.edges() if e.center().Z > T - 1e-3 and _on_outline(e)]
+        top_outer = [e for e in rim.edges() if e.center().Z < 1e-3 and _on_outline(e)]
         rim = fillet(top_outer, g("rim_fillet"))
     except Exception as ex:  # o arredondamento é cosmético
         note(pid, "arredondamento externo do aro falhou (%s); aro sem arredondamento" % ex)
-    note(pid, "aro como uma faixa de largura constante no contorno da face B, de z = %.0f a %.0f; gn-17 mostra um aro fino, mas o desenho exato (se acompanha também o X) não dá para ler" % (Z_FACE_B, T))
+    note(pid, "aro como uma faixa de largura constante no contorno da face B, de z = 0 a %.0f; gn-17 mostra um aro fino, mas o desenho exato (se acompanha também o X) não dá para ler" % Z_FACE_B)
     return rim
 
 
@@ -577,8 +606,15 @@ def anchor_check(pid, mesh):
     for a, isin in zip(anchors, ins):
         loc, _, _, dist = tree.find_nearest(V3(a["pos"]))
         d = 0.0 if isin else float(dist)
-        res.append({"anchor": a["id"], "pos": a["pos"], "dist_mm": round(d, 3), "inside": bool(isin),
-                    "ok": d <= TOL_ANCHOR})
+        kind = a.get("kind", "surface")
+        if kind == "opening":
+            # âncora de abertura ou vão (marcada no assembly): basta ficar na caixa envolvente
+            lo, hi = mesh.bounds
+            ok = bool(np.all(np.asarray(a["pos"]) >= lo - 1e-6) and np.all(np.asarray(a["pos"]) <= hi + 1e-6))
+        else:
+            ok = d <= TOL_ANCHOR
+        res.append({"anchor": a["id"], "pos": a["pos"], "kind": kind, "dist_mm": round(d, 3), "inside": bool(isin),
+                    "ok": ok})
     return res
 
 
@@ -610,6 +646,7 @@ def main():
             "shape_provenance_features": FEATURE_PROV[pid],
             "guess": True, "guess_notes": NOTES[pid],
             "blockout": False, "units_cad": "mm", "up_cad": "+Z", "origin": "card.envelope_min",
+            "referencial": "face B em z = 0, face A (ventiladores) em z = card_thickness",
             "explode_cad": p["explode"],
         }
         spec = []
@@ -618,11 +655,11 @@ def main():
         else:
             extras["count"] = p["count"]["value"]
             extras["count_provenance"] = p["count"]["provenance"]
-            extras["text_box_cad_mm"] = {"corners_xy": text_box(), "z": T, "text": "RTX PRO 6000",
+            extras["text_box_cad_mm"] = {"corners_xy": text_box(), "z": 0.0, "text": "RTX PRO 6000",
                                          "angle_deg_cad": text_angle_cad(),
                                          "reading_dir_xy": [round(math.cos(math.radians(text_angle_cad())), 4), round(math.sin(math.radians(text_angle_cad())), 4)],
                                          "letter_up_xy": [round(math.sin(math.radians(text_angle_cad())), 4), round(-math.cos(math.radians(text_angle_cad())), 4)],
-                                         "note": "direções tiradas de pny/back e passadas para (x, y) do assembly; o referencial do assembly é espelhado em relação à placa real (ver relatório), então o passo do Blender precisa conferir a leitura",
+                                         "note": "direções tiradas de pny/back e passadas para (x, y) do assembly; o texto fica na face externa da face B (z = 0) e lê certo visto de -z com os contatos para cima, como em pny/back",
                                          "instance": 2, "engrave": False}
             spec.append((pid, extras, None, None, None))
             for k, m in enumerate(meshes, 1):
@@ -654,7 +691,8 @@ def main():
               (pid, ntri, glb.stat().st_size / 1024, step.stat().st_size / 1024, "sim" if all(closed) else "NÃO"))
         print("    caixa: (%.2f, %.2f, %.2f) a (%.2f, %.2f, %.2f)" % (*lo, *hi))
         for a in anchors:
-            print("    %-36s dist %.2f mm %s" % (a["anchor"], a["dist_mm"], "OK" if a["ok"] else "ACIMA DE %.0f mm" % TOL_ANCHOR))
+            print("    %-36s dist %.2f mm %s%s" % (a["anchor"], a["dist_mm"], "OK" if a["ok"] else "ACIMA DE %.0f mm" % TOL_ANCHOR,
+                                               " (âncora de abertura, dentro da caixa da peça)" if a["kind"] == "opening" else ""))
     # envelope
     want = {"x": (0.0, L), "y": (Y0, M("card_envelope_height")), "z": (0.0, T)}
     env = {}

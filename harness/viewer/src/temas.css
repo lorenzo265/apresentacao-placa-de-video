@@ -8,6 +8,8 @@
 #fundo, #cotas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
 
 :root[data-tema] #palco, :root[data-tema] #cena3d { background: transparent; }
+/* aviso do diagrama: duas linhas cabem na faixa de 52 px (sem tema, o texto longo sai da faixa) */
+:root[data-tema] #aviso-diagrama { line-height: 1.15; }
 :root[data-tema] #chamada .halo { display: inline; fill: none; stroke: var(--cor-linha); stroke-linecap: round; stroke-linejoin: round; }
 :root[data-tema] #chamada .mira { fill: none; stroke: var(--cor-linha); stroke-linecap: round; }
 
@@ -74,7 +76,7 @@
 :root[data-tema=keynote] .hachura-traco { stroke: #262d32; }
 
 /* fluxos: luz percorrendo o traço (halo largo, cauda e núcleo, todos terminando no mesmo ponto) */
-:root[data-tema=keynote] #fluxos .f-base { stroke-width: 1.4px; opacity: .22; }
+:root[data-tema=keynote] #fluxos .f-base { stroke-width: 1.6px; opacity: .38; }
 :root[data-tema=keynote] #fluxos .f-halo { fill: none; stroke: currentColor; stroke-width: 11px; stroke-linecap: round; opacity: .16; vector-effect: non-scaling-stroke; }
 :root[data-tema=keynote] #fluxos .f-cauda { fill: none; stroke: currentColor; stroke-width: 3px; stroke-linecap: round; opacity: .42; vector-effect: non-scaling-stroke; }
 :root[data-tema=keynote] #fluxos .fluxo .f-anim { stroke: #ffffffe0; stroke-width: 3.5px; stroke-linecap: round; }
@@ -171,10 +173,11 @@
 :root[data-tema=blueprint] #aviso-blockout { border: 1px dashed #8fb4e8; border-radius: 0; color: #cfe2ff; background: #061327cc; text-transform: uppercase; font-size: 18px; letter-spacing: .08em; }
 
 /* caixa como carimbo de prancha: canto vivo, marcas de canto */
-:root[data-tema=blueprint] #caixa { border-radius: 0; background: #051124ee; border: 1px solid #8fb4e8aa; box-shadow: 0 0 0 6px #06132799; padding: 22px 30px 24px; overflow: visible; }
+:root[data-tema=blueprint] #caixa { border-radius: 0; background: #051124ee; border: 1px solid #8fb4e8aa; box-shadow: 0 0 0 6px #06132799; padding: 22px 30px 24px; }
+/* marcas de canto por dentro da borda: fora dela contariam como estouro da caixa */
 :root[data-tema=blueprint] #caixa::before, :root[data-tema=blueprint] #caixa::after { content: ""; position: absolute; width: 22px; height: 22px; border: 0 solid #fff; pointer-events: none; }
-:root[data-tema=blueprint] #caixa::before { left: -4px; top: -4px; border-left-width: 3px; border-top-width: 3px; }
-:root[data-tema=blueprint] #caixa::after { right: -4px; bottom: -4px; border-right-width: 3px; border-bottom-width: 3px; }
+:root[data-tema=blueprint] #caixa::before { left: 0; top: 0; border-left-width: 3px; border-top-width: 3px; }
+:root[data-tema=blueprint] #caixa::after { right: 0; bottom: 0; border-right-width: 3px; border-bottom-width: 3px; }
 :root[data-tema=blueprint] #caixa h2 { font-size: 42px; line-height: 1.1; font-weight: 700; letter-spacing: -.015em; color: #f4f8ff; margin: 14px 0 10px; }
 :root[data-tema=blueprint] #caixa .caption { color: #cddcf3; }
 :root[data-tema=blueprint] #caixa .fonte { color: #8fa9d0; font: 400 18px/1.4 "JetBrains Mono", monospace; border-top: 1px dashed #8fb4e866; }
