@@ -102,6 +102,17 @@
         "sched.warp_scheduler"
       ]
     },
+    "a5.3": {
+      "headline": "Do bloco ao warp",
+      "caption": "O SM recebe blocos de threads e os divide em warps. Cada warp é escalonado por um escalonador de warp. Como os blocos são distribuídos entre os 188 SMs, a fonte não diz.",
+      "fala": "O guia CUDA descreve o SM como quem recebe blocos de threads e os divide em warps. Isso fecha com a figura do SM: cada warp é escalonado por um dos quatro escalonadores. O que o guia, no trecho que lemos, não diz é quem decide qual SM recebe qual bloco, nem com que regra. Não vamos supor. É uma lacuna declarada.",
+      "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.2.2. Whitepaper RTX PRO Blackwell v1.1, Fig. 5 (p. 10)",
+      "claims": [
+        "sched.block_to_warps",
+        "sm.blocks",
+        "chip.sm_count"
+      ]
+    },
     "a5.15": {
       "headline": "A conta da ocupação",
       "caption": "48 warps × 32 threads dão 1.536 threads por SM. Com 188 SMs, a placa pode manter 288.768 threads residentes. As contas são nossas.",
@@ -270,6 +281,16 @@
         "lat.global_cycles"
       ]
     },
+    "a5.14": {
+      "headline": "L1 e memória compartilhada dividem 128 KB",
+      "caption": "Os 128 KB do SM se dividem entre L1 e memória compartilhada. A parte da memória compartilhada, o carveout, é escolhida em tempo de execução. Os tamanhos possíveis nesta placa não levantamos.",
+      "fala": "Memória compartilhada é a memória do SM que o programa endereça diretamente. A divisão não é fixa no chip: o guia de ajuste diz que o carveout é escolhido em tempo de execução. Os valores do guia são do H100 e do B200, não da compute capability 12.0, então não os citamos. Associatividade e política de substituição do L1, a NVIDIA não publica.",
+      "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.2.3. Whitepaper RTX PRO Blackwell v1.1, p. 9",
+      "claims": [
+        "mem.l1_carveout",
+        "sm.l1_shared_kb"
+      ]
+    },
     "a6.1": {
       "headline": "Endereço virtual de 57 bits, 6 níveis",
       "caption": "Segundo o driver oficial, a MMU da GPU traduz 57 bits em 6 níveis de tabela. As páginas vão de 4 KB a 512 MB.",
@@ -293,6 +314,18 @@
         "fault.replay",
         "fault.replayable_blocks_preemption",
         "irq.xid31"
+      ]
+    },
+    "a6.3": {
+      "headline": "Como a CPU entrega trabalho à GPU",
+      "caption": "Segundo o driver oficial, a CPU grava comandos num pushbuffer, reserva uma entrada da GPFIFO do canal e avança o ponteiro PUT. A GPU consome a fila. Vale para os canais do próprio driver.",
+      "fala": "Isso é uma fila produtor e consumidor, como o buffer circular da matéria: a CPU produz avançando o PUT e a GPU consome avançando o GET. Canal é uma fila de execução da GPU. Um programa CUDA passa pela parte fechada do driver. Supor que seja o mesmo esquema é leitura nossa. O número de entradas no desenho é ilustrativo.",
+      "source_line": "Fonte: driver aberto da NVIDIA, uvm_channel.c e uvm_pushbuffer.h",
+      "claims": [
+        "cmd.channel",
+        "cmd.gpfifo",
+        "cmd.submit",
+        "cmd.user_path"
       ]
     },
     "a6.4": {
@@ -320,6 +353,45 @@
         "chip.amp_isa",
         "sched.mig_instances",
         "mem.capacity_gb"
+      ]
+    },
+    "a7.1": {
+      "headline": "Ada contra Blackwell: o que mudou",
+      "caption": "De uma geração para a outra: 142 para 188 SMs, L2 de 98.304 para 131.072 KB, memória de 48 para 96 GB e 300 para 600 W. As razões são conta nossa.",
+      "fala": "A Ada é a geração anterior, com o chip AD102. Dividindo cada número: 188 por 142 dá 1,32, o L2 dá 1,33, a memória e a potência dão 2,00. Todas as razões são conta nossa. Note que a potência é a da placa inteira, e que ela cresceu mais do que o número de SMs.",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4. Razões: contas nossas",
+      "claims": [
+        "ada.sm_count",
+        "chip.sm_count",
+        "ada.l2_kb",
+        "chip.l2_kb",
+        "ada.mem_gb",
+        "mem.capacity_gb",
+        "ada.tgp_w",
+        "card.tgp_w"
+      ]
+    },
+    "a7.2": {
+      "headline": "A banda da Ada tem dois valores",
+      "caption": "O mesmo whitepaper dá 960 GB/s para a Ada na Tab. 4 e 1.008 GB/s na Tab. 1. Adotamos a Tab. 4: 384 bits × 20 Gbps ÷ 8 = 960.",
+      "fala": "Com a Tab. 4, a banda da Blackwell é 1,87 vez a da Ada, 1.792 sobre 960. Com a Tab. 1 seria 1,78, 1.792 sobre 1.008. Por isso toda razão cita a tabela usada. A conta do barramento fecha com 960 e não com 1.008, o que favorece a Tab. 4, mas o whitepaper não explica a diferença.",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e Tab. 1. Razões: contas nossas",
+      "claims": [
+        "ada.bandwidth_gbs",
+        "ada.bandwidth_gbs_tab1",
+        "ada.mem_gb",
+        "mem.bandwidth_gbs"
+      ]
+    },
+    "a7.4": {
+      "headline": "O que sabemos e o que falta",
+      "caption": "Para cada item do enunciado, a tabela mostra o que a fonte dá e onde ela para. O que não é público fica declarado.",
+      "fala": "O padrão é este. Tamanhos, contagens e formatos costumam ser públicos: a largura da instrução, os níveis da tabela de páginas, o tamanho das caches. O funcionamento interno costuma não ser: organização do banco de registradores, microcódigo, TLB, política dos caches, profundidade do pipeline. Lacuna declarada é resultado do trabalho, não falha dele.",
+      "source_line": "Fonte: harness/spec/card.spec.json, fatos e lacunas declaradas, com as fontes de cada seção",
+      "claims": [
+        "isa.instruction_bytes",
+        "mmu.levels",
+        "chip.l2_kb"
       ]
     }
   }
