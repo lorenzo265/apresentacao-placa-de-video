@@ -25,7 +25,34 @@ function larguraPorUnidade(texto, mono, peso) {
   return v;
 }
 
-export function criaCamadaDiagramas(container, world) {
+/**
+ * opcoes (só com ?tema; sem tema, o desenho é o de sempre):
+ *   raio:       raio de canto como fração do menor lado do nó (padrão 0,04)
+ *   rotuloMono: títulos de contêiner em JetBrains Mono (a medida de encaixe usa a mesma fonte).
+ *               Rótulo e sub-rótulo seguem em Inter: na mono, mais larga, os sub-rótulos pequenos
+ *               ficariam abaixo do limite de leitura e sumiriam
+ *   sombra:     placas com sombra (dois retângulos deslocados sob cada nó)
+ *   fluxo:      { vel, periodo, fase, camadas: [{cls, l}] }: cada camada é um traço de comprimento l
+ *               com período fixo; todas terminam no mesmo ponto, o que dá cabeça e cauda à luz
+ *   hospedeiro: opacidade dos nós fora do diagrama em foco e dos que ele embute (o hospedeiro do
+ *               zoom), para a planta do chip não aparecer em escala gigante atrás do SM
+ */
+export function criaCamadaDiagramas(container, world, opcoes = null) {
+  const raio = opcoes?.raio ?? 0.04;
+  const todosMono = !!opcoes?.rotuloMono;
+  const comSombra = !!opcoes?.sombra;
+  const SEM_SOMBRA = new Set(['note', 'gap', 'lane']);
+  const opHospedeiro = opcoes?.hospedeiro ?? null;
+  // diagrama -> diagrama que o embute (para saber se um nó está dentro do diagrama em foco)
+  const pai = new Map();
+  for (const r of world.recs) if (r.isContainer && r.node.embed) pai.set(r.node.embed, r.diagram);
+  const dentroDe = (d, v) => { for (let x = d; x; x = pai.get(x)) if (x === v) return true; return false; };
+  const fatorVista = new Map();      // diagrama em foco -> Float32Array por nó
+  const fatoresDaVista = (v) => {
+    if (!opHospedeiro || !v) return null;
+    if (!fatorVista.has(v)) fatorVista.set(v, Float32Array.from(world.recs, (r) => (dentroDe(r.diagram, v) ? 1 : opHospedeiro)));
+    return fatorVista.get(v);
+  };
   const svg = el('svg', { id: 'diagramas', width: STAGE_W, height: STAGE_H, viewBox: `0 0 ${STAGE_W} ${STAGE_H}`, preserveAspectRatio: 'none' }, container);
   const defs = el('defs', {}, svg);
   const padrao = el('pattern', { id: 'hachura', patternUnits: 'userSpaceOnUse', width: 8, height: 8 }, defs);
@@ -39,21 +66,30 @@ export function criaCamadaDiagramas(container, world) {
   function monta(r, pai) {
     const n = r.node, [x, y, w, h] = r.rect;
     const g = el('g', { class: `n k-${n.kind}${n.state === 'disabled' ? ' disabled' : ''}`, 'data-id': n.id }, pai);
-    const rect = el('rect', { x, y, width: w, height: h, rx: Math.min(w, h) * 0.04 }, g);
-    if (n.state === 'disabled') el('rect', { x, y, width: w, height: h, rx: Math.min(w, h) * 0.04, class: 'hachurada' }, g);
-    const it = { r, g, rect, textos: [], visivel: true, op: 1, hostFade: !!n.embed };
+    const rx = Math.min(w, h) * raio;
+    if (comSombra && n.state !== 'disabled' && !SEM_SOMBRA.has(n.kind)) {
+      // sombra de placa: um núcleo curto e uma penumbra mais larga, sem filtro (barato e determinístico)
+      const m0 = Math.min(w, h), dy = Math.min(m0 * 0.05, Math.max(w, h) * 0.02);
+      el('rect', { x: x - dy * 0.35, y: y + dy * 0.9, width: w + dy * 0.7, height: h + dy * 0.5, rx: rx + dy * 0.4, class: 'sombra s2' }, g);
+      el('rect', { x, y: y + dy * 0.45, width: w, height: h, rx, class: 'sombra s1' }, g);
+    }
+    const rect = el('rect', { x, y, width: w, height: h, rx }, g);
+    if (opcoes) rect.classList.add('corpo');
+    if (n.state === 'disabled') el('rect', { x, y, width: w, height: h, rx, class: 'hachurada' }, g);
+    const it = { r, g, rect, textos: [], visivel: true, op: 1, hostFade: !!n.embed, alvo: false };
     const rotulos = [];
-    const mono = !!n.mono;
+    const mono = !!n.mono;                       // rótulo principal
+    const monoSec = mono || todosMono;           // título de contêiner
     const peso = n.kind === 'counter' || r.isContainer || n.kind === 'header' ? 600 : 500;
     const esq = n.align === 'left';
     const m = Math.min(w, h);
-    const fit = (txt, hPref, maxW) => Math.min(hPref, maxW / Math.max(0.5, larguraPorUnidade(txt, mono, peso)));
+    const fit = (txt, hPref, maxW, mm = mono) => Math.min(hPref, maxW / Math.max(0.5, larguraPorUnidade(txt, mm, mm && todosMono ? 500 : peso)));
     const sz = n.label_size ? n.label_size * r.s : null;
     const teto = 0.1 * Math.max(w, h);       // rótulo ajustado nunca passa de 10% do maior lado
     if (n.label) {
       if (r.isContainer) {
         // contêiner: título no canto superior esquerdo
-        const hh = sz ?? fit(n.label, m * 0.045, w * 0.8);
+        const hh = sz ? (todosMono ? fit(n.label, sz, w * 0.8, monoSec) : sz) : fit(n.label, m * 0.045, w * 0.8, monoSec);
         rotulos.push({ txt: n.label, x: x + m * 0.03, y: y + m * 0.02 + hh / 2, h: hh, anchor: 'start', cls: 'titulo' });
       } else if (n.sublabel) {
         const h1 = sz ?? fit(n.label, Math.min(h * 0.34, teto), w * 0.92);
@@ -72,7 +108,7 @@ export function criaCamadaDiagramas(container, world) {
       rotulos.push({ txt: n.sublabel, x: x + w / 2, y: y + h / 2, h: hh, anchor: 'middle', cls: 'sub' });
     }
     for (const t of rotulos) {
-      const e = el('text', { x: t.x, y: t.y, 'font-size': t.h, 'text-anchor': t.anchor, class: `${t.cls}${mono ? ' mono' : ''}` }, g);
+      const e = el('text', { x: t.x, y: t.y, 'font-size': t.h, 'text-anchor': t.anchor, class: `${t.cls}${n.mono ? ' mono' : ''}` }, g);
       e.textContent = t.txt;
       it.textos.push({ e, h: t.h, op: 1 });
     }
@@ -80,7 +116,11 @@ export function criaCamadaDiagramas(container, world) {
   }
 
   // ---- fluxos ----
+  const fx = opcoes?.fluxo ?? null;
+  const camadasFluxo = fx?.camadas ?? [{ cls: 'f-anim', l: 0 }];
+  const vel = fx?.vel ?? 70;
   const fluxos = new Map();
+  let nFluxo = 0;
   for (const [id, { flow, T }] of world.flows) {
     const de = world.byId.get(flow.from), para = world.byId.get(flow.to);
     let pts;
@@ -91,14 +131,20 @@ export function criaCamadaDiagramas(container, world) {
     const g = el('g', { class: `fluxo f-${cam}`, visibility: 'hidden' }, gFluxos);
     const d = 'M' + pts.map((p) => p.join(',')).join(' L');
     el('path', { d, class: 'f-base' }, g);
-    const anim = el('path', { d, class: 'f-anim' }, g);
+    const camadas = camadasFluxo.map((c) => {
+      const e = el('path', { d, class: c.cls }, g);
+      if (fx) e.style.strokeDasharray = `${c.l} ${fx.periodo - c.l}`;
+      return { e, l: c.l };
+    });
+    const fase = fx ? (nFluxo * (fx.fase ?? 0) * fx.periodo) % fx.periodo : 0;
+    nFluxo++;
     const ponta = el('path', { d: 'M-9,-6 L7,0 L-9,6 Z', class: 'f-ponta' }, g);
     let rot = null;
     if (flow.label) { rot = el('text', { class: 'f-rotulo', 'text-anchor': 'middle' }, g); rot.textContent = flow.label; }
     const meio = pts[Math.floor((pts.length - 1) / 2)], meio2 = pts[Math.floor((pts.length - 1) / 2) + 1] ?? meio;
     const fim = pts[pts.length - 1], ant = pts[pts.length - 2];
     fluxos.set(id, {
-      g, anim, ponta, rot, mx: (meio[0] + meio2[0]) / 2, my: (meio[1] + meio2[1]) / 2,
+      g, camadas, fase, ponta, rot, mx: (meio[0] + meio2[0]) / 2, my: (meio[1] + meio2[1]) / 2,
       fim, ang: Math.atan2(fim[1] - ant[1], fim[0] - ant[0]) * 180 / Math.PI, vis: false,
     });
   }
@@ -108,7 +154,16 @@ export function criaCamadaDiagramas(container, world) {
    * dims: Float32Array|null (fator do destaque); dimsAnt: o do beat anterior; hl: 0..1 entre os dois.
    * flowsAtivos: ids; flowAlpha: 0..1; t: tempo da timeline em s.
    */
-  function atualiza({ vb, dims, dimsAnt, hl, flowsAtivos, flowAlpha, t, visivel }) {
+  let alvoAtual = null;
+  const porId = new Map(itens.map((it) => [it.r.id, it]));
+  function atualiza({ vb, dims, dimsAnt, hl, flowsAtivos, flowAlpha, t, visivel, alvo = null, vista = null, vistaAnt = null }) {
+    const hv = fatoresDaVista(vista), hvAnt = fatoresDaVista(vistaAnt);
+    if (alvo !== alvoAtual) {
+      // nó-âncora do beat: os temas o realçam (sem tema não há regra para .alvo)
+      porId.get(alvoAtual)?.g.classList.remove('alvo');
+      porId.get(alvo)?.g.classList.add('alvo');
+      alvoAtual = alvo;
+    }
     svg.style.opacity = visivel;
     svg.style.visibility = visivel > 0.001 ? 'visible' : 'hidden';
     if (visivel <= 0.001) return;
@@ -124,7 +179,9 @@ export function criaCamadaDiagramas(container, world) {
       if (fora === it.visivel) { it.visivel = !fora; it.g.style.display = fora ? 'none' : ''; }
       if (fora) continue;
       const a = dimsAnt ? dimsAnt[it.r.idx] : 1, b = dims ? dims[it.r.idx] : 1;
-      const op = Math.round((a + (b - a) * hl) * 100) / 100;
+      let op = a + (b - a) * hl;
+      if (hv || hvAnt) { const ha = hvAnt ? hvAnt[it.r.idx] : 1, hb = hv ? hv[it.r.idx] : 1; op *= ha + (hb - ha) * hl; }
+      op = Math.round(op * 100) / 100;
       if (op !== it.op) { it.op = op; it.g.style.opacity = op; }
       const fadeHost = (it.hostFade ? 1 - suave(200, 340, w * k) : 1);
       const fadeCont = it.r.isContainer ? 1 - suave(1100, 1500, Math.min(w, h) * k) : 1;
@@ -141,7 +198,7 @@ export function criaCamadaDiagramas(container, world) {
       if (on !== f.vis) { f.vis = on; f.g.setAttribute('visibility', on ? 'visible' : 'hidden'); }
       if (!on) continue;
       f.g.style.opacity = flowAlpha;
-      f.anim.style.strokeDashoffset = -(t * 70);       // andamento vem do tempo da timeline
+      for (const c of f.camadas) c.e.style.strokeDashoffset = -(t * vel) - f.fase + c.l;   // andamento vem do tempo da timeline
       f.ponta.setAttribute('transform', `translate(${f.fim[0]} ${f.fim[1]}) rotate(${f.ang}) scale(${1 / k})`);
       if (f.rot) {
         f.rot.setAttribute('x', f.mx); f.rot.setAttribute('y', f.my - 12 / k);

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Teste do arquivo único (harness/dist/tour.html): abre por file://, sem rede,
 // e percorre todos os beats com a seta do teclado, como no seminário.
-// Uso: node harness/tools/smoke-single.cjs [--cut completo|seminario] [--no-build]
+// Uso: node harness/tools/smoke-single.cjs [--cut completo|seminario] [--tema keynote|estudio|blueprint] [--no-build]
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -9,11 +9,12 @@ const { pathToFileURL } = require('url');
 
 const HARNESS = path.resolve(__dirname, '..');
 const ARQ = path.join(HARNESS, 'dist', 'tour.html');
-const FRAMES = path.join(HARNESS, 'dist', 'frames-single');
 
 async function main() {
   const args = process.argv.slice(2);
   const corte = args.includes('--cut') ? args[args.indexOf('--cut') + 1] : null;
+  const tema = args.includes('--tema') ? args[args.indexOf('--tema') + 1] : null;
+  const FRAMES = path.join(HARNESS, 'dist', tema ? `frames-single-${tema}` : 'frames-single');
   if (!args.includes('--no-build')) execSync('npm run build:single', { cwd: path.join(HARNESS, 'viewer'), stdio: 'inherit' });
   const textos = JSON.parse(fs.readFileSync(path.join(HARNESS, 'content', 'pt-BR', 'beats.json'), 'utf8')).beats;
   fs.mkdirSync(FRAMES, { recursive: true });
@@ -29,7 +30,8 @@ async function main() {
   page.on('pageerror', (e) => falhas.push(`pageerror: ${e.message}`));
   page.on('request', (r) => { const u = r.url(); if (!u.startsWith('data:') && !u.startsWith('blob:')) pedidos.push(u); });
 
-  const url = pathToFileURL(ARQ).href + (corte ? `?cut=${corte}` : '');
+  const q = [corte && `cut=${corte}`, tema && `tema=${tema}`].filter(Boolean).join('&');
+  const url = pathToFileURL(ARQ).href + (q ? `?${q}` : '');
   await page.goto(url);
   await page.waitForFunction('window.__tourReady === true || window.__tourErro', null, { timeout: 60000 });
   const erro = await page.evaluate('window.__tourErro');
@@ -50,6 +52,10 @@ async function main() {
     if (!c.glb) falhas.push(`o GLB embutido não carregou: ${c.avisos.join('; ')}`);
     if (c.pecas.length) falhas.push(`peças do assembly não achadas no GLB: ${c.pecas.join(', ')}`);
     console.log(`smoke-single: GLB embutido ${c.glb ? 'carregado' : 'NÃO carregado'}`);
+  }
+  if (tema) {
+    const aplicado = await page.evaluate(() => document.documentElement.dataset.tema ?? null);
+    if (aplicado !== tema) falhas.push(`o tema pedido (${tema}) não foi aplicado (${aplicado})`);
   }
   const titulo = () => page.evaluate(() => document.querySelector('#caixa h2')?.textContent ?? '');
   for (let i = 0; i < info.beats.length; i++) {

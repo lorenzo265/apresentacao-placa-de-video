@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Smoke test do viewer: percorre todos os beats do corte e falha se algo estiver fora do lugar.
-// Uso: node harness/tools/smoke.cjs [--cut completo] [--no-build]
+// Uso: node harness/tools/smoke.cjs [--cut completo] [--tema keynote|estudio|blueprint] [--no-build]
 // Também exporta ferramentas (servidor estático, build) usadas por capture.cjs.
 const fs = require('fs');
 const path = require('path');
@@ -10,7 +10,6 @@ const { execSync } = require('child_process');
 const HARNESS = path.resolve(__dirname, '..');
 const VIEWER = path.join(HARNESS, 'viewer');
 const DIST = path.join(VIEWER, 'dist');
-const FRAMES = path.join(HARNESS, 'dist', 'frames');
 const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.woff': 'font/woff', '.wasm': 'application/wasm', '.glb': 'model/gltf-binary', '.png': 'image/png' };
 
 function maisNovo(dir, ref) {
@@ -96,6 +95,8 @@ async function main() {
   const args = process.argv.slice(2);
   const fixture = args.includes('--fixture3d');
   const corte = fixture ? 'fixture3d' : args.includes('--cut') ? args[args.indexOf('--cut') + 1] : 'completo';
+  const tema = args.includes('--tema') ? args[args.indexOf('--tema') + 1] : null;
+  const FRAMES = path.join(HARNESS, 'dist', tema ? `frames-${tema}` : 'frames');
   if (!args.includes('--no-build')) garanteBuild();
   const { chromium } = require('playwright');
   const raiz = fixture ? montaFixture3d() : DIST;
@@ -110,10 +111,14 @@ async function main() {
 
   let sessao;
   try {
-    sessao = await abre(chromium, url, `cut=${corte}`);
+    sessao = await abre(chromium, url, `cut=${corte}${tema ? `&tema=${tema}` : ''}`);
     const { page, erros, avisos } = sessao;
     const info = await page.evaluate(() => ({ beats: window.__tour.beats, duration: window.__tour.duration, fps: window.__tour.fps, cut: window.__tour.cut }));
-    console.log(`smoke: corte ${info.cut}, ${info.beats.length} beats, ${info.duration.toFixed(1)} s, ${info.fps} fps`);
+    console.log(`smoke: corte ${info.cut}${tema ? `, tema ${tema}` : ''}, ${info.beats.length} beats, ${info.duration.toFixed(1)} s, ${info.fps} fps`);
+    if (tema) {
+      const aplicado = await page.evaluate(() => document.documentElement.dataset.tema ?? null);
+      if (aplicado !== tema) falha('tema', `o tema pedido (${tema}) não foi aplicado (${aplicado})`);
+    }
 
     for (const e of info.beats) {
       const b = porId[e.id];

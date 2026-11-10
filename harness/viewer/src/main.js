@@ -6,14 +6,17 @@ import '@fontsource/jetbrains-mono/latin-400.css';
 import '@fontsource/jetbrains-mono/latin-500.css';
 import './kinds.css';
 import './style.css';
+import './temas.css';
 import { buildWorld } from './world.js';
 import { criaCena } from './scene3d.js';
 import { criaTour } from './tour.js';
 import { STAGE_W, STAGE_H } from './layout.js';
 import { criaChamada } from './callout.js';
+import { temaDaUrl, desenhaFundo } from './temas.js';
 
 const params = new URLSearchParams(location.search);
 const capture = params.get('capture') === '1';
+const tema = temaDaUrl(params);     // null = visual padrão, sem nenhuma mudança
 // No arquivo único (npm run build:single) os dados vêm embutidos na página.
 const embutido = window.__TOUR_DATA__ ?? null;
 const getJson = async (u) => {
@@ -26,6 +29,15 @@ const getJson = async (u) => {
 async function inicia() {
   const palco = document.getElementById('palco');
   if (capture) document.body.classList.add('capture');
+  if (tema) {
+    document.documentElement.dataset.tema = tema.nome;
+    // Fundo do tema: imagem fixa sob a cena 3D e os diagramas (os dois são transparentes por cima).
+    const fundo = document.createElement('canvas');
+    fundo.id = 'fundo';
+    fundo.width = STAGE_W; fundo.height = STAGE_H;
+    desenhaFundo(fundo, tema.fundo);
+    palco.prepend(fundo);
+  }
 
   // Palco lógico de 1920x1080; no modo ao vivo é escalado para caber na janela.
   let escala = 1;
@@ -45,7 +57,7 @@ async function inicia() {
   world.avisos.forEach((a) => console.warn(`[diagramas] ${a}`));
 
   const cena = await criaCena(document.getElementById('cena3d'), {
-    medidas, temGlb: manifest.glb, pixelRatio: capture ? 1 : Math.min(2, devicePixelRatio * escala),
+    medidas, temGlb: manifest.glb, pixelRatio: capture ? 1 : Math.min(2, devicePixelRatio * escala), tema,
   });
   cena.avisos.forEach((a) => console.warn(`[3D] ${a}`));
   // Para os testes: diz se o GLB entrou e se uma peça existe pelo id do assembly.
@@ -79,8 +91,14 @@ async function inicia() {
     return;
   }
 
+  // Com tema, os rótulos dos diagramas são medidos com as fontes já carregadas (a mono do tema
+  // blueprint não aparece em nenhum outro lugar antes da medida e cairia na fonte de reserva).
+  if (tema) {
+    await Promise.all(['500 20px Inter', '600 20px Inter', '400 20px "JetBrains Mono"', '500 20px "JetBrains Mono"']
+      .map((f) => document.fonts.load(f)));
+  }
   const corte = params.get('cut') ?? (storyboard.cuts.completo ? 'completo' : Object.keys(storyboard.cuts)[0]);
-  const tour = criaTour({ dados: { storyboard, textos, world }, palco, cena, capture, corte });
+  const tour = criaTour({ dados: { storyboard, textos, world, medidas }, palco, cena, capture, corte, tema });
   window.__tour = tour;
   await tour.ready;
   const beat = params.get('beat');

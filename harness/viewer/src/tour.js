@@ -8,16 +8,19 @@ import { criaChamada } from './callout.js';
 import { criaCabecalho } from './header.js';
 import { criaControles } from './controls.js';
 import { STAGE_W, STAGE_H, boxPlacement } from './layout.js';
+import { criaCotas } from './cotas.js';
 
 const COR_CAMINHO = { energy: '#ffb020', data: '#35d0e6', heat: '#ff6a3d' };
 
-export function criaTour({ dados, palco, cena, capture, corte }) {
-  const { storyboard, textos, world } = dados;
+export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
+  const { storyboard, textos, world, medidas } = dados;
   const { tl, S, beats, duration } = constroiTimeline({ storyboard, corte, world });
   if (!beats.length) throw new Error(`corte "${corte}" não tem beats ready`);
 
-  const camadaDiag = criaCamadaDiagramas(palco, world);
+  const camadaDiag = criaCamadaDiagramas(palco, world, tema?.diagramas ?? null);
+  const cotas = tema?.cena?.cotas ? criaCotas(palco, cena, medidas) : null;
   const chamada = criaChamada(palco);
+  const corLinha = tema?.linha ?? '#f1f4f8';
   const cabecalho = criaCabecalho(palco);
 
   const textoDe = (id) => {
@@ -112,8 +115,11 @@ export function criaTour({ dados, palco, cena, capture, corte }) {
     camadaDiag.atualiza({
       vb, dims: dimsDe(i), dimsAnt: dimsDe(i - 1), hl,
       flowsAtivos: b.flows ?? [], flowAlpha: flow, t, visivel: mix,
+      alvo: b.level >= 2 ? b.callout?.anchor ?? null : null,
+      vista: b.view?.diagram ?? null, vistaAnt: i > 0 ? beats[i - 1].beat.view?.diagram ?? null : null,
     });
-    chamada.atualiza(b, ancoraDe(b), line, box, COR_CAMINHO[b.overlay?.path] ?? '#f1f4f8');
+    cotas?.atualiza({ visivel: ocultar3d ? 0 : (1 - mix) * Math.max(0, 1 - expl / 0.25) });
+    chamada.atualiza(b, ancoraDe(b), line, box, COR_CAMINHO[b.overlay?.path] ?? corLinha);
     cabecalho.atualiza({
       beat: b, progresso: t / duration, disclaimer: disclaimerDe(b), mix,
       blockoutVisivel: !!cena.blockout,

@@ -6,50 +6,76 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import CameraControls from 'camera-controls';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { STAGE_W, STAGE_H } from './layout.js';
 
 // O storyboard usa mm, Z para cima. O GLB vem em metros, Y para cima.
 THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 CameraControls.install({ THREE });
 
-export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null }) {
+  const tc = tema?.cena ?? null;     // parâmetros de cena do tema; null = cena padrão
+  // Com tema, o canvas é transparente: o fundo do tema (canvas 2D sob o palco) aparece atrás da placa
+  // e dos diagramas, e a passagem 3D para diagrama não troca de fundo.
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: !!tc });
   renderer.setPixelRatio(pixelRatio);
   renderer.setSize(STAGE_W, STAGE_H);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = tc?.exposicao ?? 1.0;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = tc?.sombraSuave ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x07090c);
+  if (tc) renderer.setClearColor(0x000000, 0);
+  else scene.background = new THREE.Color(0x07090c);
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.25;
+  scene.environmentIntensity = tc?.ambiente ?? 0.25;
 
-  // Três luzes (principal, preenchimento, contraluz) mais ambiente. A mesma luz do início ao fim.
-  scene.add(new THREE.AmbientLight(0xffffff, 0.25));
-  const key = new THREE.DirectionalLight(0xfff3e6, 2.6);
-  key.position.set(300, -400, 500);
-  key.target.position.set(152, 68, 0);
-  key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
-  Object.assign(key.shadow.camera, { left: -300, right: 300, top: 300, bottom: -300, near: 10, far: 1500 });
-  key.shadow.bias = -0.0004;
-  scene.add(key, key.target);
-  const fill = new THREE.DirectionalLight(0xbcd2ff, 0.8);
-  fill.position.set(-400, -200, 250);
-  scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xffffff, 1.4);
-  rim.position.set(-100, 500, 200);
-  scene.add(rim);
+  if (!tc) {
+    // Três luzes (principal, preenchimento, contraluz) mais ambiente. A mesma luz do início ao fim.
+    scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+    const key = new THREE.DirectionalLight(0xfff3e6, 2.6);
+    key.position.set(300, -400, 500);
+    key.target.position.set(152, 68, 0);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    Object.assign(key.shadow.camera, { left: -300, right: 300, top: 300, bottom: -300, near: 10, far: 1500 });
+    key.shadow.bias = -0.0004;
+    scene.add(key, key.target);
+    const fill = new THREE.DirectionalLight(0xbcd2ff, 0.8);
+    fill.position.set(-400, -200, 250);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 1.4);
+    rim.position.set(-100, 500, 200);
+    scene.add(rim);
+  } else {
+    // Luzes do tema: a primeira é a principal (com sombra, se o tema pedir); as outras, preenchimento e recorte.
+    scene.add(new THREE.AmbientLight(0xffffff, tc.ambienteLuz ?? 0.2));
+    for (const l of tc.luzes) {
+      const luz = new THREE.DirectionalLight(l.cor, l.i);
+      luz.position.set(...l.pos);
+      luz.target.position.set(152, 68, 0);
+      if (l.sombra && tc.sombra > 0) {
+        luz.castShadow = true;
+        luz.shadow.mapSize.set(2048, 2048);
+        Object.assign(luz.shadow.camera, { left: -300, right: 300, top: 300, bottom: -300, near: 10, far: 1500 });
+        luz.shadow.bias = -0.0004;
+        if (tc.sombraSuave) luz.shadow.radius = 5;
+      }
+      scene.add(luz, luz.target);
+    }
+  }
 
   // Chão que só recebe sombra
-  const chao = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: 0.45 }));
+  const chao = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: tc ? tc.sombra : 0.45 }));
   chao.position.set(152, 68, -2);
   chao.receiveShadow = true;
-  scene.add(chao);
+  if (!tc || tc.sombra > 0) scene.add(chao);
+  if (tc?.contato) scene.add(sombraContato(medidas, tc.contato));
 
   const camera = new THREE.PerspectiveCamera(30, STAGE_W / STAGE_H, 1, 6000);
   camera.up.set(0, 0, 1);
@@ -82,6 +108,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
       raiz.scale.setScalar(1000);
       raiz.rotation.x = Math.PI / 2;
       gltf.scene.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      if (tc) aplicaTema(gltf.scene, tc);
       placa.add(raiz);
       estado = criaEstado3d(gltf.scene);
     } catch (e) {
@@ -123,6 +150,13 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio }) {
     },
     fatoresDe: (partes, tags) => (estado ? estado.fatoresDe(partes, tags) : null),
     ancoraTela,
+    /** Ponto em mm (referencial do storyboard) projetado para px do palco; null se atrás da câmera. */
+    projeta([x, y, z]) {
+      camera.updateMatrixWorld(true);
+      v.set(x, y, z).project(camera);
+      if (v.z > 1) return null;
+      return [(v.x * 0.5 + 0.5) * STAGE_W, (-v.y * 0.5 + 0.5) * STAGE_H];
+    },
     ajustaCamera,
     desenha() { renderer.render(scene, camera); },
   };
@@ -162,6 +196,77 @@ function desenhaBlockout(pai, medidas) {
   g.add(chip);
   pai.add(g);
   return g;
+}
+
+/**
+ * Tema na placa: troca os materiais do GLB pelos do tema (por nome de material; '*' vale para os
+ * que não estão na lista) e, se o tema pedir, acrescenta arestas como filhas de cada malha. As
+ * arestas são malhas também, então a explosão as leva e o destaque as esmaece junto com a peça.
+ */
+function aplicaTema(raiz, tc) {
+  const cache = new Map();
+  const matDe = (orig) => {
+    const nome = orig.name ?? '';
+    const m = tc.materiais?.[nome] ?? tc.materiais?.['*'];
+    if (!m) return orig;
+    if (!cache.has(nome)) {
+      const novo = new THREE.MeshStandardMaterial({ name: nome, color: m.cor, metalness: m.metal, roughness: m.rug });
+      cache.set(nome, novo);
+    }
+    return cache.get(nome);
+  };
+  const malhas = [];
+  raiz.traverse((o) => { if (o.isMesh) malhas.push(o); });
+  for (const o of malhas) {
+    o.material = Array.isArray(o.material) ? o.material.map(matDe) : matDe(o.material);
+    if (!(tc.sombra > 0)) o.castShadow = o.receiveShadow = false;
+  }
+  const a = tc.arestas;
+  if (!a) return;
+  const camadas = [];
+  if (a.halo > 0) camadas.push({ w: a.halo, op: a.opHalo, aditivo: true });
+  camadas.push({ w: a.nucleo, op: a.opNucleo, aditivo: false });
+  const mats = camadas.map((c) => {
+    const m = new LineMaterial({ color: a.cor, linewidth: c.w, transparent: true, opacity: c.op, depthWrite: false });
+    if (c.aditivo) m.blending = THREE.AdditiveBlending;
+    m.resolution.set(STAGE_W, STAGE_H);
+    return m;
+  });
+  for (const o of malhas) {
+    const eg = new THREE.EdgesGeometry(o.geometry, a.angulo ?? 30);
+    if (!eg.attributes.position.count) continue;
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(eg);
+    for (const m of mats) {
+      const l = new LineSegments2(g, m);
+      l.castShadow = l.receiveShadow = false;
+      l.userData.aresta = true;
+      o.add(l);
+    }
+  }
+}
+
+/** Sombra de contato: mancha suave sob o envelope da placa, desenhada uma vez num canvas. */
+function sombraContato(medidas, c) {
+  const m = (k) => medidas?.[k]?.value_mm;
+  const L = m('card_envelope_length') ?? 304.8, H = m('card_envelope_height') ?? 137.16;
+  const f = c.folga, px = 2;                         // 2 px por mm na textura
+  const W = Math.round((L + 2 * (f + c.desfoque)) * px), Hh = Math.round((H + 2 * (f + c.desfoque)) * px);
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = Hh;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, Hh);
+  ctx.filter = `blur(${c.desfoque * px * 0.5}px)`;
+  ctx.fillStyle = '#fff';                            // alphaMap: branco = sombra cheia
+  const x0 = c.desfoque * px, y0 = c.desfoque * px;
+  ctx.fillRect(x0, y0, W - 2 * x0, Hh - 2 * y0);
+  ctx.filter = 'none';
+  const tex = new THREE.CanvasTexture(cv);
+  const mat = new THREE.MeshBasicMaterial({ color: 0x000000, alphaMap: tex, transparent: true, opacity: c.opacidade, depthWrite: false });
+  const plano = new THREE.Mesh(new THREE.PlaneGeometry(W / px, Hh / px), mat);
+  plano.position.set(L / 2, H / 2, -1.9);
+  plano.renderOrder = -1;
+  return plano;
 }
 
 const DIM = 0.15;          // opacidade das peças esmaecidas
