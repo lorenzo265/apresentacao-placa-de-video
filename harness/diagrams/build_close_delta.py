@@ -8,9 +8,9 @@ whitepaper (Tab. 4 contra Tab. 1): adotamos a Tab. 4 e declaramos o conflito.
 from _kit import Diagram, br, val
 
 d = Diagram(
-    "close.delta", "delta", 4, "RTX 6000 Ada contra RTX PRO 6000 Blackwell",
-    "Valores oficiais (whitepaper, Tab. 4, e datasheet); as razões são contas nossas. Barras "
-    "proporcionais dentro de cada linha, não entre linhas.",
+    "close.delta", "delta", 4, "RTX 6000 Ada contra RTX PRO 6000 Blackwell Workstation Edition",
+    "Valores oficiais da Workstation Edition (whitepaper, Tab. 4, e datasheet); a variante Max-Q tem 300 W. "
+    "As razões são contas nossas. Barras proporcionais dentro de cada linha, não entre linhas.",
 )
 
 ROWS = [  # chave, grandeza, unidade no rótulo, fato Ada, fato Blackwell
@@ -21,8 +21,8 @@ ROWS = [  # chave, grandeza, unidade no rótulo, fato Ada, fato Blackwell
     ("bw", "Banda de memória", "GB/s", "ada.bandwidth_gbs", "mem.bandwidth_gbs"),
 ]
 NOTES = {
-    "tgp": "Ada: TGP da Tab. 4. Blackwell: 'Total board power' do datasheet; não se sabe se inclui o slot.",
-    "bw": "Ada: 960 GB/s da Tab. 4 (confere com 384 bits x 20 Gbps); a Tab. 1 diz 1.008.",
+    "tgp": "As duas da linha 'TGP (Total Graphics Power)' da Tab. 4. O datasheet chama os 600 W de 'Total board power'.",
+    "bw": f"Ada: 960 GB/s da Tab. 4; confere com {val('ada.bus_bits')} bits × {val('ada.pin_rate_gbps')} Gbps ÷ 8. A Tab. 1 diz 1.008.",
 }
 
 # legenda
@@ -42,7 +42,8 @@ for i, (key, name, unit, fa, fb) in enumerate(ROWS):
     u = f" {unit}" if unit else ""
     d.node(f"delta.{key}.ada", "cell", [BX, y + 6, wa, 52], f"Ada: {br(a)}{u}", tags=[rt, "ada", "bar"],
            count=fa, align="left", label_size=22, provenance="confirmed",
-           note=NOTES.get(key) if key == "bw" else None)
+           claims=["ada.bus_bits", "ada.pin_rate_gbps"] if key == "bw" else (),
+           note=NOTES.get(key))
     d.node(f"delta.{key}.bw", "sm", [BX, y + 66, wb, 52], f"Blackwell: {br(b)}{u}", tags=[rt, "blackwell", "bar"],
            count=fb, align="left", label_size=22, provenance="confirmed", note=NOTES.get(key) if key == "tgp" else None)
     r = b / a
