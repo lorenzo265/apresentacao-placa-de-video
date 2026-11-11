@@ -456,7 +456,7 @@ def main():
             extras["representative"] = True
             extras["smd_terminal_fraction"] = {"0201": 0.25, "0402": 0.25, "0603": 0.22, "0805": 0.2, "1206": 0.15, "bloco": 0.15}
         spec = []
-        if pid in inst_rows:
+        if pid in inst_rows and "count" in p:
             spec.append((pid, extras, None, None, None))
             for k, (m, r) in enumerate(zip(ms, inst_rows[pid]), 1):
                 ex = {"instance_of": pid, "instance": k, "stage": p["stage"], "tipo": r["tipo"], "lado": r["lado"],

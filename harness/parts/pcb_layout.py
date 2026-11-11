@@ -76,8 +76,8 @@ G = {
     "ind_top_side": (5.0, "derived", "indutores menores da borda superior: cerca de 0,77 do lado dos da borda dos contatos na mesma foto (sabareesh)"),
     "contact_u_first": (47.5, "derived", "primeiro indutor da borda dos contatos: centro das ilhas em u 47,5 a 47,7 (pcb-b retificada; sabareesh); a fileira vai até u 107"),
     "contact_u_pitch": (6.6, "derived", "passo das células da borda dos contatos: 6,5 a 6,6 mm (pcb-b retificada; sabareesh 6,6); com o lado de 6,5 do CSV sobram 0,1 mm entre corpos, o que sugere indutor menor (relatório)"),
-    "top_u_first": (44.3, "derived", "primeiro indutor da borda superior (pcb-b retificada; sabareesh 43,8)"),
-    "top_u_pitch": (6.3, "derived", "passo das células da borda superior (pcb-b retificada; sabareesh 6,4)"),
+    "top_u_first": (44.0, "derived", "primeiro indutor da borda superior (pcb-b retificada 44,3; sabareesh 43,8)"),
+    "top_u_pitch": (6.2, "derived", "passo das células da borda superior: 6,3 na pcb-b retificada, 6,4 na sabareesh; 6,2 tira o último estágio de dentro do corpo do power.connector detalhado (0,6 mm com 6,3)"),
     "far_u": ((108.9, 115.9), "inferred", "pares da ponta oposta: dois indutores lado a lado na faixa entre a memória (u 105,2) e a borda; conta sobre vrm_inductor_side"),
     "far_v_pitch": (18.4, "derived", "passo dos pares da ponta oposta: 17,4 a 18,9 (sabareesh)"),
     "far_single_uv": ((114.3, 107.3), "derived", "indutor isolado ao lado do conector de energia (sabareesh)"),
@@ -90,7 +90,7 @@ G = {
     "aux": ((4.0, 4.0, 2.0), "inferred", "power.aux: indutores pequenos 4R7 e 330 (gn-33, gn-38, sabareesh)"),
     "aux_uv": (((47.7, 22.0), (53.6, 22.0), (59.6, 22.0)), "derived", "um 4R7 visto em u 59,6, v 22 (sabareesh); os outros dois ao lado, ilustrativos"),
     # conectores
-    "aux_header_depth": (5.6, "inferred", "profundidade do conector auxiliar em y (sabareesh: cerca de 6 mm em perspectiva)"),
+    "aux_header_depth": (4.0, "inferred", "profundidade do conector auxiliar em y: a mesma do blockout, porque a moldura da cooler.base (ainda blockout) é recortada em volta dele; a foto sabareesh sugere cerca de 6 mm"),
     "aux_header_h": (6.0, "inferred", "altura do conector auxiliar (a mesma do blockout; a moldura da base é recortada em volta)"),
     "aux_header_pitch": (2.0, "inferred", "passo dos pinos: 2 fileiras de 7 em 14 mm"),
     "aux_header_clear": (0.3, "inferred", "folga do conector até o fundo do canal da carcaça"),
@@ -206,7 +206,7 @@ def holes_xy():
 # Componentes grandes
 # ---------------------------------------------------------------------------
 FIELDS = ["id", "part", "instance", "tipo", "x", "y", "rot_deg", "lado", "provenance", "comprimento", "largura",
-          "altura", "z_base", "representativo", "nota"]
+          "altura", "z_base", "representativo", "aviso_viewer", "nota"]
 
 
 def row(pid, inst, tipo, x, y, rot, lado, prov, L, Wd, h, rep=False, nota=""):
@@ -214,7 +214,8 @@ def row(pid, inst, tipo, x, y, rot, lado, prov, L, Wd, h, rep=False, nota=""):
     return {"id": "%s.%d" % (pid, inst) if inst else pid, "part": pid, "instance": inst, "tipo": tipo,
             "x": round(x, 3), "y": round(y, 3), "rot_deg": round(rot, 2), "lado": lado, "provenance": prov,
             "comprimento": round(L, 3), "largura": round(Wd, 3), "altura": round(h, 3), "z_base": z,
-            "representativo": "sim" if rep else "não", "nota": nota}
+            "representativo": "sim" if rep else "não",
+            "aviso_viewer": "sim" if (prov in ("inferred", "illustrative") or rep) else "não", "nota": nota}
 
 
 def memory_rows():
@@ -243,7 +244,7 @@ def memory_rows():
             prov = "derived"
             rows.append(row(pid, k, "GDDR7 12 x 14 mm", x, y, rot, lado, prov, gl, gw, gt,
                             nota="posição pela grade mem_* (foto retificada); encapsulamento pela tabela da Micron"
-                            + ("" if lado == "verso" else "; frente vista só coberta por pads (posição deduzida do verso)")))
+                            + ("" if lado == "verso" else "; na frente do PCB nu (pcb-b retificada) os campos ficam nas mesmas posições do verso, e as duas faces diferem da grade do CSV (pcb_compare.py, MANUAL)")))
     return rows, obs
 
 
@@ -567,6 +568,8 @@ def main():
             print("aviso: sem passivos (rode com --refazer-passivos)")
     for o in obs:
         print("OBS", o)
+    for r in smd:
+        r["aviso_viewer"] = "sim"
     all_rows = rows + smd
     write_layout(all_rows)
     print("layout: %s (%d linhas, %d passivos)" % (LAYOUT.relative_to(HARNESS.parent), len(all_rows), len(smd)))

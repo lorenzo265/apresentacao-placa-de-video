@@ -260,29 +260,58 @@ def field_center(mask, to_px, to_uv, u, v, half_u, half_v, search=4.0):
     return to_uv(px + 0.5, py + 0.5)
 
 
+# Leituras feitas nesta tarefa em recortes com grade de 1 mm (dist/parts/pcb/grade-*.png), nas
+# duas fotos retificadas pelos furos. O localizador automático por densidade de ilhas não separou
+# os campos de esferas dos passivos vizinhos (cada chip tem dois meios-campos), por isso a
+# leitura é manual, com incerteza de cerca de 0,5 mm.
+MANUAL = {
+    "borda_de_energia_frente": {"u_centros": [31.1, 45.6, 59.75, 74.1], "v_centro": 97.75, "campo": [12.25, 14.5],
+                                "csv": {"u_centros": [35.9, 48.9, 61.9, 74.9], "v_centro": 95.7}},
+    "borda_de_energia_verso": {"u_centros": [31.5, 45.6, 59.0, 73.25], "v_centro": 97.75, "campo": [12.5, 14.5],
+                               "csv": {"u_centros": [35.9, 48.9, 61.9, 74.9], "v_centro": 95.7}},
+    "lateral_do_bracket_verso": {"v_centros": [32.85, 47.25, 61.5, 75.5, 89.6], "u_centro": 9.1, "campo": [14.25, 12.75],
+                                 "csv": {"v_centros": [31.8, 45.1, 58.4, 71.7, 85.0], "u_centro": 11.2}},
+    "borda_da_ponta_oposta_do_pcb": {"u_foto": 118.0, "csv": 119.6, "nota": "borda do PCB em a_board.png (calibrado pelos furos); dentro da tolerância de 1,5"},
+}
+
+
 def measure(rows):
-    out = {"memoria": {}, "gpu": {}}
-    for face, png, to_px, to_uv, pid in (("verso", BACK_PNG, back_px, back_uv, "mem.back"),
-                                         ("frente", FRONT_PNG, front_px, front_uv, "mem.front")):
-        im = np.asarray(Image.open(png).convert("RGB"))
-        mask = copper_mask(im)
-        lst = []
-        for r in sorted([r for r in rows if r["part"] == pid], key=lambda r: r["instance"]):
-            u, v = PL.xy2uv(r["x"], r["y"])
-            # campo de esferas: 13 ao longo da fileira, 15,5 atravessado (CSV)
-            a, c = PL.M("mem_footprint_across_row") / 2, PL.M("mem_footprint_along_row") / 2
-            hu, hv = (a, c) if r["rot_deg"] == 0 else (c, a)
-            mu, mv = field_center(mask, to_px, to_uv, u, v, hu, hv)
-            lst.append({"instance": r["instance"], "modelo_uv": [round(u, 2), round(v, 2)], "foto_uv": [round(mu, 2), round(mv, 2)],
-                        "du": round(mu - u, 2), "dv": round(mv - v, 2)})
-        out["memoria"][face] = lst
-        if face == "frente":
-            bx, by = PL.M("gb202_bga_field_x") / 2, PL.M("gb202_bga_field_y") / 2
-            mu, mv = field_center(mask, to_px, to_uv, PL.GU, PL.GV, bx, by, search=4.0)
-            out["gpu"] = {"modelo_uv": [PL.GU, PL.GV], "foto_uv": [round(mu, 2), round(mv, 2)],
-                          "du": round(mu - PL.GU, 2), "dv": round(mv - PL.GV, 2),
-                          "nota": "centro do campo de esferas de %.0f x %.0f na frente retificada" % (2 * bx, 2 * by)}
+    out = {"memoria_manual": MANUAL, "gpu": {}}
+    im = np.asarray(Image.open(FRONT_PNG).convert("RGB"))
+    mask = copper_mask(im)
+    bx, by = PL.M("gb202_bga_field_x") / 2, PL.M("gb202_bga_field_y") / 2
+    mu, mv = field_center(mask, front_px, front_uv, PL.GU, PL.GV, bx, by, search=4.0)
+    out["gpu"] = {"modelo_uv": [PL.GU, PL.GV], "foto_uv": [round(mu, 2), round(mv, 2)], "du": round(mu - PL.GU, 2),
+                  "dv": round(mv - PL.GV, 2), "nota": "centro do campo de esferas de %.0f x %.0f na frente retificada (automático)" % (2 * bx, 2 * by)}
+    grids(out)
     return out
+
+
+def grids(out):
+    """Recortes com grade de 1 mm (u em magenta, v em verde) para conferir as leituras."""
+    def crop(png, tp, u0, u1, v0, v1, name, s=2):
+        im = Image.open(png).convert("RGB")
+        xs = [tp(u, v)[0] for u in (u0, u1) for v in (v0, v1)]
+        ys = [tp(u, v)[1] for u in (u0, u1) for v in (v0, v1)]
+        x0, y0 = int(min(xs)), int(min(ys))
+        c = im.crop((x0, y0, int(max(xs)), int(max(ys))))
+        c = c.resize((c.width * s, c.height * s), Image.LANCZOS)
+        d = ImageDraw.Draw(c)
+        for u in range(int(u0), int(u1) + 1):
+            a, b = tp(u, v0), tp(u, v1)
+            d.line([((a[0] - x0) * s, (a[1] - y0) * s), ((b[0] - x0) * s, (b[1] - y0) * s)], fill=(255, 0, 255) if u % 5 == 0 else (90, 0, 90))
+            if u % 5 == 0:
+                d.text(((a[0] - x0) * s + 2, (a[1] - y0) * s + 2), "u%d" % u, fill=(255, 0, 255))
+        for v in range(int(v0), int(v1) + 1):
+            a, b = tp(u0, v), tp(u1, v)
+            d.line([((a[0] - x0) * s, (a[1] - y0) * s), ((b[0] - x0) * s, (b[1] - y0) * s)], fill=(0, 255, 0) if v % 5 == 0 else (0, 90, 0))
+            if v % 5 == 0:
+                d.text(((a[0] - x0) * s + 2, (a[1] - y0) * s + 2), "v%d" % v, fill=(0, 255, 0))
+        c.save(DIST / name)
+        out.setdefault("grades", []).append(name)
+    crop(FRONT_PNG, front_px, 20, 85, 84, 106, "grade-frente-borda-de-energia.png")
+    crop(BACK_PNG, back_px, 20, 85, 84, 106, "grade-verso-borda-de-energia.png")
+    crop(BACK_PNG, back_px, 0, 21, 22, 96, "grade-verso-lateral-do-bracket.png")
 
 
 # ---------------------------------------------------------------------------
@@ -305,7 +334,11 @@ def label(im, txt, xy=(12, 10), sz=22):
         y += sz + 4
 
 
-def compose(photo, rend, name, title, outline_px):
+OUTLINE_COLORS = {"mem": (0, 200, 255), "gpu": (255, 230, 0), "power.inductors": (255, 40, 40), "power.vrm": (255, 140, 0),
+                  "power.controller": (255, 0, 255), "power.aux": (255, 0, 255), "io.aux_header": (255, 0, 255), "pcb.smd": (60, 255, 60)}
+
+
+def compose(photo, rend, name, title, outline_px, rows, face, to_px):
     ph = Image.open(photo).convert("RGB")
     rd = Image.open(rend).convert("RGBA")
     rd_rgb = Image.alpha_composite(Image.new("RGBA", rd.size, (235, 235, 238, 255)), rd).convert("RGB")
@@ -316,12 +349,26 @@ def compose(photo, rend, name, title, outline_px):
     side.save(DIST / ("%s-lado-a-lado.png" % name))
     ov = ph.convert("RGBA")
     a = np.asarray(rd).astype(float)
-    a[..., 3] *= 0.55
+    a[..., 3] *= 0.35
     ov = Image.alpha_composite(ov, Image.fromarray(a.astype(np.uint8)))
     d = ImageDraw.Draw(ov)
+    for r in rows:
+        if r["lado"] != face:
+            continue
+        col = next((c for k, c in OUTLINE_COLORS.items() if r["part"].startswith(k)), (255, 255, 255))
+        if r["part"] == "gpu.package":
+            pts = PL.rect_poly(r["x"], r["y"], PL.M("gb202_bga_field_x"), PL.M("gb202_bga_field_y"), 0)
+        else:
+            pts = PL.rect_poly(r["x"], r["y"], r["comprimento"], r["largura"], r["rot_deg"])
+        q = [to_px(*PL.xy2uv(x, y)) for x, y in pts]
+        d.line(q + [q[0]], fill=col + (255,), width=1 if r["part"] == "pcb.smd" else 2)
+    for hx, hy, dr, od, k in PL.holes_xy():
+        cx, cy = to_px(*PL.xy2uv(hx, hy))
+        R = od * 5
+        d.ellipse([cx - R, cy - R, cx + R, cy + R], outline=(255, 0, 255, 255), width=2)
     d.line(outline_px + [outline_px[0]], fill=(255, 0, 255, 255), width=2)
     ov = ov.convert("RGB")
-    label(ov, title + "\nmodelo a 55 %% sobre a foto; contorno do modelo em magenta")
+    label(ov, title + "\nmodelo a 35 % sobre a foto; contorno, furos e componentes do modelo em linhas\n(memória azul, package e campo de esferas amarelo, indutores vermelho, estágios laranja, passivos verde)")
     ov.save(DIST / ("%s-sobreposta.png" % name))
 
 
@@ -347,9 +394,9 @@ def main():
     render(sc, out / "_verso.png", transparent=True)
     poly = PL.outline_uv()
     compose(FRONT_PNG, out / "_frente.png", "01-frente", "Frente do PCB (chip, face A), vista de +z: chiphell/pcb-b retificada pelos 8 furos",
-            [front_px(u, v) for u, v in poly])
+            [front_px(u, v) for u, v in poly], rows, "frente", front_px)
     compose(BACK_PNG, out / "_verso.png", "02-verso", "Verso do PCB (face B), quadro de visualqa/a_board.png (girado 90 graus, como a foto)",
-            [back_px(u, v) for u, v in poly])
+            [back_px(u, v) for u, v in poly], rows, "verso", back_px)
     # perspectiva da frente, enquadrada como sabareesh/wb-bare-pcb.jpg (contatos embaixo)
     cx, cy = PL.uv2xy(59.8, 60.75)
     eye = (cx + 4, cy - 30, PL.ZF + 330)
@@ -387,13 +434,8 @@ def main():
         (out / f).unlink(missing_ok=True)
     (out / "comparacao.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1), encoding="utf-8")
     m = rep["medidas"]
-    for face, lst in m["memoria"].items():
-        du = np.array([x["du"] for x in lst])
-        dv = np.array([x["dv"] for x in lst])
-        print("memória %-6s: du médio %+.2f (%+.2f a %+.2f), dv médio %+.2f (%+.2f a %+.2f) mm" % (face, du.mean(), du.min(), du.max(), dv.mean(), dv.min(), dv.max()))
-        for x in lst:
-            if abs(x["du"]) > 1.0 or abs(x["dv"]) > 1.0:
-                print("    %d: du %+.2f dv %+.2f" % (x["instance"], x["du"], x["dv"]))
+    for k, val in m["memoria_manual"].items():
+        print("%s: %s" % (k, {kk: vv for kk, vv in val.items() if kk != "campo"}))
     print("GB202, campo de esferas: du %+.2f dv %+.2f" % (m["gpu"]["du"], m["gpu"]["dv"]))
     print("saídas em %s" % DIST.relative_to(HARNESS.parent))
 
