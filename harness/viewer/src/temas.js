@@ -19,27 +19,36 @@ export const TEMAS = {
       vinheta: 0.78,
     },
     linha: '#8fdc2a',
+    // Na placa, realismo acima de efeito (decisão do autor em 2026-11-10): sem contorno verde nem
+    // halo nas peças; materiais de src/materials.json e estúdio fotográfico (src/lookdev.js).
     cena: {
-      exposicao: 1.0,
-      ambiente: 0.9, ambienteLuz: 0.06,
-      luzes: [
-        { cor: 0xffffff, i: 1.9, pos: [160, -360, 640], sombra: true },
-        { cor: 0x9fc2ff, i: 0.35, pos: [-420, -160, 200] },
-        { cor: 0xd8ffb0, i: 3.2, pos: [-200, 700, 160] },
-        { cor: 0xffffff, i: 0.9, pos: [760, 260, 60] },
-      ],
-      sombra: 0.6,
-      contato: { opacidade: 0.8, folga: 12, desfoque: 26 },
-      materiais: {
-        carcaca: { cor: 0x30353b, metal: 0.55, rug: 0.4 },
-        cooler: { cor: 0x4c535a, metal: 0.7, rug: 0.36 },
-        pcb: { cor: 0x123320, metal: 0.15, rug: 0.55 },
-        memoria: { cor: 0x3a3428, metal: 0.4, rug: 0.45 },
-        energia: { cor: 0x4a3626, metal: 0.4, rug: 0.4 },
-        io: { cor: 0x9aa1aa, metal: 0.9, rug: 0.28 },
-        fixadores: { cor: 0xa9b0b7, metal: 0.9, rug: 0.3 },
+      realista: {
+        exposicao: 1.0,
+        ambiente: 1.0,                 // intensidade do mapa de ambiente
+        // Ambiente no referencial canônico (câmera em -y olhando +y, acima da placa), unidades do
+        // estúdio virtual: HDR escurecido da Poly Haven mais caixas de luz que desenham os reflexos.
+        hdr: { K: 5600, i: 0.7 },
+        caixas: [
+          { nome: 'teto-fundo', K: 5600, i: 5.0, pos: [0, 9, 11], tam: [22, 7] },
+          { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
+          { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
+          { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },
+        ],
+        // Luzes diretas (mm a partir do centro da placa, no mesmo referencial canônico)
+        luzes: [
+          { papel: 'principal', K: 5400, i: 2.1, pos: [-420, -380, 640], sombra: true },
+          { papel: 'preenchimento', K: 7200, i: 0.28, pos: [560, -320, 140] },
+          { papel: 'recorte', K: 5800, i: 2.4, pos: [160, 680, 260] },
+        ],
+        luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
+        virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
+        chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
+        apaga: 0.82,                   // destaque: quanto as outras peças escurecem e perdem a cor
+        realce: { cor: 0xe4ffd2, forca: 0.32 },   // recorte de luz na peça destacada (branco com um toque do acento)
+        ao: { raio: 10, espessura: 4, intensidade: 0.9 },
+        dof: { abertura: 7, maxCoc: 3, maxCocAlta: 5 },   // px do palco de 1920 x 1080
       },
-      arestas: { cor: 0x9ee04a, nucleo: 1.2, opNucleo: 0.5, halo: 6, opHalo: 0.07, angulo: 30 },
+      cotas: false,
     },
     diagramas: {
       raio: 0.09, rotuloMono: false, sombra: false, hospedeiro: 0.05,
@@ -124,13 +133,14 @@ export const TEMAS = {
  * ?leve=1 desliga os efeitos caros do tema: desfoque de fundo da caixa, brilho do nó-alvo,
  * halo das arestas 3D e halo dos fluxos (para notebook fraco ou projetor com placa integrada).
  */
-export function temaDaUrl(params) {
-  const nome = params.get('tema');
-  if (!nome) return null;
+export function temaDaUrl(params, padrao = null) {
+  // padrao: tema do arquivo único (keynote); ?tema=nenhum volta ao visual sem tema
+  const nome = params.get('tema') ?? padrao;
+  if (!nome || nome === 'nenhum') return null;
   if (!TEMAS[nome]) { console.warn(`[tema] tema desconhecido: ${nome}; usando o padrão`); return null; }
   const t = { nome, ...TEMAS[nome], leve: params.get('leve') === '1' };
   if (t.leve) {
-    t.cena = { ...t.cena, arestas: t.cena.arestas && { ...t.cena.arestas, halo: 0 } };
+    t.cena = { ...t.cena, arestas: t.cena.arestas && { ...t.cena.arestas, halo: 0 } };     // (Keynote já não tem arestas)
     const fx = t.diagramas.fluxo;
     t.diagramas = { ...t.diagramas, fluxo: fx && { ...fx, camadas: fx.camadas.filter((c) => c.cls !== 'f-halo') } };
   }

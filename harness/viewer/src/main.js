@@ -13,10 +13,16 @@ import { criaTour } from './tour.js';
 import { STAGE_W, STAGE_H } from './layout.js';
 import { criaChamada } from './callout.js';
 import { temaDaUrl, desenhaFundo } from './temas.js';
+import { qualidadeDaUrl } from './lookdev.js';
 
 const params = new URLSearchParams(location.search);
 const capture = params.get('capture') === '1';
-const tema = temaDaUrl(params);     // null = visual padrão, sem nenhuma mudança
+// O arquivo único (npm run build:single) traz o padrão de apresentação: tema Keynote, qualidade média.
+// A URL manda sobre o padrão (?tema=, ?qualidade=; ?tema=nenhum volta ao visual sem tema).
+const padrao = window.__TOUR_PADRAO__ ?? {};
+const tema = temaDaUrl(params, padrao.tema ?? null);     // null = visual padrão, sem nenhuma mudança
+const qualidade = qualidadeDaUrl(params) ?? padrao.qualidade ?? null;   // null = média com escolha automática
+const luz = params.get('luz');      // fria | quente: conferência de material (lookdev)
 // No arquivo único (npm run build:single) os dados vêm embutidos na página.
 const embutido = window.__TOUR_DATA__ ?? null;
 const getJson = async (u) => {
@@ -59,10 +65,11 @@ async function inicia() {
 
   const cena = await criaCena(document.getElementById('cena3d'), {
     medidas, temGlb: manifest.glb, pixelRatio: capture ? 1 : Math.min(2, devicePixelRatio * escala), tema,
+    qualidade: params.get('qualidade') ? qualidade : null, luz, capture,
   });
   cena.avisos.forEach((a) => console.warn(`[3D] ${a}`));
   // Para os testes: diz se o GLB entrou e se uma peça existe pelo id do assembly.
-  window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos };
+  window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos, qualidade: cena.qualidade, materiais: cena.materiais, tema: tema?.nome ?? null };
 
   // Modo ferramenta (?frame3d=1): um quadro da cena 3D sem o tour, para frame3d.cjs.
   if (params.get('frame3d') === '1') {

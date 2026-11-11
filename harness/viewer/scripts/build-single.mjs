@@ -55,8 +55,11 @@ if (/\bimport\(/.test(js)) console.warn('build-single: o código tem import() di
 // Substituições com função: o conteúdo tem "$" e não pode ser lido como padrão.
 html = html.replace(mCss[0], () => `<style>${css}</style>`);
 html = html.replace(mJs[0], () => '');
+// Padrão de apresentação do arquivo único: tema Keynote, qualidade média (com troca automática para a
+// baixa se o notebook não aguentar). A URL ainda manda: ?tema=, ?qualidade=, ?tema=nenhum.
+const padraoTxt = 'window.__TOUR_PADRAO__={"tema":"keynote","qualidade":null};';
 html = html.replace('</body>', () =>
-  `<script>window.__TOUR_DATA__=${dadosTxt};${glbTxt}</script>\n<script type="module">${js}</script>\n</body>`);
+  `<script>${padraoTxt}window.__TOUR_DATA__=${dadosTxt};${glbTxt}</script>\n<script type="module">${js}</script>\n</body>`);
 html = html.replace(/<link rel="modulepreload"[^>]*>\s*/g, '');
 
 const externo = html.match(/(?:src|href)="\.\/[^"]+"/g);

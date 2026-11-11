@@ -1,5 +1,6 @@
 // Cena 3D: cenário escuro, três luzes, tone mapping ACES.
 // Carrega card.glb se existir; senão desenha um marcador em blockout a partir de measurements.json.
+// Com tema realista (Keynote), materiais, luz, chão, destaque e pós-processamento vêm de lookdev.js.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -10,32 +11,47 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { STAGE_W, STAGE_H } from './layout.js';
+import { QUALIDADES, aplicaMateriais, criaEstudio, criaPos, preparaMaterial } from './lookdev.js';
 
 // O storyboard usa mm, Z para cima. O GLB vem em metros, Y para cima.
 THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 CameraControls.install({ THREE });
 
-export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null }) {
+export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null, qualidade = null, luz = null, capture = false }) {
   const tc = tema?.cena ?? null;     // parâmetros de cena do tema; null = cena padrão
+  const R = tc?.realista ?? null;    // modo realista (lookdev.js)
+  // Qualidade: a pedida na URL; sem pedido, a média, com troca automática para a baixa se o
+  // notebook não aguentar (medida nos primeiros quadros ao vivo; nunca no modo de captura).
+  let nivelQ = R ? (qualidade ?? 'media') : null;
+  const autoQ = !!R && !qualidade && !capture;
+  const q0 = R ? QUALIDADES[nivelQ] : null;
+  const pr = R ? Math.min(pixelRatio, q0.prMax) : pixelRatio;
   // Com tema, o canvas é transparente: o fundo do tema (canvas 2D sob o palco) aparece atrás da placa
   // e dos diagramas, e a passagem 3D para diagrama não troca de fundo.
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: !!tc });
-  renderer.setPixelRatio(pixelRatio);
+  renderer.setPixelRatio(pr);
   renderer.setSize(STAGE_W, STAGE_H);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = tc?.exposicao ?? 1.0;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = tc?.sombraSuave ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
+  renderer.toneMapping = R ? THREE.AgXToneMapping : THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = R ? R.exposicao : tc?.exposicao ?? 1.0;
+  renderer.shadowMap.enabled = R ? q0.sombra > 0 : true;
+  renderer.shadowMap.type = R ? THREE.PCFSoftShadowMap : tc?.sombraSuave ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
   if (tc) renderer.setClearColor(0x000000, 0);
   else scene.background = new THREE.Color(0x07090c);
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = tc?.ambiente ?? 0.25;
+  let estudio = null;
+  if (R) {
+    estudio = criaEstudio({ renderer, scene, cfg: R, q: q0, medidas, luz });
+  } else {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environmentIntensity = tc?.ambiente ?? 0.25;
+  }
 
-  if (!tc) {
+  if (R) {
+    // luzes e chão do estúdio já estão na cena (lookdev.js)
+  } else if (!tc) {
     // Três luzes (principal, preenchimento, contraluz) mais ambiente. A mesma luz do início ao fim.
     scene.add(new THREE.AmbientLight(0xffffff, 0.25));
     const key = new THREE.DirectionalLight(0xfff3e6, 2.6);
@@ -71,11 +87,13 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
   }
 
   // Chão que só recebe sombra
-  const chao = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: tc ? tc.sombra : 0.45 }));
-  chao.position.set(152, 68, -2);
-  chao.receiveShadow = true;
-  if (!tc || tc.sombra > 0) scene.add(chao);
-  if (tc?.contato) scene.add(sombraContato(medidas, tc.contato));
+  if (!R) {
+    const chao = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: tc ? tc.sombra : 0.45 }));
+    chao.position.set(152, 68, -2);
+    chao.receiveShadow = true;
+    if (!tc || tc.sombra > 0) scene.add(chao);
+    if (tc?.contato) scene.add(sombraContato(medidas, tc.contato));
+  }
 
   const camera = new THREE.PerspectiveCamera(30, STAGE_W / STAGE_H, 1, 6000);
   camera.up.set(0, 0, 1);
@@ -87,6 +105,8 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
   let blockout = null;
   let estado = null;      // explosão e destaque (só com GLB)
   const avisos = [];
+  let materiais = null;   // relatório do lookdev: malha, material, por quê
+  const corRealce = R ? new THREE.Color(R.realce.cor).multiplyScalar(R.realce.forca) : null;
 
   if (temGlb) {
     try {
@@ -108,9 +128,10 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
       raiz.scale.setScalar(1000);
       raiz.rotation.x = Math.PI / 2;
       gltf.scene.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-      if (tc) aplicaTema(gltf.scene, tc);
+      if (R) materiais = aplicaMateriais(gltf.scene, { medidas, q: q0, corRealce });
+      else if (tc) aplicaTema(gltf.scene, tc);
       placa.add(raiz);
-      estado = criaEstado3d(gltf.scene);
+      estado = criaEstado3d(gltf.scene, R ? { corRealce, apaga: R.apaga } : null);
     } catch (e) {
       avisos.push(`falha ao carregar card.glb: ${e.message}; usando blockout`);
     }
@@ -137,12 +158,56 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     return [(v.x * 0.5 + 0.5) * STAGE_W, (-v.y * 0.5 + 0.5) * STAGE_H];
   }
 
+  // ---- quadro ----
+  let pos = null;
+  const montaPos = () => {
+    pos?.dispose();
+    const q = QUALIDADES[nivelQ];
+    pos = q.pos ? criaPos({ renderer, scene, camera, q, W: Math.round(STAGE_W * renderer.getPixelRatio()), H: Math.round(STAGE_H * renderer.getPixelRatio()), cfg: R }) : null;
+  };
+  if (R) montaPos();
+  let nivelAtual = 0;
+  const alvo = new THREE.Vector3();
+  const medida = { n: 0, t0: 0 };
+  /** Troca de qualidade em execução (só para baixo, pela medição automática). */
+  function defineQualidade(nq) {
+    if (!R || nq === nivelQ) return;
+    nivelQ = nq;
+    const q = QUALIDADES[nq];
+    renderer.setPixelRatio(Math.min(pixelRatio, q.prMax));
+    if (renderer.shadowMap.enabled !== q.sombra > 0) {
+      renderer.shadowMap.enabled = q.sombra > 0;
+      scene.traverse((o) => { if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { m.needsUpdate = true; }); });
+    }
+    montaPos();
+    console.info(`[lookdev] qualidade ${nq}`);
+  }
+  function desenha() {
+    if (!R) { renderer.render(scene, camera); return; }
+    estudio.atualiza(camera, nivelAtual);
+    if (pos) pos.render(camera.position.distanceTo(controls.getTarget(alvo)));
+    else renderer.render(scene, camera);
+    if (autoQ && nivelQ === 'media') {
+      // primeira medição: 20 quadros de aquecimento, depois 60 quadros; abaixo de 28 qps, baixa
+      const t = performance.now();
+      medida.n++;
+      if (medida.n === 20) medida.t0 = t;
+      else if (medida.n === 80) {
+        const qps = 60000 / (t - medida.t0);
+        if (qps < 28) defineQualidade('baixa');
+        else console.info(`[lookdev] qualidade media mantida (${qps.toFixed(0)} qps)`);
+      }
+    }
+  }
+
   return {
     renderer, camera, controls, scene, blockout, avisos,
+    qualidade: () => nivelQ, materiais: () => materiais, defineQualidade,
     temAncora: (n) => !!acha(n),
     temPeca: (n) => !!estado && estado.temPeca(n),
     /** Aplica explosão (nível 0 a 8, contínuo) e destaque (fatores prévio e atual, mistura hl). */
     aplicaEstado(nivel, fPrev, fCur, hl) {
+      nivelAtual = nivel;
       if (!estado) return;
       estado.explode(nivel);
       estado.destaque(fPrev, fCur, hl);
@@ -158,7 +223,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
       return [(v.x * 0.5 + 0.5) * STAGE_W, (-v.y * 0.5 + 0.5) * STAGE_H];
     },
     ajustaCamera,
-    desenha() { renderer.render(scene, camera); },
+    desenha,
   };
 }
 
@@ -280,7 +345,7 @@ const suave = (x) => x * x * (3 - 2 * x);
  * Destaque: cada malha ganha uma cópia própria do material (os originais não mudam); a opacidade
  * é recalculada a cada quadro a partir do estado, sem acumular nada.
  */
-function criaEstado3d(raiz) {
+function criaEstado3d(raiz, realista = null) {
   const nos = [];
   const pecas = new Map();       // nome -> true
   const malhas = [];
@@ -301,7 +366,8 @@ function criaEstado3d(raiz) {
         if (a.userData?.instance_of) nomes.add(a.userData.instance_of);
         if (a.userData?.group) nomes.add(`tag:${a.userData.group}`);
       }
-      const mats = (Array.isArray(o.material) ? o.material : [o.material]).map((m) => m.clone());
+      // clone() não leva o onBeforeCompile: no modo realista o trecho do destaque é reinstalado
+      const mats = (Array.isArray(o.material) ? o.material : [o.material]).map((m) => (realista ? preparaMaterial(m.clone(), realista.corRealce) : m.clone()));
       o.material = Array.isArray(o.material) ? mats : mats[0];
       malhas.push({ o, nomes, mats, base: mats.map((m) => ({ op: m.opacity, tr: m.transparent, dw: m.depthWrite })), f: 1 });
     }
@@ -322,12 +388,25 @@ function criaEstado3d(raiz) {
       const sel = [...(partes ?? []), ...(tags ?? []).map((t) => `tag:${t}`)];
       const ok = sel.filter((n) => pecas.has(n) || n.startsWith('tag:'));
       if (!ok.length) return null;
-      return malhas.map((m) => (ok.some((n) => m.nomes.has(n)) ? 1 : DIM));
+      const f = malhas.map((m) => (ok.some((n) => m.nomes.has(n)) ? 1 : DIM));
+      f.sel = true;
+      return f;
     },
     destaque(fPrev, fCur, hl) {
       malhas.forEach((m, i) => {
         const a = fPrev ? fPrev[i] : 1, b = fCur ? fCur[i] : 1;
         const f = a + (b - a) * hl;
+        if (realista) {
+          // realista: nada fica translúcido; o resto escurece e perde a cor, a peça destacada ganha
+          // um recorte de luz (só quando há seleção: fatores marcados com sel)
+          const ra = fPrev?.sel && fPrev[i] === 1 ? 1 : 0, rb = fCur?.sel && fCur[i] === 1 ? 1 : 0;
+          const realce = ra + (rb - ra) * hl;
+          const apaga = (1 - f) / (1 - DIM) * realista.apaga;
+          if (f === m.f && realce === m.r) return;
+          m.f = f; m.r = realce;
+          for (const mt of m.mats) { mt.userData.ld.apaga.value = apaga; mt.userData.ld.realce.value = realce; }
+          return;
+        }
         if (f === m.f) return;
         m.f = f;
         m.mats.forEach((mt, k) => {
