@@ -48,17 +48,17 @@ export const TEMAS = {
         ],
         // Luzes diretas (mm a partir do centro da placa, no mesmo referencial canônico)
         luzes: [
-          { papel: 'principal', K: 5400, i: 3.0, pos: [-420, -380, 640], sombra: true },
+          { papel: 'principal', K: 5400, i: 3.4, pos: [-420, -380, 640], sombra: true },
           { papel: 'preenchimento', K: 7200, i: 0.28, pos: [560, -320, 140] },
-          { papel: 'recorte', K: 6500, i: 3.4, pos: [120, 700, 120] },
+          { papel: 'recorte', K: 6500, i: 1.6, pos: [120, 700, 120] },
           // segundo recorte, do outro lado e por trás: desenha o contorno da carcaça preta em qualquer azimute
           // (o estúdio gira com a câmera) e na virada da face A para a B, quando a placa passa de quina
-          { papel: 'recorte-2', K: 6800, i: 2.6, pos: [-520, 640, 160] },
+          { papel: 'recorte-2', K: 6800, i: 0.8, pos: [-520, 640, 160] },
         ],
         luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
-        contorno: 0.10,                // recorte de luz permanente nas bordas (Fresnel), em qualquer ângulo
+        contorno: 0.18,                // recorte de luz permanente nas bordas (Fresnel), em qualquer ângulo
         apaga: 0.92,                   // destaque: quanto as outras peças escurecem e perdem a cor
         realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)
         ao: { raio: 10, espessura: 4, intensidade: 0.9 },
