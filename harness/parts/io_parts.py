@@ -111,6 +111,20 @@ G = {
                 ("etiqueta_qr", "branca", 67.70, 93.20, 24.20, 37.25)),
                "derived", "etiquetas do painel (y da ponta das línguas e z); sr-1; o texto e o QR ficam para o passo do Blender"),
     "label_t": (0.10, "inferred", "espessura das etiquetas como relevo"),
+    "decal_t": (0.03, "inferred", "espessura da película do bloco de marcas regulatórias (serigrafia; só para a malha ter volume e ficar fechada)"),
+    "label_text": ({
+        "etiqueta_vbios": ["900-5G144-0100-000", "Vbios 98.02.52.00.03"],
+        "etiqueta_modelo": ["(código de barras)", "MODEL: PG144C    S/N: 1793025093205", "NVIDIA CORP    SANTA CLARA",
+                            "699-5G144-0520-800    MADE IN VIETNAM", "RTX PRO 6000    BLACKWELL"],
+        "etiqueta_qr": ["(código 2D)", "VN-0DNYKX-7FVNV-", "58M-000Q-A00", "Made In Vietnam", "DP/N 0DNYKX"]},
+        "derived", "texto das três etiquetas lido em storagereview/sr-1 (a placa da foto; número de série e códigos são desta unidade, não da linha de produto): etiqueta escura de cima, etiqueta escura com código de barras e etiqueta branca com código 2D (da Dell); o código de barras e o código 2D não são legíveis como dado: desenhar como padrão ilustrativo"),
+    "regulatory_marks": ([
+        ("CE", "legível"), ("UKCA", "legível"), ("FCC (logotipo FC)", "legível"), ("marca circular com traço e código pequeno (BSMI de Taiwan, provável)", "forma legível, texto não"),
+        ("VCCI", "legível"), ("CAN ICES (B)/NMB (B)", "legível"), ("marca circular com traço em Y", "forma legível, sem identificação"),
+        ("China RoHS 10 anos (círculo de setas com 10)", "legível"), ("marca em espiral (não identificada)", "forma legível"),
+        ("RCM (triângulo com visto)", "legível"), ("c UL us LISTED, ITE ACCESSORY, E2048?? (último dígito incerto)", "parcial"),
+        ("KC", "legível"), ("WEEE (lixeira riscada)", "legível"), ("R-R-NVA-PG144C (texto pequeno embaixo)", "leitura provável")],
+        "derived", "marcas regulatórias impressas em branco na chapa do bracket, de cima para baixo, lidas em storagereview/sr-1 (gn-11 mostra o mesmo bloco, menor); a disposição em fileiras e o desenho de cada marca ficam para o decal do lookdev"),
     "regulatory_zone": ((11.5, 27.5, 4.5, 38.0), "derived", "área das marcas regulatórias impressas (CE, UKCA, FCC, UL, KC e outras), y da ponta e z (sr-1)"),
     # io.board
     "io_board_clear": (0.3, "inferred", "folga da placa das saídas até a parede interna, a grade da face B e o duto do ventilador 1"),
@@ -318,6 +332,9 @@ def dp_shape(cu, cv, w, h, ch, r):
     return round_poly(pts, [r, r, r, r * 0.5, r * 0.5], 4)
 
 
+BRACKET_SUBS = []      # (nome, forma, extras): submalhas do io.bracket
+
+
 def build_bracket():
     pid = "io.bracket"
     t = M("bracket_thickness")
@@ -359,14 +376,24 @@ def build_bracket():
     ow, oh = g("br_dp_open")
     for y in DP_Y:
         body = body - prism_x(dp_shape(y, DP_ZC, ow, oh, g("br_dp_chamfer"), g("br_dp_open_r")), -5, 1)
-    # etiquetas como áreas planas
+    # etiquetas e marcas regulatórias: submalhas nomeadas (io.bracket.<nome>) para o decal do lookdev
+    # (auditoria visual, achado 17: antes eram contornos em relevo fundidos na chapa)
     lt = g("label_t")
     for name, kind, ya, yb, za, zb in g("labels"):
         lab = rrect(by(ya), by(yb), bz(za), bz(zb), 0.6, 3)
-        body = body + prism_x(lab, x_out - lt, x_out + 0.05)
+        BRACKET_SUBS.append((name, prism_x(lab, x_out - lt, x_out + 0.01),
+                             {"acabamento": "etiqueta " + kind, "texto": g("label_text")[name], "fonte": "storagereview/sr-1",
+                              "face_cad": "-x (lado de fora do bracket)", "provenance": "derived"}))
         zone(pid, name, "etiqueta_" + kind, plane_x=x_out - lt, y=[by(ya), by(yb)], z=[bz(za), bz(zb)])
     ya, yb, za, zb = g("regulatory_zone")
+    dt = g("decal_t")
+    reg = rrect(by(ya), by(yb), bz(za), bz(zb), 0.5, 3)
+    BRACKET_SUBS.append(("marcas_regulatorias", prism_x(reg, -t - dt, -t + 0.01),
+                         {"acabamento": "serigrafia branca sobre a chapa (decal com as marcas; fora das marcas, transparente)",
+                          "marcas": [m for m, _ in g("regulatory_marks")], "leitura": [r for _, r in g("regulatory_marks")],
+                          "fonte": "storagereview/sr-1; gn-11", "face_cad": "-x", "provenance": "derived"}))
     zone(pid, "marcas_regulatorias", "serigrafia_branca", plane_x=-t, y=[by(ya), by(yb)], z=[bz(za), bz(zb)])
+    note(pid, "etiquetas (etiqueta_vbios, etiqueta_modelo, etiqueta_qr) e o bloco das marcas regulatórias (marcas_regulatorias: CE, UKCA, FCC, VCCI, ICES, China RoHS, RCM, UL, KC, WEEE e outras) em submalhas io.bracket.<nome>, com o texto lido em sr-1 nos extras, para o decal do lookdev; o bloco das marcas é uma película de %.2f mm sobre a chapa" % dt)
     zone(pid, "chapa", "aco_pintado_preto_fosco", note="todo o resto da peça")
     note(pid, "contorno: comprimento e espessura da norma (bracket_height_overall, bracket_thickness), largura de dois slots por conta; línguas, entalhe, painel, aberturas e etiquetas medidos em sr-1")
     note(pid, "posição em y pela norma (br_flange_above_contacts, CEM 3.0 Fig. 9-3): ponta das línguas em y = %.2f (%.2f além da borda dos contatos), ponta de cima em %.2f (%.2f abaixo do topo da carcaça; bracket_top_below_shroud_top = %.1f no CSV); o modo %s dava a ponta em %.2f" % (
@@ -519,6 +546,16 @@ def adapter_holes():
     return out
 
 
+def point_in_poly(pts, q):
+    P = np.asarray(pts, float)
+    x, y = q
+    inside = False
+    for (x1, y1), (x2, y2) in zip(P, np.roll(P, -1, axis=0)):
+        if (y1 > y) != (y2 > y) and x < x1 + (y - y1) * (x2 - x1) / (y2 - y1):
+            inside = not inside
+    return inside
+
+
 def poly_edge_dist(pts, q):
     P = np.asarray(pts, float)
     best = np.inf
@@ -569,6 +606,17 @@ def build_adapter():
         board = board + prism_z(ring, zb - 0.01, zb + rt) + prism_z(ring, za - rt, za + 0.01)
     for (cx, cy), d in holes:
         board = board - prism_z(circle(cx, cy, d / 2, 24), za - 1, zb + 1)
+    # rebaixo do lado do PCB para a cabeça do parafuso da mola (fasteners.e6_spring) que cai sobre a aba:
+    # a cabeça desce até iface_spring_z_min - fastener_e6_head_height, dentro do plano do adaptador
+    # (pendência adaptador x parafuso da mola do integrate.py; forma inferred, sem foto do lado do PCB)
+    rr = M("fastener_e6_head_diameter") / 2 + M("cover_relief_clear")
+    zr = M("iface_spring_z_min") - M("fastener_e6_head_height") - M("cover_relief_clear")
+    pockets = []
+    for a in PARTS["fasteners.e6_spring"]["anchors"]:
+        cx, cy = a["pos"][:2]
+        if poly_edge_dist(raw, np.array([cx, cy])) < rr or point_in_poly(raw, (cx, cy)):
+            board = board - prism_z(circle(cx, cy, rr, 32), zr, zb + 1)
+            pockets.append((cx, cy))
     # contatos dourados nas duas faces
     pw, py0, py1 = g("ad_pad")
     pt = g("ad_pad_t")
@@ -616,6 +664,10 @@ def build_adapter():
     note(pid, "posição em x pelo J3 em iface_j3_center_x (interface com o receptáculo do verso do PCB): placa de x = %.2f a %.2f (iface_adapter_x_min e _max: %.2f e %.2f); contatos de x = %.2f a %.2f (%d por face, passo edge_finger_pitch)" % (
         xmin, xmax, M("iface_adapter_x_min"), M("iface_adapter_x_max"), min(pads) - pw / 2, max(pads) + pw / 2, len(pads)))
     note(pid, "no plano da pcb.plate: placa de z = %.2f a %.2f (iface_adapter_board_z_min e _max)" % (za, zb))
+    if pockets:
+        note(pid, "rebaixo de %.1f mm do lado do PCB, de z = %.2f até a face, sob a cabeça do parafuso da mola em %s (fastener_e6_head_diameter + 2 x cover_relief_clear): resolve a pendência adaptador x parafuso da mola; forma inferred (o lado do PCB da aba não aparece nas fotos)" % (
+            2 * rr, zr, ", ".join("(%.2f; %.2f)" % q for q in pockets)))
+    note(pid, "posição corrigida em 2026-11-11 (auditoria visual, achado 21): ponta do gancho em x = %.2f contra %.2f medida nos renders (pcie_adapter_hook_tip_x_render); antes 151,17" % (xmax, M("pcie_adapter_hook_tip_x_render")))
     note(pid, "J3 centrado em (iface_j3_center_x, iface_j3_center_y); a grade da foto põe o centro em y = %.2f com o mapa da altura" % f(*AD_J3_IMG)[1])
     note(pid, "plugue do J3 de %.2f mm, até o plano de encaixe iface_j3_mating_z (%.2f); o receptáculo fica em pcb.smd, de %.2f até o verso do PCB (%.2f); divisão da altura sem fonte" % (
         jh, M("iface_j3_mating_z"), M("iface_j3_mating_z"), M("iface_pcb_back_z")))
@@ -820,8 +872,13 @@ def main():
                   "referencial": "face B em z = 0, face A (ventiladores) em z = card_thickness", "explode_cad": p["explode"],
                   "placement_mode": MODE}
         spec = []
+        subs = [(nm, to_mesh(sh_), ex_) for nm, sh_, ex_ in BRACKET_SUBS] if pid == "io.bracket" else []
+        if subs:
+            closed += [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for _, m, _ in subs]
         if len(meshes) == 1 and "count" not in p:
             spec.append((pid, extras, meshes[0], None, None))
+            for nm, sm, ex_ in subs:
+                spec.append(("%s.%s" % (pid, nm), dict(ex_, submesh=nm, part=pid), sm, None, 0))
         else:
             extras["count"] = p["count"]["value"]
             extras["count_provenance"] = p["count"]["provenance"]
@@ -834,7 +891,7 @@ def main():
         write_glb(glb, pid, spec, {"units": "m", "up": "+Y", "cad_units": "mm", "cad_up": "+Z", "origin": "card.envelope_min",
                                    "map": "gltf = (x, z, -y) / 1000"})
         step = OUT / ("%s.step" % pid)
-        comp = sh[0] if len(sh) == 1 else Compound(sh)
+        comp = sh[0] if len(sh) == 1 and pid != "io.bracket" else Compound(list(sh) + [x[1] for x in BRACKET_SUBS])
         comp.label = pid
         export_step(comp, str(step))
         sc = trimesh.load(glb, force="scene")

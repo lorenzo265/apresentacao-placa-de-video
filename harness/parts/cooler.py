@@ -176,6 +176,18 @@ K = math.tan(ANG)
 XA = M("x_rib_cross_face_a_from_bracket_end")
 KO = FR.keepouts()
 AD_KO = KO["fenda_do_adaptador"]                  # faixa do adaptador PCIe (x0, x1, y0, y1, z0, z1)
+AD_POLY = FR.adapter_outline_xy_pts()            # contorno do adaptador (aba e lóbulo incluídos)
+
+
+def adapter_y_max(x0, x1):
+    """Maior y do contorno do adaptador na faixa de x de x0 a x1 (None se não passa ali)."""
+    P = AD_POLY
+    ys = [py for px, py in P if x0 <= px <= x1]
+    for (ax, ay), (bx, by) in zip(P, P[1:] + P[:1]):
+        for xc in (x0, x1):
+            if (ax - xc) * (bx - xc) < 0:
+                ys.append(ay + (by - ay) * (xc - ax) / (bx - ax))
+    return max(ys) if ys else None
 
 
 def neighbor_box(pid):
@@ -388,12 +400,13 @@ def build_end_stack(n):
         lim0 = y_limits(x, FIN_Y0, FIN_Y1)
         lim1 = y_limits(x + T_FIN + (lc if collar else 0.0), FIN_Y0, FIN_Y1)
         y0, y1 = max(lim0[0], lim1[0]), min(lim0[1], lim1[1])
-        notch = x + T_FIN + (lc if collar else 0.0) > AD_KO[0] - CLR and x < AD_KO[1] + CLR
+        ad_y = adapter_y_max(x - CLR, x + T_FIN + (lc if collar else 0.0) + CLR)
+        notch = round(max(ad_y, AD_KO[3]) + CLR, 2) if ad_y is not None else None
         key = (round(y0, 3), round(y1, 3), collar, notch)
         if key not in cache:
             sk = rect(y0, y1, Z_F0, Z_F1)
             if notch:
-                sk = sk - rect(y0 - 1, AD_KO[3] + CLR, Z_F0 - 1, AD_KO[5] + CLR)
+                sk = sk - rect(y0 - 1, notch, Z_F0 - 1, AD_KO[5] + CLR)
             for i in range(5):
                 yy = pipe_y_stack(i)
                 assert yy - HD > y0 + 0.5 and yy + HD < y1 - 0.5, "furo do tubo fora da lâmina em x = %.2f" % x
@@ -415,7 +428,7 @@ def build_end_stack(n):
         note(pid, "começa em x = %.2f, depois da placa de portas (io.board) e da placa de extremidade da carcaça" % S[0])
     nn = sum(1 for _, k in fins if k[3])
     if nn:
-        note(pid, "%d lâminas com um entalhe no canto de baixo (y até %.2f, z até %.2f) para a faixa do adaptador PCIe, que desde 2026-11-11 fica no plano da pcb.plate (z %.2f a %.2f) e entra na pilha; forma do entalhe sem foto (inferred)" % (
+        note(pid, "%d lâminas com um entalhe no canto de baixo (y até %.2f, ou até o contorno do adaptador com a aba, z até %.2f) para a faixa do adaptador PCIe, que desde 2026-11-11 fica no plano da pcb.plate (z %.2f a %.2f) e entra na pilha; forma do entalhe sem foto (inferred)" % (
             nn, AD_KO[3] + CLR, AD_KO[5] + CLR, M("iface_adapter_board_z_min"), M("iface_adapter_board_z_max")))
     return fins, cache
 
@@ -551,6 +564,8 @@ def frame_sketch():
         ("canal da borda superior", (KO["canal"][0] - CLR, KO["canal"][1] + CLR, KO["canal"][2] - CLR, Y1 + 5)),
         ("conector de energia", (CONN[0][0] - CLR, CONN[1][0] + CLR, CONN[0][1] - CLR, Y1 + 5)),
         ("conector auxiliar", (AUX[0][0] - CLR, AUX[1][0] + CLR, AUX[0][1] - CLR, Y1 + 5)),
+        ("boca do túnel do conector (cuba da carcaça)", (KO["encaixe_do_conector"][0] - CLR, KO["encaixe_do_conector"][1] + CLR,
+                                                         KO["encaixe_do_conector"][2] - CLR, Y1 + 5)),
     ]
     for _, (a0, a1, b0, b1) in cuts:
         sk = sk - rect(a0, a1, b0, b1)

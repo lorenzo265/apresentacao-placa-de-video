@@ -210,6 +210,15 @@ def adapter_outline():
     return poly(IO.adapter_outline_xy())
 
 
+def adapter_outline_xy_pts():
+    """Contorno do adaptador como lista de pontos (x, y) (io_parts.py)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import io_parts as IO
+    return [tuple(map(float, p)) for p in IO.adapter_outline_xy()]
+
+
 def adapter_strip_cut():
     """Caixa do recorte da faixa do adaptador (face B, aro e parede inferior da carcaça):
     de iface_adapter_x_min a _max, da ponta dos contatos até a faixa, aberta até a face B e até
