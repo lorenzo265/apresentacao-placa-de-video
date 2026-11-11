@@ -346,3 +346,76 @@ Pendências, cada uma com dono (nenhuma corrigida em silêncio):
 - **Package contra memória** (visual-qa): 1 mm, já listado na seção 10.5.
 
 Viewer (fora desta tarefa, porque outro agente edita `viewer/src/`): o chão de sombra (z = -2) e as luzes ficam do lado de z positivo, que agora é o da face A. Nos beats que olham a face B, a câmera fica abaixo do chão e a luz principal vem de trás da peça. Ver o relatório da F4.
+
+## 12. Arbitragem e contratos de 2026-11-11
+
+Base: `harness/qa/visual-qa-arbitragem.md` e os pedidos dos modeladores de I/O (`parts/io_parts.py`), do PCB (`parts/pcb_layout.py`, `pcb.py`) e do interior do cooler (`parts/cooler.py`). Editados só `design/measurements.csv` e `design/assembly.json`; nenhum id de peça ou de âncora mudou, nenhuma linha do CSV foi apagada, e cada linha alterada cita o valor antigo. O referencial é o da seção 11 (face B em z = 0).
+
+### 12.1 Viés de escala do `pcb-a`
+
+O que está sobre o PCB na foto `chiphell/pcb-a.jpg` sai 1,3% maior (`chiphell_pcb_a_scale_factor` = 1,013 ± 0,004, aparente sobre real; quatro indícios na arbitragem). Toda linha tirada dessa foto, ou que usou como régua uma medida dela, foi dividida pelo fator, com a nota "corrigido pelo fator de escala do pcb-a (visual-qa, 2026-11-11)" e tolerância = tol / 1,013 + valor x 0,004 / 1,013, arredondada para cima. Entraram: contorno do PCB, centro do chip, furos da mola (e o contorno da mola), furos de canto (e os da `pcb.plate`), rebaixo da borda dos contatos, campo de esferas (`pcb-b`, régua nos furos do `pcb-a`), package em x (`sabareesh`, régua no PCB do `pcb-a`), J3 do adaptador, x do conector de energia. As medidas do adaptador que a arbitragem já deu corrigidas (comprimento, alturas, zona dos dedos) não foram divididas de novo. Ângulos não mudam.
+
+Conferência contra fontes independentes:
+
+| Grandeza | Antes | Corrigido | Alphacool | Diferença |
+|---|---|---|---|---|
+| PCB em x | 119,6 | 118,07 | 117,6 | +0,47 (dentro de 2,0) |
+| PCB em y | 121,5 | 119,94 | 120,9 | -0,96 (dentro de 2,0) |
+| Furos da mola em x | 63,7 | 62,9 | 63,6 | -0,7 (dentro de 1,3) |
+| Furos da mola em y | 77,8 | 76,3 (77,3 remedido / 1,013) | 76,4 | -0,1 |
+| Centro do chip | (52,7; 61,0) | (52,02; 60,22) | (51,3; 60,5) | (+0,7; -0,3) |
+
+As cinco grandezas se aproximam da Alphacool, menos o PCB em y, que passa de +0,6 para -1,0 (ainda dentro das tolerâncias somadas). O PCB corrigido cabe na seção central da carcaça (122,0) com a parede de 0,8.
+
+### 12.2 Contas propagadas
+
+PCB de x 99,98 a 218,05 e de y 15,54 a 135,48 (centrado na carcaça). Centro do die continua em (152; 75,76): a correção de `pcb_main_card_y_min` e de `gpu_center_v` se cancela. Centro do PCB (159,02; 75,51). Grade da memória: as distâncias ao chip da arbitragem (42,55; 36,0; 35,1; 19,4; passo de 13,95) somadas ao centro do chip corrigido, o que dá u 9,47 e 94,57, v 32,32 a 88,12, borda de energia em v 96,22 de u 31,1, borda dos contatos em v 25,12 e u 32,62 e 71,42; as 32 âncoras de memória seguem a grade (a conferência do blockout compara com 0,01 mm). Pegada de 12 x 14 com o lado de 12 ao longo da fileira; na borda dos contatos o chip gira, e o vão entre as fileiras de cima e de baixo fica em 58,1: o package de 57,5 cabe com 0,25 a 0,35 mm de cada lado (`gb202_package_y` mantido, justificativa refeita, tolerância 1,0). Faixas dos indutores: 25,10 (contatos), 127,12 (borda de energia), (209,80; 75,76) (ponta). Pilhas das pontas: 99,98 e 86,75.
+
+### 12.3 Contratos pedidos pelos modeladores
+
+| Tema | Contrato |
+|---|---|
+| Saídas de vídeo | passo 20,9; fileira em z 13,5; topo do bracket 28,6 abaixo do topo da carcaça; com o centro da fileira a 72,25 da ponta das línguas (sr-1), `dp_row_center_y` = 60,79 e âncoras em y 29,44, 50,34, 71,24 e 92,14. O assembly é a referência: o modo `--ancoras` do `io_parts.py` coincide com o modo pela foto quando o script ler `bracket_top_below_shroud_top` e `dp_row_center_z` no lugar de 27,0 e 15,3. A porta 1 desce até y 21,39 e só cabe porque o canto da carcaça do lado do bracket junto aos contatos é quase reto (`shroud_corner_radius_bracket_bottom` = 3, promovido do `frame.py`). `io.bracket` deixou de ser descrito como centrado. |
+| Conector de energia | de pé: lado longo (18,85) em z, de 7,7 a 26,55; fileiras lado a lado no plano, ao longo do chanfro; face de encaixe para (+x, +y). `power_connector_rotation_deg` (-45) passa a ser o eixo através das fileiras. Corpo de 11,5 (derived) por 9,7 (inferred). Abertura da carcaça centrada no corpo: z de 6,2 a 28,05 (antes 9,07 a 30,93); no encaixe o canal desce até a abertura. Âncora da abertura em (204,25; 137,16; 17,13); âncora do conector no centro da face de encaixe (197,33; 130,24; 17,13). |
+| Âncora de energia | `anchor.power.vrm.gpu.1` em (153,39; 31,05; 8,6): segundo estágio da borda dos contatos, conferido com a grade nova (o modelador propôs 153,4; 29,31; 8,6). |
+| Peças sem dono | receptáculo do J3 (verso, 24,7 x 6,9, centrado em (128,1; 26,9), de z 5,07 a 6,1) e conector de 4 vias (frente, u 34,8, v 116,7) ficam dentro de `pcb.smd`, com linhas próprias no CSV. Motivos: não têm item na proposta aprovada (peça nova passa pelo gate humano) e o `blockout.py` para com erro diante de peça sem construtor. Proposta para o próximo gate: `pcb.j3_receptacle` (filha de `pcb.main`, E7, derived) e `io.fan_header` (filha de `pcb.main`, E7, existência derived, função inferred). |
+| Furos do adaptador | 4 com anel, 1 no lóbulo e 2 na faixa, em coordenadas de placa a partir do J3 e da borda dos dedos, divididos pelo fator (`iface_adapter_*_hole_*`). Os valores do modelador estavam com a altura comprimida por 0,9439 (para bater com o 34,5 antigo) e com o J3 em 125. |
+| J3 | interface `iface_j3_center_x` = 128,1 (pelo receptáculo medido no PCB) e `iface_j3_center_y` = 26,9 (pelo adaptador, que fica em y = 0); `pcie_adapter_connector_x` e `_center_y` seguem. A proporção de gn-05 (contatos de 48 a 131) prefere cerca de 125: em aberto. |
+
+### 12.4 Pendências de interferência resolvidas no contrato
+
+| Pendência | Resolução |
+|---|---|
+| Adaptador dentro das camadas da face B, tampas e aro | o adaptador sobe para o plano da `pcb.plate` (z 2,5 a 4,07). A `pcb.plate` ganha recorte no contorno da aba e do J3 (folga 0,5); a tampa inferior, um rebaixo sobre a aba com fundo em z 1,3, onde cabem a presilha e as cabeças do E4 (vistas ao tirar as tampas, gn-22); a face B e o aro, o recorte da faixa de `iface_adapter_x_min` a `_max` até z 4,07; a parede inferior da carcaça, uma fenda para a faixa. A diagonal da aba passa a 1,5 mm do furo de canto da `pcb.plate`, o que sustenta a leitura. |
+| J3 atravessando a `pcb.plate` | resolvida pelo recorte acima; o J3 tem 2,03 mm de altura combinada (plugue 1,0, receptáculo 1,03; divisão inferred). |
+| Cabeças do E5 sob as tampas | rebaixos na face B e nas tampas, de 5,0 + 2 x 0,3 de diâmetro, com fundo em z 0,7. |
+| Mola e memória do verso em 2,1 mm; mola contra `pcb.back_frame` (0,60) | a mola assenta na `pcb.back_frame` (0,8): z 4,1 a 5,3; as cabeças do E6 ficam sob ela (3,2 a 4,1) em furos de alívio da `pcb.plate`. No plano, o anel não passa sobre os chips: no máximo 70,1 x 57,0 (`leaf_spring_ring_max_*`). |
+| Parafuso do aro sem furo | o aro ganha furo onde o parafuso ficar, com a cabeça no recuo da placa de extremidade. Falta referência para a posição: gn-16 em resolução maior, o quadro do vídeo da GN no passo 2, ou a ponta do bracket fotografada sem o bracket. |
+| Seção central de 122,0 contra o PCB | resolvida pela correção de escala (sobra 1,03 por lado). |
+| Package contra memória | resolvida pela grade da arbitragem. |
+| Furo da mola sob o `power.connector` | continuava com o conector em pé (a base das lâminas chega a 12,25 mm atrás do centro; o furo ficava a 13,1). O centro do conector andou 2,5 mm ao longo da direção de encaixe, para (193,26; 126,17): o furo fica 0,35 mm livre de uma coluna de raio 3, o encaixe na carcaça não muda e o corpo fica abaixo do fundo do canal. |
+| Indutor isolado sobre o furo da `pcb.plate` | continua (cerca de 1,3 mm) com a escala corrigida. Registrada a omissão da coluna roscada da `cooler.base` nesse furo (211,34; 125,86), que é o candidato a furo não confirmado pelo visual-qa. |
+
+### 12.5 Interior do cooler
+
+- **Passo das aletas:** `fin_pitch` passa de 1,6 (prática de mercado) para 1,52 ± 0,07 (`derived`, período das listras em `pny/back` e `pny/front`), e a contagem segue a geometria: 59, 57 e 42 (`count` com procedência `inferred`, porque ler as listras como aletas e não como lâminas da grade é inferência). Escolhido medir em vez de só ajustar a contagem: havia uma referência, e o passo de mercado não tinha nenhuma.
+- **Tubos:** comprimentos desenvolvidos de 135,5 e 144,9 em linhas novas; `heatpipe_length_per_side` fica em 110 como trecho reto do blockout, porque 144,9 tiraria o tubo reto da placa e a conferência do envelope falharia.
+- **Linhas novas:** `contact_plate_t` 1,0, `base_frame_t` 4,0, `iface_heatpipe_axis_z` 18,7, `heatpipe_pitch_stack` 18 (derived, 5090 FE), `heatpipe_pitch_chamber` 12,5; `vapor_chamber_thickness` (4) passa a ser câmara mais face de contato (3 + 1).
+- **Pilha central:** `fin_stack_center_length_x` (64) marcada como pendente de medida.
+
+### 12.6 O que cada script precisa refazer
+
+- `io_parts.py`: ler `bracket_top_below_shroud_top`, `dp_row_center_z`, `dp_row_from_bracket_tip` e `dp_port_pitch` do CSV; posicionar o adaptador por `iface_j3_center_x` com as alturas da arbitragem (sem o 0,9439); adaptador em z 2,5 e plugue até `iface_j3_mating_z`; conector de energia no centro novo.
+- `pcb_layout.py` e `pcb.py`: contorno, furos e grade novos; girar os 2 chips da borda dos contatos; corrigir pelo fator as posições que tirou das fotos (indutores, estágios, cantos do contorno, conector de 4 vias); modelar o receptáculo do J3 e o conector de 4 vias em `pcb.smd` pelas linhas novas; `pcb.back_frame` com 0,8.
+- `frame.py`: recorte da face B e do aro por `iface_adapter_x_min` e `_max` até `iface_adapter_board_z_max`; fenda na parede inferior; rebaixos sob as cabeças do E5 e sobre a aba; abertura do conector pela âncora nova (o canal tem de descer até z 6,2 no encaixe); furo do aro.
+- `cooler.py` (em andamento, não editado): mola em `iface_spring_z_*`; contorno da `cooler.base` novo; colunas conforme 12.4.
+- `blockout.py`: continua gerando com o CSV novo (só lê chaves que existem); para acompanhar, usar `iface_adapter_x_min`, os rebaixos e a mola nova, girar os chips da borda dos contatos e pôr o conector de pé.
+- `viewer/public/data/measurements.json` precisa ser regenerado.
+
+### 12.7 Em aberto
+
+- J3 em 128,1 (receptáculo medido) contra cerca de 125 (proporção de gn-05): medir os contatos no `pny/front`. Se der 125, o chip vai para perto de 149 (dentro da tolerância do X) e o PCB anda junto.
+- Qual furo de canto não foi confirmado; a posição do indutor isolado.
+- Passo das aletas: listras são aletas ou lâminas da grade.
+- Posição do parafuso do aro; a presilha (`pcie.clamp`) e as peças novas propostas em 12.3 dependem do gate humano.
+- Nada desta seção foi auditado.
