@@ -3,17 +3,21 @@
 
 1. --retificar: retifica chiphell/pcb-b.jpg (frente do PCB nu) pelos 8 furos (4 da mola,
    pelo CSV; 4 de canto, medidos em a_board.png) para o quadro da frente vista de +z, a
-   10 px/mm: px = (u + 10) * 10, py = (131,5 - v) * 10. Grava no cache (não versionado):
+   10 px/mm na escala da base: px = (u_b + 10) * 10, py = (131,5 - v_b) * 10, com
+   (u_b, v_b) = (u, v) x chiphell_pcb_a_scale_factor. Grava no cache (não versionado):
    spec/references/cache/visualqa/pcb_b_front.png.
-2. Vistas de topo do modelo (Blender, câmera ortográfica) na escala das fotos: frente no
-   quadro acima; verso no quadro de visualqa/a_board.png (px = 683,3 + 10 (v - 61),
-   py = 705,6 - 10 (u - 52,7), calibrado pelos 4 furos da mola). Lado a lado e sobreposta.
-3. Medidas: centro dos campos de esferas de cada chip de memória nas duas fotos contra a
-   tabela, campo de esferas do GB202, bordas do PCB.
-4. Vista em perspectiva da frente contra sabareesh/wb-bare-pcb.jpg.
+2. Vistas de topo do modelo (Blender, câmera ortográfica) na escala das fotos corrigida
+   pelo fator (10 x 1,013 px por mm real; quadros em pcb_layout.py: front_px, back_px):
+   frente no quadro acima; verso no quadro de visualqa/a_board.png. Lado a lado e sobreposta.
+3. Medidas: centro do campo de esferas de cada uma das 16 posições de memória nas duas fotos
+   (automático: ilhas pequenas em grade de cerca de 0,75 mm, agrupadas em duas metades por
+   chip) contra a grade arbitrada; passo e distância entre as fileiras laterais; campo de
+   esferas do GB202.
+4. Vista em perspectiva da frente contra sabareesh/wb-bare-pcb.jpg e três quartos (pule com
+   --so-topo, que deixa só as vistas de topo e as medidas).
 5. --integrado: vista do estágio E7 (PCB afastado) a partir de build/card.glb.
 
-Uso:   python3 -I harness/parts/pcb_compare.py [--retificar] [--integrado]
+Uso:   python3 -I harness/parts/pcb_compare.py [--retificar] [--so-topo] [--integrado]
 Saídas: harness/dist/parts/pcb/*.png e comparacao.json
 """
 import json
@@ -31,29 +35,16 @@ HARNESS = PL.HARNESS
 CACHE = PL.CACHE
 DIST = HARNESS / "dist" / "parts" / "pcb"
 PARTS_DIR = HARNESS / "build" / "parts"
-FRONT_PNG = CACHE / "visualqa" / "pcb_b_front.png"
-BACK_PNG = CACHE / "visualqa" / "a_board.png"
+FRONT_PNG = PL.FRONT_PNG
+BACK_PNG = PL.BACK_PNG
 PCB_IDS = ("pcb.main", "gpu.package", "mem.front", "mem.back", "power.inductors", "power.vrm.gpu", "power.vrm.mem",
-           "power.controller", "power.aux", "io.aux_header", "pcb.smd")
+           "power.controller", "power.aux", "io.aux_header", "pcb.smd", "pcb.back_frame")
 
 
 # ---------------------------------------------------------------------------
-# Quadros das fotos
+# Quadros das fotos (pcb_layout.py; escala corrigida pelo fator do pcb-a)
 # ---------------------------------------------------------------------------
-def front_px(u, v):
-    return (u + 10.0) * 10.0, (131.5 - v) * 10.0
-
-
-def back_px(u, v):
-    return 683.3 + 10.0 * (v - PL.GV), 705.6 - 10.0 * (u - PL.GU)
-
-
-def front_uv(px, py):
-    return px / 10.0 - 10.0, 131.5 - py / 10.0
-
-
-def back_uv(px, py):
-    return PL.GU - (py - 705.6) / 10.0, PL.GV + (px - 683.3) / 10.0
+front_px, front_uv, back_px, back_uv = PL.front_px, PL.front_uv, PL.back_px, PL.back_uv
 
 
 def rectify():
@@ -76,15 +67,16 @@ def rectify():
             k = np.abs(np.hypot(xx - cx, yy - cy) - r) < 3
             xx, yy = xx[k], yy[k]
         return cx, cy
-    cu, cv = PL.GU, PL.GV
-    sx, sy = PL.M("iface_spring_holes_dx") / 2, PL.M("iface_spring_holes_dy") / 2
-    # (u, v) dos furos: mola pelo CSV; cantos medidos em a_board.png (um dos quatro do CSV não confirmado)
+    # o quadro da retificação fica na escala da base: (u, v) reais x F
+    cu, cv = PL.GU * PL.F, PL.GV * PL.F
+    sx, sy = PL.M("iface_spring_holes_dx") / 2 * PL.F, PL.M("iface_spring_holes_dy") / 2 * PL.F
+    # (u, v) dos furos na escala da base: mola pelo CSV; cantos medidos em a_board.png (um dos quatro do CSV não confirmado)
     pts = [((cu + sx, cv + sy), (518, 442, 22, "w")), ((cu + sx, cv - sy), (1042, 459, 22, "w")),
            ((cu - sx, cv + sy), (502, 880, 22, "w")), ((cu - sx, cv - sy), (1039, 885, 22, "w")),
            ((112.0, 111.64), (442, 264, 14, "c")), ((112.0, 10.1), (1125, 279, 14, "c")),
            ((6.47, 112.0), (410, 975, 14, "c")), ((6.8, 10.14), (1120, 985, 14, "c"))]
     src = np.array([ring(*p[1]) for p in pts])
-    dst = np.array([front_px(*p[0]) for p in pts])
+    dst = np.array([PL.base_front_px(*p[0]) for p in pts])
     A = []
     for (x, y), (X, Y) in zip(src, dst):
         A.append([-x, -y, -1, 0, 0, 0, x * X, y * X, X])
@@ -120,6 +112,7 @@ MATS = {
     "power.aux": ((0.50, 0.48, 0.45), 0.0, 0.6),
     "io.aux_header": ((0.03, 0.03, 0.035), 0.0, 0.5),
     "pcb.smd": ((0.42, 0.33, 0.22), 0.2, 0.45),
+    "pcb.back_frame": ((0.03, 0.03, 0.035), 0.2, 0.5),
 }
 
 
@@ -260,29 +253,103 @@ def field_center(mask, to_px, to_uv, u, v, half_u, half_v, search=4.0):
     return to_uv(px + 0.5, py + 0.5)
 
 
-# Leituras feitas nesta tarefa em recortes com grade de 1 mm (dist/parts/pcb/grade-*.png), nas
-# duas fotos retificadas pelos furos. O localizador automático por densidade de ilhas não separou
-# os campos de esferas dos passivos vizinhos (cada chip tem dois meios-campos), por isso a
-# leitura é manual, com incerteza de cerca de 0,5 mm.
-MANUAL = {
-    "borda_de_energia_frente": {"u_centros": [31.1, 45.6, 59.75, 74.1], "v_centro": 97.75, "campo": [12.25, 14.5],
-                                "csv": {"u_centros": [35.9, 48.9, 61.9, 74.9], "v_centro": 95.7}},
-    "borda_de_energia_verso": {"u_centros": [31.5, 45.6, 59.0, 73.25], "v_centro": 97.75, "campo": [12.5, 14.5],
-                               "csv": {"u_centros": [35.9, 48.9, 61.9, 74.9], "v_centro": 95.7}},
-    "lateral_do_bracket_verso": {"v_centros": [32.85, 47.25, 61.5, 75.5, 89.6], "u_centro": 9.1, "campo": [14.25, 12.75],
-                                 "csv": {"v_centros": [31.8, 45.1, 58.4, 71.7, 85.0], "u_centro": 11.2}},
-    "borda_da_ponta_oposta_do_pcb": {"u_foto": 118.0, "csv": 119.6, "nota": "borda do PCB em a_board.png (calibrado pelos furos); dentro da tolerância de 1,5"},
+# Leituras manuais do modelador anterior (escala da base, antes da arbitragem), guardadas só
+# como histórico; a conferência agora é automática (memory_fields) e na escala corrigida.
+MANUAL_ANTIGO = {
+    "borda_de_energia_frente": {"u_centros": [31.1, 45.6, 59.75, 74.1], "v_centro": 97.75},
+    "borda_de_energia_verso": {"u_centros": [31.5, 45.6, 59.0, 73.25], "v_centro": 97.75},
+    "lateral_do_bracket_verso": {"v_centros": [32.85, 47.25, 61.5, 75.5, 89.6], "u_centro": 9.1},
+    "nota": "escala da base (dividir pelo fator para comparar); o passo de 14,1 a 14,2 lido aqui dá 13,95 corrigido, como a arbitragem",
 }
 
 
+def photo_balls(path, to_uv):
+    """Centros das ilhas pequenas que formam grade de esferas (vizinhas a 0,5 a 0,95 mm), em
+    (u, v) reais. Três máscaras, porque o cobre muda de cor ao longo da foto."""
+    from scipy import ndimage
+    from scipy.spatial import cKDTree
+    im = np.asarray(Image.open(path).convert("RGB")).astype(int)
+    L = im.mean(2)
+    r, b = im[..., 0], im[..., 2]
+    th = L - ndimage.grey_opening(L, size=(9, 9))
+    out = []
+    for m in (((r - b > 25) & (L > 90)) | ((L > 165) & (r > 140)), (th > 28) & (L > 70), (th > 40) & (L > 60)):
+        lab, n = ndimage.label(m)
+        idx = np.arange(1, n + 1)
+        area = ndimage.sum(m, lab, idx)
+        cm = np.array(ndimage.center_of_mass(m, lab, idx))[(area >= 3) & (area <= 30)]
+        uv = np.array([to_uv(px, py) for py, px in cm])
+        t = cKDTree(uv)
+        cnt = np.array([len(x) - 1 for x in t.query_ball_point(uv, 1.05)])
+        near = t.query(uv, k=2)[0][:, 1]
+        out.append(uv[(cnt >= 3) & (near > 0.5) & (near < 0.95)])
+    return out
+
+
+def field_at(B, u, v, expect):
+    """Campo de esferas de um chip perto de (u, v): as duas maiores manchas de ilhas em grade a
+    menos de 7,5 mm; centro e extensão pelos percentis 1 e 99."""
+    import scipy.sparse as sp
+    import scipy.sparse.csgraph as cg
+    from scipy.spatial import cKDTree
+    Q = B[(np.abs(B[:, 0] - u) < 10) & (np.abs(B[:, 1] - v) < 10)]
+    if len(Q) < 50:
+        return None
+    pairs = cKDTree(Q).query_pairs(1.1, output_type="ndarray")
+    A = sp.coo_matrix((np.ones(len(pairs)), (pairs[:, 0], pairs[:, 1])), shape=(len(Q), len(Q)))
+    nc, lab = cg.connected_components(A, directed=False)
+    sizes = np.bincount(lab)
+    cents = [Q[lab == i].mean(0) for i in range(nc)]
+    good = sorted([i for i in range(nc) if sizes[i] >= 40 and math.hypot(*(cents[i] - [u, v])) < 7.5], key=lambda i: -sizes[i])[:2]
+    if len(good) < 2:
+        return None
+    Z = Q[np.isin(lab, good)]
+    lo, hi = np.percentile(Z, 1, 0), np.percentile(Z, 99, 0)
+    ext = hi - lo
+    return abs(ext[0] - expect[0]) + abs(ext[1] - expect[1]), (lo + hi) / 2, ext, len(Z)
+
+
+def memory_fields():
+    """Centro do campo de esferas de cada posição de memória nas duas fotos contra a grade.
+    Campo esperado de cerca de 13,2 x 11,1 mm (lado de 14 x lado de 12 do chip)."""
+    grid, _ = PL.memory_grid()
+    res = {}
+    for face, path, to_uv in (("frente", FRONT_PNG, front_uv), ("verso", BACK_PNG, back_uv)):
+        Bs = photo_balls(path, to_uv)
+        rows = []
+        for k, (u, v, kind) in enumerate(grid, 1):
+            expect = (11.1, 13.2) if kind == "energia" else (13.2, 11.1)
+            cands = [c for c in (field_at(B, u, v, expect) for B in Bs) if c is not None and c[0] < 0.8]
+            if not cands:
+                rows.append({"posicao": k, "fileira": kind, "grade_uv": [round(u, 2), round(v, 2)], "foto_uv": None})
+                continue
+            _, c, ext, n = min(cands, key=lambda c: c[0])
+            rows.append({"posicao": k, "fileira": kind, "grade_uv": [round(u, 2), round(v, 2)],
+                         "foto_uv": [round(float(c[0]), 2), round(float(c[1]), 2)], "du": round(float(c[0] - u), 2),
+                         "dv": round(float(c[1] - v), 2), "campo_uv": [round(float(ext[0]), 2), round(float(ext[1]), 2)], "ilhas": int(n)})
+        ok = [r for r in rows if r["foto_uv"]]
+        d = np.array([[r["du"], r["dv"]] for r in ok])
+        R_ = {r["posicao"]: r for r in ok}
+        pitch = [R_[b]["foto_uv"][1] - R_[a]["foto_uv"][1] for a, b in ((1, 2), (2, 3), (3, 4), (4, 5), (6, 7), (7, 8), (8, 9), (9, 10)) if a in R_ and b in R_]
+        pitch += [R_[b]["foto_uv"][0] - R_[a]["foto_uv"][0] for a, b in ((11, 12), (12, 13), (13, 14)) if a in R_ and b in R_]
+        lat = [R_[a + 5]["foto_uv"][0] - R_[a]["foto_uv"][0] for a in range(1, 6) if a in R_ and a + 5 in R_]
+        res[face] = {"posicoes": rows, "achadas": len(ok),
+                     "du_media": round(float(d[:, 0].mean()), 2), "dv_media": round(float(d[:, 1].mean()), 2),
+                     "desvio_max": round(float(np.abs(d).max()), 2),
+                     "desvio_max_sem_media": round(float(np.abs(d - d.mean(0)).max()), 2),
+                     "passo_medio": round(float(np.mean(pitch)), 3), "passo_n": len(pitch),
+                     "entre_laterais": [round(float(x), 2) for x in lat], "entre_laterais_grade": round(2 * PL.M("mem_rows_du_from_gpu"), 2)}
+    return res
+
+
 def measure(rows):
-    out = {"memoria_manual": MANUAL, "gpu": {}}
+    out = {"memoria": memory_fields(), "memoria_manual_antiga": MANUAL_ANTIGO, "gpu": {}}
     im = np.asarray(Image.open(FRONT_PNG).convert("RGB"))
     mask = copper_mask(im)
     bx, by = PL.M("gb202_bga_field_x") / 2, PL.M("gb202_bga_field_y") / 2
     mu, mv = field_center(mask, front_px, front_uv, PL.GU, PL.GV, bx, by, search=4.0)
     out["gpu"] = {"modelo_uv": [PL.GU, PL.GV], "foto_uv": [round(mu, 2), round(mv, 2)], "du": round(mu - PL.GU, 2),
-                  "dv": round(mv - PL.GV, 2), "nota": "centro do campo de esferas de %.0f x %.0f na frente retificada (automático)" % (2 * bx, 2 * by)}
+                  "dv": round(mv - PL.GV, 2), "nota": "centro do campo de esferas de %.1f x %.1f na frente retificada (automático, densidade de ilhas; menos confiável que o da memória)" % (2 * bx, 2 * by)}
     grids(out)
     return out
 
@@ -345,7 +412,7 @@ def compose(photo, rend, name, title, outline_px, rows, face, to_px):
     side = Image.new("RGB", (ph.width + rd.width + 20, max(ph.height, rd.height)), (20, 20, 22))
     side.paste(ph, (0, 0))
     side.paste(rd_rgb, (ph.width + 20, 0))
-    label(side, title + "\nesquerda: foto retificada (10 px/mm); direita: modelo na mesma escala")
+    label(side, title + "\nesquerda: foto retificada (10 px/mm na escala da base, %.2f px por mm real); direita: modelo na mesma escala" % PL.PHOTO_S)
     side.save(DIST / ("%s-lado-a-lado.png" % name))
     ov = ph.convert("RGBA")
     a = np.asarray(rd).astype(float)
@@ -382,30 +449,32 @@ def main():
     out = DIST
     # vistas de topo
     sc = bl_scene(glbs)
-    # frente: vista de +z, u para a direita, v para cima; quadro de 139,6 x 141,5 mm
-    cx, cy = PL.uv2xy(59.8, 60.75)
-    bl_camera(sc, (cx, cy, 20), (1, 0, 0), (0, 1, 0), ortho_mm=141.5, size=(1396, 1415))
+    # frente: vista de +z, u para a direita, v para cima, no quadro da foto (PHOTO_S px por mm real)
+    fw, fh = Image.open(FRONT_PNG).size
+    cx, cy = PL.uv2xy(*front_uv(fw / 2, fh / 2))
+    bl_camera(sc, (cx, cy, 20), (1, 0, 0), (0, 1, 0), ortho_mm=max(fw, fh) / PL.PHOTO_S, size=(fw, fh))
     render(sc, out / "_frente.png", transparent=True)
     # verso no quadro de a_board.png: direita = +y, cima = +x, olhando de -z
-    u0, u1 = back_uv(0, 1330)[0], back_uv(0, 0)[0]
-    v0, v1 = back_uv(0, 0)[1], back_uv(1400, 0)[1]
-    cx, cy = PL.uv2xy((u0 + u1) / 2, (v0 + v1) / 2)
-    bl_camera(sc, (cx, cy, 0), (0, 1, 0), (1, 0, 0), ortho_mm=140.0, size=(1400, 1330))
+    bw, bh = Image.open(BACK_PNG).size
+    cx, cy = PL.uv2xy(*back_uv(bw / 2, bh / 2))
+    bl_camera(sc, (cx, cy, 0), (0, 1, 0), (1, 0, 0), ortho_mm=max(bw, bh) / PL.PHOTO_S, size=(bw, bh))
     render(sc, out / "_verso.png", transparent=True)
     poly = PL.outline_uv()
     compose(FRONT_PNG, out / "_frente.png", "01-frente", "Frente do PCB (chip, face A), vista de +z: chiphell/pcb-b retificada pelos 8 furos",
             [front_px(u, v) for u, v in poly], rows, "frente", front_px)
     compose(BACK_PNG, out / "_verso.png", "02-verso", "Verso do PCB (face B), quadro de visualqa/a_board.png (girado 90 graus, como a foto)",
             [back_px(u, v) for u, v in poly], rows, "verso", back_px)
+    if "--so-topo" in sys.argv:
+        return finish(rep, rows, out)
     # perspectiva da frente, enquadrada como sabareesh/wb-bare-pcb.jpg (contatos embaixo)
-    cx, cy = PL.uv2xy(59.8, 60.75)
+    cx, cy = PL.uv2xy(PL.W / 2, PL.H / 2)
     eye = (cx + 4, cy - 30, PL.ZF + 330)
     r, u = look_at(eye, (cx, cy, PL.ZF), up=(0, 1, 0))
     bl_camera(sc, None, r, u, size=(768, 1024), eye_mm=eye, lens=50)
     sc.camera.data.sensor_fit = "VERTICAL"
     sc.camera.data.sensor_height = 36
-    # a foto mostra os 119,6 mm do PCB em 568 de 768 px: lente equivalente a cerca de 55 mm
-    sc.camera.data.lens = (36 * 768 / 1024 / 2) / (math.tan(math.atan(59.8 / 330)) * 768 / 568)
+    # a foto mostra a largura do PCB em 568 de 768 px: lente equivalente a cerca de 55 mm
+    sc.camera.data.lens = (36 * 768 / 1024 / 2) / (math.tan(math.atan(PL.W / 2 / 330)) * 768 / 568)
     render(sc, out / "_obliqua.png")
     sab = Image.open(CACHE / "sabareesh" / "wb-bare-pcb.jpg").convert("RGB")
     ob = Image.open(out / "_obliqua.png").convert("RGB")
@@ -419,6 +488,12 @@ def main():
     r, u = look_at(eye, (cx + 5, cy, PL.ZF))
     bl_camera(sc, None, r, u, size=(1400, 900), eye_mm=eye, lens=50)
     render(sc, out / "04-tres-quartos.png")
+    return finish(rep, rows, out)
+
+
+def finish(rep, rows, out):
+    rep["escala"] = {"chiphell_pcb_a_scale_factor": PL.F, "px_por_mm_real": round(PL.PHOTO_S, 3),
+                     "centro_do_chip_px": {"frente": [round(c, 2) for c in PL.FRONT_C], "verso": [round(c, 2) for c in PL.BACK_C]}}
     rep["medidas"] = measure(rows)
     if "--integrado" in sys.argv:
         sc = bl_scene([HARNESS / "build" / "card.glb"], explode_stage="E7")
@@ -434,8 +509,9 @@ def main():
         (out / f).unlink(missing_ok=True)
     (out / "comparacao.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1), encoding="utf-8")
     m = rep["medidas"]
-    for k, val in m["memoria_manual"].items():
-        print("%s: %s" % (k, {kk: vv for kk, vv in val.items() if kk != "campo"}))
+    for face, r in m["memoria"].items():
+        print("memória, %s: %d de 16 campos achados; desvio médio (du %+.2f, dv %+.2f), máximo %.2f (%.2f sem o desvio médio); passo medido %.3f (n = %d); entre as fileiras laterais %s (grade %.2f)" % (
+            face, r["achadas"], r["du_media"], r["dv_media"], r["desvio_max"], r["desvio_max_sem_media"], r["passo_medio"], r["passo_n"], r["entre_laterais"], r["entre_laterais_grade"]))
     print("GB202, campo de esferas: du %+.2f dv %+.2f" % (m["gpu"]["du"], m["gpu"]["dv"]))
     print("saídas em %s" % DIST.relative_to(HARNESS.parent))
 

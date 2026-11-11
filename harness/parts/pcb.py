@@ -17,8 +17,14 @@ Gera, em build123d, as peças do estágio E7 que ficam no PCB principal, com os 
   power.controller  2 controladores QFN
   power.aux         3 indutores auxiliares pequenos
   io.aux_header     conector auxiliar de duas fileiras
-  pcb.smd           passivos representativos (posições das ilhas do PCB nu) e o conector
-                    pequeno de 4 vias da borda superior
+  pcb.smd           passivos representativos (posições das ilhas do PCB nu), o conector de
+                    4 vias da borda superior (frente) e o receptáculo do J3 (verso), estes dois
+                    sem id próprio no assembly (seção 12.3 do plano)
+  pcb.back_frame    chapa de apoio da mola: só os 4 anéis nos furos da mola, com
+                    pcb_back_frame_thickness (0,8), de iface_spring_z_max a iface_pcb_back_z
+
+Escala: as posições tiradas das fotos do PCB (chiphell/pcb-a, pcb-b, a_board) entram
+divididas por chiphell_pcb_a_scale_factor (1,013), como o CSV de 2026-11-11 (pcb_layout.py).
 
 Referencial (ARCHITECTURE.md, seção 7.6): mm, Z para cima, origem em card.envelope_min;
 face B em z = 0, face A (ventiladores) em z = 40. O verso do PCB (iface_pcb_back_z) olha
@@ -50,11 +56,11 @@ import pcb_layout as PL  # noqa: E402
 
 HARNESS = PL.HARNESS
 OUT = HARNESS / "build" / "parts"
-M, g, G = PL.M, PL.g, PL.G
+M, g, G, gb = PL.M, PL.g, PL.G, PL.gb
 PARTS = PL.PARTS
 
 IDS = ("pcb.main", "gpu.package", "mem.front", "mem.back", "power.inductors", "power.vrm.gpu", "power.vrm.mem",
-       "power.controller", "power.aux", "io.aux_header", "pcb.smd")
+       "power.controller", "power.aux", "io.aux_header", "pcb.smd", "pcb.back_frame")
 
 TESS_TOL = 0.02
 TESS_ANG = 0.2
@@ -76,6 +82,7 @@ COLOR = {
     "power.aux": ([0.55, 0.53, 0.50, 1.0], 0.0, 0.6),
     "io.aux_header": ([0.04, 0.04, 0.045, 1.0], 0.0, 0.5),
     "pcb.smd": ([0.45, 0.36, 0.25, 1.0], 0.0, 0.5),
+    "pcb.back_frame": ([0.03, 0.03, 0.035, 1.0], 0.2, 0.5),
 }
 
 NOTES = {i: [] for i in IDS}
@@ -223,6 +230,44 @@ def tpl_header(L, d, h, nx, ny, pitch):
     return body + pins
 
 
+def tpl_j3(L, Wd, h):
+    """Receptáculo placa a placa de perfil baixo (lado do PCB do J3). Base em z = 0 (encostada
+    no PCB; no verso a malha é espelhada) e face de encaixe em z = h. Carcaça isolante com a
+    fenda central, abas metálicas de fixação nas pontas e as pernas de solda das duas fileiras
+    de contatos, dentro da pegada L x Wd."""
+    sw, sd = g("j3_slot")
+    hd = g("j3_holddown")
+    pitch = g("j3_contact_pitch")
+    tail = 0.4
+    body_w = Wd - 2 * tail
+    body = box(-L / 2 + 0.2, L / 2 - 0.2, -body_w / 2, body_w / 2, 0, h)
+    body = body - box(-L / 2 + hd + 0.9, L / 2 - hd - 0.9, -sw / 2, sw / 2, h - sd, h + 1)
+    parts = [body]
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * (L / 2 - hd), sx * L / 2))
+        parts.append(box(x0, x1, -body_w / 2 - 0.1, body_w / 2 + 0.1, 0, h * 0.75))
+    span = L - 2 * hd - 1.2
+    n = int(span // pitch) + 1
+    for sy in (-1, 1):
+        y0, y1 = sorted((sy * (body_w / 2 - 0.05), sy * Wd / 2))
+        for k in range(n):
+            x = (k - (n - 1) / 2) * pitch
+            parts.append(box(x - 0.1, x + 0.1, y0, y1, 0, 0.15))
+    return parts[0].fuse(*parts[1:]).clean(), 2 * n
+
+
+def tpl_fan(L, d, h):
+    """Conector de 4 vias de encaixe vertical (tipo ventilador): carcaça com cavidade aberta
+    para +z, chave de polarização numa parede longa e 4 pinos."""
+    wall, floor = 0.5, 0.5
+    pitch = g("fan_conn_pitch")
+    body = box(-L / 2, L / 2, -d / 2, d / 2, 0, h)
+    body = body - box(-L / 2 + wall, L / 2 - wall, -d / 2 + wall, d / 2 - wall, floor, h + 1)
+    body = body - box(-1.0, 1.0, d / 2 - wall - 0.1, d / 2 + 0.1, h - 1.0, h + 1)
+    pins = [box(px - 0.25, px + 0.25, -0.25, 0.25, floor - 0.01, h - 0.4) for px in ((k - 1.5) * pitch for k in range(4))]
+    return body.fuse(*pins).clean()
+
+
 # ---------------------------------------------------------------------------
 # Peças
 # ---------------------------------------------------------------------------
@@ -237,7 +282,7 @@ def build_pcb():
         ann = Pos(hx, hy) * Circle(od / 2) - Pos(hx, hy) * Circle(drill / 2)
         rings += [ext(ann, ZF - 0.01, ZF + rt), ext(ann, ZB - rt, ZB + 0.01)]
     pcb = pcb + rings
-    note(pid, "contorno: retângulo do CSV (%.1f x %.1f) com o rebaixo da borda dos contatos (CSV) e o corte do canto do conector medido nesta tarefa em a_board.png (G corner_cut)" % (PL.W, PL.H))
+    note(pid, "contorno: retângulo do CSV (%.2f x %.2f, corrigido pelo fator do pcb-a) com o rebaixo da borda dos contatos (CSV) e o corte do canto do conector medido em a_board.png (G corner_cut, dividido pelo fator %.3f)" % (PL.W, PL.H, PL.F))
     note(pid, "8 furos: 4 da mola (furo %.1f, anel %.1f) e 4 cobreados de canto (furo %.1f, anel %.1f); anéis %.2f mm acima da máscara nas duas faces" % (
         g("spring_hole_drill"), g("spring_ring_od"), g("corner_hole_drill"), g("corner_ring_od"), rt))
     note(pid, "camadas, máscara, serigrafia e ilhas de cobre: textura (extras.surface), não geometria; o número de camadas não tem fonte")
@@ -307,28 +352,57 @@ def build_instanced(rows, pid, tpl_fn):
 
 
 def build_smd(rows):
-    """pcb.smd: caixas simples (um tipo por tamanho) a partir da tabela, numa malha só."""
+    """pcb.smd: caixas simples (um tipo por tamanho) a partir da tabela, numa malha só, mais
+    o conector de 4 vias da borda superior e o receptáculo do J3 (sem id próprio)."""
     pid = "pcb.smd"
     boxes, shapes = [], []
-    conn = None
     for r in rows_of(rows, pid):
-        if r["tipo"].startswith("conector"):
-            shp = tpl_header(r["comprimento"], r["largura"], r["altura"], 4, 1, 2.5)
-            conn = place_shape(shp, r["x"], r["y"], r["z_base"], r["rot_deg"])
-            boxes.append(to_mesh(conn))
-            shapes.append(conn)
+        back = r["lado"] == "verso"
+        if r["tipo"] == PL.J3_TIPO:
+            shp, ncont = tpl_j3(r["comprimento"], r["largura"], r["altura"])
+            shp = place_shape(shp, r["x"], r["y"], r["z_base"], r["rot_deg"], back)
+            boxes.append(to_mesh(shp))
+            shapes.append(shp)
+            note(pid, "receptáculo do J3 no verso: %.1f x %.1f, de z %.2f (plano de encaixe, iface_j3_mating_z) a %.2f (verso do PCB), centrado em (iface_j3_center_x, _y) = (%.2f; %.2f); carcaça com fenda central, abas de fixação nas pontas e %d pernas de solda (passo %.1f, ilustrativo: a contagem não é fato)" % (
+                r["comprimento"], r["largura"], r["z_base"] - r["altura"], r["z_base"], r["x"], r["y"], ncont, g("j3_contact_pitch")))
+            continue
+        if r["tipo"] == PL.FAN_TIPO:
+            shp = place_shape(tpl_fan(r["comprimento"], r["largura"], r["altura"]), r["x"], r["y"], r["z_base"], r["rot_deg"], back)
+            boxes.append(to_mesh(shp))
+            shapes.append(shp)
+            note(pid, "conector de 4 vias da borda superior (frente): %.1f (pcb_fan_header_length) x %.1f x %.1f em (u %.1f; v %.1f) = (%.2f; %.2f), cavidade aberta para +z, chave de polarização e 4 pinos de passo %.1f; profundidade, altura e passo são palpite; função provável de ventilador (inferred)" % (
+                r["comprimento"], r["largura"], r["altura"], M("pcb_fan_header_u"), M("pcb_fan_header_v"), r["x"], r["y"], g("fan_conn_pitch")))
             continue
         L, Wd, h = r["comprimento"], r["largura"], r["altura"]
         b = trimesh.creation.box(extents=(L, Wd, h))
         b.apply_translation((0, 0, h / 2))
-        boxes.append(place(b, r["x"], r["y"], r["z_base"], r["rot_deg"], r["lado"] == "verso"))
+        boxes.append(place(b, r["x"], r["y"], r["z_base"], r["rot_deg"], back))
         bs = Box(L, Wd, h)
         bs = Pos(0, 0, h / 2) * bs
-        shapes.append(place_shape(bs, r["x"], r["y"], r["z_base"], r["rot_deg"], r["lado"] == "verso"))
+        shapes.append(place_shape(bs, r["x"], r["y"], r["z_base"], r["rot_deg"], back))
     n = sum(1 for r in rows_of(rows, pid) if not r["tipo"].startswith("conector"))
-    note(pid, "%d passivos em caixas (tipos 0201 a 1206 e blocos): posição de pares de ilhas do PCB nu nas duas faces; tipo, altura e quantidade ilustrativos; terminais metálicos ficam na textura (extras.smd_terminal_fraction)" % n)
-    note(pid, "inclui o conector pequeno de 4 vias da borda superior (sabareesh), sem id próprio no assembly")
+    note(pid, "%d passivos em caixas (tipos 0201 a 1206 e blocos): posição de pares de ilhas do PCB nu nas duas faces (fotos com a escala corrigida pelo fator do pcb-a); tipo, altura e quantidade ilustrativos; terminais metálicos ficam na textura (extras.smd_terminal_fraction)" % n)
     return [trimesh.util.concatenate(boxes)], shapes
+
+
+def build_back_frame():
+    """pcb.back_frame: 4 anéis nos furos da mola, de iface_spring_z_max a iface_pcb_back_z."""
+    pid = "pcb.back_frame"
+    t = M("pcb_back_frame_thickness")
+    z1 = ZB
+    z0 = z1 - t
+    zs = M("iface_spring_z_max")
+    od, drill = g("back_ring_od"), gb("spring_hole_drill")
+    rings = []
+    for hx, hy, dr, ring_od, kind in PL.holes_xy():
+        if kind != "mola":
+            continue
+        ann = Pos(hx, hy) * Circle(od / 2) - Pos(hx, hy) * Circle(drill / 2)
+        rings.append(ext(ann, z0, z1))
+    note(pid, "4 anéis de %.1f mm (furo de %.2f) com %.2f mm (pcb_back_frame_thickness), de z %.2f a %.2f; a mola assenta em iface_spring_z_max = %.2f%s" % (
+        od, drill, t, z0, z1, zs, "" if abs(z0 - zs) < 1e-6 else " (diferença de %.2f mm)" % (z0 - zs)))
+    note(pid, "contorno da chapa sem medida (gn-30): só os anéis, como no blockout; forma inferred")
+    return [Compound(rings)]
 
 
 # ---------------------------------------------------------------------------
@@ -336,7 +410,8 @@ def build_smd(rows):
 # ---------------------------------------------------------------------------
 def surface_extras():
     def uvxy(u, v):
-        return [round(PL.X0 + u, 2), round(PL.Y0 + v, 2)]
+        # lidos em a_board.png na escala da base: divididos pelo fator do pcb-a
+        return [round(PL.X0 + u / PL.F, 2), round(PL.Y0 + v / PL.F, 2)]
     return {
         "mask": {"color": "preto esverdeado fosco", "provenance": "derived", "source": "chiphell/pcb-a, pcb-b; sabareesh"},
         "edge_stack": {"note": "borda do PCB com faixas de cobre e FR-4 como textura; número de camadas sem fonte (illustrative)",
@@ -349,7 +424,7 @@ def surface_extras():
             {"text": "004418", "xy": uvxy(20.2, 91.2), "height_mm": 0.9, "reading_dir_xy": [0, 1], "provenance": "derived"},
             {"text": "etiqueta QR (adesivo)", "xy": uvxy(84.3, 86.7), "size_mm": [5, 5], "provenance": "derived"},
         ],
-        "silkscreen_note": "posições lidas em a_board.png (verso, PCB nu do Chiphell); o texto lê na direção +y visto do verso; tamanhos aproximados",
+        "silkscreen_note": "posições lidas em a_board.png (verso, PCB nu do Chiphell) e corrigidas pelo fator de escala do pcb-a; o texto lê na direção +y visto do verso; tamanhos aproximados",
     }
 
 
@@ -357,13 +432,15 @@ def surface_extras():
 # Principal
 # ---------------------------------------------------------------------------
 FEATURE_PROV = {
-    "pcb.main": {"contorno (largura, altura, rebaixo)": "derived (CSV)", "corte do canto do conector": "derived (a_board.png, nesta tarefa)",
+    "pcb.main": {"contorno (largura, altura, rebaixo)": "derived (CSV, escala corrigida)", "corte do canto do conector": "derived (a_board.png, escala corrigida pelo fator)",
                  "furos (posição)": "derived (CSV)", "furos (diâmetro e anel)": "derived (a_board.png, nesta tarefa)",
                  "espessura": "inferred (CSV, norma)", "camadas, máscara, serigrafia": "textura (extras.surface)"},
     "gpu.package": {"package, campo de esferas, janela, die": "derived (CSV)", "alturas de esferas, substrato, moldura": "inferred",
                     "capacitores do substrato": "illustrative"},
-    "mem.front": {"posição": "derived (grade do verso, CSV; frente deduzida)", "encapsulamento": "derived (tabela da Micron, CSV)"},
-    "mem.back": {"posição": "derived (CSV)", "encapsulamento": "derived (tabela da Micron, CSV)"},
+    "mem.front": {"posição": "derived (grade arbitrada do CSV; campos de esferas da frente conferidos na pcb-b retificada)", "encapsulamento": "derived (tabela da Micron, CSV)",
+                  "giro dos 2 chips da borda dos contatos": "derived (CSV, mem_footprint_*)"},
+    "mem.back": {"posição": "derived (grade arbitrada do CSV)", "encapsulamento": "derived (tabela da Micron, CSV)",
+                 "giro dos 2 chips da borda dos contatos": "derived (CSV, mem_footprint_*)"},
     "power.inductors": {"fileiras (posição)": "derived (CSV, pcb-b retificada, sabareesh)", "quantidade": "inferred (representativa, assembly)",
                         "lado": "inferred (CSV)", "altura": "inferred (orçamento de camadas)"},
     "power.vrm.gpu": {"posição (para dentro de cada indutor, na frente)": "derived (sabareesh)", "quantidade": "inferred (representativa)",
@@ -372,8 +449,13 @@ FEATURE_PROV = {
     "power.controller": {"posição do primeiro": "derived (pcb-b retificada)", "segundo": "illustrative", "tamanho": "inferred"},
     "power.aux": {"um 4R7": "derived (sabareesh)", "os outros dois": "illustrative", "tamanho": "inferred"},
     "io.aux_header": {"posição e comprimento": "derived (CSV, escala antiga)", "profundidade, altura, pinos": "inferred"},
-    "pcb.smd": {"posições": "derived (ilhas do PCB nu)", "tipos, alturas, quantidade": "illustrative",
-                "conector de 4 vias": "derived (sabareesh); sem id no assembly"},
+    "pcb.smd": {"posições": "derived (ilhas do PCB nu, escala corrigida)", "tipos, alturas, quantidade": "illustrative",
+                "conector de 4 vias (posição, comprimento)": "derived (CSV pcb_fan_header_*, sabareesh); função inferred; sem id no assembly",
+                "conector de 4 vias (profundidade, altura, pinos)": "inferred / illustrative",
+                "receptáculo do J3 (posição, pegada, altura)": "derived (CSV iface_j3_*, pcb_j3_receptacle_*); altura inferred",
+                "receptáculo do J3 (fenda, abas, pernas)": "illustrative"},
+    "pcb.back_frame": {"furos (posição)": "derived (CSV iface_spring_holes)", "espessura": "inferred (CSV pcb_back_frame_thickness)",
+                       "contorno (só anéis)": "inferred"},
 }
 
 
@@ -384,8 +466,8 @@ def main():
     big, obs = PL.big_rows()
     # a tabela gravada tem de bater com as medidas atuais (passivos à parte)
     cur = {(r["id"], r["tipo"]): r for r in big}
-    stale = [r["id"] for r in rows if r["part"] != "pcb.smd" and (r["id"], r["tipo"]) in cur
-             and (abs(cur[(r["id"], r["tipo"])]["x"] - r["x"]) > 1e-3 or abs(cur[(r["id"], r["tipo"])]["y"] - r["y"]) > 1e-3)]
+    stale = [r["id"] for r in rows if (r["part"] != "pcb.smd" or r["tipo"].startswith("conector")) and (r["id"], r["tipo"]) in cur
+             and any(abs(cur[(r["id"], r["tipo"])][k] - r[k]) > 1e-3 for k in ("x", "y", "rot_deg", "comprimento", "largura", "altura"))]
     if stale or len([r for r in rows if r["part"] != "pcb.smd" or r["tipo"].startswith("conector")]) != len(big):
         raise SystemExit("layout.csv desatualizado em relação ao CSV de medidas: rode pcb_layout.py (%s)" % stale[:5])
 
@@ -414,8 +496,8 @@ def main():
                     ("power.vrm.mem", blk_t), ("power.controller", blk_t), ("power.aux", aux_t), ("io.aux_header", hdr_t)):
         ms, ss, rw = build_instanced(rows, pid, fn)
         meshes[pid], shapes[pid], inst_rows[pid] = ms, ss, rw
-    note("mem.front", "16 chips de %.0f x %.0f x %.1f mm (encapsulamento da Micron), lado de 14 mm atravessado na fileira; esferas como um bloco recuado de %.2f mm" % (
-        M("gddr7_package_length"), M("gddr7_package_width"), M("gddr7_package_thickness"), g("mem_standoff")))
+    note("mem.front", "16 chips de %.0f x %.0f x %.1f mm (encapsulamento da Micron) na grade arbitrada (passo %.2f, escala corrigida pelo fator do pcb-a); lado de 14 mm atravessado na fileira nas laterais e na borda de energia; os 2 chips da borda dos contatos giram (14 ao longo da borda); esferas como um bloco recuado de %.2f mm" % (
+        M("gddr7_package_length"), M("gddr7_package_width"), M("gddr7_package_thickness"), M("mem_side_v_pitch"), g("mem_standoff")))
     note("mem.back", NOTES["mem.front"][0])
     note("power.inductors", "lado %.1f (vrm_inductor_side) e %.1f nos menores da borda superior, altura %.1f (limite da base do cooler); texto 85N só como área (extras)" % (
         M("vrm_inductor_side"), g("ind_top_side"), g("ind_h")))
@@ -424,9 +506,14 @@ def main():
     note("io.aux_header", "corpo preto com cavidade e 2 x 7 pinos (passo %.1f, palpite)" % g("aux_header_pitch"))
     smd_m, smd_s = build_smd(rows)
     meshes["pcb.smd"], shapes["pcb.smd"] = smd_m, smd_s
+    shapes["pcb.back_frame"] = build_back_frame()
+    meshes["pcb.back_frame"] = [to_mesh(shapes["pcb.back_frame"][0])]
 
-    report = {"parts": {}, "guess_values": {k: {"value": v[0], "provenance": v[1], "note": v[2]} for k, v in G.items()},
-              "layout": str(PL.LAYOUT.relative_to(HARNESS.parent)), "layout_obs": obs}
+    report = {"parts": {}, "guess_values": {k: {"value": v[0], "provenance": v[1], "note": v[2],
+                                                "scale": "base (dividido por %.3f no uso)" % PL.F if k in PL.BASE_SCALE else "real"}
+                                            for k, v in G.items()},
+              "scale_factor": {"chiphell_pcb_a_scale_factor": PL.F, "aplicado_a": sorted(PL.BASE_SCALE) + ["passivos (quadros das fotos)", "serigrafia"]},
+              "layout": str(PL.LAYOUT.relative_to(HARNESS.parent)), "layout_obs": obs, "layout_checks": PL.checks(big)}
     total = 0
     ok_all = True
     for pid in IDS:
