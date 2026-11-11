@@ -106,6 +106,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
   let estado = null;      // explosão e destaque (só com GLB)
   const avisos = [];
   let materiais = null;   // relatório do lookdev: malha, material, por quê
+  let caixas = null;      // id da peça -> caixa das malhas próprias em repouso (mm), para caminhos e mergulho
   const corRealce = R ? new THREE.Color(R.realce.cor).multiplyScalar(R.realce.forca) : null;
 
   if (temGlb) {
@@ -132,6 +133,8 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
       else if (tc) aplicaTema(gltf.scene, tc);
       placa.add(raiz);
       estado = criaEstado3d(gltf.scene, R ? { corRealce, apaga: R.apaga } : null);
+      placa.updateMatrixWorld(true);
+      caixas = montaCaixas(gltf.scene);
     } catch (e) {
       avisos.push(`falha ao carregar card.glb: ${e.message}; usando blockout`);
     }
@@ -156,6 +159,22 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     o.getWorldPosition(v);
     v.project(camera);
     return [(v.x * 0.5 + 0.5) * STAGE_W, (-v.y * 0.5 + 0.5) * STAGE_H];
+  }
+
+  // ---- caixas das peças ----
+  const vTmp = new THREE.Vector3();
+  /** Caixa das malhas próprias da peça (sem as peças filhas) no estado atual da explosão, em mm. */
+  function caixaPeca(id) {
+    const c = caixas?.get(id);
+    if (!c) return null;
+    c.no.getWorldPosition(vTmp).sub(c.p0);          // a explosão só translada os nós
+    return { min: c.caixa.min.clone().add(vTmp), max: c.caixa.max.clone().add(vTmp) };
+  }
+  /** Posição de um nó (âncora ou peça) em mm, no estado atual. */
+  function pontoNo(nome) {
+    const o = acha(nome);
+    if (!o) return null;
+    return o.getWorldPosition(new THREE.Vector3());
   }
 
   // ---- quadro ----
@@ -206,6 +225,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     renderer, camera, controls, scene, blockout, avisos,
     qualidade: () => nivelQ, materiais: () => materiais, defineQualidade,
     temAncora: (n) => !!acha(n),
+    caixaPeca, pontoNo,
     temPeca: (n) => !!estado && estado.temPeca(n),
     /** Aplica explosão (nível 0 a 8, contínuo) e destaque (fatores prévio e atual, mistura hl). */
     aplicaEstado(nivel, fPrev, fCur, hl) {
@@ -227,6 +247,28 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     ajustaCamera,
     desenha,
   };
+}
+
+/**
+ * Caixa de cada peça do assembly (nó com explode_cad) em repouso, no referencial do storyboard (mm,
+ * Z para cima), só com as malhas próprias: instâncias sem explode_cad (indutores, chips de memória)
+ * contam para a peça-mãe; peças filhas (o package dentro do PCB) têm caixa própria.
+ */
+function montaCaixas(raiz) {
+  const m = new Map();
+  const b = new THREE.Box3();
+  raiz.traverse((o) => {
+    if (!o.isMesh) return;
+    let p = o;
+    while (p && !p.userData?.explode_cad) p = p.parent;
+    if (!p?.name) return;
+    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+    b.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);
+    let c = m.get(p.name);
+    if (!c) { c = { no: p, caixa: new THREE.Box3(), p0: p.getWorldPosition(new THREE.Vector3()) }; m.set(p.name, c); }
+    c.caixa.union(b);
+  });
+  return m;
 }
 
 /** Marcador em blockout: envelope, dois ventiladores e o retângulo do chip. Não é modelo. */

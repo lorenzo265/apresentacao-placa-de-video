@@ -69,7 +69,8 @@ async function inicia() {
   });
   cena.avisos.forEach((a) => console.warn(`[3D] ${a}`));
   // Para os testes: diz se o GLB entrou e se uma peça existe pelo id do assembly.
-  window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos, qualidade: cena.qualidade, materiais: cena.materiais, tema: tema?.nome ?? null };
+  window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos, qualidade: cena.qualidade, materiais: cena.materiais, tema: tema?.nome ?? null,
+    caixa: (id) => { const c = cena.caixaPeca(id); return c && { min: c.min.toArray(), max: c.max.toArray() }; } };
 
   // Modo ferramenta (?frame3d=1): um quadro da cena 3D sem o tour, para frame3d.cjs.
   if (params.get('frame3d') === '1') {
