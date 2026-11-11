@@ -143,7 +143,14 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
 
   // ---- câmera ----
   function ajustaCamera(c) {
-    if (camera.fov !== c.fov) { camera.fov = c.fov; camera.updateProjectionMatrix(); }
+    // Planos de recorte acompanham a distância ao alvo: com near fixo em 1 mm, superfícies
+    // paralelas a poucos mm de uma pele fina vazavam através dela (falta de precisão de profundidade).
+    const dist = Math.hypot(c.px - c.tx, c.py - c.ty, c.pz - c.tz);
+    const near = Math.min(Math.max(1, dist * 0.08), 60);
+    const far = Math.max(2000, dist * 12);
+    if (camera.fov !== c.fov || camera.near !== near || camera.far !== far) {
+      camera.fov = c.fov; camera.near = near; camera.far = far; camera.updateProjectionMatrix();
+    }
     controls.setLookAt(c.px, c.py, c.pz, c.tx, c.ty, c.tz, false);
     controls.update(0);
   }

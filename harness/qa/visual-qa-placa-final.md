@@ -34,7 +34,7 @@ Um único achado bloqueia: o conector de energia não aparece de verdade, nem no
 | 16 | ajusta | cabo flat | Prata brilhante; na foto, marrom-âmbar com reforço preto | lookdev |
 | 17 | ajusta | bracket | A aba termina 11,5 mm além dos contatos; os renders dão de 15,0 a 16,7. Faltam marcas regulatórias e etiquetas | modelador (I/O) |
 | 18 | nota | logotipo e texto | Dourado alaranjado; os renders dão champanhe e as fotos, cinza-prata. Escolher a referência | lookdev |
-| 19 | nota | logotipo | O olho fica dentro de um bloco dourado retangular que não existe no real | modelador (carcaça) |
+| 19 | nota | logotipo | O olho fica dentro de um bloco dourado retangular que não existe no real. **Achado não procede** (conferido pela sessão principal em `pny/3qtr-top-right.png` ampliado: a marca na placa tem o bloco, com o olho em espiral recortado nele); nada mudou | modelador (carcaça) |
 | 20 | nota | memória e package | Chips como placas metálicas claras; falta o anel verde do substrato | lookdev |
 | 21 | nota | contatos e adaptador | Adaptador 5,6 mm mais longo; contatos 13,9 mm abaixo da carcaça contra 11,4 a 12,8 | assembly |
 | 22 | nota | README do viewer, ferramenta de comparação | Referencial antigo no README; folha de referência com vistas não equivalentes | viewer, lookdev |
