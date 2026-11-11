@@ -418,7 +418,8 @@ const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
 		float lumLd = dot( gl_FragColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
-		gl_FragColor.rgb = mix( gl_FragColor.rgb, vec3( lumLd ) * 0.12, uApaga );
+		gl_FragColor.rgb = mix( gl_FragColor.rgb, vec3( min( lumLd, 1.5 ) ) * 0.12, uApaga );
+		gl_FragColor.rgb = min( gl_FragColor.rgb, vec3( mix( 64.0, 0.2, uApaga ) ) );   // reflexo forte não fura o escurecido
 		float frLd = 1.0 - saturate( dot( normal, geometryViewDir ) );
 		float fr2Ld = frLd * frLd;
 		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * uRealce;
