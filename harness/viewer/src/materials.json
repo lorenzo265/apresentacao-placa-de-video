@@ -6,6 +6,26 @@
     "de": 1.5,
     "ate": 3.0
   },
+  "escuros": [
+    {
+      "peca": "frame.shroud",
+      "caixa_mm": {
+        "de": [
+          182,
+          112,
+          5
+        ],
+        "ate": [
+          215,
+          136.9,
+          30
+        ]
+      },
+      "transicao_mm": 1.2,
+      "luz": 0.07,
+      "nota": "Provisório (achado N3 da segunda passada do visual-qa): interior do túnel do conector de energia, que hoje é parte da malha da carcaça. Medido no GLB de 2026-11-11: luva de x 192 a 212 mm na borda superior, conector de x 183,6 a 200,8, y 114,9 a 133,9, z 7,7 a 26,6; a caixa para em y 136,9, abaixo da face externa da borda (137,16). Na referência (pny/3qtr-top-right) a abertura é preta. Quando a parede interna ganhar malha ou material próprio, mapear esse nome para 'carcaca.interior' e apagar esta entrada."
+    }
+  ],
   "pecas": {
     "frame.shroud": "carcaca.anodizado",
     "frame.face_b": "carcaca.anodizado",
@@ -40,6 +60,10 @@
   },
   "padroes": [
     {
+      "regex": "(^|\\.)(substrato|substrate)(\\.|$|_)",
+      "material": "chip.substrato"
+    },
+    {
       "regex": "^cooler\\.fan\\.\\d+\\.blade",
       "material": "ventilador.pa"
     },
@@ -64,7 +88,10 @@
     "carcaca.anodizado": "carcaca.anodizado",
     "carcaca.tampa_x": "carcaca.tampa_x",
     "carcaca.grade": "carcaca.grade",
-    "carcaca.logo": "ouro.serigrafia"
+    "carcaca.logo": "ouro.serigrafia",
+    "chip.epoxi": "chip.epoxi",
+    "chip.substrato": "chip.substrato",
+    "carcaca.interior": "carcaca.interior"
   },
   "grupos": {
     "carcaca": "carcaca.anodizado",
@@ -111,7 +138,8 @@
         "pny/back",
         "pny/3qtr-back-right"
       ],
-      "nota": "Triângulos do X, nas duas faces: preto brilhante, como laca preta sob verniz (o processo de acabamento não tem fonte; a aparência é a de storagereview/sr-2 e sr-5, onde as tampas refletem o ambiente como espelho escuro). Dielétrico preto: o reflexo é só o do verniz (cerca de 4% de frente, mais na rasante), nítido; a camada de baixo não tem especular próprio (especular_base 0), senão o reflexo dobra e a tampa clareia. Rugosidade do verniz 0,07: nítido para as bordas das caixas de luz, mas sem mostrar os pixels do HDR do estúdio (256 x 128). 'rug' 0,12 vale só na qualidade baixa, sem verniz. Sem grão: o grão deixava a tampa fosca e granulada. O texto RTX PRO 6000 vem pintado no mapa de cor do passo do Blender (ouro.serigrafia): fica como tinta sob o verniz."
+      "nota": "Triângulos do X, nas duas faces: preto brilhante, como laca preta sob verniz (o processo de acabamento não tem fonte; a aparência é a de storagereview/sr-2 e sr-5, onde as tampas refletem o ambiente como espelho escuro). Dielétrico preto: o reflexo é só o do verniz (cerca de 4% de frente, mais na rasante), nítido; a camada de baixo não tem especular próprio (especular_base 0), senão o reflexo dobra e a tampa clareia. Rugosidade do verniz 0,07: nítido para as bordas das caixas de luz, mas sem mostrar os pixels do HDR do estúdio (256 x 128). 'rug' 0,12 vale só na qualidade baixa, sem verniz. Sem grão: o grão deixava a tampa fosca e granulada. O texto RTX PRO 6000 vem pintado no mapa de cor do passo do Blender (ouro.serigrafia): fica como tinta sob o verniz. 'sobre_coplanar': as lâminas da grade sob as tampas da face A chegam a 0,03 mm do topo da tampa (z 39,17 contra 39,2 mm no GLB de 2026-11-11) e furavam a tampa em linhas finas (achado 7); a tampa ganha o teste de profundidade (polygonOffset). A correção certa é de geometria (baixar ou cortar as lâminas sob a tampa).",
+      "sobre_coplanar": true
     },
     "carcaca.grade": {
       "cor": "#121315",
@@ -165,9 +193,9 @@
           "reserva": 20
         },
         "cubo": {
-          "cor": "#46484c",
+          "cor": "#3b3d41",
           "metal": 1.0,
-          "rug": 0.44,
+          "rug": 0.5,
           "anisotropia": 0.35,
           "passo_mm": 0.35,
           "var_rug": 0.03,
@@ -180,7 +208,7 @@
         "storagereview/sr-3",
         "pny/3qtr-top-right"
       ],
-      "nota": "No blockout o nó do ventilador junta anel e cubo numa malha só: fora do raio do cubo é plástico fosco; dentro, alumínio torneado cinza-escuro e acetinado (storagereview/sr-5 e sr-3): o torneado aparece só como um laço de luz suave, por anisotropia concêntrica fraca. Estrias com pouco contraste de rugosidade e quase sem relevo (com mais, o cubo virava cromo riscado)."
+      "nota": "No blockout o nó do ventilador junta anel e cubo numa malha só: fora do raio do cubo é plástico fosco; dentro, alumínio torneado cinza-escuro e acetinado (storagereview/sr-5 e sr-3): o torneado aparece só como um laço de luz suave, por anisotropia concêntrica fraca. Estrias com pouco contraste de rugosidade e quase sem relevo (com mais, o cubo virava cromo riscado). Tom do tampo baixado em 2026-11-11 (achado 6: luminância 145 contra cerca de 96 em pny/3qtr-front-left): alumínio anodizado escuro como a carcaça, refletância perto da do grafite (#3b3d41), acetinado (0,5)."
     },
     "aletas.pretas": {
       "cor": "#1a1b1d",
@@ -309,7 +337,18 @@
       "ref": [
         "pny/3qtr-top-right"
       ],
-      "nota": "Nylon preto do conector 12V-2x6 e dos cabeçotes: um pouco mais brilhante que o plástico das pás."
+      "nota": "Nylon preto do conector 12V-2x6 e dos cabeçotes: um pouco mais brilhante que o plástico das pás. As cavidades dos contatos (paredes e fundo) ficam escuras: a divisão entre casca (faces de apoio da peça: face de encaixe, lados) e interior sai da forma da peça, girada ou não; o interior leva oclusão procedural (a peça não passa pelo passo do Blender). Na referência as cavidades leem cinza-escuro sobre o corpo preto (achado N4).",
+      "textura": {
+        "tipo": "abertura",
+        "uv": "cavidade",
+        "interior": {
+          "cor": "#0d0d0e",
+          "metal": 0.0,
+          "rug": 0.6,
+          "ao": 0.3
+        }
+      },
+      "micro_sombra": 1.0
     },
     "pcb.mascara": {
       "cor": "#141516",
@@ -395,7 +434,7 @@
         "sabareesh/wb-bare-pcb",
         "rtx5090/pcgamesn-pcb-power"
       ],
-      "nota": "Encapsulamento de epóxi preto (memória, estágios de potência, controladores): composto de moldagem fosco, cinza muito escuro (sabareesh/wb-bare-pcb). Rugosidade alta: com menos, o reflexo da caixa de luz deixava os chips como placas claras.",
+      "nota": "Encapsulamento de epóxi preto (memória, estágios de potência, controladores): composto de moldagem fosco, cinza muito escuro (sabareesh/wb-bare-pcb). Rugosidade alta: com menos, o reflexo da caixa de luz deixava os chips como placas claras. Com o substrato em malha própria (chip.substrato), este material fica só no corpo de epóxi.",
       "interior": 0.22
     },
     "chip.package": {
@@ -469,7 +508,7 @@
     "flex.poliimida": {
       "cor": "#3e2616",
       "metal": 0.0,
-      "rug": 0.36,
+      "rug": 0.52,
       "textura": {
         "tipo": "faixas",
         "uv": "planar_bbox",
@@ -485,7 +524,7 @@
         "gn/gn-29",
         "gn/gn-28"
       ],
-      "nota": "Cabos flexíveis: película de poliimida âmbar (marrom-âmbar sobre as trilhas de cobre, levemente brilhante) com reforço preto nas pontas, como no teardown (gn/gn-29, gn-28). Comprimento do reforço e passo das trilhas illustrative; no teardown parte do cabo aparece coberta por película preta, que este material não separa.",
+      "nota": "Cabos flexíveis: película de poliimida âmbar (marrom-âmbar sobre as trilhas de cobre, levemente brilhante) com reforço preto nas pontas, como no teardown (gn/gn-29, gn-28). Comprimento do reforço e passo das trilhas illustrative; no teardown parte do cabo aparece coberta por película preta, que este material não separa. Rugosidade 0,52 (era 0,36): com a película lisa, nas vistas rasantes do E6 o reflexo da caixa de luz deixava o cabo bege-prateado (luminância 176 contra cerca de 55 em gn/gn-29, achado 16); a cobertura de poliimida do teardown é acetinada.",
       "interior": 0.22
     },
     "ouro.serigrafia": {
@@ -538,6 +577,37 @@
       ],
       "nota": "Saídas DisplayPort: casca de aço niquelado (só a borda frontal e os lados ficam à vista) e, dentro da abertura, paredes, língua de plástico preto e fundo escuros, como as aberturas pretas de storagereview/sr-1. A divisão casca e interior sai da forma da peça (faces sobre a caixa envolvente contra faces de dentro). O interior leva oclusão procedural forte (a peça não passa pelo passo do Blender): a luz não entra na cavidade.",
       "micro_sombra": 1.0
+    },
+    "carcaca.interior": {
+      "cor": "#0e0f10",
+      "metal": 0.0,
+      "rug": 0.7,
+      "env": 0.3,
+      "micro_sombra": 1.0,
+      "ref": [
+        "pny/3qtr-top-right",
+        "pny/3qtr-back-right",
+        "nvidia/nv-01"
+      ],
+      "nota": "Paredes internas de abertura da carcaça (túnel do conector de energia): o fundo da luva não recebe luz direta nem ambiente; nas referências a abertura lê preta. Material para a malha ou o slot que separar a parede interna (ver 'escuros')."
+    },
+    "chip.substrato": {
+      "cor": "#1e3326",
+      "metal": 0.0,
+      "rug": 0.45,
+      "textura": {
+        "tipo": "grao",
+        "tile_mm": 10,
+        "rug_var": 0.04,
+        "relevo": 0.02,
+        "manchas": 0.0
+      },
+      "ref": [
+        "gn/gn-29",
+        "sabareesh/wb-bare-pcb"
+      ],
+      "nota": "Substrato orgânico (laminado BT com máscara verde-escura) dos packages BGA: o anel visível em volta do epóxi das memórias e em volta do die e da moldura no package do GPU. Verde-escuro acetinado, mais claro que o epóxi (gn/gn-29). Casa com a malha do substrato por nome (padrão 'substrato' ou 'substrate' no id do nó) ou pelo slot de material 'chip.substrato'.",
+      "interior": 0.22
     }
   }
 }

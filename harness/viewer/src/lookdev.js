@@ -463,22 +463,37 @@ function uvCaixa(geo, tileMm) {
   geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
 }
 /**
- * Cavidade: classifica cada triângulo da malha (não indexada) como casca, se o centro dele está sobre um
- * plano da caixa envolvente (borda frontal e lados do receptáculo), ou interior (paredes, língua, fundo).
- * u = 0,25 na casca, 0,75 no interior (ver texAbertura).
+ * Cavidade: classifica cada triângulo da malha (não indexada) como casca, se o plano dele é um plano de
+ * apoio da malha (nenhum vértice fica além dele, na direção da normal: borda frontal, lados, face de
+ * encaixe), ou interior (paredes e fundo das cavidades, língua). Vale para peça girada em relação aos
+ * eixos (o conector de energia, a 45 graus). u = 0,25 na casca, 0,75 no interior (ver texAbertura).
  */
 function uvCavidade(geo) {
   geo.computeBoundingBox();
   const bb = geo.boundingBox, pos = geo.attributes.position, n = pos.count;
   const tol = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y, bb.max.z - bb.min.z) * 0.004;
   const uv = new Float32Array(n * 2);
-  const c = new THREE.Vector3(), t = new THREE.Vector3();
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), nn = new THREE.Vector3();
+  const apoio = new Map();                  // normal quantizada -> maior projeção dos vértices
+  const maxProj = (nx, ny, nz) => {
+    const k = `${Math.round(nx * 500)},${Math.round(ny * 500)},${Math.round(nz * 500)}`;
+    if (!apoio.has(k)) {
+      let m = -Infinity;
+      for (let i = 0; i < n; i++) m = Math.max(m, pos.getX(i) * nx + pos.getY(i) * ny + pos.getZ(i) * nz);
+      apoio.set(k, m);
+    }
+    return apoio.get(k);
+  };
   for (let k = 0; k + 2 < n; k += 3) {
-    c.set(0, 0, 0);
-    for (let j = 0; j < 3; j++) c.add(t.fromBufferAttribute(pos, k + j));
-    c.multiplyScalar(1 / 3);
-    const naCaixa = ['x', 'y', 'z'].some((e) => Math.abs(c[e] - bb.min[e]) < tol || Math.abs(c[e] - bb.max[e]) < tol);
-    for (let j = 0; j < 3; j++) { uv[(k + j) * 2] = naCaixa ? 0.25 : 0.75; uv[(k + j) * 2 + 1] = 0.5; }
+    a.fromBufferAttribute(pos, k); b.fromBufferAttribute(pos, k + 1); c.fromBufferAttribute(pos, k + 2);
+    nn.subVectors(c, b).cross(a.clone().sub(b));
+    let casca = false;
+    if (nn.lengthSq() > 0) {
+      nn.normalize();
+      const cx = (a.x + b.x + c.x) / 3, cy = (a.y + b.y + c.y) / 3, cz = (a.z + b.z + c.z) / 3;
+      casca = cx * nn.x + cy * nn.y + cz * nn.z >= maxProj(nn.x, nn.y, nn.z) - tol;
+    }
+    for (let j = 0; j < 3; j++) { uv[(k + j) * 2] = casca ? 0.25 : 0.75; uv[(k + j) * 2 + 1] = 0.5; }
   }
   geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
 }
@@ -515,6 +530,24 @@ function nomesDe(o) {
 }
 function grupoDe(o) { for (let a = o; a; a = a.parent) if (a.userData?.group) return a.userData.group; return null; }
 
+/**
+ * Região escura da tabela ('escuros': interior de abertura que a malha não separa) para a malha, no
+ * espaço da própria geometria: a caixa vem em mm do CAD (placa montada), com o GLB em metros e Y para
+ * cima sob a raiz; null se a peça não tem região.
+ */
+function escuroDe(o, raiz) {
+  const nomes = nomesDe(o);
+  const r = (TABELA.escuros ?? []).find((e) => nomes.includes(e.peca));
+  if (!r) return null;
+  raiz.updateMatrixWorld(true);
+  const rel = new THREE.Matrix4().copy(raiz.matrixWorld).invert().multiply(o.matrixWorld).invert();   // raiz -> malha
+  const cad = (x, y, z) => new THREE.Vector3(x / 1000, z / 1000, -y / 1000).applyMatrix4(rel);
+  const [x0, y0, z0] = r.caixa_mm.de, [x1, y1, z1] = r.caixa_mm.ate;
+  const caixa = new THREE.Box3();
+  for (const x of [x0, x1]) for (const y of [y0, y1]) for (const z of [z0, z1]) caixa.expandByPoint(cad(x, y, z));
+  return { min: caixa.min, max: caixa.max, trans: (r.transicao_mm ?? 1) / 1000, luz: r.luz ?? 0.1 };
+}
+
 /** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). */
 export function resolveMaterial(o, nomeMatGlb) {
   // slot de material do passo do Blender (nome listado em materiais_glb) é mais específico que a peça
@@ -530,7 +563,7 @@ export function resolveMaterial(o, nomeMatGlb) {
 
 const MASCARA_DBG = typeof location !== 'undefined' && new URLSearchParams(location.search).has('ldmascara');
 const MASCARA_POS = typeof location !== 'undefined' && new URLSearchParams(location.search).get('ldmascara') === 'pos';
-const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\n';
+const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\n#ifdef LD_ESCURO\nuniform vec3 uEscMin;\nuniform vec3 uEscMax;\nuniform float uEscTrans;\nuniform float uEscLuz;\nvarying vec3 vPosLd;\n#endif\n';
 // Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
 // resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
 // oclusão assada também apaga a luz direta que chega rasante: sombra = sat(|N.L| + 2 ao² - 1). Superfície
@@ -554,6 +587,12 @@ void RE_Direct_Micro( IncidentLight directLight, const in vec3 geometryPosition,
 // placa montada, toda a luz dessas peças cai para a fração 'interior' e volta a 1 conforme o desmonte
 // abre a carcaça (uAbertoLd, de 0 a 1: o uniforme ABERTO, que o estúdio atualiza a cada quadro).
 const FRAG_MICRO = `float interiorLd = mix( uInteriorLd, 1.0, uAbertoLd );
+#ifdef LD_ESCURO
+	// região escura da peça (interior de abertura, 'escuros' da tabela), no espaço da própria malha:
+	// acompanha a peça na explosão; borda suave de uEscTrans
+	vec3 dentroLd = smoothstep( uEscMin - uEscTrans, uEscMin + uEscTrans, vPosLd ) * ( 1.0 - smoothstep( uEscMax - uEscTrans, uEscMax + uEscTrans, vPosLd ) );
+	interiorLd *= mix( 1.0, uEscLuz, dentroLd.x * dentroLd.y * dentroLd.z );
+#endif
 reflectedLight.indirectDiffuse *= uEnvLd * interiorLd;
 reflectedLight.indirectSpecular *= uEnvLd * interiorLd;
 reflectedLight.directDiffuse *= interiorLd;
@@ -585,7 +624,14 @@ const FRAG_FIM = `#include <opaque_fragment>
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
 export function preparaMaterial(m, corRealce) {
   m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 }, interior: { value: m.userData.interior ?? 1 } };
+  const esc = m.userData.escuro ?? null;      // { min, max (espaço da malha), trans, luz }
   m.onBeforeCompile = (sh) => {
+    if (esc) {
+      sh.defines = { ...(sh.defines ?? {}), LD_ESCURO: '' };
+      Object.assign(sh.uniforms, { uEscMin: { value: esc.min }, uEscMax: { value: esc.max }, uEscTrans: { value: esc.trans }, uEscLuz: { value: esc.luz } });
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vPosLd;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvPosLd = position;');
+    }
     sh.uniforms.uApaga = m.userData.ld.apaga;
     sh.uniforms.uRealce = m.userData.ld.realce;
     sh.uniforms.uRealceCor = m.userData.ld.cor;
@@ -598,7 +644,7 @@ export function preparaMaterial(m, corRealce) {
       .replace('#include <aomap_fragment>', FRAG_MICRO)
       .replace('#include <opaque_fragment>', FRAG_FIM);
   };
-  m.customProgramCacheKey = () => 'lookdev-destaque-6';
+  m.customProgramCacheKey = () => (esc ? 'lookdev-destaque-7-escuro' : 'lookdev-destaque-7');
   return m;
 }
 
@@ -683,6 +729,12 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (orig?.aoMap || tex?.ao) m.userData.micro = def.micro_sombra ?? 0;
     if (def.env != null) m.userData.env = def.env;
     if (def.interior != null) m.userData.interior = def.interior;
+    const esc = escuroDe(o, raiz);
+    if (esc) m.userData.escuro = esc;
+    if (def.sobre_coplanar) {
+      // superfície fina sobre outra quase coplanar (fração de mm): ganha o teste de profundidade
+      m.polygonOffset = true; m.polygonOffsetFactor = -1; m.polygonOffsetUnits = -4;
+    }
     preparaMaterial(m, corRealce);
     o.material = m;
     if (MASCARA_DBG) {
