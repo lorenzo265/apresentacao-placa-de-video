@@ -528,6 +528,8 @@ export function resolveMaterial(o, nomeMatGlb) {
   return { id: TABELA.padrao, por: 'padrão' };
 }
 
+const MASCARA_DBG = typeof location !== 'undefined' && new URLSearchParams(location.search).has('ldmascara');
+const MASCARA_POS = typeof location !== 'undefined' && new URLSearchParams(location.search).get('ldmascara') === 'pos';
 const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\n';
 // Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
 // resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
@@ -683,6 +685,15 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (def.interior != null) m.userData.interior = def.interior;
     preparaMaterial(m, corRealce);
     o.material = m;
+    if (MASCARA_DBG) {
+      const idx = Object.keys(TABELA.materiais).indexOf(id) + 1;
+      o.material = new THREE.ShaderMaterial({
+        uniforms: { uId: { value: idx * 9 / 255 } },
+        vertexShader: 'varying vec3 vN; varying vec3 vP; void main(){ vN = normalize(mat3(modelMatrix) * normal); vP = (modelMatrix * vec4(position, 1.0)).xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+        fragmentShader: MASCARA_POS ? 'uniform float uId; varying vec3 vN; varying vec3 vP; void main(){ gl_FragColor = vec4(vP.x / 320.0, vP.y / 160.0, (vP.z + 10.0) / 60.0, 1.0); }' : 'uniform float uId; varying vec3 vN; void main(){ vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n; gl_FragColor = vec4(uId, abs(n.z), 1.0, 1.0); }',
+        side: THREE.DoubleSide,
+      });
+    }
     o.castShadow = o.receiveShadow = true;
     const doGlb = mapasGlb ? ['map', 'normalMap', 'roughnessMap', 'aoMap'].filter((k) => orig[k]).map((k) => (k === 'map' ? 'cor' : k.replace('Map', ''))) : [];
     relatorio.push({ malha: o.name, material: id, por, mapas: mapasGlb ? `glb (${doGlb.join(', ')})${tx ? ` + ${tx.tipo}` : ''}` : tx ? tx.tipo : null });
