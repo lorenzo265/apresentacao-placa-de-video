@@ -256,7 +256,7 @@
       ]
     },
     "a3.1": {
-      "headline": "96 GB de GDDR7 em volta do chip",
+      "headline": "96 GB de GDDR7, memória própria da placa",
       "caption": "Memória própria da placa: 96 GB de GDDR7, num barramento de 512 bits.",
       "fala": "• Gerenciamento de memória começa aqui: a placa tem memória própria • 16 chips no verso, 32 posições segundo o teardown • Em volta do chip, a 28 Gbps por pino",
       "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 3. Whitepaper RTX PRO Blackwell v1.1, Tab. 4. Disposição: leitura nossa das fotos",
@@ -409,7 +409,7 @@
     "a4.4": {
       "headline": "L2 no centro, controladores de memória nas laterais",
       "caption": "L2 de 128 MB no centro do diagrama. Nas laterais, 16 controladores de memória de 32 bits.",
-      "fala": "• Cache de dados em dois níveis no chip • L1 de 128 KB em cada SM, L2 de 128 MB para o chip todo • 16 controladores de 32 bits dão os 512 bits do barramento",
+      "fala": "• Cache de dados em dois níveis no chip • L1 de 128 KB em cada SM, L2 de 128 MB no chip • 16 controladores de 32 bits dão os 512 bits do barramento",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, p. 9 e Tab. 4. Datasheet, p. 3. Posições ilustrativas",
       "claims": [
         "chip.l2_kb",
@@ -666,7 +666,7 @@
       "headline": "Falha de página: a CPU resolve",
       "caption": "A falha vai para um buffer, o canal não pode ser trocado e o driver, na CPU, atende em lote.",
       "fala": "• Como na CPU: falha, o sistema resolve, o acesso se repete • A diferença: quem resolve é o driver, na CPU, em lote • Memória virtual e interrupção trabalhando juntas",
-      "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_non_replayable_faults.c e uvm_gpu_replayable_faults.c. Catálogo de Xid",
+      "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_non_replayable_faults.c, uvm_gpu_replayable_faults.c, nv.c e uvm_gpu_isr.c. Catálogo de Xid",
       "claims": [
         "fault.stall",
         "fault.buffer_batch",
@@ -691,7 +691,7 @@
       "headline": "Três mecanismos de interrupção",
       "caption": "A GPU interrompe a CPU, o programa aborta com trap, ou a falha de página e a preempção param a tarefa.",
       "fala": "• Interrupções, item do enunciado • GPU para CPU: MSI-X, MSI ou linha legada, tratador do driver em duas metades • trap aborta o programa • Preempção, documentada na Pascal • Provável, leitura nossa: o SM não trata interrupção como uma CPU",
-      "source_line": "Fonte: driver aberto da NVIDIA, nv.c e nv-msi.c. PTX ISA 9.5, 9.7.21.4. Catálogo de Xid. Whitepaper Tesla P100, p. 30",
+      "source_line": "Fonte: driver aberto da NVIDIA, nv.c, nv-msi.c, uvm_gpu_non_replayable_faults.c e uvm_gpu_replayable_faults.c. PTX ISA 9.5, 9.7.21.4. Catálogo de Xid. Whitepaper Tesla P100, p. 30",
       "claims": [
         "irq.modes",
         "irq.top_half",

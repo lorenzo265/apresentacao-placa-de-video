@@ -56,3 +56,12 @@ Os oito itens têm beat no corte: registradores (a5.6 a a5.8), instruções (a5.
 
 ## Correções aplicadas (sessão de roteiro, 2026-11-11)
 Todas as correções sugeridas foram aplicadas, inclusive B1, B2 e B3 (em a3.1, a causa foi cortada: "Em volta do chip, a 28 Gbps por pino"). O beat a2.13 continua sem entrada no storyboard, porque quem cria é a sessão de câmera. A fala dele virou "Daqui, a memória e depois o chip". Falta a segunda passada estreita.
+
+## Segunda passada (2026-11-11)
+Feita pelo `fact-checker` em contexto separado. **Veredito: aprovado com ressalvas.** Os 3 bloqueios e 15 dos 16 ajustes estão resolvidos, sem erro novo de fato. O a2.13 continua sem entrada no storyboard, que é pendência da sessão de câmera.
+
+Ressalvas, todas aplicadas pela sessão de roteiro:
+- R1 (a4.4): "L2 de 128 MB para o chip todo" virou "L2 de 128 MB no chip".
+- R2 (a6.2, a6.4): a linha de fonte ganhou `nv.c`, `uvm_gpu_isr.c` e os arquivos de falha do UVM.
+- R3 (a3.1): o headline virou "96 GB de GDDR7, memória própria da placa".
+- R4: a nota de `mem.l1_carveout` em `card.spec.json` ainda diz que os tamanhos da compute capability 12.0 não foram levantados, o que contradiz `mem.shared_sizes_cc120`. É pendência do spec, fora do escopo desta sessão.
