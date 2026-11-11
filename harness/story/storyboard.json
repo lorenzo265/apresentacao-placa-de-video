@@ -541,7 +541,7 @@
             "fov": 32
           },
           {
-            "at": 0.7,
+            "at": 0.78,
             "pos": [
               560,
               -760,
@@ -555,11 +555,11 @@
             "fov": 32
           },
           {
-            "at": 0.86,
+            "at": 0.9,
             "pos": [
               152,
-              -330,
-              -12
+              -380,
+              40
             ],
             "target": [
               152,
@@ -568,7 +568,8 @@
             ],
             "fov": 30
           }
-        ]
+        ],
+        "explode_ate": 0.8
       },
       "callout": {
         "anchor": "anchor.gpu.tim.1",
@@ -1046,19 +1047,19 @@
       "explode_state": "E8",
       "camera": {
         "pos": [
-          640,
-          -760,
-          380
+          520,
+          -600,
+          300
         ],
         "target": [
           150,
-          70,
+          60,
           -70
         ],
         "fov": 34,
         "duration": 4.0,
         "ease": "power2.inOut",
-        "hold_orbit": 60
+        "hold_orbit": 40
       },
       "hold": 8.0,
       "provenance": [

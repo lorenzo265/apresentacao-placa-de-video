@@ -200,6 +200,10 @@
                   }
                 }
               },
+              "explode_ate": {
+                "description": "Fração da entrada em que a explosão termina (padrão 1).",
+                "type": "number", "exclusiveMinimum": 0, "maximum": 1
+              },
               "hold_orbit": {
                 "description": "Graus de azimute que a câmera gira em torno do alvo depois da entrada (plano de herói).",
                 "type": "number"

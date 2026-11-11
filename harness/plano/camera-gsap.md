@@ -31,3 +31,13 @@ Dono: sessão de câmera (branch `claude/apresentacao-camera-gsap`). Texto dos b
 
 - A desmontagem é um beat com vários estágios e uma só fala (campo `explode_seq`), não uma sequência de beats mudos.
 - Duração mínima da entrada de câmera: 2,0 s para troca pequena e 3,0 s para troca grande. Cada estágio da sequência dura cerca de 2,2 s.
+
+## 5. Combinado e feito (2026-11-11)
+
+- Corte do seminário (sessão de roteiro): a2.1 faz a desmontagem inteira, E1 a E7, em 15,4 s. A câmera passa por 4 poses (`camera.keys`), e a explosão termina em 80% da entrada (`camera.explode_ate`). Assim o PCB sai com a vista ainda larga, e só depois a câmera se aproxima do chip com a pasta.
+- a2.13, plano de herói: E8 com a carcaça aberta (`inferred`), 4 s de entrada e volta de 40° durante a leitura (`camera.hold_orbit`). Mudo, só com título.
+- a2.2 a a2.6 ficam em `draft` no branch do roteiro, fora de todos os cortes, porque o a2.1 já desmonta até o E7.
+- Vitrine: campo `vitrine` do beat. A pose é calculada a partir da câmera do beat (`face`, `cima`, `ocupa`, `lado`). Enquanto a peça está fora da posição aparece o selo do viewer "Ilustrativo: peça fora da posição"; o provenance do beat não muda. Em teste no a2.12 (corte completo).
+- Fusões de beats: vale a câmera do beat que fica.
+- Luz, contraste e fundo: ficam com a orquestradora (lookdev). Nas capturas, a carcaça escura se perde no fundo escuro.
+- Capturas: `node harness/tools/camera-quadros.cjs --beats a2.1,a2.13 --fracs 0.25,0.5,1,1.5`.

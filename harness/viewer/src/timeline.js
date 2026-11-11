@@ -169,7 +169,10 @@ export function constroiTimeline({ storyboard, corte, world, mergulho = null }) 
     // vários estágios num beat: cada estágio ocupa a mesma fatia de tempo (a coreografia de cada um já
     // tem a própria curva, em desmontagem.json)
     const varios = Math.abs(alvoNivel - nivel) > 1;
-    tl.fromTo(S, { expl: nivel }, { expl: alvoNivel, duration: dur, ease: diag || varios ? 'none' : ease }, start);
+    // a desmontagem pode terminar antes da câmera (camera.explode_ate), para a aproximação final
+    // acontecer com as peças já paradas
+    const durEx = diag ? dur : dur * (b.camera?.explode_ate ?? 1);
+    tl.fromTo(S, { expl: nivel }, { expl: alvoNivel, duration: durEx, ease: diag || varios ? 'none' : ease }, start);
     nivel = alvoNivel;
     // vitrine (illustrative): a peça do beat sai da placa para a pose de apresentação; a do beat
     // anterior volta ao lugar durante esta entrada
