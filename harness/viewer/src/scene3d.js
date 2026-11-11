@@ -386,12 +386,13 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     acumulacao: () => ({ n: ac.n, alvo: pos ? Math.max(1, nAcumDe()) : 1 }),
     temPeca: (n) => !!estado && estado.temPeca(n),
     /** Aplica explosão (nível 0 a 8, contínuo) e destaque (fatores prévio e atual, mistura hl). */
-    aplicaEstado(nivel, fPrev, fCur, hl, af = null) {
+    aplicaEstado(nivel, fPrev, fCur, hl, af = null, vit = null) {
       nivelAtual = nivel;
-      destaqueAtual = `${idFat(fPrev)},${idFat(fCur)},${r5(hl)},${af ? `${af.g}:${r5(af.f)}` : ''}`;
+      destaqueAtual = `${idFat(fPrev)},${idFat(fCur)},${r5(hl)},${af ? `${af.g}:${r5(af.f)}` : ''},${(vit ?? []).map((v) => `${v.peca}:${r5(v.k)}`).join(';')}`;
       if (!estado) return;
       estado.explode(nivel);
       estado.afasta(af);
+      estado.vitrine(vit);
       estado.destaque(fPrev, fCur, hl);
       placa.updateMatrixWorld(true);
     },
@@ -538,6 +539,8 @@ function sombraContato(medidas, c) {
   return plano;
 }
 
+import COREO from './desmontagem.json';
+
 const DIM = 0.15;          // opacidade das peças esmaecidas
 const suave = (x) => x * x * (3 - 2 * x);
 
@@ -549,19 +552,62 @@ const suave = (x) => x * x * (3 - 2 * x);
  * Destaque: cada malha ganha uma cópia própria do material (os originais não mudam); a opacidade
  * é recalculada a cada quadro a partir do estado, sem acumular nada.
  */
+const F = COREO.fases;
+const expoOut = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
+const janela = (k, [a, b]) => Math.min(1, Math.max(0, (k - a) / (b - a)));
+/** Progresso local de uma peça no seu estágio (0 a 1), com o atraso do escalonamento. */
+function local(nivel, n) {
+  const t = Math.min(1, Math.max(0, nivel - (n.estagio - 1)));
+  if (!n.atraso) return t;
+  return Math.min(1, Math.max(0, (t - n.atraso) / (1 - n.atraso)));
+}
+/** Fração do deslocamento da peça: descola alguns mm, depois viaja com expo.out. */
+function curvaPeca(k, dist) {
+  const d = Math.min(0.5, (COREO.descola_mm ?? 0) / dist);
+  return d * suave(janela(k, F.descola)) + (1 - d) * expoOut(janela(k, F.viagem));
+}
+const _q = new THREE.Quaternion();
+const _v = new THREE.Vector3();
+/** Parafuso: gira e recua no próprio eixo; na viagem da peça, segue à frente dela. */
+function poeParafuso(f, k) {
+  const a = suave(janela(k, F.fixadores));
+  const ang = a * (COREO.fixadores.voltas ?? 0) * 2 * Math.PI;
+  const mm = a * COREO.fixadores.recuo_mm + expoOut(janela(k, F.viagem)) * COREO.fixadores.alem_mm;
+  _q.setFromAxisAngle(f.eixo, ang);
+  f.o.quaternion.copy(_q).multiply(f.q0);
+  // gira em torno do centro do parafuso: p = q (base - centro) + centro
+  _v.copy(f.base).sub(f.centro).applyQuaternion(_q).add(f.centro);
+  f.o.position.copy(_v).addScaledVector(f.eixo, mm / 1000);
+}
+
 function criaEstado3d(raiz, realista = null) {
   const nos = [];
   const pecas = new Map();       // nome -> true
   const malhas = [];
+  const parafusos = [];          // fixadores de cada estágio (coreografia: giram e recuam)
+  const gl = ([dx, dy, dz], mm) => new THREE.Vector3(dx * mm / 1000, dz * mm / 1000, -dy * mm / 1000);  // CAD -> glTF
+  const atrasoDe = new Map();
+  for (const [k, lista] of Object.entries(COREO.escalona ?? {})) {
+    if (!Array.isArray(lista)) continue;
+    lista.forEach((id, i) => atrasoDe.set(id, i * (COREO.escalona.passo ?? 0.1)));
+  }
   raiz.traverse((o) => {
     const u = o.userData ?? {};
     if (o.name) pecas.set(o.name, o);
     const est = /^E([1-8])$/.exec(u.stage ?? '');
     const ex = u.explode_cad;
     if (est && ex && ex.distance > 0) {
-      const [dx, dy, dz] = ex.dir;            // CAD (Z para cima) -> glTF (Y para cima): (x, z, -y)
-      const d = ex.distance / 1000;
-      nos.push({ o, base: o.position.clone(), estagio: Number(est[1]), off: new THREE.Vector3(dx * d, dz * d, -dy * d), p: -1 });
+      nos.push({ o, base: o.position.clone(), estagio: Number(est[1]), off: gl(ex.dir, ex.distance), dist: ex.distance, atraso: atrasoDe.get(o.name) ?? 0, p: -1 });
+    }
+    // fixadores: nó fasteners.eN_* (sem deslocamento próprio) com uma malha por parafuso
+    if (est && ex && /^fasteners\.e\d/.test(o.name ?? '')) {
+      const eixo = gl(ex.dir, 1000).normalize();
+      for (const m of o.children) {
+        if (!m.isMesh && !m.children.some((c) => c.isMesh)) continue;
+        const bb = new THREE.Box3().setFromObject(m);   // nós com transformação identidade no GLB
+        const centro = bb.getCenter(new THREE.Vector3());
+        parafusos.push({ o: m, base: m.position.clone(), q0: m.quaternion.clone(), centro, eixo, estagio: Number(est[1]), atraso: atrasoDe.get(o.name) ?? 0, k: -1 });
+      }
     }
     if (o.isMesh) {
       const nomes = new Set();
@@ -581,21 +627,54 @@ function criaEstado3d(raiz, realista = null) {
   // extra: nó -> { base (posição sem explosão), local (deslocamento total no referencial do pai), f }
   const porNo = new Map(nos.map((n) => [n.o, n]));
   const extra = new Map();
+  const comp = new Map();        // deslocamento extra da coreografia (abertura da carcaça), no referencial do pai
+  const base0 = new Map();
   const poe = (o) => {
     const n = porNo.get(o), x = extra.get(o);
+    if (!n && !x && !base0.has(o)) base0.set(o, o.position.clone());
     if (n) o.position.copy(n.base).addScaledVector(n.off, n.p);
     else if (x) o.position.copy(x.base);
+    else o.position.copy(base0.get(o));
     if (x && x.f) o.position.addScaledVector(x.local, x.f);
+    const c = comp.get(o);
+    if (c) o.position.add(c);
   };
+  // E8: a carcaça sai sem levar o cooler (os filhos que ficam recebem o deslocamento oposto)
+  const ac = COREO.abre_carcaca;
+  const noCarcaca = ac && pecas.get(ac.no);
+  const carcaca = noCarcaca ? {
+    o: noCarcaca, estagio: ac.estagio, janela: ac.janela, k: -1,
+    D: gl(ac.dir, ac.distancia),
+    ficam: noCarcaca.children.filter((c) => c.name && !c.name.startsWith('anchor.') && !(ac.leva ?? []).includes(c.name)),
+  } : null;
+  if (carcaca) for (const c of [carcaca.o, ...carcaca.ficam]) if (!porNo.has(c) && !base0.has(c)) base0.set(c, c.position.clone());
   const grupos = [];
+  const vitrines = new Map();    // nome -> { o, q0 }
   return {
     temPeca: (n) => pecas.has(n),
     explode(nivel) {
       for (const n of nos) {
-        const p = suave(Math.min(1, Math.max(0, nivel - (n.estagio - 1))));
+        const p = curvaPeca(local(nivel, n), n.dist);
         if (p === n.p) continue;
         n.p = p;
         poe(n.o);
+      }
+      for (const f of parafusos) {
+        const k = local(nivel, f);
+        if (k === f.k) continue;
+        f.k = k;
+        poeParafuso(f, k);
+      }
+      if (carcaca) {
+        const [a, b] = carcaca.janela;
+        const k = suave(Math.min(1, Math.max(0, (nivel - (carcaca.estagio - 1) - a) / (b - a))));
+        if (k !== carcaca.k) {
+          carcaca.k = k;
+          comp.set(carcaca.o, carcaca.D.clone().multiplyScalar(k));
+          for (const c of carcaca.ficam) comp.set(c, carcaca.D.clone().multiplyScalar(-k));
+          poe(carcaca.o);
+          for (const c of carcaca.ficam) poe(c);
+        }
       }
     },
     /** Registra um grupo de nós a afastar por D (mm, mundo); devolve o índice do grupo. */
@@ -610,6 +689,36 @@ function criaEstado3d(raiz, realista = null) {
       }
       grupos.push(g);
       return grupos.length - 1;
+    },
+    /**
+     * Vitrine (illustrative): peças tiradas da posição da placa e apresentadas ao público.
+     * lista = [{ peca, k (0 a 1), pos ([x, y, z] mm, referencial do storyboard), giro ([x, y, z] graus, eixos do mundo) }].
+     * Com k = 0 a peça volta ao lugar da explosão. O centro da caixa da peça vai até pos, girando em torno dele.
+     */
+    vitrine(lista) {
+      const pedidas = new Map((lista ?? []).filter((v) => v.k > 0 && pecas.has(v.peca)).map((v) => [v.peca, v]));
+      for (const [nome, st] of vitrines) {
+        if (pedidas.has(nome)) continue;
+        st.o.quaternion.copy(st.q0); poe(st.o); vitrines.delete(nome);
+      }
+      for (const [nome, v] of pedidas) {
+        const o = pecas.get(nome);
+        let st = vitrines.get(nome);
+        if (!st) { st = { o, q0: o.quaternion.clone() }; vitrines.set(nome, st); }
+        o.quaternion.copy(st.q0); poe(o);
+        o.parent.updateMatrixWorld(true); o.updateMatrixWorld(true);
+        const Cp = o.parent.worldToLocal(new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()));
+        const Tp = o.parent.worldToLocal(new THREE.Vector3(...v.pos));
+        const g = (v.giro ?? [0, 0, 0]).map((x) => THREE.MathUtils.degToRad(x));
+        const qw = new THREE.Quaternion().setFromEuler(new THREE.Euler(g[0], g[1], g[2], 'XYZ'));
+        const qpw = o.parent.getWorldQuaternion(new THREE.Quaternion());
+        const qp = qpw.clone().invert().multiply(qw).multiply(qpw);
+        const s = suave(Math.min(1, Math.max(0, v.k)));
+        const qs = new THREE.Quaternion().slerp(qp, s);
+        const novoC = Cp.clone().lerp(Tp, s);
+        o.position.sub(Cp).applyQuaternion(qs).add(novoC);
+        o.quaternion.copy(qs).multiply(st.q0);
+      }
     },
     /** Fração do afastamento de cada grupo (af = {g, f}; null = nenhum afastado). */
     afasta(af) {

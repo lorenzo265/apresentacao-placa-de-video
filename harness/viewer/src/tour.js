@@ -153,7 +153,11 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
     cena.renderer.domElement.style.opacity = 1 - mix;
     if (!ocultar3d || mergulhando) {
       const af = e.mergulho?.afasta ? { g: e.mergulho.afasta.g, f: q(S.afasta) } : null;
-      cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl, af);
+      const vAnt = i > 0 ? beats[i - 1].beat.vitrine : null;
+      const vit = [];
+      if (b.vitrine) vit.push({ ...b.vitrine, k: q(S.vit) });
+      if (vAnt && vAnt.peca !== b.vitrine?.peca) vit.push({ ...vAnt, k: q(S.vitR) });
+      cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl, af, vit);
       if (!livre) cena.ajustaCamera(cam);
       // na captura, a cena só acumula quadros fora da entrada do beat (o estado 3D só muda nela)
       if (!ocultar3d) cena.desenha({ parado: !capture || t > e.entrada + 1e-6 });
