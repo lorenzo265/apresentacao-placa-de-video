@@ -71,7 +71,7 @@ IDS = ("cooler.fins.1", "cooler.fins.2", "cooler.fins.3", "cooler.base", "cooler
 # Tolerâncias das conferências e da malha (não são medidas da peça)
 TOL_ANCHOR = 2.0       # mm, âncora fora da peça
 TOL_OVERLAP = 0.5      # mm, interferência aceita pelo integrate.py
-TESS = {"fin": (0.05, 0.30), "pipe": (0.04, 0.26), "body": (0.03, 0.20)}   # desvio linear (mm) e angular (rad)
+TESS = {"fin": (0.05, 0.42), "pipe": (0.04, 0.26), "body": (0.03, 0.20)}   # desvio linear (mm) e angular (rad)
 TRI_BUDGET = 250_000   # triângulos, as 7 peças juntas
 CREASE_DEG = 30.0      # quebra das normais suaves (o mesmo do integrate.py)
 
@@ -96,6 +96,9 @@ G = {
     "hp_pitch_chamber": (12.5, "inferred", "passo dos 5 tubos sobre a câmara (cabem nos 68 mm da face de contato com 4,5 mm entre tubos)"),
     "hp_center_gap": (3.0, "inferred", "vão entre as pontas dos tubos dos dois lados no meio da câmara"),
     "hp_joint_len": (2.5, "inferred", "comprimento em x do pé soldado do tubo na lateral da câmara"),
+    # golas dos furos das pilhas das pontas
+    "collar_t": (0.25, "inferred", "espessura da gola (colarinho) estampada em volta de cada furo, que cobre o tubo entre as lâminas; nas fotos da placa irmã os tubos dentro das pilhas não aparecem"),
+    "collar_gap": (0.05, "inferred", "folga entre a ponta da gola e a lâmina seguinte"),
     # pilha central
     "c_side_drop": (2.0, "inferred", "nas cunhas laterais (vistas pelas janelas do X da face A) as aletas ficam 2 mm abaixo do topo; em wccftech-cooler-4 essas cunhas são mais baixas que os triângulos de cima e de baixo"),
     "c_x_band": (6.0, "derived", "meia largura (perpendicular) da faixa do X sem aletas altas: proporção da faixa lisa em wccftech-cooler-3 (placa irmã)"),
@@ -369,24 +372,32 @@ def build_end_stack(n):
     S = S1 if n == 1 else S2
     side = -1 if n == 1 else 1
     cache, fins = {}, []
-    for x in S[2]:
+    lc = P_FIN - T_FIN - g("collar_gap")
+    for j, x in enumerate(S[2]):
         lim0 = y_limits(x, FIN_Y0, FIN_Y1)
-        lim1 = y_limits(x + T_FIN, FIN_Y0, FIN_Y1)
+        lim1 = y_limits(x + T_FIN + lc, FIN_Y0, FIN_Y1)
         y0, y1 = max(lim0[0], lim1[0]), min(lim0[1], lim1[1])
-        key = (round(y0, 3), round(y1, 3))
+        collar = j < len(S[2]) - 1                 # a última lâmina (maior x) fica sem gola
+        key = (round(y0, 3), round(y1, 3), collar)
         if key not in cache:
             sk = rect(y0, y1, Z_F0, Z_F1)
             for i in range(5):
                 yy = pipe_y_stack(i)
                 assert yy - HD > y0 + 0.5 and yy + HD < y1 - 0.5, "furo do tubo fora da lâmina em x = %.2f" % x
                 sk = sk - Pos(yy, Z_HP) * Circle(HD)
-            cache[key] = (sk, fin_solid(sk, 0.0, T_FIN))
+            sol = fin_solid(sk, 0.0, T_FIN)
+            if collar:
+                ring = Sketch()
+                for i in range(5):
+                    ring = ring + (Pos(pipe_y_stack(i), Z_HP) * Circle(HD + g("collar_t")) - Pos(pipe_y_stack(i), Z_HP) * Circle(HD))
+                sol = sol + fin_solid(ring, T_FIN - 0.01, lc + 0.01)
+            cache[key] = (sk, sol)
         fins.append((x, key))
     note(pid, "%d lâminas de %.2f mm no passo de %.2f mm (fin_pitch e fin_thickness, inferred), de x = %.2f a %.2f; a contagem sai do passo e do comprimento da pilha, não de foto" % (
         len(S[2]), T_FIN, P_FIN, S[2][0], S[2][-1] + T_FIN))
     note(pid, "lâminas no plano yz de z = %.1f (grade da face B) a %.1f (layer_end_fan_ring abaixo da face A), y de %.2f a %.2f (fin_stack_end_height_y), com os cantos da ponta recortados pelo contorno interno da carcaça" % (Z_F0, Z_F1, FIN_Y0, FIN_Y1))
     note(pid, "5 furos de %.0f mm para os tubos em z = %.1f, passo de %.0f mm em y (derived da placa irmã: wccftech-cooler-4)" % (2 * HD, Z_HP, g("hp_pitch_stack")))
-    note(pid, "golas (colarinhos) dos furos, dobras das bordas e as placas de fixação dos ventiladores da placa irmã não modeladas")
+    note(pid, "golas (colarinhos) de %.2f mm em volta dos furos, do comprimento do vão entre lâminas: escondem o tubo dentro da pilha, como na placa irmã; dobras das bordas e as placas de fixação dos ventiladores da placa irmã não modeladas" % g("collar_t"))
     if n == 1:
         note(pid, "começa em x = %.2f, depois da placa de portas (io.board) e da placa de extremidade da carcaça" % S[0])
     return fins, cache
