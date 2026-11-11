@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Teste do arquivo único (harness/dist/tour.html): abre por file://, sem rede,
 // e percorre todos os beats com a seta do teclado, como no seminário.
-// Uso: node harness/tools/smoke-single.cjs [--cut completo|seminario] [--tema keynote|estudio|blueprint] [--no-build]
+// Uso: node harness/tools/smoke-single.cjs [--cut completo|seminario] [--tema keynote|estudio|blueprint|nenhum] [--no-build]
+// Sem --tema, confere que o arquivo abre no padrão de apresentação (tema Keynote).
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
@@ -14,7 +15,7 @@ async function main() {
   const args = process.argv.slice(2);
   const corte = args.includes('--cut') ? args[args.indexOf('--cut') + 1] : null;
   const tema = args.includes('--tema') ? args[args.indexOf('--tema') + 1] : null;
-  const FRAMES = path.join(HARNESS, 'dist', tema ? `frames-single-${tema}` : 'frames-single');
+  const FRAMES = path.join(HARNESS, 'dist', tema ? `frames-single-${tema}` : 'frames-single');      // sem --tema: Keynote
   if (!args.includes('--no-build')) execSync('npm run build:single', { cwd: path.join(HARNESS, 'viewer'), stdio: 'inherit' });
   const textos = JSON.parse(fs.readFileSync(path.join(HARNESS, 'content', 'pt-BR', 'beats.json'), 'utf8')).beats;
   fs.mkdirSync(FRAMES, { recursive: true });
@@ -53,9 +54,13 @@ async function main() {
     if (c.pecas.length) falhas.push(`peças do assembly não achadas no GLB: ${c.pecas.join(', ')}`);
     console.log(`smoke-single: GLB embutido ${c.glb ? 'carregado' : 'NÃO carregado'}`);
   }
-  if (tema) {
+  // O arquivo único abre no tema Keynote por padrão (build-single.mjs); --tema nenhum pede o visual sem tema.
+  {
+    const esperado = tema === 'nenhum' ? null : tema ?? 'keynote';
     const aplicado = await page.evaluate(() => document.documentElement.dataset.tema ?? null);
-    if (aplicado !== tema) falhas.push(`o tema pedido (${tema}) não foi aplicado (${aplicado})`);
+    if (aplicado !== esperado) falhas.push(`o tema esperado (${esperado ?? 'sem tema'}) não foi aplicado (${aplicado ?? 'sem tema'})`);
+    const q = await page.evaluate(() => window.__cena.qualidade?.() ?? null);
+    console.log(`smoke-single: tema ${aplicado ?? 'sem tema'}${q ? `, qualidade ${q}` : ''}`);
   }
   const titulo = () => page.evaluate(() => document.querySelector('#caixa h2')?.textContent ?? '');
   for (let i = 0; i < info.beats.length; i++) {

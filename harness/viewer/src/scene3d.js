@@ -389,7 +389,7 @@ function criaEstado3d(raiz, realista = null) {
       const ok = sel.filter((n) => pecas.has(n) || n.startsWith('tag:'));
       if (!ok.length) return null;
       const f = malhas.map((m) => (ok.some((n) => m.nomes.has(n)) ? 1 : DIM));
-      f.sel = true;
+      f.sel = f.some((x) => x !== 1);     // recorte de luz só quando algo de fato escurece
       return f;
     },
     destaque(fPrev, fCur, hl) {

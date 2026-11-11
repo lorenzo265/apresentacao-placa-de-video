@@ -24,12 +24,12 @@ export const TEMAS = {
     cena: {
       realista: {
         exposicao: 1.0,
-        ambiente: 1.0,                 // intensidade do mapa de ambiente
+        ambiente: 0.45,                // intensidade do mapa de ambiente
         // Ambiente no referencial canônico (câmera em -y olhando +y, acima da placa), unidades do
         // estúdio virtual: HDR escurecido da Poly Haven mais caixas de luz que desenham os reflexos.
-        hdr: { K: 5600, i: 0.7 },
+        hdr: { K: 5600, i: 0.5 },
         caixas: [
-          { nome: 'teto-fundo', K: 5600, i: 5.0, pos: [0, 9, 11], tam: [22, 7] },
+          { nome: 'teto-fundo', K: 5600, i: 4.0, pos: [0, 10, 11], tam: [20, 6], degrade: [0.02, 1] },
           { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
           { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
           { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },
@@ -43,8 +43,8 @@ export const TEMAS = {
         luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
-        apaga: 0.82,                   // destaque: quanto as outras peças escurecem e perdem a cor
-        realce: { cor: 0xe4ffd2, forca: 0.32 },   // recorte de luz na peça destacada (branco com um toque do acento)
+        apaga: 0.92,                   // destaque: quanto as outras peças escurecem e perdem a cor
+        realce: { cor: 0xeef8e6, forca: 0.45 },   // recorte de luz na peça destacada (branco com um toque do acento)
         ao: { raio: 10, espessura: 4, intensidade: 0.9 },
         dof: { abertura: 7, maxCoc: 3, maxCocAlta: 5 },   // px do palco de 1920 x 1080
       },

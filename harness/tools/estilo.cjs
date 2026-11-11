@@ -2,6 +2,7 @@
 // Capturas das direções de estilo (?tema=...) para o autor escolher olhando imagens.
 // Uso: node harness/tools/estilo.cjs [--temas keynote,estudio,blueprint] [--beats a0.2,a2.9] [--cut seminario] [--no-build]
 //      node harness/tools/estilo.cjs --perf [--beats a2.9,a5.9]   (só mede quadros por segundo ao vivo)
+//      node harness/tools/estilo.cjs --perf --qualidades baixa,media,alta   (Keynote realista por nível de qualidade)
 // Grava harness/dist/estilo/<tema>/<beat>.png (1920 x 1080), uma folha de contato por tema
 // (harness/dist/estilo/folha-<tema>.png) e a comparação lado a lado (harness/dist/estilo/comparacao.png),
 // com o visual atual (sem tema) na primeira coluna. Também mede o tempo de desenho por quadro.
@@ -19,11 +20,14 @@ const arg = (k, def) => { const a = process.argv.slice(2); return a.includes(k) 
 async function perf(chromium, url, temas, beats, corte) {
   const linhas = [];
   // cada tema também com ?leve=1 (sem os efeitos caros)
-  for (const tema of ['atual', ...temas.flatMap((t) => [t, `${t}+leve`])]) {
+  const qs = arg('--qualidades', null);
+  const lista = qs ? ['atual', ...qs.split(',').map((q) => `keynote@${q}`)] : ['atual', ...temas.flatMap((t) => [t, `${t}+leve`])];
+  for (const tema of lista) {
     const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
     const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
-    const [nome, leve] = tema.split('+');
-    await page.goto(`${url}?cut=${corte}${tema === 'atual' ? '' : `&tema=${nome}`}${leve ? '&leve=1' : ''}`);
+    const [nomeQ, leve] = tema.split('+');
+    const [nome, q] = nomeQ.split('@');
+    await page.goto(`${url}?cut=${corte}${tema === 'atual' ? '' : `&tema=${nome}`}${leve ? '&leve=1' : ''}${q ? `&qualidade=${q}` : ''}`);
     await page.waitForFunction('window.__tourReady === true', null, { timeout: 60000 });
     const r = { tema };
     for (const id of beats) {
@@ -46,7 +50,7 @@ async function perf(chromium, url, temas, beats, corte) {
   console.log(['tema', ...beats].map((x) => x.padEnd(16)).join(''));
   for (const r of linhas) console.log([r.tema, ...beats.map((b) => r[b].toFixed(1))].map((x) => String(x).padEnd(16)).join(''));
   fs.mkdirSync(OUT, { recursive: true });
-  fs.writeFileSync(path.join(OUT, 'perf.json'), JSON.stringify(linhas, null, 1));
+  fs.writeFileSync(path.join(OUT, qs ? 'perf-qualidade.json' : 'perf.json'), JSON.stringify(linhas, null, 1));
 }
 
 async function main() {

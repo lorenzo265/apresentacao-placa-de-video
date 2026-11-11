@@ -86,6 +86,7 @@ function dataTex(dados, W, H, srgb) {
   t.generateMipmaps = true;
   t.anisotropy = 8;
   t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  t.channel = 2;              // atributo uv2: as UVs do GLB (uv, uv1) ficam livres para os mapas assados
   t.needsUpdate = true;
   return t;
 }
@@ -160,10 +161,10 @@ function texUsinagem(def, p, N, rnd, ctx) {
         const tx = r > 1e-6 ? -py / r : 1, ty = r > 1e-6 ? px / r : 0;   // direção circunferencial
         c.aniso[i * 4] = byte(tx * 0.5 + 0.5); c.aniso[i * 4 + 1] = byte(ty * 0.5 + 0.5); c.aniso[i * 4 + 2] = 255;
       } else {
-        c.rug[i] = clamp01(borda ? 0.45 : def.rug + (grao[i] - 0.5) * 0.08);
+        c.rug[i] = clamp01(borda ? 0.45 : def.rug + (grao[i] - 0.5) * 0.04);
         c.metal[i] = borda ? 0.6 : def.metal;
         for (let j = 0; j < 3; j++) c.cor[i * 3 + j] = borda ? corCubo[j] * 0.35 : corPl[j];
-        c.alt[i] = borda ? -0.5 : grao[i] * 0.2;
+        c.alt[i] = borda ? -0.5 : 0;
         c.aniso[i * 4] = 255; c.aniso[i * 4 + 1] = 128; c.aniso[i * 4 + 2] = 0;
       }
       c.aniso[i * 4 + 3] = 255;
@@ -244,7 +245,7 @@ function texPcb(def, p, N, rnd) {
     }
   }
   // vias cobertas (relevo) e algumas abertas (anel estanhado)
-  for (let k = 0; k < 220; k++) {
+  for (let k = 0; k < 140; k++) {
     const x = rnd() * N, y = rnd() * N, aberta = rnd() < 0.25, r = 0.22 * mm;
     d.disco(x, y, r, (i, t) => {
       if (aberta) { corEm(c, i, t < 0.45 ? [0.01, 0.01, 0.01] : via); c.metal[i] = t < 0.45 ? 0 : 1; c.rug[i] = 0.35; }
@@ -253,7 +254,7 @@ function texPcb(def, p, N, rnd) {
   }
   // serigrafia: contornos de componentes e blocos de rótulo (ilegíveis de propósito)
   const seriPx = Math.max(1, Math.round(0.12 * mm));
-  for (let k = 0; k < 16; k++) {
+  for (let k = 0; k < 9; k++) {
     const w = (1.5 + rnd() * 6) * mm, h = (1 + rnd() * 4) * mm, x = rnd() * N, y = rnd() * N;
     const f = (i) => { corEm(c, i, seri); c.rug[i] = 0.75; c.alt[i] = 0.9; };
     d.ret(x, y, w, seriPx, f); d.ret(x, y + h, w, seriPx, f); d.ret(x, y, seriPx, h, f); d.ret(x + w, y, seriPx, h + seriPx, f);
@@ -363,7 +364,7 @@ function uvCaixa(geo, tileMm) {
       uv[(t + j) * 2] = u * k; uv[(t + j) * 2 + 1] = w * k;
     }
   }
-  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
 }
 /** Plana: projeta pelo menor eixo da caixa envolvente e ajusta a textura à caixa (0 a 1). */
 function uvPlanar(geo) {
@@ -377,7 +378,7 @@ function uvPlanar(geo) {
     uv[i * 2] = (p[eu] - bb.min[eu]) / tam[eu];
     uv[i * 2 + 1] = (p[ev] - bb.min[ev]) / tam[ev];
   }
-  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
   // Ponto (u, v) da textura no referencial da placa em mm (glTF: x = x, -z = y da placa).
   const cad = (u, v) => {
     const p = { x: 0, y: 0, z: 0 };
@@ -400,11 +401,12 @@ function grupoDe(o) { for (let a = o; a; a = a.parent) if (a.userData?.group) re
 
 /** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). */
 export function resolveMaterial(o, nomeMatGlb) {
+  // slot de material do passo do Blender (nome listado em materiais_glb) é mais específico que a peça
+  if (nomeMatGlb && TABELA.materiais_glb[nomeMatGlb]) return { id: TABELA.materiais_glb[nomeMatGlb], por: `material ${nomeMatGlb}` };
   for (const n of nomesDe(o)) {
     if (TABELA.pecas[n]) return { id: TABELA.pecas[n], por: `peça ${n}` };
     for (const p of TABELA.padroes) if (new RegExp(p.regex).test(n)) return { id: p.material, por: `padrão ${p.regex}` };
   }
-  if (nomeMatGlb && TABELA.materiais_glb[nomeMatGlb]) return { id: TABELA.materiais_glb[nomeMatGlb], por: `material ${nomeMatGlb}` };
   const g = grupoDe(o);
   if (g && TABELA.grupos[g]) return { id: TABELA.grupos[g], por: `grupo ${g}` };
   return { id: TABELA.padrao, por: 'padrão' };
@@ -415,9 +417,10 @@ const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
 		float lumLd = dot( gl_FragColor.rgb, vec3( 0.2126, 0.7152, 0.0722 ) );
-		gl_FragColor.rgb = mix( gl_FragColor.rgb, vec3( lumLd ) * 0.18, uApaga );
+		gl_FragColor.rgb = mix( gl_FragColor.rgb, vec3( lumLd ) * 0.12, uApaga );
 		float frLd = 1.0 - saturate( dot( normal, geometryViewDir ) );
-		gl_FragColor.rgb += uRealceCor * ( frLd * frLd * frLd ) * uRealce;
+		float fr2Ld = frLd * frLd;
+		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * uRealce;
 	}`;
 
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
@@ -450,12 +453,15 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
   const malhas = [];
   raiz.traverse((o) => { if (o.isMesh) malhas.push(o); });
   for (const o of malhas) {
-    const nomeGlb = (Array.isArray(o.material) ? o.material[0] : o.material)?.name ?? '';
+    const orig = Array.isArray(o.material) ? o.material[0] : o.material;
+    const nomeGlb = orig?.name ?? '';
     const { id, por } = resolveMaterial(o, nomeGlb);
     const def = TABELA.materiais[id] ?? TABELA.materiais[TABELA.padrao];
+    // Mapas do GLB (passo do Blender) mandam: com eles, a textura procedural da tabela não entra.
+    const mapasGlb = !!(orig?.map || orig?.normalMap || orig?.roughnessMap || orig?.metalnessMap || orig?.aoMap);
     let geo = o.geometry;
-    const tx = def.textura;
-    if (!geo.attributes.normal || (tx && !geo.attributes.uv)) {
+    const tx = mapasGlb ? null : def.textura;
+    if (!geo.attributes.normal || (tx && !geo.attributes.uv2)) {
       if (geo.index) geo = geo.toNonIndexed();
       if (!geo.attributes.normal) geo.computeVertexNormals();      // não indexada: normais planas
       o.geometry = geo;
@@ -464,7 +470,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (tx) {
       let bbox = null;
       if (tx.uv === 'planar_bbox') bbox = uvPlanar(geo);
-      else if (!geo.attributes.uv || geo.userData.ldTile !== (tx.tipo === 'aletas' ? valor(tx.passo_mm) : tx.tile_mm)) {
+      else if (!geo.attributes.uv2 || geo.userData.ldTile !== (tx.tipo === 'aletas' ? valor(tx.passo_mm) : tx.tile_mm)) {
         const tile = tx.tipo === 'aletas' ? valor(tx.passo_mm) : tx.tile_mm;
         uvCaixa(geo, tile);
         geo.userData.ldTile = tile;
@@ -490,10 +496,20 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       if (tex?.aniso) m.anisotropyMap = tex.aniso;
     }
     if (fis && def.verniz) { m.clearcoat = def.verniz.forca; m.clearcoatRoughness = def.verniz.rug; }
+    if (mapasGlb) {
+      // cor, ORM, normal e oclusão assados no Blender; a tabela dá só o que o GLB não traz
+      for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap']) if (orig[k]) m[k] = orig[k];
+      if (orig.map) m.color.set(0xffffff);
+      if (orig.roughnessMap) m.roughness = orig.roughness;
+      if (orig.metalnessMap) m.metalness = orig.metalness;
+      if (orig.normalMap) m.normalScale.copy(orig.normalScale);
+      if (orig.aoMap) m.aoMapIntensity = orig.aoMapIntensity;
+      if (orig.emissiveMap) m.emissive.copy(orig.emissive);
+    }
     preparaMaterial(m, corRealce);
     o.material = m;
     o.castShadow = o.receiveShadow = true;
-    relatorio.push({ malha: o.name, material: id, por });
+    relatorio.push({ malha: o.name, material: id, por, mapas: mapasGlb ? 'glb' : tx ? tx.tipo : null });
   }
   return relatorio;
 }
@@ -526,8 +542,18 @@ function criaAmbiente(renderer, cfg, corDe) {
   esfera.rotation.x = Math.PI / 2;                           // equirretangular com Y para cima -> Z para cima
   cena.add(esfera);
   for (const c of cfg.caixas) {
-    const p = new THREE.Mesh(new THREE.PlaneGeometry(c.tam[0], c.tam[1]),
-      new THREE.MeshBasicMaterial({ color: corDe(c.K).multiplyScalar(c.i), side: THREE.DoubleSide, toneMapped: false }));
+    const mat = new THREE.MeshBasicMaterial({ color: corDe(c.K).multiplyScalar(c.i), side: THREE.DoubleSide, toneMapped: false });
+    if (c.degrade) {
+      // softbox com degradê (de c.degrade[0] a c.degrade[1] ao longo da largura): o reflexo nas faces
+      // planas vira um degradê, como nas fotos de produto, em vez de um cinza chapado
+      const n = 64, d = new Uint8Array(n * 4);
+      for (let i = 0; i < n; i++) { const t = i / (n - 1); const v = byte(c.degrade[0] + (c.degrade[1] - c.degrade[0]) * suave(t)); d.set([v, v, v, 255], i * 4); }
+      const t = new THREE.DataTexture(d, n, 1);
+      t.magFilter = t.minFilter = THREE.LinearFilter;
+      t.needsUpdate = true;
+      mat.map = t;
+    }
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(c.tam[0], c.tam[1]), mat);
     p.position.set(...c.pos);
     p.lookAt(0, 0, 0);
     cena.add(p);
