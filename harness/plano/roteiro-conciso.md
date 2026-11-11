@@ -84,7 +84,9 @@ Hoje são 48 beats e cerca de 20 minutos. Proposta: **cerca de 34 beats e 18 a 1
 
 ## 6. Combinado com a sessão de câmera
 
-(vazio até o autor aprovar a estrutura)
+Sessão irmã: `session_018iRo36DfXdjSBu15DhrohB`. Orquestradora: `session_018iRo36V6iZYhDLKo7AWJja`.
+
+- 2026-11-11: proposta da seção 4 enviada à sessão de câmera, com pedido do plano dela (ordem, beats de desmontagem, duração mínima de câmera). Nada combinado ainda, aguardando o autor.
 
 ## 7. Respostas para perguntas (Q&A)
 
