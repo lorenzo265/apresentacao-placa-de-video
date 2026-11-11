@@ -115,14 +115,14 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          -362.0,
-          -472.3,
-          -131.3
+          560,
+          -330,
+          420
         ],
         "target": [
-          56.6,
-          125.6,
-          50.7
+          45,
+          80,
+          10
         ],
         "fov": 28,
         "duration": 2.0,
@@ -146,16 +146,16 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          517.8,
-          -353.1,
-          -272.4
+          200,
+          -330,
+          -560
         ],
         "target": [
-          243.4,
-          122.1,
-          19.4
+          220,
+          75,
+          10
         ],
-        "fov": 30,
+        "fov": 28,
         "duration": 3.0,
         "ease": "power2.inOut"
       },
@@ -183,14 +183,14 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          621.9,
-          -126.2,
-          -348.4
+          -230,
+          -330,
+          400
         ],
         "target": [
-          160.5,
-          -2.6,
-          52.5
+          50,
+          85,
+          0
         ],
         "fov": 30,
         "duration": 2.5,
@@ -214,16 +214,16 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          -51.5,
-          -570.4,
-          -80.5
+          300,
+          -620,
+          190
         ],
         "target": [
-          62.5,
-          75.8,
-          58.9
+          50,
+          75,
+          10
         ],
-        "fov": 30,
+        "fov": 27,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
@@ -245,16 +245,16 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          381.6,
-          -394.1,
-          393.6
+          480,
+          -380,
+          380
         ],
         "target": [
-          253.3,
-          84.8,
-          6.3
+          50,
+          95,
+          10
         ],
-        "fov": 30,
+        "fov": 32,
         "duration": 3.0,
         "ease": "power3.inOut"
       },
@@ -266,7 +266,7 @@
       ],
       "callout": {
         "anchor": "anchor.cooler.fan.1",
-        "box": "right-center",
+        "box": "left-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -332,14 +332,14 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          141.0,
-          -350.1,
-          -445.7
+          80,
+          -460,
+          -560
         ],
         "target": [
-          248.1,
-          49.7,
-          13.9
+          250,
+          75,
+          10
         ],
         "fov": 30,
         "duration": 3.0,
@@ -375,16 +375,16 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          520.0,
-          442.5,
-          -293.9
+          330,
+          420,
+          110
         ],
         "target": [
-          225.5,
-          21.9,
-          26.9
+          195,
+          130,
+          17
         ],
-        "fov": 28,
+        "fov": 26,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
@@ -457,14 +457,14 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          -107.6,
-          587.3,
-          -214.1
+          430,
+          560,
+          300
         ],
         "target": [
-          221.8,
-          116.9,
-          18.0
+          170,
+          80,
+          10
         ],
         "fov": 30,
         "duration": 2.5,
@@ -500,16 +500,16 @@
       "explode_state": "E1",
       "camera": {
         "pos": [
-          -299.5,
-          -247.1,
-          -159.4
+          -330,
+          -400,
+          300
         ],
         "target": [
-          75.5,
-          15.5,
-          25.5
+          130,
+          55,
+          10
         ],
-        "fov": 30,
+        "fov": 33,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
@@ -537,16 +537,16 @@
       "explode_state": "E2",
       "camera": {
         "pos": [
-          500.5,
-          -561.1,
-          -325.7
+          430,
+          -700,
+          330
         ],
         "target": [
-          255.7,
-          111.5,
-          -93.2
+          120,
+          60,
+          -100
         ],
-        "fov": 30,
+        "fov": 32,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
@@ -574,22 +574,22 @@
       "explode_state": "E3",
       "camera": {
         "pos": [
-          586.2,
-          -509.3,
-          -336.6
+          -160,
+          -700,
+          300
         ],
         "target": [
-          78.8,
-          -1.9,
-          -75.4
+          160,
+          60,
+          -90
         ],
-        "fov": 30,
+        "fov": 32,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
       "callout": {
         "anchor": "anchor.frame.center_covers.1",
-        "box": "left-center",
+        "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -611,22 +611,22 @@
       "explode_state": "E4",
       "camera": {
         "pos": [
-          32.9,
-          -580.3,
-          -243.7
+          290,
+          -430,
+          110
         ],
         "target": [
-          255.2,
-          30.4,
-          -57.4
+          120,
+          35,
+          -65
         ],
-        "fov": 30,
+        "fov": 34,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
       "callout": {
         "anchor": "anchor.pcie.adapter.fingers",
-        "box": "right-center",
+        "box": "right-bottom",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -648,14 +648,14 @@
       "explode_state": "E5",
       "camera": {
         "pos": [
-          433.8,
-          -496.9,
-          -313.8
+          -120,
+          -640,
+          260
         ],
         "target": [
-          74.1,
-          16.7,
-          -34.7
+          170,
+          60,
+          -60
         ],
         "fov": 30,
         "duration": 2.5,
@@ -663,13 +663,14 @@
       },
       "callout": {
         "anchor": "anchor.fasteners.e5_plate.1",
-        "box": "left-center",
+        "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
       "hold": 12.0,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "inferred"
       ],
       "speaker": "Vitor"
     },
@@ -685,14 +686,14 @@
       "explode_state": "E6",
       "camera": {
         "pos": [
-          108.1,
-          -416.3,
-          -326.0
+          420,
+          -600,
+          220
         ],
         "target": [
-          193.3,
-          67.1,
-          -42.6
+          130,
+          60,
+          -50
         ],
         "fov": 30,
         "duration": 2.5,
@@ -709,7 +710,8 @@
       },
       "hold": 13.0,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "inferred"
       ],
       "speaker": "Vitor"
     },
@@ -725,16 +727,16 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          181.2,
-          -147.0,
-          36.0
+          152,
+          -40,
+          -2
         ],
         "target": [
-          181.2,
-          68.9,
-          -34.2
+          152,
+          62,
+          -42
         ],
-        "fov": 28,
+        "fov": 30,
         "duration": 3.0,
         "ease": "power3.inOut"
       },
@@ -767,16 +769,16 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          503.5,
-          -623.5,
-          -262.4
+          560,
+          -760,
+          260
         ],
         "target": [
-          60.2,
-          9.5,
-          -69.7
+          110,
+          60,
+          -90
         ],
-        "fov": 30,
+        "fov": 32,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
@@ -799,16 +801,16 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          687.8,
-          -434.5,
-          -295.5
+          370,
+          380,
+          50
         ],
         "target": [
-          119.2,
-          9.7,
-          -32.9
+          205,
+          80,
+          -38
         ],
-        "fov": 30,
+        "fov": 28,
         "duration": 2.0,
         "ease": "power2.inOut"
       },
@@ -845,22 +847,21 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          687.8,
-          -434.5,
-          -295.5
+          -230,
+          -430,
+          60
         ],
         "target": [
-          119.2,
-          9.7,
-          -32.9
+          110,
+          45,
+          -60
         ],
-        "fov": 30,
+        "fov": 32,
         "duration": 2.0,
         "ease": "sine.inOut"
       },
       "highlight": [
         "gpu.package",
-        "mem.back",
         "mem.front",
         "flex.dp",
         "io.board",
@@ -868,7 +869,7 @@
       ],
       "callout": {
         "anchor": "anchor.pcie.adapter.fingers",
-        "box": "left-center",
+        "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -879,7 +880,8 @@
       "provenance": [
         "confirmed",
         "derived",
-        "inferred"
+        "inferred",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },
@@ -895,16 +897,16 @@
       "explode_state": "E8",
       "camera": {
         "pos": [
-          687.8,
-          -434.5,
-          -295.5
+          560,
+          -700,
+          260
         ],
         "target": [
-          119.2,
-          9.7,
-          -32.9
+          150,
+          70,
+          -20
         ],
-        "fov": 30,
+        "fov": 32,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
@@ -917,7 +919,7 @@
       ],
       "callout": {
         "anchor": "anchor.cooler.base.1",
-        "box": "left-center",
+        "box": "left-bottom",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -1014,29 +1016,26 @@
       "level": 1,
       "priority": 1,
       "status": "ready",
-      "part": "mem.back",
+      "part": "mem.front",
       "diagram": null,
       "explode_state": "E7",
       "camera": {
         "pos": [
-          370.2,
-          -131.3,
-          -112.1
+          235,
+          -115,
+          -3
         ],
         "target": [
-          128.1,
-          38.2,
-          -38.4
+          150,
+          75,
+          -36
         ],
-        "fov": 28,
+        "fov": 30,
         "duration": 2.5,
         "ease": "power2.inOut"
       },
-      "highlight": [
-        "mem.front"
-      ],
       "callout": {
-        "anchor": "anchor.mem.back.8",
+        "anchor": "anchor.mem.front.8",
         "box": "left-center",
         "line_in": 0.8,
         "line_out": 0.5
@@ -1060,22 +1059,21 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          187.4,
-          -192.8,
-          48.6
+          152,
+          -95,
+          -8
         ],
         "target": [
-          187.4,
-          68.5,
-          -36.3
+          152,
+          66,
+          -46
         ],
-        "fov": 28,
+        "fov": 30,
         "duration": 3.0,
         "ease": "power3.inOut"
       },
       "highlight": [
-        "mem.front",
-        "mem.back"
+        "mem.front"
       ],
       "callout": {
         "anchor": "anchor.gpu.package.1",
@@ -1232,7 +1230,6 @@
         "ease": "power3.inOut"
       },
       "highlight": [
-        "mem.back",
         "gpu.package"
       ],
       "callout": {
@@ -2504,14 +2501,14 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          385.9,
-          -513.5,
-          -246.2
+          420,
+          -560,
+          300
         ],
         "target": [
-          82.5,
-          12.0,
-          49.8
+          70,
+          75,
+          10
         ],
         "fov": 30,
         "duration": 5.0,
@@ -2538,16 +2535,16 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          -213.9,
-          649.3,
-          -176.6
+          80,
+          -330,
+          -560
         ],
         "target": [
-          212.5,
-          141.2,
-          64.8
+          110,
+          75,
+          10
         ],
-        "fov": 30,
+        "fov": 28,
         "duration": 3.0,
         "ease": "sine.inOut"
       },
