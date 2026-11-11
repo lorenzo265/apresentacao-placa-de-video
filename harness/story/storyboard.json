@@ -1105,7 +1105,12 @@
         "confirmed",
         "derived"
       ],
-      "speaker": "Arthur"
+      "speaker": "Arthur",
+      "vitrine": {
+        "peca": "mem.back.3",
+        "face": "-z",
+        "ocupa": 0.24
+      }
     },
     {
       "id": "a3.2",
