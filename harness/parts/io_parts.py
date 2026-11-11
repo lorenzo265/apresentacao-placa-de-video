@@ -30,13 +30,14 @@ procedência: "derived" quando foi medido nesta tarefa em foto de terceiro (mét
 pontos medidos nas fotos estão escritos aqui, e harness/parts/io_compare.py refaz as
 comparações sobre as fotos.
 
-Posição da fileira de DisplayPort: as âncoras de io.board.dp (y 46,26 a 104,76; z 20) são
-escolha de bloqueio sem fonte. A foto de frente do bracket (storagereview/sr-1) põe a fileira
-cerca de 13 mm mais perto dos contatos e 4,7 mm mais perto da face B. O padrão (--foto) segue a
-foto e deixa as âncoras para o assembly-planner mover (relatório); --ancoras centra o conjunto
-do bracket nas âncoras atuais (o bracket fica deslocado em relação à placa).
+Posição da fileira de DisplayPort (contrato de 2026-11-11, assembly-plan 12.3): as âncoras de
+io.board.dp (y 29,44 a 92,14; z 13,5) saem da arbitragem do visual-qa (bracket_top_below_shroud_top,
+dp_row_center_z, dp_row_from_bracket_tip, dp_port_pitch). O padrão (modo âncoras) centra o
+conjunto do bracket nas âncoras; --foto posiciona pela foto (topo do bracket a
+bracket_top_below_shroud_top do topo da carcaça). Os dois modos coincidem; o relatório traz a
+diferença.
 
-Uso:   python3 -I harness/parts/io_parts.py [--ancoras]
+Uso:   python3 -I harness/parts/io_parts.py [--foto]
 Saídas: harness/build/parts/<id>.glb e .step, harness/build/parts/io-report.json
 """
 import csv
@@ -61,7 +62,7 @@ TOL_ANCHOR = 2.0       # mm
 TESS_TOL = 0.02        # mm
 TESS_ANG = 0.25        # rad
 TRI_BUDGET = 40_000    # triângulos, todas as peças deste script
-MODE = "ancoras" if "--ancoras" in sys.argv else "foto"
+MODE = "foto" if "--foto" in sys.argv else "ancoras"
 
 # ---------------------------------------------------------------------------
 # Valores sem linha no CSV: (valor, procedência, nota)
@@ -71,15 +72,16 @@ MODE = "ancoras" if "--ancoras" in sys.argv else "foto"
 #        slots (bracket_slot_width_single + pcie_slot_pitch = 38,74 em 246 px: 6,35 px/mm).
 #        Conferência: as duas línguas ficam a 20,5 mm uma da outra (passo de slot da norma: 20,32).
 #  am_adapter: retificação do visual-qa (chiphell/pcb-a) a 12,8 px/mm na grade sobreposta;
-#        a zona de contatos mede 84,2 (norma: 84,3). Na direção da altura a mesma grade dá
-#        36,55 para a altura sem o lóbulo, contra 34,5 do CSV: o contorno é escalado por
-#        0,9439 nessa direção para bater com o CSV (diferença registrada no relatório).
+#        a grade da base sai 1,3 % grande sobre o PCB (chiphell_pcb_a_scale_factor). O contorno
+#        vai para o modelo com o comprimento e as alturas da arbitragem (pcie_adapter_length,
+#        _strip_height, _total_height_without_lobe, _total_height): escala única em x e mapa
+#        linear por trechos na altura (0; faixa; sem lóbulo; com lóbulo). Os furos e o J3 vêm
+#        das linhas iface_adapter_*_hole_* e iface_j3_center_* do CSV.
 #  gn-25: adaptador quase de frente; régua = passo dos contatos (1,00 mm, norma).
 #  sabareesh/wb-bare-pcb e visualqa/ab_conn (furos do conector no PCB do Chiphell): conector.
 # ---------------------------------------------------------------------------
 G = {
     # bracket (sr-1)
-    "br_top_below_shroud_top": (27.0, "derived", "a ponta do bracket do lado da borda superior fica 27,0 mm abaixo do topo da carcaça (sr-1: 172 px a 6,39 px/mm); com bracket_height_overall, a ponta das línguas fica em y = -9,86"),
     "br_face_a_flush": (0.0, "derived", "a borda do bracket do lado da face A fica rente à face A (sr-1); a outra borda sai da largura de dois slots (conta)"),
     "br_tongue_z": (((7.10, 16.50), (27.60, 37.06)), "derived", "faixas em z das duas línguas (sr-1); centros a 20,46 mm, passo de slot da norma 20,32"),
     "br_tongue_len": ((9.9, 7.3), "derived", "comprimento das línguas, do lado da face B e do lado da face A, até a borda da chapa (sr-1)"),
@@ -92,9 +94,6 @@ G = {
     "br_corner_r": (0.6, "inferred", "raio dos cantos do contorno da chapa"),
     "br_flange_clear": (0.1, "inferred", "folga da dobra da ponta de cima até a carcaça (a dobra cabe no recuo da placa de extremidade)"),
     "br_bend_chamfer": (0.6, "inferred", "chanfro da aresta externa da dobra"),
-    "dp_row_y_from_tip": (72.25, "derived", "centro da fileira de aberturas medido da ponta das línguas (sr-1: centros em 40,95; 61,77; 82,66; 103,60)"),
-    "dp_row_z": (15.3, "derived", "centro das aberturas em z (sr-1): mais perto da face B que o meio da espessura"),
-    "dp_photo_pitch": (20.88, "derived", "passo das aberturas em sr-1 com a escala do bracket; o modelo usa dp_port_pitch do CSV (19,5 ± 2)"),
     "br_dp_open": ((18.0, 6.6), "derived", "abertura do bracket para cada DisplayPort, largura (y) e altura (z) (sr-1)"),
     "br_dp_chamfer": (2.2, "derived", "chanfro do canto da abertura do lado (-y, +z) (sr-1)"),
     "br_dp_open_r": (0.8, "inferred", "raio dos outros cantos da abertura"),
@@ -116,7 +115,6 @@ G = {
     "dp_tongue": ((11.0, 1.2), "inferred", "largura e espessura da língua de contatos"),
     "dp_contact_w": (0.4, "inferred", "largura de cada contato (10 por face, passo dp_contact_pitch)"),
     # adaptador PCIe (am_adapter, gn-25)
-    "ad_v_scale": (0.9439, "derived", "fator da direção da altura entre a grade de am_adapter e o CSV (34,5 / 36,55); ver calibração no topo"),
     "ad_outline_img": ("am_adapter", "derived", "contorno, lóbulo, rasgo, gancho e furos medidos em am_adapter (retificação do visual-qa sobre chiphell/pcb-a), pontos em AD_IMG"),
     "ad_key": ((1.55, 8.1), "derived", "largura e profundidade da chave entre os grupos de contatos (gn-25, passo de 1,00 mm como régua)"),
     "ad_pad": ((0.70, 0.35, 5.47), "derived", "contatos: largura (gn-25) e faixa em y de 0,35 a 5,47 (am_adapter)"),
@@ -124,14 +122,11 @@ G = {
     "ad_bevel": (0.4, "inferred", "chanfro da borda de inserção nas duas faces"),
     "ad_holes": ((2.0, 3.8, 2.5, 2.0), "derived", "diâmetros: furo com anel de cobre e anel (gn-25), furo do lóbulo, furos da faixa"),
     "ad_ring_t": (0.035, "inferred", "espessura do anel de cobre como relevo"),
-    "j3_width": (5.4, "derived", "largura do J3 em y (am_adapter: 5,7 na grade x 0,9439)"),
-    "j3_height": (1.8, "inferred", "altura do J3 acima do adaptador; o vão até o verso do PCB é 3,6 (iface_pcb_back_z - 2,5) e o par do PCB fica com o resto"),
-    "j3_slot": ((21.0, 1.6, 1.2), "inferred", "fenda central do J3: comprimento, largura, profundidade"),
+    "j3_width": (5.63, "derived", "largura do J3 em y (am_adapter: 5,7 na grade / chiphell_pcb_a_scale_factor)"),
+    "j3_slot": ((21.0, 1.6, 0.6), "inferred", "fenda central do J3: comprimento, largura, profundidade (menor que a altura do plugue, iface_j3_mating_z - iface_adapter_board_z_max)"),
     "j3_contacts": ((42, 0.5, 0.25), "inferred", "contatos por fileira, passo e largura (gn-25 mostra duas fileiras finas, sem contagem legível)"),
     # conector de 16 pinos
-    "p16_across": (7.40, "inferred", "espessura do corpo no plano do PCB, através das duas fileiras: cota 7,40 da vista lateral da Intel 613768 (Fig. 5-8, sem rótulo identificado); sabareesh dá cerca de 7,4 em perspectiva"),
-    "p16_depth": (11.5, "derived", "profundidade do corpo na direção de encaixe: topo do corpo em sabareesh/wb-bare-pcb mede 12,2 mm (PCB de 119,6 mm em 572 px), corrigido por 1,08 de ampliação do topo (corpo de 19 mm a cerca de 250 mm da câmera): 11,3 a 11,6; tolerância de 1,5; a cota 9,91 da Intel (sem rótulo) fica como alternativa"),
-    "p16_sense_w": (2.3, "inferred", "faixa dos 4 pinos de sinal ao lado das fileiras de potência; com p16_across, o corpo mede 9,7 através, como o topo em sabareesh (10,3 corrigido para 9,5 a 9,7)"),
+    "p16_across": (7.40, "inferred", "parte do corpo com as duas fileiras de potência, através delas: cota 7,40 da vista lateral da Intel 613768 (Fig. 5-8, sem rótulo identificado); o resto de power_connector_body_across (9,7) é a faixa dos 4 pinos de sinal; o corpo inteiro fica centrado em (power_connector_center_from_bracket_end, power_connector_center_y)"),
     "p16_sense_len_z": (9.0, "inferred", "extensão em z da faixa de sinal"),
     "p16_cavity": ((2.3, 6.5), "inferred", "cavidade de potência: lado e profundidade"),
     "p16_pin": (0.64, "inferred", "lado dos pinos de potência dentro das cavidades"),
@@ -268,22 +263,21 @@ def union(shapes):
 # Posição do conjunto do bracket (ver docstring)
 # ---------------------------------------------------------------------------
 def io_placement():
+    """Ponta das línguas (y), deslocamento em z do conjunto e centro da fileira de DisplayPort.
+    Devolve também a diferença entre o modo pelas âncoras e o modo pela foto."""
     dp = [a["pos"] for a in PARTS["io.board.dp"]["anchors"]]
+    yc_a = float(np.mean([p[1] for p in dp]))
+    zc_a = float(np.mean([p[2] for p in dp]))
+    tip_a = yc_a - M("dp_row_from_bracket_tip")
+    dz_a = zc_a - M("dp_row_center_z")
+    tip_f = M("card_envelope_height") - M("bracket_top_below_shroud_top") - M("bracket_height_overall")
+    diff = {"y_tip_ancoras_menos_foto": round(tip_a - tip_f, 3), "dz_ancoras_menos_foto": round(dz_a, 3)}
     if MODE == "ancoras":
-        yc = float(np.mean([p[1] for p in dp]))
-        zc = float(np.mean([p[2] for p in dp]))
-        y_tip = yc - g("dp_row_y_from_tip")
-        dz = zc - g("dp_row_z")
-    else:
-        y_top = M("card_envelope_height") - g("br_top_below_shroud_top")
-        y_tip = y_top - M("bracket_height_overall")
-        yc = y_tip + g("dp_row_y_from_tip")
-        dz = 0.0
-        zc = g("dp_row_z")
-    return y_tip, dz, yc, zc
+        return tip_a, dz_a, yc_a, zc_a, diff
+    return tip_f, 0.0, tip_f + M("dp_row_from_bracket_tip"), M("dp_row_center_z"), diff
 
 
-Y_TIP, DZ, DP_YC, DP_ZC = io_placement()
+Y_TIP, DZ, DP_YC, DP_ZC, MODE_DIFF = io_placement()
 BR_Z0 = T - (M("bracket_slot_width_single") + M("pcie_slot_pitch")) + DZ     # borda do lado da face B
 BR_Z1 = T + DZ                                                              # borda do lado da face A
 PITCH = M("dp_port_pitch")
@@ -360,8 +354,9 @@ def build_bracket():
     zone(pid, "marcas_regulatorias", "serigrafia_branca", plane_x=-t, y=[by(ya), by(yb)], z=[bz(za), bz(zb)])
     zone(pid, "chapa", "aco_pintado_preto_fosco", note="todo o resto da peça")
     note(pid, "contorno: comprimento e espessura da norma (bracket_height_overall, bracket_thickness), largura de dois slots por conta; línguas, entalhe, painel, aberturas e etiquetas medidos em sr-1")
-    note(pid, "posição em y: %s; ponta das línguas em y = %.2f, ponta de cima em %.2f" % (
-        "pela foto (topo do bracket 27 mm abaixo do topo da carcaça)" if MODE == "foto" else "pelas âncoras de io.board.dp", Y_TIP, Y_TIP + L))
+    note(pid, "posição em y: %s; ponta das línguas em y = %.2f, ponta de cima em %.2f (%.2f abaixo do topo da carcaça; bracket_top_below_shroud_top = %.1f); diferença entre os dois modos: %.3f mm" % (
+        "pela foto (bracket_top_below_shroud_top)" if MODE == "foto" else "pelas âncoras de io.board.dp (dp_row_from_bracket_tip)", Y_TIP, Y_TIP + L,
+        M("card_envelope_height") - Y_TIP - L, M("bracket_top_below_shroud_top"), MODE_DIFF["y_tip_ancoras_menos_foto"]))
     note(pid, "painel em relevo de %.1f mm para fora com borda inclinada (palpite de forma: a borda aparece em sr-1 e gn-11)" % rel)
     return body
 
@@ -444,8 +439,9 @@ def build_dp():
     zone(pid, "lingua", "plastico_preto")
     zone(pid, "contatos", "dourado", note="20 contatos, 10 por face da língua, passo dp_contact_pitch")
     note(pid, "receptáculo pelas cotas do CSV (%.2f x %.2f x %.2f), boca de %.1f mm, casca de %.1f, chanfro do canto (-y, +z) e língua com 20 contatos: forma de norma sem desenho aberto (palpites em G)" % (W, H, D, g("dp_cavity_depth"), st))
-    note(pid, "centros da fileira: y %s, z %.2f, passo dp_port_pitch (%.1f); sr-1 mede %.2f com a escala do bracket" % (
-        ", ".join("%.2f" % v for v in DP_Y), DP_ZC, PITCH, g("dp_photo_pitch")))
+    dev = max(abs(y - a["pos"][1]) for y, a in zip(DP_Y, PARTS[pid]["anchors"]))
+    note(pid, "centros da fileira: y %s, z %.2f (dp_row_center_z), passo dp_port_pitch (%.1f, arbitragem); maior distância às âncoras em y: %.3f mm" % (
+        ", ".join("%.2f" % v for v in DP_Y), DP_ZC, PITCH, dev))
     return out
 
 
@@ -474,22 +470,63 @@ AD_GOLD = ((114.5, 103.5), (101.6, 30.3))   # grupos de contatos (yi), curto e l
 AD_KEY_YI = 102.55
 
 
+AD_STRIP_XI, AD_TAB_XI = 264.15, 246.05            # borda da faixa e topo da aba sem o lóbulo
+AD_H_IMG = (AD_EDGE_XI - AD_STRIP_XI, AD_EDGE_XI - AD_TAB_XI, AD_EDGE_XI - min(p[0] for p in AD_IMG))
+
+
 def ad_xform():
+    """Grade de am_adapter para o modelo: escala única em x (pcie_adapter_length) a partir do J3
+    (iface_j3_center_x) e mapa linear por trechos na altura, que leva a faixa, a aba sem o lóbulo
+    e o lóbulo às alturas da arbitragem."""
     s_u = M("pcie_adapter_length") / (AD_END_YI - 14.3)
-    s_v = M("pcie_adapter_total_height_without_lobe") / (AD_EDGE_XI - 246.05)
-    x0 = M("pcie_adapter_connector_x") - (AD_END_YI - AD_J3_IMG[1]) * s_u
+    h_csv = (M("pcie_adapter_strip_height"), M("pcie_adapter_total_height_without_lobe"), M("pcie_adapter_total_height"))
+    x0 = M("iface_j3_center_x") - (AD_END_YI - AD_J3_IMG[1]) * s_u
 
     def f(xi, yi):
-        return (x0 + (AD_END_YI - yi) * s_u, (AD_EDGE_XI - xi) * s_v)
-    return f, s_u, s_v, x0
+        return (x0 + (AD_END_YI - yi) * s_u, float(np.interp(AD_EDGE_XI - xi, (0.0,) + AD_H_IMG, (0.0,) + h_csv)))
+    return f, s_u, h_csv, x0
+
+
+def adapter_outline_xy():
+    """Contorno do adaptador no plano xy do modelo (sem arredondar), para a carcaça e o blockout."""
+    f = ad_xform()[0]
+    return [f(*p) for p in AD_IMG]
+
+
+def adapter_holes():
+    """Furos do CSV: 4 com anel (presilha), 1 no lóbulo, 2 na faixa, como (x, y, diâmetro, tipo)."""
+    hd, rd, lobe_d, sd = g("ad_holes")
+    out = [(M("iface_adapter_ring_hole_%d_x" % k), M("iface_adapter_ring_hole_%d_y" % k), hd, "anel") for k in (1, 2, 3, 4)]
+    out.append((M("iface_adapter_lobe_hole_x"), M("iface_adapter_lobe_hole_y"), lobe_d, "lobulo"))
+    out += [(M("iface_adapter_strip_hole_%d_x" % k), M("iface_adapter_strip_hole_%d_y" % k), sd, "faixa") for k in (1, 2)]
+    return out
+
+
+def poly_edge_dist(pts, q):
+    P = np.asarray(pts, float)
+    best = np.inf
+    for a, b in zip(P, np.roll(P, -1, axis=0)):
+        e = b - a
+        t = np.clip(np.dot(q - a, e) / max(np.dot(e, e), 1e-12), 0, 1)
+        best = min(best, float(np.linalg.norm(a + t * e - q)))
+    return best
+
+
+CONFLICTS = []
 
 
 def build_adapter():
     pid = "pcie.adapter"
-    f, s_u, s_v, x0 = ad_xform()
+    f, s_u, h_csv, x0 = ad_xform()
     za = M("iface_adapter_board_z_min")
     zb = za + M("pcb_thickness")
+    assert abs(zb - M("iface_adapter_board_z_max")) < 0.02, "espessura do adaptador fora do contrato"
     pts = [f(*p) for p in AD_IMG]
+    raw = list(pts)
+    xmin, xmax = min(p[0] for p in pts), max(p[0] for p in pts)
+    for k, v in (("iface_adapter_x_min", xmin), ("iface_adapter_x_max", xmax)):
+        if abs(v - M(k)) > 0.05:
+            CONFLICTS.append({"peca": pid, "tema": k, "modelo": round(v, 3), "csv": M(k), "dono": "assembly-planner"})
     rad = [0.5] * len(pts)
     pts = round_poly(pts, rad, 3)
     board = prism_z(pts, za, zb)
@@ -501,7 +538,14 @@ def build_adapter():
     # furos
     hd, rd, lobe_d, sd = g("ad_holes")
     rt = g("ad_ring_t")
-    holes = [(f(*p), hd) for p in AD_RING_HOLES] + [(f(*AD_LOBE_HOLE), lobe_d)] + [(f(*p), sd) for p in AD_STRIP_HOLES]
+    holes = [((hx, hy), d) for hx, hy, d, _ in adapter_holes()]
+    for (hx, hy), d in holes:
+        dist = poly_edge_dist(raw, np.array([hx, hy]))
+        margin = dist - d / 2
+        if margin < 0.3:
+            CONFLICTS.append({"peca": pid, "tema": "furo de %.1f mm em (%.2f; %.2f) a %.2f mm da borda (folga mínima de 0,3)" % (d, hx, hy, margin),
+                              "dono": "visual-qa, assembly-planner",
+                              "motivo": "furo do CSV (iface_adapter_*_hole_*, escala / 1,013 a partir do J3) contra o contorno com as alturas arbitradas (pcie_adapter_total_height = %.1f); as duas medidas vêm da mesma foto com correções diferentes" % M("pcie_adapter_total_height")})
     # anéis de cobre nas duas faces
     for (cx, cy), _ in holes[:4]:
         ring = circle(cx, cy, rd / 2, 28)
@@ -531,8 +575,8 @@ def build_adapter():
               [(-0.01, za - pt - 0.01), (bv, za - pt - 0.01), (-0.01, za - pt + bv)]):
         board = board - prism_x(w, fx0, fx1)
     # conector J3 de placa a placa (face do lado do PCB)
-    jx, jy = M("pcie_adapter_connector_x"), M("pcie_adapter_connector_center_y")
-    jl, jw, jh = M("pcie_adapter_connector_length"), g("j3_width"), g("j3_height")
+    jx, jy = M("iface_j3_center_x"), M("iface_j3_center_y")
+    jl, jw, jh = M("pcie_adapter_connector_length"), g("j3_width"), M("iface_j3_mating_z") - zb
     sl, sw_, sdp = g("j3_slot")
     nc, cp, cw = g("j3_contacts")
     j3 = prism_z(round_poly([(jx - jl / 2, jy - jw / 2), (jx + jl / 2, jy - jw / 2), (jx + jl / 2, jy + jw / 2), (jx - jl / 2, jy + jw / 2)], 0.6, 3), zb - 0.01, zb + jh)
@@ -550,11 +594,18 @@ def build_adapter():
     zone(pid, "aneis", "cobre", centers=[h[0] for h in holes[:4]])
     zone(pid, "j3_corpo", "plastico_preto", x=[jx - jl / 2, jx + jl / 2], y=[jy - jw / 2, jy + jw / 2])
     zone(pid, "j3_contatos", "dourado")
-    note(pid, "contorno da foto retificada do Chiphell (am_adapter): comprimento pcie_adapter_length, altura sem o lóbulo pcie_adapter_total_height_without_lobe; a mesma grade dá alturas 5,5 % maiores que o CSV (relatório)")
-    note(pid, "posição em x pelo J3 em pcie_adapter_connector_x (interface com pcb.main); os contatos ficam de x = %.2f a %.2f (%d por face, passo edge_finger_pitch), contra pcie_fingers_start/end (48 e 131)" % (min(pads) - pw / 2, max(pads) + pw / 2, len(pads)))
-    note(pid, "J3 centrado em (pcie_adapter_connector_x, pcie_adapter_connector_center_y); a foto põe o centro em y = %.2f" % f(*AD_J3_IMG)[1])
-    note(pid, "J3 de %.1f mm de altura acima da placa (palpite): o par do PCB fica com os %.1f mm restantes até o verso do PCB" % (jh, M("iface_pcb_back_z") - zb - jh))
-    note(pid, "furos: 4 com anel de cobre (presilha, gn-25), 1 no lóbulo, 2 na faixa (fixação, gn-22): centros em %s" % ", ".join("(%.1f; %.1f)" % h[0] for h in holes))
+    note(pid, "contorno da foto retificada do Chiphell (am_adapter) com o comprimento (pcie_adapter_length, %.1f) e as alturas da arbitragem (faixa %.1f, sem lóbulo %.1f, com lóbulo %.1f): escala única em x e mapa linear por trechos na altura (a grade dava %.2f, %.2f e %.2f); sem o fator antigo de 0,9439" % (
+        M("pcie_adapter_length"), *h_csv, *AD_H_IMG))
+    note(pid, "posição em x pelo J3 em iface_j3_center_x (interface com o receptáculo do verso do PCB): placa de x = %.2f a %.2f (iface_adapter_x_min e _max: %.2f e %.2f); contatos de x = %.2f a %.2f (%d por face, passo edge_finger_pitch)" % (
+        xmin, xmax, M("iface_adapter_x_min"), M("iface_adapter_x_max"), min(pads) - pw / 2, max(pads) + pw / 2, len(pads)))
+    note(pid, "no plano da pcb.plate: placa de z = %.2f a %.2f (iface_adapter_board_z_min e _max)" % (za, zb))
+    note(pid, "J3 centrado em (iface_j3_center_x, iface_j3_center_y); a grade da foto põe o centro em y = %.2f com o mapa da altura" % f(*AD_J3_IMG)[1])
+    note(pid, "plugue do J3 de %.2f mm, até o plano de encaixe iface_j3_mating_z (%.2f); o receptáculo fica em pcb.smd, de %.2f até o verso do PCB (%.2f); divisão da altura sem fonte" % (
+        jh, M("iface_j3_mating_z"), M("iface_j3_mating_z"), M("iface_pcb_back_z")))
+    note(pid, "furos: 4 com anel de cobre (presilha, gn-25), 1 no lóbulo, 2 na faixa (fixação, gn-22), nas linhas iface_adapter_*_hole_* do CSV: centros em %s" % ", ".join("(%.2f; %.2f)" % h[0] for h in holes))
+    for c in CONFLICTS:
+        if c["peca"] == pid:
+            note(pid, "CONFLITO DE INTERFACE (não corrigido): %s; dono: %s" % (c["tema"], c["dono"]))
     return body, holes
 
 
@@ -564,11 +615,12 @@ def build_adapter():
 def build_power_connector():
     pid = "power.connector"
     w = g("p16_across")
-    d = g("p16_depth")
-    H = M("conn16_header_width")
+    d = M("power_connector_body_depth")
+    H = M("power_connector_body_height_z")
+    assert abs(H - M("conn16_header_width")) < 1e-6
     z0 = M("iface_pcb_front_z")
     zc = z0 + H / 2
-    sw = g("p16_sense_w")
+    sw = M("power_connector_body_across") - w          # faixa dos 4 pinos de sinal
     # corpo principal no referencial local: X = direção de encaixe, Y = através das fileiras
     body = box(-d / 2, d / 2, -w / 2, w / 2, z0, z0 + H)
     sl = g("p16_sense_len_z")
@@ -610,7 +662,7 @@ def build_power_connector():
                 (-d / 2 - reach + 2.2, z0 + 0.0), (-d / 2 + 0.01, z0 + H - 4.2)]
         blades.append(prism_y(prof, yy - bt / 2, yy + bt / 2))
     base = box(-d / 2 - bl, -d / 2 + 0.01, -pp / 2 - bt / 2 - 0.6, pp / 2 + bt / 2 + 0.6, z0, z0 + bh)
-    local = body + base + Compound(blades) + Compound(pins)
+    local = Pos(0, -sw / 2, 0) * (body + base + Compound(blades) + Compound(pins))   # corpo de 9,7 centrado
     ang = M("power_connector_rotation_deg") + 90.0
     cx, cy = M("power_connector_center_from_bracket_end"), M("power_connector_center_y")
     shape = Pos(cx, cy, 0) * Rot(0, 0, ang) * local
@@ -618,7 +670,8 @@ def build_power_connector():
     zone(pid, "pinos", "estanhado", note="12 de potência e 4 de sinal, dentro das cavidades")
     zone(pid, "laminas", "estanhado")
     note(pid, "orientação decidida pelas fotos: o lado longo do cabeçote (conn16_header_width, %.2f) fica em z, perpendicular ao PCB; as duas fileiras de 6 ficam lado a lado no plano do PCB, através do chanfro, e a face de encaixe aponta para (+x, +y) a %.0f graus de +x. Fontes: furos no PCB do Chiphell (um furo alongado por fileira e os 4 de sinal em linha, todos na direção de encaixe), sabareesh (corpo alto, duas tiras metálicas lado a lado), pny/3qtr-top-right (lado longo em z na abertura) e a 5090 (pcgamesn-pcb-power)" % (H, ang))
-    note(pid, "corpo de %.2f (através) x %.2f (encaixe) x %.2f (altura, de z = %.1f a %.2f): através pela cota 7,40 da Intel sem rótulo identificado (palpite), encaixe medido em sabareesh; centro em (power_connector_center_from_bracket_end, power_connector_center_y)" % (w, d, H, z0, z0 + H))
+    note(pid, "corpo de %.2f através (power_connector_body_across: %.2f das fileiras de potência mais %.2f da faixa de sinal) x %.2f na direção de encaixe (power_connector_body_depth) x %.2f de altura (power_connector_body_height_z, de z = %.1f a %.2f), centrado em (%.2f; %.2f) (power_connector_center_from_bracket_end, power_connector_center_y); centro da face de encaixe em (%.2f; %.2f; %.2f)" % (
+        w + sw, w, sw, d, H, z0, z0 + H, cx, cy, cx + d / 2 * math.cos(math.radians(ang)), cy + d / 2 * math.sin(math.radians(ang)), zc))
     note(pid, "faixa dos 4 pinos de sinal e trava do lado (-x, +y); lâminas e base atrás do corpo: forma de palpite")
     note(pid, "power_connector_rotation_deg (%.0f) passa a ser lido como o eixo através das fileiras, não como a fileira de 6: a direção de encaixe continua a 45 graus" % M("power_connector_rotation_deg"))
     return shape
@@ -697,16 +750,19 @@ def anchor_check(pid, mesh):
 
 FEATURE_PROV = {
     "io.bracket": {"comprimento e espessura": "confirmed (CEM 3.0, Fig. 9-5)", "largura de dois slots": "derived (conta 18,42 + 20,32)",
-                   "línguas, entalhe, painel, aberturas, etiquetas, posição na placa": "derived (storagereview/sr-1; nesta tarefa)",
+                   "línguas, entalhe, painel, aberturas, etiquetas": "derived (storagereview/sr-1)",
+                   "posição na placa": "derived (arbitragem do visual-qa: bracket_top_below_shroud_top, dp_row_from_bracket_tip)",
                    "relevo do painel e dobra da ponta": "inferred"},
     "fasteners.e1_bracket": {"quantidade e posição": "derived (sr-1, gn-11)", "diâmetro da cabeça": "derived (sr-1)", "altura e fenda": "inferred"},
     "io.board": {"forma": "illustrative (D6)"},
     "io.board.dp": {"cotas do receptáculo": "derived (fonte secundária, CSV)", "passo dos contatos": "confirmed (Molex)",
-                    "passo das portas": "derived (gn-16, CSV)", "posição da fileira": "derived (sr-1) no modo foto; escolha de bloqueio no modo âncoras",
+                    "passo das portas": "derived (arbitragem, CSV)", "posição da fileira": "derived (arbitragem: dp_row_center_z e âncoras do assembly; os dois modos coincidem)",
                     "casca, chanfro, língua": "inferred"},
-    "pcie.adapter": {"comprimento, alturas, J3": "derived (CSV, chiphell/pcb-a)", "contorno, lóbulo, gancho, rasgo, furos": "derived (am_adapter, gn-25; nesta tarefa)",
+    "pcie.adapter": {"comprimento, alturas, J3, furos": "derived (CSV: arbitragem e contrato de 2026-11-11, chiphell/pcb-a)", "contorno, lóbulo, gancho, rasgo": "derived (am_adapter, gn-25)",
+                     "plano em z": "inferred (iface_adapter_board_z_min, escolha de contrato)",
                      "passo e número dos contatos": "confirmed (CEM 3.0)", "chave": "derived (gn-25)", "altura do J3, chanfro, relevos": "inferred"},
     "power.connector": {"passos e largura do cabeçote": "confirmed (Intel 613768, CEM 5.1)", "posição e ângulo de encaixe": "derived (CSV)",
+                        "profundidade do corpo": "derived (power_connector_body_depth)", "espessura através": "inferred (power_connector_body_across)",
                         "orientação (lado longo em z)": "derived (chiphell/ab_conn, sabareesh, pny/3qtr-top-right, 5090; nesta tarefa)",
                         "espessura, profundidade, cavidades, trava, lâminas": "inferred"},
 }
@@ -725,7 +781,8 @@ def main():
     }
     report = {"mode": MODE, "parts": {}, "guess_values": {k: {"value": v[0], "provenance": v[1], "note": v[2]} for k, v in G.items()},
               "placement": {"y_tip": round(Y_TIP, 3), "dz": round(DZ, 3), "dp_row_center_y": round(DP_YC, 3), "dp_row_z": round(DP_ZC, 3),
-                            "dp_y": [round(v, 3) for v in DP_Y], "bracket_z": [round(BR_Z0, 3), round(BR_Z1, 3)]}}
+                            "dp_y": [round(v, 3) for v in DP_Y], "bracket_z": [round(BR_Z0, 3), round(BR_Z1, 3)],
+                            "diferenca_entre_modos": MODE_DIFF}}
     total = 0
     all_ok = True
     for pid, sh in shapes.items():
@@ -778,9 +835,13 @@ def main():
     report["triangles_total"] = total
     report["triangle_budget"] = TRI_BUDGET
     report["csv_keys_used"] = sorted(USED)
+    report["interface_conflicts"] = CONFLICTS
+    for c in CONFLICTS:
+        print("CONFLITO DE INTERFACE (%s): %s; dono: %s" % (c["peca"], c["tema"], c["dono"]))
     all_ok &= total <= TRI_BUDGET
     (OUT / "io-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
-    print("\nModo de posição: %s (ponta das línguas em y = %.2f; fileira de DisplayPort em y = %.2f, z = %.2f)" % (MODE, Y_TIP, DP_YC, DP_ZC))
+    print("\nModo de posição: %s (ponta das línguas em y = %.2f; fileira de DisplayPort em y = %.2f, z = %.2f); âncoras menos foto: %.3f mm em y, %.3f em z" % (
+        MODE, Y_TIP, DP_YC, DP_ZC, MODE_DIFF["y_tip_ancoras_menos_foto"], MODE_DIFF["dz_ancoras_menos_foto"]))
     print("Triângulos no total: %d (orçamento %d) %s" % (total, TRI_BUDGET, "OK" if total <= TRI_BUDGET else "ACIMA"))
     print("Relatório: %s" % (OUT / "io-report.json").relative_to(HARNESS.parent))
     print("Resultado (malhas fechadas, orçamento, releitura): %s" % ("OK" if all_ok else "FALHA"))

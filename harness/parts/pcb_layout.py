@@ -15,19 +15,30 @@ contam a partir do canto entre a borda do lado do bracket e a borda dos contatos
 x = pcb_main_card_x_min + u, y = pcb_main_card_y_min + v (assembly-plan, seção 10.2).
 
 Fontes das posições, por ordem de prioridade:
-  1. measurements.csv, pela chave (grade da memória, package, furos, faixas dos indutores);
+  1. measurements.csv, pela chave (contorno, furos, grade da memória, package, faixas dos
+     indutores, conector de 4 vias, receptáculo do J3, âncora de power.vrm.gpu);
   2. âncoras do assembly.json (memória: conferidas contra a grade do CSV);
-  3. medidas tiradas nesta tarefa nas fotos retificadas (G, procedência "derived"):
-     visualqa/a_board.png (verso, 10 px/mm, do visual-qa) e chiphell/pcb-b.jpg retificada
-     aqui pelos 8 furos (frente; resíduo de 0,2 a 0,8 mm), e a foto sabareesh/wb-bare-pcb;
+  3. medidas tiradas nas fotos retificadas (G, procedência "derived"):
+     visualqa/a_board.png (verso) e chiphell/pcb-b.jpg retificada pelos 8 furos (frente),
+     ambas no quadro da grade da base (10 px/mm), e a foto sabareesh/wb-bare-pcb (régua: o
+     PCB de 119,6 mm);
   4. palpites sem referência (G, "inferred") e o que é só ilustração ("illustrative").
+
+Escala (contrato de 2026-11-11, assembly-plan, seção 12.1): o que está sobre o PCB sai
+1,3% grande nas fotos (chiphell_pcb_a_scale_factor = 1,013, aparente sobre real). Os
+valores de G marcados com escala "base" ficam como foram lidos e são divididos pelo fator
+no uso (gb()); como gpu_center_u e _v foram corrigidos pela mesma divisão, dividir (u, v)
+pelo fator é o mesmo que corrigir em relação ao centro do chip. Os quadros das fotos
+(frente e verso) passam a ter 10 x 1,013 px por mm real, centrados no chip.
 
 Passivos (pcb.smd): as posições saem das ilhas de cobre do PCB nu (pares de ilhas
 parecidas, a 0,5 a 6 mm uma da outra), nas duas faces retificadas; tipo, altura e quantidade
 são ilustrativos (a placa montada não foi fotografada de perto nas duas faces). Sem as
-imagens do cache (não versionado), a tabela de passivos já gravada é mantida.
+imagens do cache (não versionado), a tabela de passivos já gravada é mantida. A peça também
+leva dois componentes sem id próprio (assembly, pcb.smd): o receptáculo do J3 no verso e o
+conector de 4 vias da borda superior.
 
-Uso:   python3 -I harness/parts/pcb_layout.py [--refazer-passivos]
+Uso:   python3 -I harness/parts/pcb_layout.py [--refazer-passivos [--frente <png retificada>]]
 Saída: harness/parts/pcb/layout.csv
 """
 import csv
