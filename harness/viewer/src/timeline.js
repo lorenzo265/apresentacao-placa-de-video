@@ -9,6 +9,44 @@ import CAMINHOS from './caminhos.json';
 const VIA_IN = CAMINHOS.estilo.revela_s;      // s para o caminho na placa se desenhar inteiro, depois da entrada
 
 const EASE_PADRAO = 'power2.inOut';
+
+/**
+ * Câmera em arco orbital: o alvo anda em linha reta e a posição gira em torno dele em coordenadas
+ * esféricas (Z para cima): distância em escala log, azimute pelo menor ângulo, elevação linear.
+ * Assim a câmera contorna a placa em vez de atravessá-la. Em giros grandes ela recua um pouco no
+ * meio do caminho (arco), como num plano de Keynote. k em [0, 1], já com a curva de easing.
+ */
+const ARCO_RECUO = 0.18;     // recuo no meio do giro, por radiano de mudança de direção (limitado a 0,25)
+function esfera(c) {
+  const dx = c.px - c.tx, dy = c.py - c.ty, dz = c.pz - c.tz;
+  const r = Math.max(1e-6, Math.hypot(dx, dy, dz));
+  return { r, az: Math.atan2(dy, dx), el: Math.asin(Math.max(-1, Math.min(1, dz / r))) };
+}
+export function orbita(a, b, k, out = {}) {
+  const ea = esfera(a), eb = esfera(b);
+  let daz = eb.az - ea.az;
+  daz -= 2 * Math.PI * Math.round(daz / (2 * Math.PI));
+  // ângulo total entre as duas direções de vista, para o recuo do arco
+  const va = [Math.cos(ea.el) * Math.cos(ea.az), Math.cos(ea.el) * Math.sin(ea.az), Math.sin(ea.el)];
+  const vb = [Math.cos(eb.el) * Math.cos(eb.az), Math.cos(eb.el) * Math.sin(eb.az), Math.sin(eb.el)];
+  const ang = Math.acos(Math.max(-1, Math.min(1, va[0] * vb[0] + va[1] * vb[1] + va[2] * vb[2])));
+  const recuo = 1 + Math.min(0.25, ARCO_RECUO * ang) * Math.sin(Math.PI * k);
+  const r = Math.exp(Math.log(ea.r) + (Math.log(eb.r) - Math.log(ea.r)) * k) * recuo;
+  const az = ea.az + daz * k, el = ea.el + (eb.el - ea.el) * k;
+  const l = (x, y) => x + (y - x) * k;
+  out.tx = l(a.tx, b.tx); out.ty = l(a.ty, b.ty); out.tz = l(a.tz, b.tz);
+  out.px = out.tx + r * Math.cos(el) * Math.cos(az);
+  out.py = out.ty + r * Math.cos(el) * Math.sin(az);
+  out.pz = out.tz + r * Math.sin(el);
+  out.fov = l(a.fov, b.fov);
+  return out;
+}
+/** Tween de câmera em arco na timeline: escreve em S.cam a cada render (seek incluído). */
+function tweenCam(tl, S, de, para, dur, ease, at) {
+  const p = { k: 0 };
+  const a = { ...de }, b = { ...para };
+  tl.fromTo(p, { k: 0 }, { k: 1, duration: dur, ease, onUpdate: () => orbita(a, b, p.k, S.cam) }, at);
+}
 const boa = (e) => (typeof e === 'string' && gsap.parseEase(e) ? e : EASE_PADRAO);
 
 /** Seleciona os beats ready do corte, na ordem do array. */
@@ -53,6 +91,7 @@ export function constroiTimeline({ storyboard, corte, world, mergulho = null }) 
     mix: 0, hl: 1, line: 0, box: 0, flow: 0, expl: 0,
     via: 0, viaA: 0,     // caminho na placa (overlay.path): avanço do traçado e opacidade
     afasta: 0,           // mergulho: fração do afastamento das peças que tapam a peça-alvo
+    vit: 0, vitR: 0,     // vitrine: entrada da peça do beat e volta da peça do beat anterior
   };
   const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
   const entradas = [];
@@ -100,7 +139,7 @@ export function constroiTimeline({ storyboard, corte, world, mergulho = null }) 
       const alvo = camDe(b.camera);
       const de = cam ?? alvo;
       if (i === 0) Object.assign(S.cam, alvo);
-      tl.fromTo(S.cam, { ...de }, { ...alvo, duration: dur, ease }, start);
+      tweenCam(tl, S, de, alvo, dur, ease, start);
       const mixDe = mix ?? 0;
       if (mixDe !== 0) tl.fromTo(S, { mix: mixDe }, { mix: 0, duration: dur, ease: 'power1.inOut' }, start);
       cam = alvo; mix = 0;
@@ -108,8 +147,19 @@ export function constroiTimeline({ storyboard, corte, world, mergulho = null }) 
     // explosão: do nível anterior ao pedido, na entrada do beat (beat sem explode_state mantém o anterior)
     const alvoNivel = b.explode_state != null ? nivelDe(b.explode_state) : nivel;
     if (i === 0) S.expl = alvoNivel;
-    tl.fromTo(S, { expl: nivel }, { expl: alvoNivel, duration: dur, ease: diag ? 'none' : ease }, start);
+    // vários estágios num beat: cada estágio ocupa a mesma fatia de tempo (a coreografia de cada um já
+    // tem a própria curva, em desmontagem.json)
+    const varios = Math.abs(alvoNivel - nivel) > 1;
+    tl.fromTo(S, { expl: nivel }, { expl: alvoNivel, duration: dur, ease: diag || varios ? 'none' : ease }, start);
     nivel = alvoNivel;
+    // vitrine (illustrative): a peça do beat sai da placa para a pose de apresentação; a do beat
+    // anterior volta ao lugar durante esta entrada
+    const vAnt = i > 0 ? beats[i - 1].vitrine ?? null : null;
+    const vCur = b.vitrine ?? null;
+    const mesma = vAnt && vCur && vAnt.peca === vCur.peca;
+    tl.set(S, { vit: mesma ? 1 : 0, vitR: 0 }, start);
+    if (vCur && !mesma) tl.fromTo(S, { vit: 0 }, { vit: 1, duration: dur, ease: 'power2.inOut' }, start);
+    if (vAnt && !mesma) tl.fromTo(S, { vitR: 1 }, { vitR: 0, duration: dur, ease: 'power2.inOut' }, start);
     // destaque: 0 -> 1 durante a entrada
     tl.fromTo(S, { hl: 0 }, { hl: 1, duration: dur, ease: 'none' }, start);
     tl.set(S, { line: 0, box: 0, flow: 0 }, start);
