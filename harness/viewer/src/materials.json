@@ -68,6 +68,14 @@
       "material": "ventilador.pa"
     },
     {
+      "regex": "^cooler\\.fan\\.\\d+\\.copo",
+      "material": "ventilador.pa"
+    },
+    {
+      "regex": "^frame\\.shroud\\.tunel",
+      "material": "carcaca.interior"
+    },
+    {
       "regex": "^cooler\\.fan\\.\\d+$",
       "material": "ventilador.cubo"
     },
@@ -78,6 +86,22 @@
     {
       "regex": "^fasteners\\.",
       "material": "aco.parafuso"
+    },
+    {
+      "regex": "^io\\.bracket\\.marcas_regulatorias",
+      "material": "io.marcas_regulatorias"
+    },
+    {
+      "regex": "^io\\.bracket\\.etiqueta_qr",
+      "material": "io.etiqueta_qr"
+    },
+    {
+      "regex": "^io\\.bracket\\.etiqueta_modelo",
+      "material": "io.etiqueta_modelo"
+    },
+    {
+      "regex": "^io\\.bracket\\.etiqueta_vbios",
+      "material": "io.etiqueta_vbios"
     },
     {
       "regex": "^mem\\.",
@@ -610,6 +634,205 @@
       ],
       "nota": "Substrato orgânico (laminado BT com máscara verde-escura) dos packages BGA: o anel visível em volta do epóxi das memórias e em volta do die e da moldura no package do GPU. Verde-escuro acetinado, mais claro que o epóxi (gn/gn-29). Casa com a malha do substrato por nome (padrão 'substrato' ou 'substrate' no id do nó) ou pelo slot de material 'chip.substrato'.",
       "interior": 0.22
+    },
+    "io.etiqueta_vbios": {
+      "cor": "#17181a",
+      "metal": 0.0,
+      "rug": 0.6,
+      "sobre_coplanar": true,
+      "textura": {
+        "tipo": "decal",
+        "uv": "planar_bbox",
+        "margem_mm": 0.5,
+        "espelha_u": true,
+        "tinta": {
+          "cor": "#c9cbcd",
+          "rug": 0.7
+        },
+        "blocos": [
+          {
+            "texto": "900-5G144-0100-000",
+            "alt_mm": 1.7,
+            "espaco_mm": 0.6
+          },
+          {
+            "texto": "Vbios 98.02.52.00.03",
+            "alt_mm": 1.7
+          }
+        ]
+      },
+      "ref": [
+        "storagereview/sr-1",
+        "gn/gn-11"
+      ],
+      "nota": "Etiqueta preta fosca de papel sintético com tinta cinza-clara (storagereview/sr-1). Texto lido na foto e redesenhado no carregamento; os dois números são de produto (peça e versão do firmware), sem número de série. Provenance derived (o formato), o desenho é ilustrativo."
+    },
+    "io.etiqueta_modelo": {
+      "cor": "#17181a",
+      "metal": 0.0,
+      "rug": 0.6,
+      "sobre_coplanar": true,
+      "textura": {
+        "tipo": "decal",
+        "uv": "planar_bbox",
+        "margem_mm": 0.5,
+        "espelha_u": true,
+        "tinta": {
+          "cor": "#c9cbcd",
+          "rug": 0.7
+        },
+        "blocos": [
+          {
+            "barras": true,
+            "alt_mm": 1.6,
+            "fracao": 0.95,
+            "espaco_mm": 0.5
+          },
+          {
+            "texto": "MODEL: PG144C    S/N: 0000000000000",
+            "alt_mm": 0.95,
+            "espaco_mm": 0.35
+          },
+          {
+            "texto": "NVIDIA CORP    SANTA CLARA",
+            "alt_mm": 0.95,
+            "espaco_mm": 0.35
+          },
+          {
+            "texto": "699-5G144-0520-800    MADE IN VIETNAM",
+            "alt_mm": 0.95,
+            "espaco_mm": 0.35
+          },
+          {
+            "texto": "RTX PRO 6000    BLACKWELL",
+            "alt_mm": 0.95
+          }
+        ]
+      },
+      "ref": [
+        "storagereview/sr-1",
+        "gn/gn-11"
+      ],
+      "nota": "Etiqueta preta com código de barras ilustrativo e quatro linhas de texto (sr-1). O número de série da foto é de uma unidade; aqui vai 'S/N: 0000000000000', no mesmo formato. O código de barras é padrão aleatório, não dado."
+    },
+    "io.etiqueta_qr": {
+      "cor": "#d9dad6",
+      "metal": 0.0,
+      "rug": 0.55,
+      "sobre_coplanar": true,
+      "textura": {
+        "tipo": "decal",
+        "uv": "planar_bbox",
+        "margem_mm": 0.5,
+        "espelha_u": true,
+        "tinta": {
+          "cor": "#121212",
+          "rug": 0.6
+        },
+        "blocos": [
+          {
+            "texto": "VN-0XXXXX-XXXXX-",
+            "alt_mm": 1.9,
+            "espaco_mm": 0.35
+          },
+          {
+            "texto": "XXM-000X-X00",
+            "alt_mm": 1.9,
+            "espaco_mm": 0.35
+          },
+          {
+            "texto": "Made In Vietnam",
+            "alt_mm": 1.9,
+            "espaco_mm": 0.35
+          },
+          {
+            "texto": "DP/N 0XXXXX",
+            "alt_mm": 1.9
+          }
+        ],
+        "qr": true
+      },
+      "ref": [
+        "storagereview/sr-1",
+        "gn/gn-11"
+      ],
+      "nota": "Etiqueta branca de papel (da Dell na foto) com código 2D ilustrativo e quatro linhas. Os códigos da foto identificam a unidade e foram trocados por X no mesmo formato."
+    },
+    "io.marcas_regulatorias": {
+      "cor": "#3c3e42",
+      "metal": 1.0,
+      "rug": 0.5,
+      "sobre_coplanar": true,
+      "textura": {
+        "tipo": "decal",
+        "uv": "planar_bbox",
+        "gira": true,
+        "transparente": true,
+        "margem_mm": 0.6,
+        "tinta": {
+          "cor": "#9c9fa3",
+          "metal": 0.0,
+          "rug": 0.6
+        },
+        "blocos": [
+          {
+            "simbolos": [
+              "CE",
+              "UKCA"
+            ],
+            "alt_mm": 3.0,
+            "espaco_mm": 1.1
+          },
+          {
+            "simbolos": [
+              "FC",
+              "ANEL:",
+              "VCCI"
+            ],
+            "alt_mm": 3.0,
+            "espaco_mm": 1.1
+          },
+          {
+            "texto": "CAN ICES (B)/NMB (B)",
+            "alt_mm": 1.1,
+            "espaco_mm": 1.4
+          },
+          {
+            "simbolos": [
+              "ANEL:",
+              "ANEL:10",
+              "ANEL:"
+            ],
+            "alt_mm": 3.0,
+            "espaco_mm": 1.1
+          },
+          {
+            "simbolos": [
+              "TRI",
+              "UL"
+            ],
+            "alt_mm": 3.0,
+            "espaco_mm": 1.1
+          },
+          {
+            "simbolos": [
+              "KC",
+              "WEEE"
+            ],
+            "alt_mm": 3.0,
+            "espaco_mm": 1.1
+          },
+          {
+            "texto": "R-R-NVA-PG144C",
+            "alt_mm": 0.9
+          }
+        ]
+      },
+      "ref": [
+        "storagereview/sr-1",
+        "gn/gn-11"
+      ],
+      "nota": "Marcas regulatórias impressas em serigrafia sobre a chapa do bracket (sr-1, gn-11): película transparente fora da tinta, tinta cinza-clara fosca (a branca da foto sai cinza porque a foto é contraluz). As formas são aproximadas e as marcas sem identificação (círculo com traço, espiral) viram aneis genéricos: ilustrativo. O código R-R-NVA-PG144C é do modelo."
     }
   }
 }

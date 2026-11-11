@@ -453,11 +453,15 @@ function texDecal(def, p, N, rnd, ctx) {
   const g = cv.getContext('2d');
   g.fillStyle = '#000'; g.fillRect(0, 0, W, H);             // máscara da tinta: branco = tinta
   g.fillStyle = '#fff'; g.strokeStyle = '#fff';
+  // 'gira': o texto corre ao longo do eixo menor da caixa (u é o maior). O desenho é feito num quadro
+  // lógico de lw x lh px que a transformação põe sobre o canvas: leitura = -v, linhas para baixo = +u.
+  const lw = p.gira ? H : W, lh = p.gira ? W : H;
+  if (p.gira) g.setTransform(0, -1, 1, 0, 0, H);
   const mm = (x) => x * pxmm;
   const m = mm(p.margem_mm ?? 0.5);
   let x0 = m;
   if (p.qr) {                                                // código 2D ilustrativo (não é dado)
-    const lado = H - 2 * m, n = 21, c = lado / n;
+    const lado = lh - 2 * m, n = 21, c = lado / n;
     const finder = (i, j) => (i < 7 && j < 7) || (i < 7 && j >= n - 7) || (i >= n - 7 && j < 7);
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
       let on = rnd() < 0.5;
@@ -466,8 +470,14 @@ function texDecal(def, p, N, rnd, ctx) {
     }
     x0 = m + lado + mm(0.8);
   }
-  const larg = W - x0 - m;
+  const larg = lw - x0 - m;
   let y = m;
+  const texto = (t, x, yy, h, negrito) => {
+    g.font = `${negrito ? 'bold ' : ''}${Math.round(h)}px sans-serif`;
+    g.textBaseline = 'top';
+    g.fillText(t, x, yy);
+    return g.measureText(t).width;
+  };
   for (const b of p.blocos ?? []) {
     const h = mm(b.alt_mm);
     if (b.texto != null) {
@@ -481,34 +491,51 @@ function texDecal(def, p, N, rnd, ctx) {
     } else if (b.simbolos) {
       let x = x0;
       g.lineWidth = Math.max(1, mm(0.12));
+      const folga = mm(b.folga_mm ?? 0.9);
       for (const s of b.simbolos) {
         if (s === 'WEEE') {                                  // lixeira riscada
           const a = h * 0.8, top = y + h * 0.1;
           g.strokeRect(x + a * 0.2, top + a * 0.15, a * 0.6, a * 0.75);
           g.beginPath(); g.moveTo(x, top); g.lineTo(x + a, top + a); g.moveTo(x + a, top); g.lineTo(x, top + a); g.stroke();
-          x += a + mm(1.2);
-          continue;
+          x += a + folga;
+        } else if (s === 'TRI') {                            // triângulo com visto (RCM)
+          const a = h * 0.9;
+          g.beginPath(); g.moveTo(x + a / 2, y); g.lineTo(x + a, y + a * 0.85); g.lineTo(x, y + a * 0.85); g.closePath(); g.stroke();
+          g.beginPath(); g.moveTo(x + a * 0.3, y + a * 0.58); g.lineTo(x + a * 0.46, y + a * 0.72); g.lineTo(x + a * 0.72, y + a * 0.4); g.stroke();
+          x += a + folga;
+        } else if (s.startsWith('ANEL')) {                   // marca circular com texto curto (ou traço)
+          const r = h * 0.45, cx = x + r, cy = y + h * 0.5;
+          g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
+          const t = s.slice(5);
+          if (t) { g.font = `bold ${Math.round(h * 0.5)}px sans-serif`; g.textBaseline = 'middle'; g.textAlign = 'center'; g.fillText(t, cx, cy); g.textAlign = 'left'; }
+          else { g.beginPath(); g.moveTo(cx - r * 0.6, cy + r * 0.2); g.lineTo(cx + r * 0.6, cy - r * 0.2); g.stroke(); }
+          x += 2 * r + folga;
+        } else {
+          x += texto(s, x, y + h * 0.08, h * 0.78, true) + folga;
         }
-        g.font = `bold ${Math.round(h * 0.78)}px sans-serif`;
-        g.textBaseline = 'top';
-        g.fillText(s, x, y + h * 0.08);
-        x += g.measureText(s).width + mm(1.2);
       }
     }
     y += h + mm(b.espaco_mm ?? 0.25);
   }
+  g.setTransform(1, 0, 0, 1, 0, 0);
   const px = g.getImageData(0, 0, W, H).data;
   const c = canais(W, H);
   c.temCor = true;
   const fundo = hexRgb(def.cor), tinta = hexRgb(p.tinta.cor);
   for (let i = 0; i < W * H; i++) {
     const k = px[i * 4] / 255;
-    for (let j = 0; j < 3; j++) c.cor[i * 3 + j] = fundo[j] + (tinta[j] - fundo[j]) * k;
+    for (let j = 0; j < 3; j++) c.cor[i * 3 + j] = p.transparente ? tinta[j] : fundo[j] + (tinta[j] - fundo[j]) * k;
     c.rug[i] = def.rug + ((p.tinta.rug ?? def.rug) - def.rug) * k;
     c.metal[i] = def.metal + ((p.tinta.metal ?? def.metal) - def.metal) * k;
     c.alt[i] = k * 0.3;
   }
   const r = finaliza(c, 0.6, false);
+  if (p.transparente) {                                      // película: fora da tinta é transparente (alphaTest)
+    const cor = new Uint8Array(W * H * 4);
+    for (let i = 0; i < W * H; i++) { for (let k = 0; k < 3; k++) cor[i * 4 + k] = byte(lin2srgb(c.cor[i * 3 + k])); cor[i * 4 + 3] = px[i * 4]; }
+    r.map = dataTex(cor, W, H, true);
+    r.alfa = true;
+  }
   if (p.espelha_u || p.espelha_v) for (const t of [r.map, r.orm, r.normal]) { t.repeat.set(p.espelha_u ? -1 : 1, p.espelha_v ? -1 : 1); t.offset.set(p.espelha_u ? 1 : 0, p.espelha_v ? 1 : 0); }
   return r;
 }
@@ -781,6 +808,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       m.roughnessMap = tex.orm; m.metalnessMap = tex.orm; m.roughness = 1; m.metalness = 1;
       m.normalMap = tex.normal; m.normalScale.set(1, 1);
       if (tex.map) { m.map = tex.map; m.color.set(0xffffff); }
+      if (tex.alfa) m.alphaTest = 0.45;       // decalque em película: só a tinta existe
     }
     if (fis && (def.anisotropia || tex?.aniso)) {
       m.anisotropy = def.anisotropia?.forca ?? tx?.cubo?.anisotropia ?? 0.5;
