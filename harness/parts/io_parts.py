@@ -859,7 +859,8 @@ def main():
     for pid, sh in shapes.items():
         p = PARTS[pid]
         meshes = [to_mesh(s) for s in sh]
-        mesh = trimesh.util.concatenate(meshes)
+        subs = [(nm, to_mesh(sh_), ex_) for nm, sh_, ex_ in BRACKET_SUBS] if pid == "io.bracket" else []
+        mesh = trimesh.util.concatenate(meshes + [m for _, m, _ in subs])
         ntri = int(len(mesh.faces))
         total += ntri
         closed = [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for m in meshes]
@@ -872,7 +873,6 @@ def main():
                   "referencial": "face B em z = 0, face A (ventiladores) em z = card_thickness", "explode_cad": p["explode"],
                   "placement_mode": MODE}
         spec = []
-        subs = [(nm, to_mesh(sh_), ex_) for nm, sh_, ex_ in BRACKET_SUBS] if pid == "io.bracket" else []
         if subs:
             closed += [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for _, m, _ in subs]
         if len(meshes) == 1 and "count" not in p:
