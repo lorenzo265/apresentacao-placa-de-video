@@ -14,7 +14,7 @@ npm run preview      # serve o dist/ para ver o build
 
 O `scripts/sync-data.mjs` copia para `public/data/` (não versionado) `story/storyboard.json`, `content/pt-BR/beats.json`, `diagrams/<id>.json` (ignora `README.md`, scripts e arquivos que não sejam diagrama; se o storyboard for o de exemplo, usa também os diagramas de exemplo, para o conjunto casar; `SYNC_REAL_DIAGRAMS=1` força os reais), `build/card.glb` e `design/measurements.csv` (vira `measurements.json`). O que faltar é trocado pelo exemplo de `schemas/examples/`; `data/manifest.json` diz o que é `real` e o que é `examples`. Depois do build não precisa de internet. Precisa de um servidor HTTP local (qualquer um): abrir `index.html` por `file://` não funciona, porque o navegador bloqueia módulos e `fetch`.
 
-Parâmetros da URL: `?cut=seminario` (padrão `completo`), `?capture=1` (sem controles, palco fixo de 1920 x 1080, sem laço de animação), `?beat=<id>` (começa no fim da chamada do beat).
+Parâmetros da URL: `?cut=seminario` (padrão `completo`), `?capture=1` (sem controles, palco fixo de 1920 x 1080, sem laço de animação), `?beat=<id>` (começa no fim da chamada do beat), `?acumula=N` (quadros acumulados com a cena parada no modo realista; 0 desliga; ver abaixo).
 
 Temas de estilo: `?tema=keynote|estudio|blueprint` (o autor escolheu o Keynote em 2026-11-10; ele é o padrão do arquivo único, ver abaixo). No servidor de desenvolvimento, sem `?tema` o viewer é o de sempre (conferido quadro a quadro contra as capturas anteriores). `?leve=1` desliga os efeitos caros do tema (desfoque da caixa, brilho do nó-alvo, halos). Parâmetros em `src/temas.js` (fundo, luzes, materiais, arestas, sombra de contato, raio de canto, fluxos), estilo em `src/temas.css` (só regras sob `:root[data-tema]`), cotas da placa montada no tema blueprint em `src/cotas.js` (só medidas auditadas de `measurements.json`). Capturas e folhas de contato: `node harness/tools/estilo.cjs` (grava `harness/dist/estilo/`); quadros por segundo ao vivo: `node harness/tools/estilo.cjs --perf`. Os dois smokes aceitam `--tema <nome>`.
 
@@ -23,17 +23,26 @@ Teclado: setas (beat anterior e próximo), espaço (tocar e pausar), `N` (notas 
 ## Testar e capturar
 
 ```
-node harness/tools/smoke.cjs [--cut completo]      # percorre todos os beats; salva harness/dist/frames/<id>.png
+node harness/tools/smoke.cjs [--cut completo] [--acumula 2]   # percorre todos os beats; salva harness/dist/frames/<id>.png
 node harness/tools/capture.cjs --cut completo [--fps 30] [--beats a4.2,a5.5] [--out harness/dist]
 ```
 
-O smoke confere, por beat: console sem erro, `headline` igual ao de `beats.json`, limites de palavras e regra do tempo de leitura, caption sem estouro e com corpo de 28 px, caixa dentro da tela, âncora na tela e fora da caixa, foco inteiro na tela e fora da caixa, e determinismo (mesmo instante, com um `seek` no meio, dá PNG idêntico). A captura grava `harness/dist/capture/<corte>/<beat>/%05d.png`, pula o beat se o hash (beat, texto, diagramas, GLB, bundle) não mudou e monta `harness/dist/tour-<corte>.mp4`.
+O smoke abre com `acumula=2` (padrão do teste, para caber no tempo com render por software; `--acumula N` troca) e confere, por beat: console sem erro, `headline` igual ao de `beats.json`, limites de palavras e regra do tempo de leitura, caption sem estouro e com corpo de 28 px, caixa dentro da tela, âncora na tela e fora da caixa, foco inteiro na tela e fora da caixa, e determinismo (mesmo instante, com um `seek` no meio, dá PNG idêntico). A captura grava `harness/dist/capture/<corte>/<beat>/%05d.png`, pula o beat se o hash (beat, texto, diagramas, GLB, bundle) não mudou e monta `harness/dist/tour-<corte>.mp4`.
 
 ```
 node harness/tools/smoke.cjs --fixture3d       # beats 3D reais: usa schemas/examples/fixture3d.*.example.json
 ```
 
 Com `--fixture3d` o smoke serve uma cópia do `dist` com o storyboard de exemplo de beats 3D (montada, E1, E4, E7 e um mergulho para diagrama) e o GLB real, e confere por beat 3D: âncora resolvida e dentro da tela, caixa fora da âncora, nível de explosão no fim do beat igual ao pedido, e determinismo com `seek` no meio da entrada (onde a explosão está a meio caminho).
+
+Polimento (acumulação, caminhos, mergulho):
+
+```
+node harness/tools/determinismo-polimento.cjs [--acumula 8]     # acumulação num beat parado, mergulho t1.1 a meio, caminho a2.10 a meio
+node harness/tools/polimento.cjs [--quadros a0.2@settle,t1.1@0.5,a2.9@s+3] [--extra acumula=0] [--sufixo x]
+```
+
+O `polimento.cjs` grava em `harness/dist/polimento/` e imprime o tempo de cada seek; o instante é `settle`, `fim`, `s+N` (N s depois do settle) ou uma fração da entrada do beat.
 
 ## Enquadrar a câmera 3D (`frame3d.cjs`)
 
@@ -72,14 +81,15 @@ No tema Keynote a placa não tem contorno nem halo: o verde de acento fica na in
 - **Chão**: invisível, só recebe a sombra da luz principal e uma sombra de contato (núcleo justo e penumbra larga, desenhados uma vez). Fica do lado oposto ao da câmera, vira junto com o estúdio, some durante a virada e some com a explosão (as peças atravessariam o chão).
 - **Destaque**: nada fica translúcido. As peças fora do destaque escurecem e perdem a cor (`apaga`); a destacada ganha um recorte de luz fino (Fresnel, `realce`), só quando alguma peça de fato escurece.
 - **Tons e efeitos**: AgX com exposição 1,0; pós-processamento próprio (cena em meia precisão com MSAA, oclusão de ambiente GTAO na alta, profundidade de campo com foco na distância até o alvo da câmera do beat, pontilhado fixo contra faixas). O canal alfa é preservado: o fundo do tema continua sendo o canvas 2D sob a cena.
+- **Acumulação de quadros** (média e alta): com a cena parada, cada quadro novo é mais uma amostra da mesma imagem, com deslocamento de subpixel (filtro em tenda de 1 px, sequência de Halton), a luz principal tratada como luz de área (um disco de 5 graus: sombra com penumbra) e a espiral da profundidade de campo girada; a tela mostra a média (linear, já com tons, em meia precisão; a mistura usa a cor constante do blend com peso 1/(k+1), sem cópia de ida e volta). Some o moiré das grades, as bordas ficam limpas e a sombra suave. A amostra 0 é o quadro normal, então durante as transições nada muda e nada custa a mais além de uma passada de cópia. Uma assinatura do estado (câmera, explosão, destaque, afastamento do mergulho, qualidade) diz se algo se mexeu; mexeu, a média recomeça. Ao vivo, uma amostra por quadro até 32 (média) ou 64 (alta), cerca de meio segundo a 60 qps; convergida, a cena 3D não é redesenhada (o canvas guarda a imagem) e a GPU fica livre. Na captura, o seek de um instante parado (depois da entrada do beat) desenha de uma vez as amostras que faltam, na mesma sequência fixa: o mesmo instante dá sempre o mesmo PNG, chegando de onde for. `?acumula=N` troca o número (0 desliga). Parâmetros em `TEMAS.keynote.cena.realista.acumula` (`filtro_px`, `luz_graus`). A troca automática de qualidade só mede quadros desenhados em seguida (a pausa depois da média não conta como lentidão).
 
 Parâmetros da URL: `?qualidade=alta|media|baixa` e `?luz=fria|quente` (conferência de material em luz de 7500 K e de 3000 K).
 
-| Qualidade | Sombra | Pós | AO | Profundidade de campo | Resolução máx. | Texturas | Materiais |
-|---|---|---|---|---|---|---|---|
-| baixa | só a de contato | não (antialias do canvas) | não | não | 1x | 256 px | Standard |
-| media (padrão) | mapa 2048, PCF suave | MSAA 4x, meia precisão | não | 12 amostras | 1,25x | 512 px | Physical onde há anisotropia ou verniz |
-| alta | mapa 4096 | MSAA 4x | GTAO | 24 amostras | 2x | 1024 px | idem |
+| Qualidade | Sombra | Pós | AO | Profundidade de campo | Resolução máx. | Texturas | Materiais | Acumulação parada |
+|---|---|---|---|---|---|---|---|---|
+| baixa | só a de contato | não (antialias do canvas) | não | não | 1x | 256 px | Standard | não |
+| media (padrão) | mapa 2048, PCF suave | MSAA 4x, meia precisão | não | 12 amostras | 1,25x | 512 px | Physical onde há anisotropia ou verniz | 32 quadros |
+| alta | mapa 4096 | MSAA 4x | GTAO | 24 amostras | 2x | 1024 px | idem | 64 quadros |
 
 Sem `?qualidade`, o viewer começa na média e mede os 60 quadros depois dos 20 primeiros ao vivo: abaixo de 28 quadros por segundo, cai para a baixa (uma vez, nunca no modo de captura). Medição: `node harness/tools/lookdev.cjs --qualidades baixa,media,alta --tempo` mede o tempo de desenho por quadro, esperando o quadro terminar (grava `harness/dist/lookdev/tempos.json`); `node harness/tools/estilo.cjs --perf --qualidades baixa,media,alta` mede quadros por segundo ao vivo, mas com render por software (SwiftShader, abaixo de 1 qps) o número vira ruído: use-o só numa máquina com GPU. Em 2026-11-11, no SwiftShader, a média custou cerca de 1,6 vez a baixa e a alta de 2,9 a 3,8 vezes. Quadros do lookdev: `node harness/tools/lookdev.cjs [--qualidades media,alta] [--luzes neutra,fria,quente]` grava `harness/dist/lookdev/<qualidade>[-<luz>]/<beat>.png`, a folha `folha.png` e `referencia.png` (lado a lado com `pny/3qtr-top-right` e `storagereview/sr-4`; referências de terceiros, só locais).
 
@@ -100,7 +110,7 @@ O passo do Blender (ARCHITECTURE.md, seção 5.2) recebe o GLB ou o STEP da peç
 
 ## API `window.__tour`
 
-`ready` (Promise; também `window.__tourReady = true`), `duration`, `fps`, `cut`, `beats` (`{id, start, settle, end, level}`), `seek(t)` (posiciona a timeline e desenha um quadro de forma síncrona), `play()`, `pause()`, `next()` (toca até o `settle` do próximo beat e pausa), `prev()`, `goto(id)`, `time()`, `estado()` (`{expl, mix}` quantizados, para teste), `probe(id)` (`{anchor, focus, box, captionOverflow, headline}` em pixels do palco; só vale para o beat ativo; `anchor` vale também nos beats 3D).
+`ready` (Promise; também `window.__tourReady = true`), `duration`, `fps`, `cut`, `beats` (`{id, start, entrada, settle, end, level, mergulho}`; `entrada` é o fim da entrada do beat), `seek(t)` (posiciona a timeline e desenha um quadro de forma síncrona), `play()`, `pause()`, `next()` (toca até o `settle` do próximo beat e pausa), `prev()`, `goto(id)`, `time()`, `estado()` (`{expl, mix, via, acum, cam, vb}`: explosão, mistura e traçado do caminho quantizados, amostras da acumulação `{n, alvo}`, câmera 3D e enquadramento do diagrama, para teste), `probe(id)` (`{anchor, focus, box, captionOverflow, headline}` em pixels do palco; só vale para o beat ativo; `anchor` vale também nos beats 3D).
 
 ## Onde mexer
 
@@ -117,5 +127,5 @@ O passo do Blender (ARCHITECTURE.md, seção 5.2) recebe o GLB ou o STEP da peç
 - Explosão em 3D: `explode_state` vira um nível contínuo (assembled = 0, En = n) animado na entrada do beat, com a mesma duração e `ease` da câmera. A peça de estágio k tem progresso `suave(clamp(nível - (k-1), 0, 1))`; por isso, de E4 para E7, os estágios 5, 6 e 7 saem em sequência. O deslocamento é `explode_cad.dir * distance` (mm, referencial da peça-mãe); mover o nó leva os filhos. Beat de diagrama e beat sem `explode_state` mantêm o nível anterior.
 - Destaque em 3D: `part` mais os ids de `highlight` (e `tag:<grupo>`, que casa com `group` da peça) ficam com opacidade 1; o resto vai a 0,15 (no modo realista, em vez de opacidade, o resto escurece e perde a cor; ver acima), junto com os descendentes e as instâncias (`instance_of`). Sem `part` nem `highlight`, nada esmaece. Cada malha ganha uma cópia própria do material no carregamento; os materiais do GLB não são alterados. Beat de diagrama herda o destaque do último beat 3D.
 - Âncora 3D: posição mundial do nó `anchor.<peça>.<n>` projetada a cada quadro, depois da explosão e da câmera.
-- `overlay.path` em beat 3D é aceito e ignorado, com o aviso `[3D] overlay ainda sem mapeamento de peças`. O mapeamento de peças por caminho é decisão de conteúdo e ainda não existe.
-- No mergulho (3D para diagrama) a câmera 3D fica parada na última pose e o diagrama entra por mistura de opacidade; a câmera não se aproxima do chip por conta própria. Se o diretor quiser o mergulho com zoom, o beat 3D anterior precisa terminar com a câmera já perto da peça.
+- Caminhos na placa (`overlay.path` em beat 3D: a2.9 energia, a2.10 dados, a2.11 calor): `src/caminhos3d.js` desenha numa camada SVG sobre o canvas uma linha de luz que percorre as peças do caminho, na linguagem dos fluxos dos diagramas (traço base, cauda em camadas, núcleo claro, halo, nós luminosos em cada peça). O mapeamento de peças está em `src/caminhos.json` (proposto pelo diretor de storyboard e aceito pela sessão principal em 2026-11-11), como árvore de trechos com pontos tirados das caixas das peças, das instâncias e das âncoras do GLB a cada quadro: o traçado acompanha a explosão e a troca do GLB. Depois da entrada do beat o traço avança da origem ao fim (2,2 s, `S.via` na timeline) e os pulsos correm com o tempo da timeline; sai junto com a caixa. Sem traço tracejado nem filtro (os pulsos são trechos de polilinha calculados, para o determinismo). O caminho dos dados passa do adaptador ao chip pelo conector de placa a placa J3 e pela placa principal, nunca pelo cabo flat; o cabo flat só aparece no ramo do vídeo, que é a proposta do grupo. O calor termina em anéis que se abrem nos ventiladores, sem seta: por qual face o ar entra e sai é lacuna (`airflow.direction`). A camada fica fora da acumulação de quadros.
+- Mergulho da placa para o chip (beat t1.1, `src/mergulho.json`, configuração do viewer): quando um beat de diagrama listado ali entra vindo do 3D, a câmera 3D avança até a face externa do package, quase de frente, e o retângulo do die no diagrama fica colado ao package projetado na tela (proporção do die, por dentro do package) durante a descida; nos últimos 20% da entrada ele passa para o enquadramento do beat. A pose final da câmera é calculada para o package projetado coincidir com esse enquadramento, então a passagem não dá salto. O cooler e a carcaça, que na explosão E7 ficam sobre o package e tapariam a câmera, saem para trás e para cima na primeira parte da entrada, como mais um passo da explosão. A fusão 3D para diagrama começa aos 22% da entrada. Os diagramas vizinhos já entram apagados quando o beat anterior é 3D. Tudo é função do tempo da timeline.

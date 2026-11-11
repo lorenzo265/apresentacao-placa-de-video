@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // Smoke test do viewer: percorre todos os beats do corte e falha se algo estiver fora do lugar.
-// Uso: node harness/tools/smoke.cjs [--cut completo] [--tema keynote|estudio|blueprint] [--no-build]
+// Uso: node harness/tools/smoke.cjs [--cut completo] [--tema keynote|estudio|blueprint] [--acumula N] [--no-build]
+// --acumula N: quadros acumulados com a cena parada no tema realista (padrão 2 aqui, para o teste caber no
+// tempo com render por software; o viewer usa 32 na média e 64 na alta). Com 2, o caminho da acumulação
+// (deslocamento de subpixel, luz de área, mistura) é exercitado em todo beat parado e no teste de determinismo.
 // Também exporta ferramentas (servidor estático, build) usadas por capture.cjs.
 const fs = require('fs');
 const path = require('path');
@@ -96,6 +99,7 @@ async function main() {
   const fixture = args.includes('--fixture3d');
   const corte = fixture ? 'fixture3d' : args.includes('--cut') ? args[args.indexOf('--cut') + 1] : 'completo';
   const tema = args.includes('--tema') ? args[args.indexOf('--tema') + 1] : null;
+  const acumula = args.includes('--acumula') ? Number(args[args.indexOf('--acumula') + 1]) : 2;
   const FRAMES = path.join(HARNESS, 'dist', tema ? `frames-${tema}` : 'frames');
   if (!args.includes('--no-build')) garanteBuild();
   const { chromium } = require('playwright');
@@ -111,10 +115,10 @@ async function main() {
 
   let sessao;
   try {
-    sessao = await abre(chromium, url, `cut=${corte}${tema ? `&tema=${tema}` : ''}`);
+    sessao = await abre(chromium, url, `cut=${corte}${tema ? `&tema=${tema}` : ''}&acumula=${acumula}`);
     const { page, erros, avisos } = sessao;
     const info = await page.evaluate(() => ({ beats: window.__tour.beats, duration: window.__tour.duration, fps: window.__tour.fps, cut: window.__tour.cut }));
-    console.log(`smoke: corte ${info.cut}${tema ? `, tema ${tema}` : ''}, ${info.beats.length} beats, ${info.duration.toFixed(1)} s, ${info.fps} fps`);
+    console.log(`smoke: corte ${info.cut}${tema ? `, tema ${tema}` : ''}, ${info.beats.length} beats, ${info.duration.toFixed(1)} s, ${info.fps} fps, acumulação ${acumula}`);
     if (tema) {
       const aplicado = await page.evaluate(() => document.documentElement.dataset.tema ?? null);
       if (aplicado !== tema) falha('tema', `o tema pedido (${tema}) não foi aplicado (${aplicado})`);
