@@ -51,8 +51,8 @@ OUT = HARNESS / "build" / "parts"
 # Tolerâncias das conferências e da malha (não são medidas da peça)
 TOL_ANCHOR = 2.0       # mm, âncora fora da peça
 TOL_OVERLAP = 0.5      # mm, interferência aceita pelo integrate.py
-TESS_BLADE = (0.07, 0.30)   # desvio linear (mm) e angular (rad) da tesselagem das pás
-TESS_HUB = (0.03, 0.15)
+TESS_BLADE = (0.06, 0.38)   # desvio linear (mm) e angular (rad) da tesselagem das pás
+TESS_HUB = (0.03, 0.20)
 TRI_BUDGET = 60_000    # triângulos por ventilador (cubo, suporte e 7 pás)
 CREASE_DEG = 30.0      # quebra das normais suaves (o mesmo do integrate.py)
 
@@ -252,9 +252,7 @@ def build_stator():
     zh = z1 - g("screw_head_h")                  # topo do prato e dos ressaltos
     plate = Pos(0, 0, z0) * Solid.make_cylinder(g("stator_plate_r"), zh - z0)
     for a in g("boss_ang_deg"):
-        arm = Pos(0, 0, z0) * Rot(0, 0, a) * Pos(g("boss_r_pos") / 2, 0, (zh - z0) / 2) * Solid.make_box(
-            g("boss_r_pos"), g("arm_w"), zh - z0, align=None)
-        arm = Pos(0, 0, 0) * arm
+        arm = Pos(0, 0, z0) * Rot(0, 0, a) * Pos(0, -g("arm_w") / 2, 0) * Solid.make_box(g("boss_r_pos"), g("arm_w"), zh - z0)
         boss = Pos(0, 0, z0) * Rot(0, 0, a) * Pos(g("boss_r_pos"), 0, 0) * Solid.make_cylinder(g("boss_rad"), zh - z0)
         head = Pos(0, 0, zh - 0.05) * Rot(0, 0, a) * Pos(g("boss_r_pos"), 0, 0) * Solid.make_cylinder(g("screw_head_r"), g("screw_head_h") + 0.05)
         plate = plate + arm + boss + head
@@ -355,6 +353,7 @@ def bvh(mesh):
 
 
 def inside(tree, pts):
+    import bpy  # noqa: F401  (carrega mathutils)
     from mathutils import Vector as V3
     dirs = [V3((0.31, 0.52, 0.79)).normalized(), V3((-0.67, 0.21, 0.71)).normalized(), V3((0.13, -0.91, 0.39)).normalized()]
     out = np.zeros(len(pts), bool)
@@ -375,6 +374,7 @@ def inside(tree, pts):
 
 def overlap_depth(a, b, n=20000):
     """Maior profundidade de um ponto da superfície de a dentro de b (e vice-versa)."""
+    import bpy  # noqa: F401  (carrega mathutils)
     from mathutils import Vector as V3
     best = 0.0
     for x, y in ((a, b), (b, a)):
@@ -392,6 +392,7 @@ def overlap_depth(a, b, n=20000):
 
 
 def min_gap(a, b, n=6000):
+    import bpy  # noqa: F401  (carrega mathutils)
     from mathutils import Vector as V3
     tb = bvh(b)
     p = np.vstack([a.vertices, trimesh.sample.sample_surface(a, n, seed=7)[0]])
@@ -524,6 +525,7 @@ def main():
         r_bl = np.hypot(bl_v[:, 0] - cx, bl_v[:, 1] - cy)
         anchors = []
         th = bvh(hub)
+        import bpy  # noqa: F401  (carrega mathutils)
         from mathutils import Vector as V3
         for a in p["anchors"]:
             d = 0.0 if inside(th, [a["pos"]])[0] else float(th.find_nearest(V3(a["pos"]))[3])
