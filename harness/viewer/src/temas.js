@@ -11,12 +11,12 @@ export const TEMAS = {
   // A. Keynote: preto profundo, um verde de acento, traço fino com brilho, luz correndo nos fluxos.
   keynote: {
     fundo: {
-      base: '#020303',
+      base: '#07080a',
       halos: [
-        { x: 0.56, y: 0.42, r: 0.62, cor: [18, 24, 22], a: 1 },
-        { x: 0.56, y: 0.50, r: 0.30, cor: [24, 34, 26], a: 0.55 },
+        { x: 0.56, y: 0.44, r: 0.72, cor: [40, 44, 47], a: 1 },
+        { x: 0.56, y: 0.50, r: 0.36, cor: [58, 63, 66], a: 0.6 },
       ],
-      vinheta: 0.78,
+      vinheta: 0.62,
     },
     linha: '#8fdc2a',
     // Na placa, realismo acima de efeito (decisão do autor em 2026-11-10): sem contorno verde nem
@@ -39,13 +39,14 @@ export const TEMAS = {
           { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
           { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
           { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },
-          { nome: 'rebatedor', K: 5600, i: 10, pos: [0, -12, -5], tam: [30, 9], degrade: [1, 0.4] },
+          { nome: 'rebatedor', K: 5600, i: 14, pos: [0, -12, -5], tam: [30, 9], degrade: [1, 0.4] },
+          { nome: 'recorte-fundo', K: 6500, i: 8, pos: [0, 15, 2], tam: [28, 1.4] },
         ],
         // Luzes diretas (mm a partir do centro da placa, no mesmo referencial canônico)
         luzes: [
           { papel: 'principal', K: 5400, i: 2.1, pos: [-420, -380, 640], sombra: true },
           { papel: 'preenchimento', K: 7200, i: 0.28, pos: [560, -320, 140] },
-          { papel: 'recorte', K: 5800, i: 1.3, pos: [160, 680, 260] },
+          { papel: 'recorte', K: 6500, i: 2.0, pos: [120, 700, 120] },
         ],
         luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
