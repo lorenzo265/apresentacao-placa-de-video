@@ -141,7 +141,7 @@ Ressalvas que saíram da fala. Use se alguém perguntar.
 | a6.1 | Como se dividem os 57 bits? | Índices de 1, 9, 9, 9 e 8 bits, mais 9 no último nível para página de 4 KB, e 12 de deslocamento. Páginas de 2 MB e 512 MB terminam antes |
 | a6.2 | E um acesso ilegal? | Aparece no log como Xid 31, GPU memory page fault. Enquanto o driver não atende, o canal não pode ser trocado (fault and stall) |
 | a6.3 | Vale para todo programa CUDA? | Lemos só os canais do próprio driver (UVM). Supor o mesmo esquema para um programa comum é leitura nossa |
-| a6.4 | O que é Xid 13? | Erro de execução do programa na GPU, que o driver registra no log |
+| a6.4 | O que é Xid 13? | Graphics Engine Exception: no catálogo de Xid, falha geral de aplicação do usuário. O catálogo é geral, não cita a Blackwell |
 | a7.4 | Por que a NVIDIA não publica? | Não sabemos o motivo. Dizemos só que não achamos nas fontes lidas |
 | fora do corte | Quanto a placa mudou em relação à Ada? | 142 para 188 SMs (1,32x), L2 1,33x, memória e potência 2,00x (contas nossas, Tab. 4 do whitepaper) |
 | fora do corte | E o MIG? | Divide a placa em 1 instância de 96 GB, 2 de 48 GB ou 4 de 24 GB |
