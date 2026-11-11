@@ -455,7 +455,29 @@ export function resolveMaterial(o, nomeMatGlb) {
   return { id: TABELA.padrao, por: 'padrão' };
 }
 
-const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\n';
+const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\n';
+// Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
+// resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
+// oclusão assada também apaga a luz direta que chega rasante: sombra = sat(|N.L| + 2 ao² - 1). Superfície
+// aberta (ao = 1) não muda; lâmina com ao 0,8 perde a luz rasante. Força 'micro_sombra' do material.
+const FRAG_MICRO_PARS = `#ifdef USE_AOMAP
+void RE_Direct_Micro( IncidentLight directLight, const in vec3 geometryPosition, const in vec3 geometryNormal, const in vec3 geometryViewDir, const in vec3 geometryClearcoatNormal, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {
+	float aoLd = texture2D( aoMap, vAoMapUv ).r;
+	float sombraLd = saturate( abs( dot( geometryNormal, directLight.direction ) ) + 2.0 * aoLd * aoLd - 1.0 );
+	directLight.color *= mix( 1.0, sombraLd, uMicro );
+	RE_Direct_Physical( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
+}
+#undef RE_Direct
+#define RE_Direct RE_Direct_Micro
+#endif`;
+// 'env' do material: multiplica a luz que vem do ambiente (a three ignora envMapIntensity com
+// scene.environment).
+const FRAG_MICRO = `reflectedLight.indirectDiffuse *= uEnvLd;
+reflectedLight.indirectSpecular *= uEnvLd;
+#ifdef USE_CLEARCOAT
+	clearcoatSpecularIndirect *= uEnvLd;
+#endif
+#include <aomap_fragment>`;
 const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
@@ -464,20 +486,30 @@ const FRAG_FIM = `#include <opaque_fragment>
 		gl_FragColor.rgb = min( gl_FragColor.rgb, vec3( mix( 64.0, 0.2, uApaga ) ) );   // reflexo forte não fura o escurecido
 		float frLd = 1.0 - saturate( dot( normal, geometryViewDir ) );
 		float fr2Ld = frLd * frLd;
-		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * uRealce;
+		float aoRealceLd = 1.0;
+		#ifdef USE_AOMAP
+			// recorte só no contorno: dentro das frestas (oclusão baixa) as paredes rasantes não acendem
+			aoRealceLd = texture2D( aoMap, vAoMapUv ).r;
+			aoRealceLd *= aoRealceLd * aoRealceLd;
+		#endif
+		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * uRealce * aoRealceLd;
 	}`;
 
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
 export function preparaMaterial(m, corRealce) {
-  m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() } };
+  m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 } };
   m.onBeforeCompile = (sh) => {
     sh.uniforms.uApaga = m.userData.ld.apaga;
     sh.uniforms.uRealce = m.userData.ld.realce;
     sh.uniforms.uRealceCor = m.userData.ld.cor;
+    sh.uniforms.uMicro = m.userData.ld.micro;
+    sh.uniforms.uEnvLd = m.userData.ld.env;
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\n${FRAG_PARS}`)
+      .replace('#include <lights_physical_pars_fragment>', `#include <lights_physical_pars_fragment>\n${FRAG_MICRO_PARS}`)
+      .replace('#include <aomap_fragment>', FRAG_MICRO)
       .replace('#include <opaque_fragment>', FRAG_FIM);
   };
-  m.customProgramCacheKey = () => 'lookdev-destaque-1';
+  m.customProgramCacheKey = () => 'lookdev-destaque-5';
   return m;
 }
 
@@ -501,10 +533,12 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     const nomeGlb = orig?.name ?? '';
     const { id, por } = resolveMaterial(o, nomeGlb);
     const def = TABELA.materiais[id] ?? TABELA.materiais[TABELA.padrao];
-    // Mapas do GLB (passo do Blender) mandam: com eles, a textura procedural da tabela não entra.
+    // Mapas do GLB (passo do Blender) mandam, canal a canal: cor, normal, rugosidade e metal do GLB
+    // substituem os da textura procedural; o canal que o GLB não traz continua procedural (por exemplo,
+    // a peça que só ganhou oclusão assada mantém o grão da tabela).
     const mapasGlb = !!(orig?.map || orig?.normalMap || orig?.roughnessMap || orig?.metalnessMap || orig?.aoMap);
     let geo = o.geometry;
-    const tx = mapasGlb ? null : def.textura;
+    const tx = def.textura;
     if (!geo.attributes.normal || (tx && !geo.attributes.uv2)) {
       if (geo.index) geo = geo.toNonIndexed();
       if (!geo.attributes.normal) geo.computeVertexNormals();      // não indexada: normais planas
@@ -543,17 +577,20 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (mapasGlb) {
       // cor, ORM, normal e oclusão assados no Blender; a tabela dá só o que o GLB não traz
       for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap']) if (orig[k]) m[k] = orig[k];
+      if (orig.aoMap) m.aoMapIntensity = def.ao ?? 1;
       if (orig.map) m.color.set(0xffffff);
       if (orig.roughnessMap) m.roughness = orig.roughness;
       if (orig.metalnessMap) m.metalness = orig.metalness;
       if (orig.normalMap) m.normalScale.copy(orig.normalScale);
-      if (orig.aoMap) m.aoMapIntensity = orig.aoMapIntensity;
       if (orig.emissiveMap) m.emissive.copy(orig.emissive);
     }
+    if (orig?.aoMap) m.userData.micro = def.micro_sombra ?? 0;
+    if (def.env != null) m.userData.env = def.env;
     preparaMaterial(m, corRealce);
     o.material = m;
     o.castShadow = o.receiveShadow = true;
-    relatorio.push({ malha: o.name, material: id, por, mapas: mapasGlb ? 'glb' : tx ? tx.tipo : null });
+    const doGlb = mapasGlb ? ['map', 'normalMap', 'roughnessMap', 'aoMap'].filter((k) => orig[k]).map((k) => (k === 'map' ? 'cor' : k.replace('Map', ''))) : [];
+    relatorio.push({ malha: o.name, material: id, por, mapas: mapasGlb ? `glb (${doGlb.join(', ')})${tx ? ` + ${tx.tipo}` : ''}` : tx ? tx.tipo : null });
   }
   return relatorio;
 }

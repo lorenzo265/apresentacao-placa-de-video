@@ -2,6 +2,9 @@
 // Quadros do lookdev (tema Keynote realista) para comparar com as fotos da placa real.
 // Uso: node harness/tools/lookdev.cjs [--beats a0.2,a1.1] [--qualidades media,alta] [--luzes neutra,fria,quente]
 //                                     [--cut seminario] [--sufixo x] [--no-build] [--sem-folha] [--tempo]
+//                                     [--acumula N] [--saida harness/dist/outra-pasta]
+// --acumula N: amostras da acumulação de quadros (?acumula=N; menos amostras, captura mais rápida no SwiftShader).
+// --saida: pasta de saída no lugar de harness/dist/lookdev.
 // --tempo: mede também o tempo médio de desenho por quadro (ms; seeks síncronos, SwiftShader) e grava tempos.json.
 // Grava harness/dist/lookdev/<qualidade>[-<luz>]/<beat>.png (1920 x 1080, modo de captura, no fim da
 // chamada do beat), a folha harness/dist/lookdev/folha.png (beats por linha, qualidades e luzes por coluna)
@@ -11,8 +14,9 @@ const fs = require('fs');
 const path = require('path');
 const { garanteBuild, serve, abre, HARNESS, DIST } = require('./smoke.cjs');
 
-const OUT = path.join(HARNESS, 'dist', 'lookdev');
 const arg = (k, def) => { const a = process.argv.slice(2); return a.includes(k) ? a[a.indexOf(k) + 1] : def; };
+const OUT = path.resolve(arg('--saida', path.join(HARNESS, 'dist', 'lookdev')));
+const ACUMULA = arg('--acumula', null);
 const BEATS_PADRAO = 'a0.2,a1.1,a1.3,a1.4,a2.4,a2.7,a3.1';
 const REFS = [
   ['PNY, render oficial (3qtr-top-right)', path.join(HARNESS, 'spec', 'references', 'cache', 'pny', '3qtr-top-right.png')],
@@ -38,7 +42,7 @@ async function main() {
         const dir = path.join(OUT, col);
         fs.mkdirSync(dir, { recursive: true });
         const t0 = Date.now();
-        const s = await abre(chromium, url, `cut=${corte}&tema=keynote&qualidade=${q}${luz === 'neutra' ? '' : `&luz=${luz}`}`);
+        const s = await abre(chromium, url, `cut=${corte}&tema=keynote&qualidade=${q}${luz === 'neutra' ? '' : `&luz=${luz}`}${ACUMULA != null ? `&acumula=${ACUMULA}` : ''}`);
         try {
           const lista = await s.page.evaluate(() => window.__tour.beats);
           for (const id of beats) {
