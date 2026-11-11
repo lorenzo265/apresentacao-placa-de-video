@@ -108,6 +108,14 @@ Reserva, se o ensaio ficar curto (todas cobrem itens do enunciado): a5.15 (ocupa
 
 Pedidos à sessão de câmera: `explode_seq` E1 a E7 em a2.1, herói a2.13 entre a2.1 e a3.1, enquadramento dos beats fundidos.
 
+## 6.2 Desmontagem num beat só (combinado em 2026-11-11)
+
+A sessão de câmera fez, no branch `claude/apresentacao-camera-gsap`:
+- a2.1 em E7, com entrada de 15,4 s e quatro poses de passagem que terminam no chip com pasta. A fala começa junto com o movimento.
+- a2.13, o plano de herói: E8, entrada de 4 s e volta de 60°, `hold` de 8 s, sem callout.
+
+Com a2.1 já em E7, os beats a2.2 a a2.6 (E2 a E6) remontariam a placa no corte completo. Por isso viraram `status: draft` neste branch. O schema só aceita prioridade de 1 a 3, e o viewer deixa fora de qualquer corte o beat que não está `ready`. O texto deles continua em `beats.json`. a2.7 a a2.12 seguem no corte completo.
+
 ## 7. Respostas para perguntas (Q&A)
 
 Ressalvas que saíram da fala. Use se alguém perguntar.
