@@ -62,21 +62,11 @@ EXPECTED = {
     frozenset(("cooler.fins.2", "cooler.heatpipes")): "os tubos de calor atravessam a pilha de aletas",
     frozenset(("cooler.fins.3", "cooler.heatpipes")): "os tubos de calor atravessam a pilha central",
 }
+# Resolvidas pelo contrato de 2026-11-11 (assembly-plan 12.4) e tiradas daqui: adaptador
+# contra face B, tampas, aro, pcb.plate e parafusos do E5; cabeças do E4 e do E5 sob as tampas;
+# mola contra pcb.back_frame e memória do verso; parafuso do aro sem furo; package contra memória.
 ISSUES = {
-    frozenset(("pcie.adapter", "frame.face_b")): ("assembly-planner, modeler-complex", "orçamento de camadas: o adaptador (z de 0,93 a 2,5) fica dentro da camada da face B (0 a 3); a face B só tem recorte para a faixa, não para a aba (pny/back mostra a grade inteira); falta decidir onde a aba fica na espessura (gn-20, gn-22)"),
-    frozenset(("pcie.adapter", "frame.center_covers")): ("assembly-planner, modeler-complex", "mesma causa: a aba do adaptador fica sob a tampa inferior, na camada das tampas (0 a 2,5)"),
-    frozenset(("pcie.adapter", "frame.rim")): ("assembly-planner, modeler-complex", "mesma causa: a faixa do adaptador cruza o aro na borda dos contatos; o recorte da face B não continua no aro"),
-    frozenset(("fasteners.e4_pcie", "frame.center_covers")): ("assembly-planner", "cabeças dos parafusos do adaptador entre o adaptador e a face B: dependem da posição do adaptador na espessura"),
-    frozenset(("fasteners.e4_pcie", "frame.face_b")): ("assembly-planner", "cabeças dos parafusos do adaptador entre o adaptador e a face B: dependem da posição do adaptador na espessura"),
-    frozenset(("fasteners.e5_plate", "frame.center_covers")): ("modeler-complex", "as 4 cabeças da pcb.plate ficam sob as tampas (gn-20 mostra os parafusos ao tirar as tampas); as tampas de 2,5 mm maciças não têm alívio: precisam de rebaixo por baixo ou de casca"),
-    frozenset(("fasteners.e5_plate", "frame.face_b")): ("modeler-complex", "as cabeças dos 4 parafusos da pcb.plate sobem até a faixa do X da face B junto às tampas, que não tem alívio por baixo"),
-    frozenset(("pcie.adapter", "pcb.plate")): ("assembly-planner", "o conector J3 do adaptador atravessa a pcb.plate (contorno de 104 x 108 na escala antiga, sem recorte para o J3)"),
-    frozenset(("pcie.adapter", "fasteners.e5_plate")): ("assembly-planner", "a aba do adaptador cobre o furo de canto (106,1; 24,56) da pcb.plate"),
-    frozenset(("pcie.adapter", "power.vrm.gpu")): ("assembly-planner, pcb-layout-modeler", "o J3 cai sobre os estágios de potência do verso na faixa da borda dos contatos (posição dos estágios sem fonte)"),
-    frozenset(("cooler.leaf_spring", "pcb.back_frame")): ("assembly-planner", "orçamento de camadas do verso: mola (1,2) e memória (1,1) não cabem nos 2,1 mm de layer_back_mem_pad"),
-    frozenset(("cooler.leaf_spring", "mem.back")): ("assembly-planner", "orçamento de camadas do verso: o anel da mola passa sobre a fileira de memória da borda de energia; mola (1,2) e memória (1,1) não cabem nos 2,1 mm de layer_back_mem_pad"),
-    frozenset(("frame.rim", "fasteners.e2_rim")): ("assembly-planner, modeler-complex", "o parafuso do aro (posição inferred, rente ao aro) fica dentro do aro, que não tem furo: falta a posição vista em foto para abrir o furo"),
-    frozenset(("gpu.package", "mem.front")): ("visual-qa", "package de 57,5 em y contra a fileira da borda de energia (cerca de 1 mm, dentro das tolerâncias somadas; assembly-plan 10.5)"),
+    frozenset(("pcie.adapter", "fasteners.e6_spring")): ("assembly-planner, visual-qa", "a cabeça do parafuso da mola no furo (120,55; 37,61) (fastener_e6_head_*: 5,0 mm, z 3,2 a 4,1, inferred) passa cerca de 1,8 mm sobre a diagonal do lóbulo do adaptador, cujo contorno fica 0,72 mm fora do centro do furo; desde 2026-11-11 o adaptador está no plano da pcb.plate (z 2,5 a 4,07); decidir cabeça menor, rebaixo no adaptador ou outro z, ou conferir em gn-22 e gn-25 se a diagonal desvia do parafuso (como desvia do furo do E5)"),
 }
 
 
@@ -152,7 +142,8 @@ def load_detailed(asm):
         else:
             raise SystemExit("%s: nó %s sem malha e sem instâncias" % (path, pid))
         ex = root.get("extras", {})
-        keep = {k: ex[k] for k in ("guess", "guess_notes", "shape_provenance_features", "text_box_cad_mm", "referencial") if k in ex}
+        keep = {k: ex[k] for k in ("guess", "guess_notes", "shape_provenance_features", "text_box_cad_mm", "material_zones_cad_mm",
+                                   "referencial") if k in ex}
         keep["source"] = "build/parts/%s" % path.name
         keep["generator"] = js.get("asset", {}).get("generator")
         keep["sha256_12"] = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
@@ -330,19 +321,33 @@ def envelope(asm, R):
     return res
 
 
+BRACKET = ("io.bracket", "fasteners.e1_bracket")
+
+
 def reread(path, asm):
+    """Relê o GLB: nomes, ids, âncoras e escala. A escala é conferida sem o bracket (como o
+    envelope): as línguas do bracket ficam abaixo de y = 0 e a chapa em x negativo."""
     data = path.read_bytes()
-    js, _ = read_glb(path)
+    js, binary = read_glb(path)
     names = [n.get("name") for n in js["nodes"]]
     dup = sorted({n for n in names if names.count(n) > 1})
     ids = [p["id"] for p in asm["parts"]]
     anchors = [a["id"] for p in asm["parts"] for a in p["anchors"]]
     sc = trimesh.load(path, force="scene")
-    ext = sc.extents
+    ext_all = sc.extents
+    lo, hi = np.full(3, np.inf), np.full(3, -np.inf)
+    for n in js["nodes"]:
+        nm = n.get("name", "")
+        if "mesh" not in n or any(nm == b or nm.startswith(b + ".") for b in BRACKET):
+            continue
+        assert "matrix" not in n and not n.get("translation") and not n.get("rotation") and not n.get("scale"), nm
+        v = accessor(js, binary, js["meshes"][n["mesh"]]["primitives"][0]["attributes"]["POSITION"])
+        lo, hi = np.minimum(lo, v.min(0)), np.maximum(hi, v.max(0))
+    ext = hi - lo
     return {"bytes": len(data), "sha256_12": hashlib.sha256(data).hexdigest()[:12], "nodes": len(js["nodes"]),
             "meshes": len(js["meshes"]), "ids_missing": [i for i in ids if i not in names],
             "anchors_missing": [a for a in anchors if a not in names], "duplicate_names": dup,
-            "extents_m_gltf": [round(float(e), 4) for e in ext],
+            "extents_m_gltf": [round(float(e), 4) for e in ext], "extents_m_gltf_com_bracket": [round(float(e), 4) for e in ext_all],
             "scale_ok": bool(abs(ext[0] - 0.3048) < 0.004 and abs(ext[1] - 0.040) < 0.001 and abs(ext[2] - 0.1372) < 0.002)}
 
 
@@ -369,7 +374,17 @@ def views(asm, R, detailed):
     ]
     for name, eye, up, fov, title in shots:
         B.render(items, eye, c, up, fov, size, DIST / name, title)
-    return [s[0] for s in shots]
+    # estágio E7: só as peças do PCB (o que sai no passo 7 da desmontagem), frente e verso
+    P = {p["id"]: p for p in asm["parts"]}
+    e7 = [(b, col, off) for (b, col, off), pid in zip(items, (pid for pid in P for _ in B.all_bodies(R, pid))) if P[pid]["stage"] == "E7"]
+    ce = np.array([B.M("iface_pcb_center_x"), B.M("iface_pcb_center_y"), B.M("iface_pcb_front_z")])
+    e7_shots = [
+        ("05-estagio-e7-frente.png", ce + np.array([150, -230, 330]), [0, 1, 0], 30, "card.glb integrado: estágio E7 (PCB e componentes), frente do PCB (lado da face A), três quartos"),
+        ("06-estagio-e7-verso.png", ce + np.array([-60, -120, -420]), [0, 1, 0], 30, "card.glb integrado: estágio E7, verso do PCB (lado da face B)"),
+    ]
+    for name, eye, up, fov, title in e7_shots:
+        B.render(e7, eye, ce, up, fov, size, DIST / name, title)
+    return [s[0] for s in shots + e7_shots]
 
 
 # ---------------------------------------------------------------------------

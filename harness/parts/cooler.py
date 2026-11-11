@@ -83,17 +83,14 @@ G = {
     "clear": (0.3, "inferred", "folga entre as peças do cooler e a carcaça, os conectores e a placa de portas (a mesma do blockout)"),
     "window_gap": (0.25, "inferred", "folga entre a câmara (e a face de contato) e o furo da moldura"),
     # base e câmara
-    "contact_plate_t": (1.0, "inferred", "espessura da face de contato (parte de cooler.base no assembly); a câmara fica com vapor_chamber_thickness menos isto, para o conjunto ter os 4 mm do CSV"),
-    "base_frame_t": (4.0, "inferred", "altura da moldura da base, igual à câmara com a face de contato (como no blockout); topo rente ao topo da câmara"),
     "base_corner_r": (2.0, "inferred", "raio dos cantos da moldura"),
     "chamber_corner_r": (4.0, "derived", "cantos arredondados da face de contato: cerca de 4 mm em gn-34 e wccftech-cooler-5 (placa irmã), proporção"),
     "chamber_top_fillet": (0.6, "inferred", "arredondamento da aresta de cima da câmara"),
-    "post_r": (2.5, "inferred", "raio das colunas roscadas sob a moldura nos 8 furos (4 da mola e 4 da pcb.plate); gn-34 e gn-39 mostram colunas com parafuso, sem cota"),
+    "post_r": (2.5, "inferred", "raio das colunas roscadas sob a moldura nos furos da mola e da pcb.plate; gn-34 e gn-39 mostram colunas com parafuso, sem cota"),
+    "post_omit": ((((211.34, 125.86), "furo da pcb.plate sob o indutor isolado da ponta da borda de energia (cerca de 1,3 mm de sobreposição com a escala corrigida); omissão registrada no contrato (assembly-plan 12.4): é o candidato a furo de canto não confirmado pelo visual-qa"),), "inferred", "furos sem coluna roscada por decisão de contrato"),
     "post_hole_r": (1.2, "inferred", "raio do furo roscado das colunas (M2,5 suposto)"),
     "post_hole_depth": (2.5, "inferred", "profundidade do furo roscado"),
     # tubos
-    "hp_pitch_stack": (18.0, "derived", "passo dos 5 tubos na pilha da ponta: os 5 furos ocupam cerca de 70 % da altura da placa de ponta em wccftech-cooler-4 (placa irmã); com 18 mm os furos ficam a 3,6 mm do contorno das aletas da ponta"),
-    "hp_pitch_chamber": (12.5, "inferred", "passo dos 5 tubos sobre a câmara (cabem nos 68 mm da face de contato com 4,5 mm entre tubos)"),
     "hp_center_gap": (3.0, "inferred", "vão entre as pontas dos tubos dos dois lados no meio da câmara"),
     "hp_joint_len": (2.5, "inferred", "comprimento em x do pé soldado do tubo na lateral da câmara"),
     # golas dos furos das pilhas das pontas
@@ -106,6 +103,7 @@ G = {
     "c_x_plate_t": (0.8, "inferred", "espessura da placa lisa do X apoiada nas aletas rebaixadas (wccftech-cooler-3 e -4 mostram o X liso)"),
     "c_step": (8.0, "inferred", "largura (em y) de cada degrau dos triângulos de cima e de baixo; 3 degraus (gn-26, desta placa; wccftech-cooler-3, placa irmã)"),
     "c_step_drop": (2.5, "inferred", "altura de cada degrau; o degrau mais alto fica longe do cruzamento do X"),
+    "c_seat_gap": (0.05, "inferred", "vão entre o pé das lâminas centrais e o topo da câmara e da moldura: na peça real as aletas são soldadas; o vão só evita faces coplanares, que o teste de ponto interno das conferências lê como interferência"),
     # mola
     "spring_ring_wx": (8.0, "inferred", "largura do anel da mola nos lados (em x), como no blockout"),
     "spring_ring_wy": (5.0, "inferred", "largura do anel em cima e embaixo (em y): limitada pelas fileiras de memória do verso (mem.back) para não cruzá-las"),
@@ -161,10 +159,11 @@ T_FIN = M("fin_thickness")
 HD = M("heatpipe_diameter") / 2
 VX, VY = M("vapor_chamber_contact_plate_x") / 2, M("vapor_chamber_contact_plate_y") / 2
 VT = M("vapor_chamber_thickness")
-Z_CP1 = ZC + g("contact_plate_t")                 # topo da face de contato, fundo da câmara
+Z_CP1 = ZC + M("contact_plate_t")                 # topo da face de contato, fundo da câmara
 Z_TOP = ZC + VT                                   # topo da câmara e da moldura
-assert abs(g("base_frame_t") - VT) < 1e-9, "moldura e câmara com topos diferentes"
+assert abs(M("base_frame_t") - VT) < 1e-9, "moldura e câmara com topos diferentes"
 Z_HP = Z_TOP + HD                                 # eixo dos tubos: apoiados na câmara e na moldura
+assert abs(Z_HP - M("iface_heatpipe_axis_z")) < 0.05, "eixo dos tubos fora de iface_heatpipe_axis_z"
 # pilhas das pontas: entre a grade da face B e o ventilador
 Z_F1 = T - M("layer_end_fan_ring")
 Z_F0 = Z_F1 - M("fin_stack_end_depth_z")
@@ -174,6 +173,7 @@ ANG = math.radians(M("x_rib_angle_deg"))
 K = math.tan(ANG)
 XA = M("x_rib_cross_face_a_from_bracket_end")
 KO = FR.keepouts()
+AD_KO = KO["fenda_do_adaptador"]                  # faixa do adaptador PCIe (x0, x1, y0, y1, z0, z1)
 
 
 def neighbor_box(pid):
@@ -276,7 +276,7 @@ def fin_solid(sk_yz, x0, t):
 def corners():
     """Centros e raios dos cantos do contorno da carcaça (frame.outline): canto do bracket
     junto aos contatos quase reto (frame.G), os outros com shroud_corner_radius."""
-    rb = FR.g("bracket_bottom_corner_r")
+    rb = FR.bracket_bottom_corner_r()
     return [(rb, Y0 + rb, rb, -1, -1), (RC, Y1 - RC, RC, -1, 1), (L - RC, Y0 + RC, RC, 1, -1), (L - RC, Y1 - RC, RC, 1, 1)]
 
 
@@ -319,11 +319,11 @@ FIN_Y1 = min(YC + M("fin_stack_end_height_y") / 2, Y1 - WALL - CLR, KO["canal"][
 
 
 def pipe_y_stack(i):
-    return YC + g("hp_pitch_stack") * (i - 2)
+    return YC + M("heatpipe_pitch_stack") * (i - 2)
 
 
 def pipe_y_chamber(i):
-    return DCY + g("hp_pitch_chamber") * (i - 2)
+    return DCY + M("heatpipe_pitch_chamber") * (i - 2)
 
 
 def pipe_layout(side):
@@ -374,13 +374,16 @@ def build_end_stack(n):
     cache, fins = {}, []
     lc = P_FIN - T_FIN - g("collar_gap")
     for j, x in enumerate(S[2]):
-        lim0 = y_limits(x, FIN_Y0, FIN_Y1)
-        lim1 = y_limits(x + T_FIN + lc, FIN_Y0, FIN_Y1)
-        y0, y1 = max(lim0[0], lim1[0]), min(lim0[1], lim1[1])
         collar = j < len(S[2]) - 1                 # a última lâmina (maior x) fica sem gola
-        key = (round(y0, 3), round(y1, 3), collar)
+        lim0 = y_limits(x, FIN_Y0, FIN_Y1)
+        lim1 = y_limits(x + T_FIN + (lc if collar else 0.0), FIN_Y0, FIN_Y1)
+        y0, y1 = max(lim0[0], lim1[0]), min(lim0[1], lim1[1])
+        notch = x + T_FIN + (lc if collar else 0.0) > AD_KO[0] - CLR and x < AD_KO[1] + CLR
+        key = (round(y0, 3), round(y1, 3), collar, notch)
         if key not in cache:
             sk = rect(y0, y1, Z_F0, Z_F1)
+            if notch:
+                sk = sk - rect(y0 - 1, AD_KO[3] + CLR, Z_F0 - 1, AD_KO[5] + CLR)
             for i in range(5):
                 yy = pipe_y_stack(i)
                 assert yy - HD > y0 + 0.5 and yy + HD < y1 - 0.5, "furo do tubo fora da lâmina em x = %.2f" % x
@@ -393,13 +396,17 @@ def build_end_stack(n):
                 sol = sol + fin_solid(ring, T_FIN - 0.01, lc + 0.01)
             cache[key] = (sk, sol)
         fins.append((x, key))
-    note(pid, "%d lâminas de %.2f mm no passo de %.2f mm (fin_pitch e fin_thickness, inferred), de x = %.2f a %.2f; a contagem sai do passo e do comprimento da pilha, não de foto" % (
-        len(S[2]), T_FIN, P_FIN, S[2][0], S[2][-1] + T_FIN))
+    note(pid, "%d lâminas de %.2f mm (fin_thickness, inferred) no passo de %.2f mm (fin_pitch, derived: listras em pny/back e pny/front), de x = %.2f a %.2f; a contagem sai do passo e do comprimento da pilha (assembly: %d, inferred, porque ler as listras como aletas é inferência)" % (
+        len(S[2]), T_FIN, P_FIN, S[2][0], S[2][-1] + T_FIN, PARTS[pid]["count"]["value"]))
     note(pid, "lâminas no plano yz de z = %.1f (grade da face B) a %.1f (layer_end_fan_ring abaixo da face A), y de %.2f a %.2f (fin_stack_end_height_y), com os cantos da ponta recortados pelo contorno interno da carcaça" % (Z_F0, Z_F1, FIN_Y0, FIN_Y1))
-    note(pid, "5 furos de %.0f mm para os tubos em z = %.1f, passo de %.0f mm em y (derived da placa irmã: wccftech-cooler-4)" % (2 * HD, Z_HP, g("hp_pitch_stack")))
+    note(pid, "5 furos de %.0f mm para os tubos em z = %.1f (iface_heatpipe_axis_z), passo de %.0f mm em y (heatpipe_pitch_stack, derived da placa irmã: wccftech-cooler-4)" % (2 * HD, Z_HP, M("heatpipe_pitch_stack")))
     note(pid, "golas (colarinhos) de %.2f mm em volta dos furos, do comprimento do vão entre lâminas: escondem o tubo dentro da pilha, como na placa irmã; dobras das bordas e as placas de fixação dos ventiladores da placa irmã não modeladas" % g("collar_t"))
     if n == 1:
         note(pid, "começa em x = %.2f, depois da placa de portas (io.board) e da placa de extremidade da carcaça" % S[0])
+    nn = sum(1 for _, k in fins if k[3])
+    if nn:
+        note(pid, "%d lâminas com um entalhe no canto de baixo (y até %.2f, z até %.2f) para a faixa do adaptador PCIe, que desde 2026-11-11 fica no plano da pcb.plate (z %.2f a %.2f) e entra na pilha; forma do entalhe sem foto (inferred)" % (
+            nn, AD_KO[3] + CLR, AD_KO[5] + CLR, M("iface_adapter_board_z_min"), M("iface_adapter_board_z_max")))
     return fins, cache
 
 
@@ -436,10 +443,11 @@ def build_center_stack():
         segs = []
         for a, b in zip(br[:-1], br[1:]):
             segs.append((a, b, level(abs((a + b) / 2 - YC))))
-        pts = [(y0, Z_TOP)]
+        zb = Z_TOP + g("c_seat_gap")
+        pts = [(y0, zb)]
         for a, b, z in segs:
             pts += [(a, z), (b, z)]
-        pts.append((y1, Z_TOP))
+        pts.append((y1, zb))
         clean = [pts[0]]
         for p in pts[1:]:
             if abs(p[0] - clean[-1][0]) > 1e-6 or abs(p[1] - clean[-1][1]) > 1e-6:
@@ -470,10 +478,10 @@ def build_center_stack():
     if CONN[0][0] - CLR < x1:
         band = band - rect(CONN[0][0] - CLR, x1 + 1, CONN[0][1] - CLR, Y1 + 5)
     plate = ext_z(band, zp0, zp1)
-    note(pid, "%d lâminas de %.2f mm no passo de %.2f mm, de x = %.2f a %.2f (fin_stack_center_length_x = %.0f centrado no die)" % (n, T_FIN, P_FIN, xs[0], xs[-1] + T_FIN, lc))
+    note(pid, "%d lâminas de %.2f mm no passo de %.2f mm (fin_pitch, derived), de x = %.2f a %.2f (fin_stack_center_length_x = %.0f centrado no die, pendente de medida); assembly: %d" % (n, T_FIN, P_FIN, xs[0], xs[-1] + T_FIN, lc, PARTS[pid]["count"]["value"]))
     note(pid, "recorte em X: sob as nervuras do X da face A (cruzamento em x_rib_cross_face_a, ângulo x_rib_angle_deg) as lâminas descem %.1f mm e recebem uma placa lisa de %.1f mm (o X liso da placa irmã, wccftech-cooler-3 e -4); cunhas laterais, vistas pelas janelas do X da face A, %.1f mm abaixo do topo; triângulos de cima e de baixo em 3 degraus de %.1f mm subindo para longe do cruzamento (gn-26, desta placa)" % (
         g("c_x_drop"), g("c_x_plate_t"), g("c_side_drop"), g("c_step_drop")))
-    note(pid, "de z = %.1f (topo da câmara e da moldura) a %.1f (chapa da face A menos a folga); em y da borda da base até o fundo do canal da borda superior, recortada no entalhe PCIe e em volta do conector de energia" % (Z_TOP, Z_C_FULL))
+    note(pid, "de z = %.2f (topo da câmara e da moldura mais um vão de %.2f, sem significado físico) a %.1f (chapa da face A menos a folga); em y da borda da base até o fundo do canal da borda superior, recortada no entalhe PCIe e em volta do conector de energia" % (Z_TOP + g("c_seat_gap"), g("c_seat_gap"), Z_C_FULL))
     note(pid, "entalhes por baixo para os tubos que correm sobre a câmara; pad branco da borda superior (gn-21, gn-30) não modelado")
     return fins, plate
 
@@ -517,8 +525,17 @@ def build_base():
     z_pcb = M("iface_pcb_front_z")
     posts = []
     skipped = []
+    omit = {(round(a, 2), round(b, 2)): why for (a, b), why in g("post_omit")}
+    REPORT_EXTRA["folga_das_colunas"] = []
     for (hx, hy) in spring_h + plate_h:
-        hit = [n for n, v in FRONT_PARTS if v[:, 2].min() < ZC and hull_dist(v, hx, hy) < g("post_r")]
+        if (round(hx, 2), round(hy, 2)) in omit:
+            skipped.append(((round(hx, 2), round(hy, 2)), ["decisão de contrato: " + omit[(round(hx, 2), round(hy, 2))]]))
+            continue
+        near = [(n, hull_dist(v, hx, hy)) for n, v in FRONT_PARTS if v[:, 2].min() < ZC]
+        dmin = min(near, key=lambda t: t[1]) if near else ("nenhuma", np.inf)
+        REPORT_EXTRA["folga_das_colunas"].append({"furo": [round(hx, 2), round(hy, 2)], "peca_mais_perto": dmin[0],
+                                                  "dist_mm": round(float(dmin[1]), 2), "folga_mm": round(float(dmin[1]) - g("post_r"), 2)})
+        hit = [n for n, d in near if d < g("post_r")]
         if hit:
             skipped.append(((round(hx, 2), round(hy, 2)), hit))
             continue
@@ -532,10 +549,13 @@ def build_base():
     note(pid, "moldura de %.1f x %.1f mm (cooler_base_frame_outline, centrada no PCB), de z = %.1f a %.1f, com furo para a câmara (folga %.2f) e bolsos para os 10 pés dos tubos" % (
         2 * M("cooler_base_frame_outline_x") / 2, M("cooler_base_frame_outline_y"), ZC, Z_TOP, wg))
     note(pid, "recortes: %s (caixas de frame.keepouts() e das peças detalhadas, com folga de %.1f)" % (", ".join(cut_names), CLR))
-    note(pid, "face de contato de %.0f x %.0f mm e %.1f mm (vapor_chamber_contact_plate), no furo da moldura, centrada no die; é a face acobreada de gn-34 (pertence a cooler.base no assembly)" % (2 * VX, 2 * VY, g("contact_plate_t")))
-    note(pid, "8 colunas roscadas de r = %.1f de z = %.1f (frente do PCB) até a moldura, nos furos da mola (iface_spring_holes) e da pcb.plate (iface_plate_holes)" % (g("post_r"), z_pcb))
+    note(pid, "face de contato de %.0f x %.0f mm e %.1f mm (vapor_chamber_contact_plate), no furo da moldura, centrada no die; é a face acobreada de gn-34 (pertence a cooler.base no assembly)" % (2 * VX, 2 * VY, M("contact_plate_t")))
+    note(pid, "%d colunas roscadas de r = %.1f de z = %.1f (frente do PCB) até a moldura, nos furos da mola (iface_spring_holes) e da pcb.plate (iface_plate_holes)" % (len(posts), g("post_r"), z_pcb))
     for (h, hit) in skipped:
-        note(pid, "sem coluna no furo (%.2f; %.2f): %s ocupa o lugar (posição de componente inferred; pendência do pcb-layout-modeler)" % (h[0], h[1], ", ".join(hit)))
+        if hit and hit[0].startswith("decisão de contrato"):
+            note(pid, "sem coluna no furo (%.2f; %.2f): %s" % (h[0], h[1], hit[0]))
+        else:
+            note(pid, "sem coluna no furo (%.2f; %.2f): %s ocupa o lugar (posição de componente inferred; pendência do pcb-layout-modeler)" % (h[0], h[1], ", ".join(hit)))
     REPORT_EXTRA["colunas_omitidas"] = [{"furo": h, "pecas": hit} for h, hit in skipped]
     note(pid, "blocos de alumínio sobre a memória e os indutores (gn-34, wccftech-cooler-5) não modelados: dependem da grade da memória, que vai mudar; a moldura é lisa por baixo")
     note(pid, "marca da pasta e datamatrix da face de contato: textura (extras.surface_detail)")
@@ -630,12 +650,34 @@ def build_pipes():
             m = trimesh.util.concatenate([tube_mesh(center, d), box_mesh(ja, jb, yc - HD, yc + HD, Z_CP1, Z_TOP)])
             out.append(([tube, joint], m))
     note(pid, "10 tubos de %.0f mm (heatpipe_diameter), 5 por lado; eixo em z = %.1f, apoiado no topo da câmara e da moldura (%.1f)" % (2 * HD, Z_HP, Z_TOP))
-    note(pid, "trajeto: reto pela pilha da ponta (passo %.0f mm), curva em S no plano xy entre a pilha e a borda da câmara (passo %.1f mm sobre a câmara), reto sobre a câmara até %.1f mm do centro, ponta arredondada" % (
-        g("hp_pitch_stack"), g("hp_pitch_chamber"), g("hp_center_gap") / 2 + HD))
+    note(pid, "trajeto: reto pela pilha da ponta (heatpipe_pitch_stack, %.0f mm), curva em S no plano xy entre a pilha e a borda da câmara (heatpipe_pitch_chamber, %.1f mm sobre a câmara), reto sobre a câmara até %.1f mm do centro, ponta arredondada" % (
+        M("heatpipe_pitch_stack"), M("heatpipe_pitch_chamber"), g("hp_center_gap") / 2 + HD))
     note(pid, "pé soldado de %.1f mm na lateral da câmara, de z = %.1f até o tubo; os tubos atravessam as lâminas das pilhas das pontas pelos furos e a pilha central pelos entalhes" % (g("hp_joint_len"), Z_CP1))
-    note(pid, "comprimentos por lado: %.1f (bracket) e %.1f (ponta), contra heatpipe_length_per_side = %.0f do CSV (a revisar, como o próprio CSV diz)" % tuple(
-        [abs(pipe_layout(s)[3] - pipe_layout(s)[0]) for s in (-1, 1)] + [M("heatpipe_length_per_side")]))
+    dev = developed_lengths()
+    REPORT_EXTRA["comprimento_desenvolvido_dos_tubos"] = dev
+    for side, key in (("bracket", "heatpipe_length_bracket_side"), ("ponta", "heatpipe_length_far_side")):
+        d = dev[side]
+        note(pid, "comprimento desenvolvido do lado %s: %.1f a %.1f mm (eixo, com a ponta arredondada), contra %s = %.1f ± %s do CSV%s" % (
+            side, d["min"], d["max"], key, M(key), MEAS[key][1], "" if d["dentro_da_tolerancia"] else " (FORA DA TOLERÂNCIA)"))
+    note(pid, "heatpipe_length_per_side (%.0f) segue como trecho reto do blockout, não como comprimento do tubo" % M("heatpipe_length_per_side"))
     return out
+
+
+def developed_lengths():
+    """Comprimento do eixo de cada tubo (trecho reto, curva em S, trecho sobre a câmara, mais a
+    meia esfera da ponta), por lado, e a conferência com as linhas do CSV."""
+    res = {}
+    for side, name, key in ((-1, "bracket", "heatpipe_length_bracket_side"), (1, "ponta", "heatpipe_length_far_side")):
+        x_out, x_in, x_ch, x_tip = pipe_layout(side)
+        ls = []
+        for i in range(5):
+            xs = np.r_[x_out, np.linspace(x_in, x_ch, 400), x_tip]
+            ys = np.array([pipe_y_at(i, side, x) for x in xs])
+            ls.append(float(np.sum(np.hypot(np.diff(xs), np.diff(ys)))) + HD)
+        tol = float(MEAS[key][1])
+        res[name] = {"min": round(min(ls), 1), "max": round(max(ls), 1), "csv": M(key), "tol": tol,
+                     "dentro_da_tolerancia": bool(max(abs(v - M(key)) for v in ls) <= tol)}
+    return res
 
 
 def build_spring():
@@ -643,8 +685,11 @@ def build_spring():
     ww, wh = M("leaf_spring_window_x") / 2, M("leaf_spring_window_y") / 2
     wx, wy = g("spring_ring_wx"), g("spring_ring_wy")
     t = M("leaf_spring_thickness")
-    z1 = M("iface_pcb_back_z")
-    z0 = z1 - t
+    z0, z1 = M("iface_spring_z_min"), M("iface_spring_z_max")
+    assert abs((z1 - z0) - t) < 1e-6, "iface_spring_z_* não fecha com leaf_spring_thickness"
+    ring_x, ring_y = 2 * (ww + wx), 2 * (wh + wy)
+    REPORT_EXTRA["mola_anel"] = {"x": ring_x, "y": ring_y, "max_x": M("leaf_spring_ring_max_x"), "max_y": M("leaf_spring_ring_max_y"),
+                                 "ok": bool(ring_x <= M("leaf_spring_ring_max_x") and ring_y <= M("leaf_spring_ring_max_y"))}
     spring_h, _ = holes8()
     outer = rrect(DCX - ww - wx, DCX + ww + wx, DCY - wh - wy, DCY + wh + wy, 3.0)
     sk = outer
@@ -666,7 +711,9 @@ def build_spring():
     body = ext_z(sk, z0, z1)
     note(pid, "anel em volta da janela de %.0f x %.0f (leaf_spring_window, centrada no die), 4 braços até os furos iface_spring_holes (%.1f x %.1f), orelhas de r = %.1f e furos de r = %.1f" % (
         2 * ww, 2 * wh, M("iface_spring_holes_dx"), M("iface_spring_holes_dy"), g("spring_tab_r"), g("spring_hole_r")))
-    note(pid, "chapa plana de %.1f mm de z = %.2f a %.2f (encostada no verso do PCB); a curvatura de uma mola de lâmina não aparece nas fotos e não foi modelada" % (t, z0, z1))
+    note(pid, "chapa plana de %.1f mm de z = %.2f a %.2f (iface_spring_z_min e _max: assenta na pcb.back_frame); a curvatura de uma mola de lâmina não aparece nas fotos e não foi modelada" % (t, z0, z1))
+    note(pid, "anel de %.1f x %.1f mm, dentro do limite de %.1f x %.1f (leaf_spring_ring_max_x e _y) entre as fileiras de memória do verso%s" % (
+        ring_x, ring_y, M("leaf_spring_ring_max_x"), M("leaf_spring_ring_max_y"), "" if REPORT_EXTRA["mola_anel"]["ok"] else " (FORA DO LIMITE)"))
     note(pid, "anel mais estreito em cima e embaixo (%.0f mm) que nos lados (%.0f mm) para não passar sobre a memória do verso" % (wy, wx))
     return body
 
@@ -808,7 +855,8 @@ FEATURE_PROV = {
     "cooler.fins.1": {
         "existência, cor preta e orientação das lâminas (empilhadas ao longo de x)": "derived (gn-02, gn-29, gn-31; pny/back)",
         "faixa em x (do fim de io.board até o PCB), altura e profundidade": "derived (CSV) e inferred (fin_stack_end_depth_z)",
-        "passo e espessura": "inferred (fin_pitch, fin_thickness)",
+        "passo": "derived (fin_pitch: listras em pny/back e pny/front)", "espessura": "inferred (fin_thickness)",
+        "contagem": "inferred (sai do passo e do comprimento; assembly com procedência inferred)",
         "cantos da ponta acompanhando a carcaça": "derived (placa irmã, wccftech-cooler-3 e -6; contorno da carcaça do CSV)",
         "5 furos dos tubos": "derived (placa irmã, wccftech-cooler-4); posição em z inferred",
     },
@@ -873,7 +921,7 @@ def main():
     meshes["cooler.leaf_spring"] = to_mesh(sp, TESS["body"])
     steps["cooler.leaf_spring"] = [sp]
 
-    all_ok = True
+    all_ok = REPORT_EXTRA["mola_anel"]["ok"] and all(d["dentro_da_tolerancia"] for d in REPORT_EXTRA["comprimento_desenvolvido_dos_tubos"].values())
     total = 0
     for pid in IDS:
         p = PARTS[pid]

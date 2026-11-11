@@ -48,30 +48,26 @@ TOL_OVERLAP = 0.5        # mm, interpenetração
 G = {
     "screw_head_h": 1.2,        # altura das cabeças das fixações da placa de extremidade e do bracket
     "screw_d": 3.0,             # diâmetro de cabeça pequena
-    "screw_d_big": 5.0,         # cabeça com arruela
+    "screw_d_big": 5.0,         # cabeça com arruela (o E5 e o E6 usam fastener_e5/e6_head_diameter do CSV)
     "bracket_clear": 0.2,       # folga das aberturas de DisplayPort no bracket
     "blade_w": 12.0,            # largura tangencial da pá
     "fan_back_t": 1.5,          # espessura do disco traseiro do rotor
     "flex_t": 0.3,              # espessura dos cabos flat
     "spring_ring_w": 8.0,       # largura do anel e dos braços da mola
     "back_ring_d": 6.0,         # diâmetro dos anéis da pcb.back_frame
-    "back_frame_t": 0.8,        # espessura da pcb.back_frame
     "smd_h": 0.8,               # altura do bloco de componentes do verso
     "substrate_t": 1.0,         # substrato do package
     "stiff_t": 1.0,             # altura da moldura do package
     "base_plate_t": 1.0,        # placa de contato da base
     "base_frame_t": 4.0,        # altura da moldura da base (igual à câmara de vapor)
     "inductor_h": 3.0,          # altura dos indutores
-    "stage_side": 4.0,          # lado dos estágios de potência
-    "stage_h": 1.2,
+    "stage_side": 5.0,          # lado dos estágios de potência (meio estágio de 2,5 em iface_vrm_gpu_anchor_y)
+    "stage_gap": 0.2,           # folga entre o indutor e o estágio (iface_vrm_gpu_anchor_y)
     "aux_conn_h": 6.0,          # altura do conector auxiliar
     "aux_conn_depth": 4.0,
-    "p16_depth": 11.0,          # profundidade (no plano) do conector de 16 pinos (limitada pelo canal da carcaça)
     "p16_depth_chamfer": 11.0,  # profundidade usada para pôr a linha do chanfro do PCB (não muda o PCB)
     "clear": 0.3,               # folga entre as caixas do blockout e a carcaça detalhada
-    "p16_h": 7.0,               # altura do conector de 16 pinos
-    "adapter_conn_w": 8.0,      # largura em y do conector J3
-    "hp_pitch": 10.0,           # passo dos tubos de calor
+    "adapter_conn_w": 5.63,     # largura em y do plugue J3 (a mesma do io_parts.py)
 }
 
 NOTES = {}          # id -> lista de notas de bloqueio
@@ -265,14 +261,14 @@ def build_parts(asm):
 
     # --- carcaça (substituída pela peça detalhada na integração) ----------------
     ox = M("iface_shroud_power_opening_x")
-    ow = M("conn16_header_width") + 2.0
-    oz0, oz1 = 4.0, 21.0                         # abertura do conector, z (valor de bloqueio)
-    sh = [box(0, L, y0, y0 + wall, zb, T),
+    ow = KO["encaixe_do_conector"][1] - KO["encaixe_do_conector"][0] - 2 * wall     # largura em x da abertura do frame.py
+    oz0, oz1 = M("iface_shroud_power_opening_z_min"), M("iface_shroud_power_opening_z_max")
+    sh = [*carve(box(0, L, y0, y0 + wall, zb, T), (KO["fenda_do_adaptador"],), 0.0),     # fenda da faixa do adaptador
           box(0, ox - ow / 2, y1 - wall, y1, zb, T), box(ox + ow / 2, L, y1 - wall, y1, zb, T),
           box(ox - ow / 2, ox + ow / 2, y1 - wall, y1, oz1, T), box(ox - ow / 2, ox + ow / 2, y1 - wall, y1, zb, oz0),
           box(hx, hx + wall, y0 + wall, y1 - wall, zb, T),
           box(L - wall, L, y0 + wall, y1 - wall, zb, T)]
-    guess("frame.shroud", "abertura retangular da borda superior para o conector de energia: x = iface_shroud_power_opening_x, largura = conn16_header_width + 2 mm, z de %.0f a %.0f mm (valor de bloqueio)" % (oz0, oz1))
+    guess("frame.shroud", "abertura retangular da borda superior para o conector de energia: x = iface_shroud_power_opening_x, largura em x de %.1f (a do frame.py, palpite), z de %.2f a %.2f (iface_shroud_power_opening_z_min e _max)" % (ow, oz0, oz1))
     guess("frame.shroud", "recuo da parede de extremidade (altura das cabeças dos parafusos): %.1f mm" % hx)
     guess("frame.shroud", "placas da face A só nas pontas, com o recorte do aro de %.0f mm; o centro é a pilha cooler.fins.3" % (ring_r * 2))
     for fx, xa, xb in ((fan_x[0], hx + wall, cen_x0), (fan_x[1], cen_x1, L - wall)):
@@ -289,13 +285,13 @@ def build_parts(asm):
     yp = sorted(a[1] for a in dp_a)
     mid = [(yp[i] + yp[i + 1]) / 2 for i in range(len(yp) - 1)]
     ys5 = [max(yp[0] - M("dp_port_pitch"), y0 + 15), *mid, min(yp[-1] + M("dp_port_pitch"), y1 - 15)]   # fora da parede curva dos cantos
-    zc_dp = T / 2
+    zc_dp = float(np.mean([a[2] for a in dp_a]))      # fileira de DisplayPort (dp_row_center_z)
     inst = []
     for yy in (y0 + 15, y1 - 15):          # fora da parede curva dos cantos da carcaça
         for zz in (gT + G["screw_d_big"] / 2 + clr, T - tA - G["screw_d_big"] / 2 - clr):   # entre a face B e a chapa da face A
             inst.append([cyl_x(0, hx, yy, zz, G["screw_d_big"] / 2)])
     for yy in ys5:
-        for zz in (zc_dp - 9, zc_dp + 9):
+        for zz in (zc_dp - 8, zc_dp + 8):          # acima e abaixo dos receptáculos
             inst.append([cyl_x(0, hx, yy, zz, G["screw_d"] / 2)])
     R["fasteners.end_plate"] = {"instances": inst}
     guess("fasteners.end_plate", "posições dos 14 parafusos (4 nos cantos com arruela, 10 em volta dos DisplayPort) e tamanho: sem medida")
@@ -319,23 +315,26 @@ def build_parts(asm):
     # bracket
     bt = M("bracket_thickness")
     bh = M("bracket_height_overall")
-    br = b3box(-bt, 0, cy - bh / 2, cy + bh / 2, 0, T)
+    br_y1 = M("card_envelope_height") - M("bracket_top_below_shroud_top")
+    br_y0 = br_y1 - bh
+    br = b3box(-bt, 0, br_y0, br_y1, 0, T)
     cl = G["bracket_clear"]
     for a in dp_a:
         br = br - b3box(-bt - 1, 1, a[1] - M("dp_receptacle_width") / 2 - cl, a[1] + M("dp_receptacle_width") / 2 + cl,
                         a[2] - M("dp_receptacle_height") / 2 - cl, a[2] + M("dp_receptacle_height") / 2 + cl)
     R["io.bracket"] = {"bodies": [from_b3d(br)]}
-    guess("io.bracket", "folga de %.1f mm nas aberturas dos DisplayPort; largura em z igual à espessura da placa (não é o bracket de norma)" % cl)
+    guess("io.bracket", "folga de %.1f mm nas aberturas dos DisplayPort; largura em z igual à espessura da placa (não é o bracket de norma); y de %.2f a %.2f (bracket_top_below_shroud_top)" % (cl, br_y0, br_y1))
     R["fasteners.e1_bracket"] = {"instances": [
         [cyl_x(-bt - hx, -bt, yy, zz, G["screw_d"] / 2)]
-        for yy in (cy - bh / 2 + 5, cy + bh / 2 - 5) for zz in (5, T - 5)]}
+        for yy in (br_y0 + 33, br_y1 - 8) for zz in (7.5, 33.5)]}
     guess("fasteners.e1_bracket", "posição, tamanho e altura das cabeças")
 
     # aro e tampas (face B, de z = 0 para dentro)
     R["frame.rim"] = {"bodies": frame_boxes(0, L, y0, y1, 0, gT, wall, L - wall, y0 + wall, y1 - wall)}
     guess("frame.rim", "largura do aro igual à parede da carcaça")
-    R["fasteners.e2_rim"] = {"instances": [[cyl_z(wall / 2, y0 + 9, 0, 0.8, wall * 0.4)]]}
-    guess("fasteners.e2_rim", "posição e tamanho (rente ao aro, para não passar da espessura)")
+    ry, rz, rhd, rhh, rsd, rsl = rim_screw()
+    R["fasteners.e2_rim"] = {"instances": [[cyl_x(0, rhh, ry, rz, rhd / 2), cyl_x(rhh, rhh + rsl, ry, rz, rsd / 2)]]}
+    guess("fasteners.e2_rim", "posição e tamanho sem foto (frame.py, rim_screw): eixo em x na ponta do bracket, cabeça de x = 0 a %.1f dentro do recuo da placa de extremidade, corpo até a face interna do aro, que tem o furo" % rhh)
     ct = M("layer_center_covers")
     xa, xb = fin1_len, L - fin2_len
     ylo, yhi = y0 + wall, y1 - wall
@@ -346,35 +345,40 @@ def build_parts(asm):
 
     # adaptador PCIe (entre a face B e o verso do PCB)
     az0 = M("iface_adapter_board_z_min")
-    az1 = az0 + M("pcb_thickness")
-    f0 = M("pcie_fingers_start_from_bracket_end")
-    cx_c = M("pcie_adapter_connector_x")
-    tabw = M("pcie_adapter_tab_width")
+    az1 = M("iface_adapter_board_z_max")
+    ad_x0, ad_x1 = M("iface_adapter_x_min"), M("iface_adapter_x_max")
+    cx_c, cn_y = M("iface_j3_center_x"), M("iface_j3_center_y")
     cn_len = M("pcie_adapter_connector_length")
-    cn_y = M("pcie_adapter_connector_center_y")
-    R["pcie.adapter"] = {"bodies": [
-        box(f0, f0 + M("pcie_adapter_length"), 0, M("pcie_adapter_strip_height"), az0, az1),
-        box(cx_c - tabw / 2, cx_c + tabw / 2, 0, M("pcie_adapter_total_height"), az0, az1),
-        box(cx_c - cn_len / 2, cx_c + cn_len / 2, cn_y - G["adapter_conn_w"] / 2, cn_y + G["adapter_conn_w"] / 2, az1, pz_b)]}
-    guess("pcie.adapter", "largura em y do conector J3 (%.0f mm) e início da tira junto aos contatos" % G["adapter_conn_w"])
-    sc = G["screw_d"] / 2
-    hz = 0.9
-    R["fasteners.e4_pcie"] = {"instances": [[cyl_z(px, py, az0 - hz, az0, sc)] for px, py in
-                                            [(cx_c - 16, 10), (cx_c + 16, 10), (cx_c - 16, 30), (cx_c + 16, 30), (60, 8), (95, 8)]]}
-    guess("fasteners.e4_pcie", "posição e tamanho das 6 cabeças")
+    tab_x0, tab_x1 = adapter_tab_range()
+    ad_boxes = [(ad_x0, ad_x1, 0, M("pcie_adapter_strip_height")), (tab_x0, tab_x1, 0, M("pcie_adapter_total_height"))]
+    j3 = (cx_c - cn_len / 2, cx_c + cn_len / 2, cn_y - G["adapter_conn_w"] / 2, cn_y + G["adapter_conn_w"] / 2)
+    R["pcie.adapter"] = {"bodies": [box(a, b, c, d, az0, az1) for a, b, c, d in ad_boxes] + [box(*j3, az1, M("iface_j3_mating_z"))]}
+    guess("pcie.adapter", "faixa de iface_adapter_x_min a _max e aba de x = %.2f a %.2f (contorno do io_parts.py) com a altura do lóbulo, em caixas; plugue J3 de %.2f mm em y até iface_j3_mating_z" % (tab_x0, tab_x1, G["adapter_conn_w"]))
+    e4h, e4r = M("fastener_e4_head_height"), M("fastener_e4_head_diameter") / 2
+    R["fasteners.e4_pcie"] = {"instances": [[cyl_z(hx_, hy_, az0 - e4h, az0, e4r)] for hx_, hy_, _d, kind in adapter_holes() if kind != "lobulo"]}
+    guess("fasteners.e4_pcie", "6 cabeças nos furos iface_adapter_*_hole_* (4 com anel e 2 da faixa; o furo do lóbulo fica sem parafuso), diâmetro e altura fastener_e4_head_*: sem medida")
 
     # placa central e parafusos
     ph = M("iface_plate_holes_dx") / 2
     pv = M("iface_plate_holes_dy") / 2
     pw = M("pcb_plate_window") / 2
     pz0, pz1 = M("layer_center_covers"), M("layer_center_covers") + M("layer_pcb_plate")
-    R["pcb.plate"] = {"bodies": frame_boxes(pcx - M("pcb_plate_outline_x") / 2, pcx + M("pcb_plate_outline_x") / 2,
-                                            pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2,
-                                            pz0, pz1, dcx - pw, dcx + pw, dcy - pw, dcy + pw)}
-    guess("pcb.plate", "janela do furo centrada no die; sem as 4 abas nem os pads; contorno de 104 x 108 (escala antiga) é menor que o padrão de furos de 106 x 102")
-    R["fasteners.e5_plate"] = {"instances": [[cyl_z(pcx + sx * ph, pcy + sy * pv, pz0 - 1.5, pz0, G["screw_d_big"] / 2)]
+    pac = M("pcb_plate_adapter_clear")
+    # recortes: aba, faixa e J3 do adaptador (que fica no plano da placa) e alívios sob as cabeças do E6
+    e6r = M("fastener_e6_head_diameter") / 2 + M("cover_relief_clear")
+    sx6, sy6 = M("iface_spring_holes_dx") / 2, M("iface_spring_holes_dy") / 2
+    plate_ko = [(a - pac, b + pac, c - pac, d + pac, pz0 - 1, pz1 + 1) for a, b, c, d in ad_boxes + [j3]]
+    plate_ko += [(dcx + sx * sx6 - e6r, dcx + sx * sx6 + e6r, dcy + sy * sy6 - e6r, dcy + sy * sy6 + e6r, pz0 - 1, pz1 + 1)
+                 for sx in (-1, 1) for sy in (-1, 1)]
+    R["pcb.plate"] = {"bodies": [b for bb in frame_boxes(pcx - M("pcb_plate_outline_x") / 2, pcx + M("pcb_plate_outline_x") / 2,
+                                                         pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2,
+                                                         pz0, pz1, dcx - pw, dcx + pw, dcy - pw, dcy + pw)
+                                 for b in carve(bb, plate_ko, 0.0)]}
+    guess("pcb.plate", "janela do furo centrada no die; sem as 4 abas nem os pads; contorno de 104 x 108 (escala antiga) é menor que o padrão de furos de 106 x 102; recortes em caixa em volta do adaptador e do J3 (folga pcb_plate_adapter_clear) e alívios quadrados sob as cabeças do E6 (no modelo final, furos redondos)")
+    e5h, e5r = M("fastener_e5_head_height"), M("fastener_e5_head_diameter") / 2
+    R["fasteners.e5_plate"] = {"instances": [[cyl_z(pcx + sx * ph, pcy + sy * pv, pz0 - e5h, pz0, e5r)]
                                              for sx in (-1, 1) for sy in (-1, 1)]}
-    guess("fasteners.e5_plate", "diâmetro e altura da cabeça")
+    guess("fasteners.e5_plate", "diâmetro e altura da cabeça (fastener_e5_head_*, sem medida)")
 
     # cabos flat (sobre o verso do PCB, do lado da face B)
     ft = G["flex_t"]
@@ -391,10 +395,13 @@ def build_parts(asm):
     # mola (sobre o verso do PCB)
     sx_, sy_ = M("iface_spring_holes_dx") / 2, M("iface_spring_holes_dy") / 2
     st = M("leaf_spring_thickness")
-    ww, wh = M("leaf_spring_window_x") / 2, M("leaf_spring_window_y") / 2
     rw = G["spring_ring_w"]
-    ro_x, ro_y = ww + rw, wh + rw
-    zs0, zs1 = pz_b - st, pz_b
+    # anel limitado por leaf_spring_ring_max_* (entre as fileiras de memória do verso); a janela encolhe junto
+    ro_x = min(M("leaf_spring_window_x") / 2 + rw, M("leaf_spring_ring_max_x") / 2)
+    ro_y = min(M("leaf_spring_window_y") / 2 + rw, M("leaf_spring_ring_max_y") / 2)
+    ww, wh = ro_x - rw, ro_y - rw
+    zs0, zs1 = M("iface_spring_z_min"), M("iface_spring_z_max")
+    assert abs(zs1 - zs0 - st) < 1e-6
     sp = frame_boxes(dcx - ro_x, dcx + ro_x, dcy - ro_y, dcy + ro_y, zs0, zs1, dcx - ww, dcx + ww, dcy - wh, dcy + wh)
     for sx in (-1, 1):
         for sy in (-1, 1):
@@ -403,10 +410,10 @@ def build_parts(asm):
             nv = np.array([-dv[1], dv[0]]) / np.linalg.norm(dv) * rw / 2
             sp.append(prism([np.array(c) - nv, np.array(c) + nv, np.array(r) + nv, np.array(r) - nv], zs0, zs1))
     R["cooler.leaf_spring"] = {"bodies": sp}
-    guess("cooler.leaf_spring", "largura do anel e dos 4 braços (%.0f mm) e formato em X" % rw)
-    R["fasteners.e6_spring"] = {"instances": [[cyl_z(dcx + sx * sx_, dcy + sy * sy_, pz_b - M("layer_back_mem_pad"), zs0, G["screw_d_big"] / 2)]
+    guess("cooler.leaf_spring", "largura do anel e dos 4 braços (%.0f mm) e formato em X; anel de %.1f x %.1f (limite leaf_spring_ring_max_*), de z = %.1f a %.1f (iface_spring_z_*)" % (rw, 2 * ro_x, 2 * ro_y, zs0, zs1))
+    R["fasteners.e6_spring"] = {"instances": [[cyl_z(dcx + sx * sx_, dcy + sy * sy_, zs0 - M("fastener_e6_head_height"), zs0, M("fastener_e6_head_diameter") / 2)]
                                               for sx in (-1, 1) for sy in (-1, 1)]}
-    guess("fasteners.e6_spring", "diâmetro da cabeça; altura = layer_back_mem_pad menos a espessura da mola")
+    guess("fasteners.e6_spring", "diâmetro e altura da cabeça (fastener_e6_head_*, sem medida): sob a mola, nos alívios da pcb.plate")
 
     # PCB e o que está nele
     ca = math.radians(M("pcb_main_chamfer_angle_deg"))
@@ -424,7 +431,7 @@ def build_parts(asm):
         box(pcb_x0, r0, pcb_y0, pcb_y0 + rd, pz_b, pz_f), box(r1, pcb_x1, pcb_y0, pcb_y0 + rd, pz_b, pz_f)]}
     guess("pcb.main", "tamanho do chanfro (catetos de %.1f mm em x e %.1f mm em y): sem medida, a linha passa a meia profundidade do corpo do conector (%.0f mm, valor de bloqueio); sem o recorte em V" %
           (pcb_x1 - x_top, pcb_y1 - y_r, G["p16_depth_chamfer"]))
-    R["pcb.back_frame"] = {"instances": [[cyl_z(dcx + sx * sx_, dcy + sy * sy_, pz_b - G["back_frame_t"], pz_b, G["back_ring_d"] / 2)]
+    R["pcb.back_frame"] = {"instances": [[cyl_z(dcx + sx * sx_, dcy + sy * sy_, pz_b - M("pcb_back_frame_thickness"), pz_b, G["back_ring_d"] / 2)]
                                          for sx in (-1, 1) for sy in (-1, 1)]}
     guess("pcb.back_frame", "contorno e espessura sem dados: só 4 anéis nos furos da mola")
     sw = M("pcb_plate_window") / 2 - 2
@@ -455,7 +462,7 @@ def build_parts(asm):
     for i in range(4):
         grid.append((pcb_x0 + M("mem_power_edge_u_first") + i * M("mem_power_edge_u_pitch"), pcb_y0 + M("mem_power_edge_v"), gl, gw))
     for u in (M("mem_contact_edge_u_1"), M("mem_contact_edge_u_2")):
-        grid.append((pcb_x0 + u, pcb_y0 + M("mem_contact_edge_v"), gl, gw))
+        grid.append((pcb_x0 + u, pcb_y0 + M("mem_contact_edge_v"), gw, gl))      # na borda dos contatos o chip gira
     for a_id, zlo, zhi in (("mem.back", pz_b - gt, pz_b), ("mem.front", pz_f, pz_f + gt)):
         for k, a in enumerate(A[a_id]):
             if abs(a[0] - grid[k][0]) > 0.01 or abs(a[1] - grid[k][1]) > 0.01:
@@ -467,14 +474,14 @@ def build_parts(asm):
     cxp = M("power_connector_center_from_bracket_end")
     cyp = M("power_connector_center_y")
     cw = M("conn16_header_width")
-    # o corpo girado não pode passar do fundo do canal da carcaça (o canto mais alto sobe
-    # (largura + profundidade) / 2 * sen 45 acima do centro)
-    a_r = math.radians(ang)
-    d_fit = 2 * ((floor_y - clr - cyp) - abs(math.sin(a_r)) * cw / 2) / abs(math.cos(a_r))
-    p16_d = min(G["p16_depth"], d_fit)
-    R["power.connector"] = {"bodies": [_rot_centered(cxp, cyp, pz_f, pz_f + G["p16_h"], cw, p16_d, ang)]}
-    guess("power.connector", "profundidade (%.1f; o palpite de %.0f passava do fundo do canal da carcaça) e altura (%.0f) do corpo; o centro y vem de power_connector_center_y, que o CSV declara escolha de bloqueio"
-          % (p16_d, G["p16_depth"], G["p16_h"]))
+    # de pé: lado longo do cabeçote em z; power_connector_rotation_deg é o eixo através das fileiras
+    # (largura power_connector_body_across) e a profundidade fica na direção de encaixe
+    p16_w, p16_d, p16_h = M("power_connector_body_across"), M("power_connector_body_depth"), M("power_connector_body_height_z")
+    conn = _rot_centered(cxp, cyp, pz_f, pz_f + p16_h, p16_w, p16_d, ang)
+    if conn.hi[1] > floor_y - clr:
+        OBS.append("power.connector: o corpo sobe até y = %.2f, acima do fundo do canal da carcaça menos a folga (%.2f)" % (conn.hi[1], floor_y - clr))
+    R["power.connector"] = {"bodies": [conn]}
+    guess("power.connector", "caixa do corpo de pé (%.2f através x %.2f na direção de encaixe x %.2f de altura), sem lâminas nem trava" % (p16_w, p16_d, p16_h))
     au = M("aux_header_u")
     al = M("aux_header_length")
     ah_top = min(pcb_y1, floor_y - clr)
@@ -498,8 +505,11 @@ def build_parts(asm):
     R["power.inductors"] = {"instances": [[box(x - s / 2, x + s / 2, y - s / 2, y + s / 2, pz_f, pz_f + G["inductor_h"])] for x, y in pos]}
     guess("power.inductors", "altura (%.0f mm), repartição 13 + 11 e passo (8 mm na borda dos contatos): representativos" % G["inductor_h"])
     ss = G["stage_side"] / 2
-    R["power.vrm.gpu"] = {"instances": [[box(x - ss, x + ss, y - ss, y + ss, pz_b - G["stage_h"], pz_b)] for x, y in pos]}
-    guess("power.vrm.gpu", "posição (verso, atrás de cada indutor) e tamanho: sem fonte")
+    so = s / 2 + G["stage_gap"] + ss          # do centro do indutor ao centro do estágio, para dentro da placa
+    st_pos = ([(x, y + so) for x, y in pos[:n_c]] + [(x, y - so) for x, y in pos[n_c:n_c + n_t]]
+              + [(x - so, y) for x, y in pos[n_c + n_t:]])
+    R["power.vrm.gpu"] = {"instances": [[box(x - ss, x + ss, y - ss, y + ss, pz_f, M("iface_vrm_gpu_anchor_z"))] for x, y in st_pos]}
+    guess("power.vrm.gpu", "na frente do PCB, um estágio para dentro de cada indutor (como iface_vrm_gpu_anchor_*), lado %.1f e topo em iface_vrm_gpu_anchor_z: sem fonte" % G["stage_side"])
     xb = far_x + 1.2     # coluna livre perto da ponta longe do bracket, abaixo dos indutores
     R["power.vrm.mem"] = {"instances": [[box(xb - 2.5, xb + 2.5, y - 2.5, y + 2.5, pz_f, pz_f + 1.5)] for y in (26.5, 32.0, 37.5, 43.0)]}
     R["power.aux"] = {"instances": [[box(x - 2, x + 2, 23 - 2, 23 + 2, pz_f, pz_f + 1.5)] for x in (197.5, 202.5, 207.5)]}
@@ -554,15 +564,15 @@ def build_parts(asm):
     hl = M("heatpipe_length_per_side")
     nh = parts["cooler.heatpipes"]["count"]["value"]
     per = nh // 2
-    zhp = zc + max(vt / 2, hd)          # os tubos não descem abaixo da face de contato
+    zhp = M("iface_heatpipe_axis_z")     # eixo dos tubos (o mesmo do cooler.py)
     hp = []
     for side in (-1, 1):
         for i in range(per):
-            yy = dcy + G["hp_pitch"] * (i - (per - 1) / 2)
+            yy = dcy + M("heatpipe_pitch_chamber") * (i - (per - 1) / 2)
             xa_, xb_ = dcx + side * vx, dcx + side * (vx + hl)
             hp.append([cyl_x(min(xa_, xb_), max(xa_, xb_), yy, zhp, hd)])
     R["cooler.heatpipes"] = {"instances": hp}
-    guess("cooler.heatpipes", "passo entre tubos (%.0f mm) e altura em z (eixo a um raio da face de contato, para não descer sobre o PCB); traçado reto; atravessam as pilhas de aletas de propósito" % G["hp_pitch"])
+    guess("cooler.heatpipes", "traçado reto com o passo da câmara (heatpipe_pitch_chamber) e o eixo em iface_heatpipe_axis_z; o trajeto em S do cooler.py não entra no blockout; atravessam as pilhas de aletas de propósito")
 
     missing = [i for i in parts if i not in R]
     if missing:
@@ -570,12 +580,40 @@ def build_parts(asm):
     return R
 
 
-def carcass_keepouts():
-    """Volumes internos da carcaça detalhada (frame.py), na mesma forma (caixas)."""
+def _parts_path():
     if str(Path(__file__).resolve().parent) not in sys.path:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+
+def carcass_keepouts():
+    """Volumes internos da carcaça detalhada (frame.py), na mesma forma (caixas)."""
+    _parts_path()
     import frame as FR
     return FR.keepouts()
+
+
+def rim_screw():
+    """Parafuso do aro, na posição em que o frame.py abre o furo."""
+    _parts_path()
+    import frame as FR
+    return FR.rim_screw()
+
+
+def adapter_holes():
+    """Furos do adaptador (x, y, diâmetro, tipo), os mesmos do io_parts.py (linhas do CSV)."""
+    _parts_path()
+    import io_parts as IO
+    return IO.adapter_holes()
+
+
+def adapter_tab_range():
+    """Faixa em x da aba do adaptador acima da faixa dos contatos, pelo contorno do io_parts.py."""
+    _parts_path()
+    import io_parts as IO
+    pts = IO.adapter_outline_xy()
+    hs = M("pcie_adapter_strip_height") + 0.5
+    xs = [x for x, y in pts if y > hs]
+    return min(xs), max(xs)
 
 
 def carve(b, keepouts, clr):

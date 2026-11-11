@@ -63,7 +63,6 @@ TRI_BUDGET = 200_000   # triângulos, carcaça inteira
 G = {
     # face A
     "edge_fillet_a": (3.0, "inferred", "arredondamento da aresta entre a face A e as laterais; os renders mostram aresta macia, sem cota"),
-    "bracket_bottom_corner_r": (3.0, "derived", "canto entre a ponta do bracket e a borda dos contatos: quase reto nos dois renders (pny/front, pny/back); o CSV dá um raio só, lido nos outros cantos"),
     "pod_frame_w": (5.0, "derived", "moldura das cápsulas dos ventiladores, da borda até a grade: 4,8 a 5,2 mm (pny/front)"),
     "apex_r_a": (12.0, "derived", "raio do vértice das tampas lisas da face A: vão vertical de 10,3 mm entre os vértices no cruzamento (pny/front)"),
     "rib_w_a": (1.5, "derived", "faixa lisa entre a tampa lisa e a grade do X da face A: chanfro de 1,7 mm (pny/front)"),
@@ -88,7 +87,11 @@ G = {
     "lam_pitch_b": (1.45, "derived", "passo das lâminas da grade da face B: cerca de 1,45 mm (pny/back)"),
     "lam_t_b": (0.6, "inferred", "espessura das lâminas da face B"),
     "lam_recess_b": (0.5, "inferred", "recuo das lâminas da face B em relação à moldura"),
-    "adapter_clear": (0.5, "inferred", "folga do recorte da face B em volta do adaptador PCIe (o recorte aparece em gn-20, sem cota)"),
+    "adapter_clear": (0.5, "inferred", "folga do recorte da faixa do adaptador PCIe na face B, no aro e na fenda da parede inferior (o recorte aparece em gn-20, sem cota)"),
+    "rim_screw_yz": ((22.86, 1.6), "inferred", "centro (y, z) do parafuso do aro (fasteners.e2_rim), com o eixo em x na ponta do bracket: y = iface_shroud_y_min + 9 (posição do blockout), z no meio do aro; sem foto (falta gn-16 em resolução maior, o quadro do vídeo da GN no passo 2 ou a ponta da placa sem o bracket)"),
+    "rim_screw_head": ((2.4, 0.9), "inferred", "diâmetro e altura da cabeça do parafuso do aro; a cabeça fica de x = 0 até a altura, dentro do recuo da placa de extremidade (shroud_end_plate_recess), escondida pelo bracket"),
+    "rim_screw_shank_d": (1.4, "inferred", "diâmetro do corpo do parafuso do aro, que vai até a face interna do aro (rim_w)"),
+    "rim_screw_clear": (0.15, "inferred", "folga radial do furo do aro em volta da cabeça e do corpo do parafuso"),
     # borda inferior
     "notch_r": (1.5, "inferred", "raio dos cantos do entalhe ao lado dos contatos PCIe"),
     # canal da borda superior
@@ -182,8 +185,54 @@ def outline():
         with Locations((0, Y0)):
             Rectangle(L, Y1 - Y0, align=(Align.MIN, Align.MIN))
         fillet(s.vertices().filter_by(lambda v: not is_bb(v)), RC)
-        fillet(s.vertices().filter_by(is_bb), g("bracket_bottom_corner_r"))
+        fillet(s.vertices().filter_by(is_bb), bracket_bottom_corner_r())
     return s.sketch
+
+
+def bracket_bottom_corner_r():
+    """Raio do canto entre a ponta do bracket e a borda dos contatos (CSV, promovido do frame.py)."""
+    return M("shroud_corner_radius_bracket_bottom")
+
+
+def adapter_outline():
+    """Contorno do adaptador PCIe no plano xy, do io_parts.py (mesma fonte da peça)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import io_parts as IO
+    return poly(IO.adapter_outline_xy())
+
+
+def adapter_strip_cut():
+    """Caixa do recorte da faixa do adaptador (face B, aro e parede inferior da carcaça):
+    de iface_adapter_x_min a _max, da ponta dos contatos até a faixa, aberta até a face B e até
+    a face do adaptador do lado do PCB (iface_adapter_board_z_max), com a folga adapter_clear."""
+    c = g("adapter_clear")
+    return (M("iface_adapter_x_min") - c, M("iface_adapter_x_max") + c, -1.0, M("pcie_adapter_strip_height") + c,
+            -1.0, M("iface_adapter_board_z_max") + c)
+
+
+def e5_heads():
+    return [a["pos"][:2] for a in PARTS["fasteners.e5_plate"]["anchors"]]
+
+
+def reliefs(z_top):
+    """Rebaixos por baixo da face B e das tampas: sob as 4 cabeças do E5 (fundo em
+    iface_cover_relief_e5_z_min) e sobre a aba do adaptador com a presilha e as cabeças do E4
+    (fundo em iface_cover_relief_adapter_z_min), até z_top."""
+    cl = M("cover_relief_clear")
+    r5 = M("fastener_e5_head_diameter") / 2 + cl
+    out = [ext(Pos(x, y) * Circle(r5), M("iface_cover_relief_e5_z_min"), z_top) for x, y in e5_heads()]
+    out.append(ext(offset(adapter_outline(), cl, kind=Kind.ARC), M("iface_cover_relief_adapter_z_min"), z_top))
+    return out
+
+
+def rim_screw():
+    """Parafuso do aro (fasteners.e2_rim): (y, z, diâmetro da cabeça, altura, diâmetro do corpo,
+    comprimento do corpo), eixo em x a partir de x = 0."""
+    (y, z), (hd, hh), sd = g("rim_screw_yz"), g("rim_screw_head"), g("rim_screw_shank_d")
+    assert hh <= M("shroud_end_plate_recess"), "cabeça do parafuso do aro maior que o recuo"
+    return y, z, hd, hh, sd, g("rim_w") - hh
 
 
 def x_triangle(xc, yc, up, off_perp):
@@ -282,6 +331,9 @@ def keepouts():
         "placa_de_extremidade": (0, rec + tE, Y0, Y1, Z_FACE_B, T),
         "parede_da_ponta": (L - WALL, L, Y0, Y1, Z_FACE_B, T),
         "chapa_da_face_a": (0, L, Y0, Y1, T - T_A, T),
+        "encaixe_do_conector": (M("iface_shroud_power_opening_x") - g("open_x_depth") / 2 - WALL, M("iface_shroud_power_opening_x") + g("open_x_depth") / 2 + WALL,
+                                Y1 - M("shroud_channel_depth"), Y1, M("iface_shroud_power_opening_z_min") - WALL, cz0),
+        "fenda_do_adaptador": adapter_strip_cut()[:2] + (Y0, adapter_strip_cut()[3], M("iface_adapter_board_z_min") - g("adapter_clear"), adapter_strip_cut()[5]),
     }
 
 
@@ -360,6 +412,11 @@ def build_shroud():
     # parede em U em volta do entalhe, para a carcaça continuar fechada
     u_wall = (offset(notch, WALL, kind=Kind.ARC) - notch) & inner
     body = body + ext(u_wall, Z_FACE_B, T - tA + 0.01)
+    # fenda da faixa do adaptador PCIe na parede inferior (e na perna da parede em U do entalhe)
+    x0s, x1s, _, y1s, _, z1s = adapter_strip_cut()
+    z0s = M("iface_adapter_board_z_min") - g("adapter_clear")
+    body = body - box3(x0s, x1s, Y0 - 1, y1s, z0s, z1s)
+    note(pid, "fenda na parede inferior para a faixa do adaptador PCIe: x de %.2f a %.2f (iface_adapter_x_min e _max com a folga), z de %.2f a %.2f (adaptador no plano da pcb.plate)" % (x0s, x1s, z0s, z1s))
 
     # canal da borda superior
     cx0, cx1 = channel_x_range()
@@ -373,8 +430,9 @@ def build_shroud():
     sx0 = cx0 + g("slot_x_margin")
     ox = M("iface_shroud_power_opening_x")
     a_open = [a["pos"] for a in PARTS[pid]["anchors"] if a["id"].endswith("power_opening")][0]
-    oz = a_open[2]
-    ow_z = M("conn16_header_width") + 2 * g("open_clear")
+    oz0, oz1 = M("iface_shroud_power_opening_z_min"), M("iface_shroud_power_opening_z_max")
+    assert abs((oz0 + oz1) / 2 - a_open[2]) < 0.05, "abertura do conector fora da âncora"
+    assert abs(a_open[0] - ox) < 0.05
     od_x = g("open_x_depth")
     sx1 = ox - od_x / 2 - g("slot_end_gap")
     for dz in g("slot_z"):
@@ -382,9 +440,18 @@ def build_shroud():
         body = body - xz_extrude(rrect_xz(sx0, sx1, zc - g("slot_w") / 2, zc + g("slot_w") / 2, g("slot_w") / 2 - 0.01), floor_y + 0.5, WALL + 1)
     pd0, pd1 = g("pad_z")
     body = body + xz_extrude(rrect_xz(sx0, sx0 + g("pad_len_x"), T - pd1, T - pd0, r), floor_y + g("pad_h"), g("pad_h") + 0.01)
-    body = body - xz_extrude(rrect_xz(ox - od_x / 2, ox + od_x / 2, oz - ow_z / 2, oz + ow_z / 2, 1.0), floor_y + 0.5, WALL + 1)
+    if oz0 < cz0:
+        # no encaixe o canal desce até a abertura: bolso de x = ox ± od_x / 2 com paredes nos
+        # lados e no fundo, da borda de cima até o fundo do canal (acima do PCB, que vai até
+        # pcb_main_card_y_min + pcb_main_height)
+        assert Y1 - d > M("pcb_main_card_y_min") + M("pcb_main_height"), "bolso do encaixe sobre o PCB"
+        walls = xz_extrude(rrect_xz(ox - od_x / 2 - WALL, ox + od_x / 2 + WALL, oz0 - WALL, cz0, 0), Y1, d)
+        body = body + (walls & ext(O, Z_FACE_B, T))
+        body = body - xz_extrude(rrect_xz(ox - od_x / 2, ox + od_x / 2, oz0, cz0 + 0.5, 0), Y1 + 1, d + 1)
+    body = body - xz_extrude(rrect_xz(ox - od_x / 2, ox + od_x / 2, oz0, oz1, 1.0), floor_y + 0.5, WALL + 1)
     note(pid, "canal da borda superior de x = %.1f a %.1f (onde as bordas da tampa lisa da face A chegam ao topo) e z = %.1f a %.1f; profundidade, fendas, placa lisa e abertura do conector com medidas de palpite (sem cota nas referências)" % (cx0, cx1, cz0, cz1))
-    note(pid, "abertura do conector centrada em iface_shroud_power_opening_x e no z da âncora; o lado longo (largura do cabeçote, %.2f mm) fica em z, como a fileira de 6 pinos em pny/3qtr-top-right" % M("conn16_header_width"))
+    note(pid, "abertura do conector centrada em iface_shroud_power_opening_x, de z = %.2f a %.2f (iface_shroud_power_opening_z_min e _max, centrada no corpo do conector de pé); o lado longo (largura do cabeçote, %.2f mm) fica em z, como em pny/3qtr-top-right" % (oz0, oz1, M("conn16_header_width")))
+    note(pid, "no encaixe o canal desce até z = %.2f: bolso de %.1f mm em x com paredes de %.1f, do topo até o fundo do canal (y = %.2f), acima da borda do PCB" % (oz0, od_x, WALL, Y1 - d))
     note(pid, "logotipo NVIDIA da borda superior não modelado (detalhe de superfície do passo do Blender)")
     return body
 
@@ -410,20 +477,20 @@ def build_face_b():
     frame = frame - ext(wins, -1, z1 + 1)
     lam = strips(0, L, g("lam_pitch_b"), g("lam_t_b")) & wins
     part = frame + ext(lam, g("lam_recess_b"), z1)
-    # recorte do adaptador PCIe (gn-20 mostra a placa adaptadora num rebaixo da face B)
-    c = g("adapter_clear")
-    f0 = M("pcie_fingers_start_from_bracket_end")
-    az = M("iface_adapter_board_z_min") + M("pcb_thickness")    # face do adaptador do lado do PCB
-    # só a faixa ao longo da borda; a aba (pcie_adapter_tab_width x pcie_adapter_total_height)
-    # cairia sobre a grade e o X, que pny/back mostra inteiros: a interferência fica no relatório
-    part = part - box3(f0 - c, f0 + M("pcie_adapter_length") + c, -1, M("pcie_adapter_strip_height") + c, -1, az + c)
+    # recorte da faixa do adaptador PCIe (gn-20 mostra a placa adaptadora num rebaixo da face B),
+    # aberto até a face; a aba fica por dentro, sob um rebaixo que não aparece de fora
+    part = part - box3(*adapter_strip_cut())
+    for r in reliefs(z1 + 1):
+        part = part - r
     # a face B não passa da pcb.plate (que começa em z = layer_center_covers)
     pcx, pcy = M("iface_pcb_center_x"), M("iface_pcb_center_y")
     ztop_plate = M("layer_center_covers")
     part = part - box3(pcx - M("pcb_plate_outline_x") / 2, pcx + M("pcb_plate_outline_x") / 2,
                        pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2, ztop_plate, z1 + 1)
     note(pid, "estrutura do X e moldura das grades na mesma peça; as grades são lâminas reais (passo %.2f, espessura %.1f; espessura e recuo são palpite)" % (g("lam_pitch_b"), g("lam_t_b")))
-    note(pid, "recorte para a faixa do adaptador PCIe ao longo da borda dos contatos (folga %.1f mm), aberto até a face: forma vista em gn-20, sem cota; a aba do adaptador não tem recorte" % c)
+    note(pid, "recorte para a faixa do adaptador PCIe ao longo da borda dos contatos, de iface_adapter_x_min a _max (folga %.1f mm), aberto da face até z = %.2f (iface_adapter_board_z_max): forma vista em gn-20, sem cota" % (g("adapter_clear"), M("iface_adapter_board_z_max")))
+    note(pid, "rebaixos por baixo (não aparecem de fora): sob as 4 cabeças de fasteners.e5_plate (diâmetro %.1f, fundo em z = %.1f) e sobre a aba do adaptador com a presilha e as cabeças do E4 (contorno da aba mais %.1f, fundo em z = %.1f)" % (
+        M("fastener_e5_head_diameter") + 2 * M("cover_relief_clear"), M("iface_cover_relief_e5_z_min"), M("cover_relief_clear"), M("iface_cover_relief_adapter_z_min")))
     note(pid, "a parte da face B sobre a pcb.plate vai só até z = %.1f (face da placa), não até %.1f: escolha para não cruzar a pcb.plate" % (ztop_plate, z1))
     note(pid, "divisão: as grades das duas pontas e o X ficam numa peça só, como no assembly; na placa real elas parecem fazer parte das carcaças das pontas (gn-27), sem foto da junção")
     return part
@@ -435,8 +502,13 @@ def build_center_covers():
     z1 = M("layer_center_covers")
     lower = ext(covers[1], 0, z1)
     upper = ext(covers[0], 0, z1)
+    for r in reliefs(z1 + 1):
+        lower = lower - r
+        upper = upper - r
     note(pid, "duas tampas, inferior (instância 1, borda dos contatos) e superior (instância 2, com o texto), espessura layer_center_covers; vértices arredondados; a tampa da foto gn-20 tem uma aba na borda que não foi modelada (sem cota)")
     note(pid, "texto RTX PRO 6000 não gravado: só a caixa em extras (passo do Blender)")
+    note(pid, "rebaixos por baixo das tampas: sob as cabeças de fasteners.e5_plate (fundo em z = %.1f, pele de %.1f) e, na tampa inferior, sobre a aba do adaptador PCIe, a presilha e as cabeças do E4 (fundo em z = %.1f): vistos ao tirar as tampas em gn-20 e gn-22, medidas por conta (assembly-plan 12.4)" % (
+        M("iface_cover_relief_e5_z_min"), M("iface_cover_relief_e5_z_min"), M("iface_cover_relief_adapter_z_min")))
     return [lower, upper]
 
 
@@ -449,6 +521,14 @@ def build_rim():
         rim = fillet(top_outer, g("rim_fillet"))
     except Exception as ex:  # o arredondamento é cosmético
         note(pid, "arredondamento externo do aro falhou (%s); aro sem arredondamento" % ex)
+    rim = rim - box3(*adapter_strip_cut())
+    y, z, hd, hh, sd, sl = rim_screw()
+    cl = g("rim_screw_clear")
+    rim = rim - extrude(Plane.YZ.offset(-1) * (Pos(y, z) * Circle(hd / 2 + cl)), hh + 1 + cl)
+    rim = rim - extrude(Plane.YZ.offset(hh) * (Pos(y, z) * Circle(sd / 2 + cl)), sl + 0.5)
+    note(pid, "recorte da faixa do adaptador PCIe (o mesmo da face B)")
+    note(pid, "furo do parafuso do aro (fasteners.e2_rim) com eixo em x na ponta do bracket, em y = %.2f e z = %.1f: rebaixo de %.1f mm para a cabeça (dentro do recuo da placa de extremidade, escondida pelo bracket) e furo de %.1f mm até a face interna do aro; posição sem foto (inferred)" % (
+        y, z, hd + 2 * cl, sd + 2 * cl))
     note(pid, "aro como uma faixa de largura constante no contorno da face B, de z = 0 a %.0f; gn-17 mostra um aro fino, mas o desenho exato (se acompanha também o X) não dá para ler" % Z_FACE_B)
     return rim
 
@@ -526,7 +606,8 @@ def write_glb(path, nodes_spec, root_extras):
 FEATURE_PROV = {
     "frame.shroud": {
         "contorno, cantos, altura e comprimento": "derived (CSV: renders da PNY)",
-        "canto do bracket junto aos contatos quase reto": "derived (pny/front, pny/back; nesta tarefa)",
+        "canto do bracket junto aos contatos quase reto": "derived (shroud_corner_radius_bracket_bottom; pny/front, pny/back)",
+        "fenda do adaptador e bolso do encaixe do conector": "inferred (contrato de 2026-11-11, assembly-plan 12.3 e 12.4)",
         "anéis e aberturas dos ventiladores": "derived (CSV)",
         "X da face A (cruzamento e ângulo)": "derived (CSV)",
         "vértices, faixas e moldura das cápsulas da face A": "derived (pny/front; nesta tarefa)",
@@ -540,16 +621,19 @@ FEATURE_PROV = {
         "grades e estrutura do X (posição, faixas, vértices)": "derived (pny/back; nesta tarefa)",
         "lâminas (passo)": "derived (pny/back); espessura e recuo inferred",
         "recorte do adaptador PCIe": "derived (gn-20, forma); inferred (medida)",
+        "rebaixos sob as cabeças do E5 e sobre a aba do adaptador": "inferred (assembly-plan 12.4)",
     },
     "frame.center_covers": {
         "contorno das tampas": "derived (pny/back; nesta tarefa)",
         "espessura": "inferred (layer_center_covers, orçamento)",
+        "rebaixos por baixo": "inferred (assembly-plan 12.4; gn-20, gn-22)",
         "caixa do texto": "derived (CSV)",
     },
     "frame.rim": {
         "contorno": "derived (CSV)",
         "largura": "derived (pny/back; nesta tarefa)",
         "espessura e arredondamento": "inferred",
+        "furo do parafuso do aro": "inferred (posição sem foto)",
     },
 }
 

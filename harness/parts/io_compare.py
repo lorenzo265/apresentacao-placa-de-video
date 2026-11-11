@@ -226,17 +226,18 @@ def bracket_cmp():
 def adapter_cmp():
     am = Image.open(CACHE / "visualqa" / "am_adapter.png").convert("RGB")
     s = 12.8
-    f, s_u, s_v, x0 = IOP.ad_xform()
+    f, s_u, h_csv, x0 = IOP.ad_xform()
 
-    def card_to_img(x, y, sv):
+    def card_to_img(x, y, inv):
+        # inv: desfaz o mapa da altura do io_parts.py (contorno transcrito); sem ele, as medidas do CSV na grade
         yi = IOP.AD_END_YI - (x - x0) / s_u
-        xi = IOP.AD_EDGE_XI - y / sv
+        xi = IOP.AD_EDGE_XI - (float(np.interp(y, (0.0,) + tuple(h_csv), (0.0,) + IOP.AD_H_IMG)) if inv else y)
         return ((xi - 240) * s, (yi - 10) * s)
     meshes = meshes_of("pcie.adapter")
     v, fc = meshes[0]
     # silhueta do modelo vista de +z (face do J3), na grade da foto: rasteriza os triângulos
     out = {}
-    for tag, sv in (("contorno_transcrito", s_v), ("medidas_csv_na_grade", 1.0)):
+    for tag, sv in (("contorno_transcrito", True), ("medidas_csv_na_grade", False)):
         mask = Image.new("L", am.size, 0)
         d = ImageDraw.Draw(mask)
         P = np.array([card_to_img(x, y, sv) for x, y in v[:, :2]])
@@ -265,9 +266,9 @@ def adapter_cmp():
         res[tag] = {"iou": round(float(inter / uni), 4), "dist_borda_media_mm": round(float(dd.mean()), 3),
                     "dist_borda_p95_mm": round(float(np.percentile(dd, 95)), 3)}
     res["alturas_modelo"] = {"sem_lobulo": round(IOP.M("pcie_adapter_total_height_without_lobe"), 2),
-                             "faixa": round((IOP.AD_EDGE_XI - 264.15) * s_v, 2), "com_lobulo": round(float(v[:, 1].max()), 2),
+                             "faixa": round(h_csv[0], 2), "com_lobulo": round(float(v[:, 1].max()), 2),
                              "comprimento": round(float(v[:, 0].max() - v[:, 0].min()), 2)}
-    res["alturas_csv"] = {"sem_lobulo": 34.5, "faixa": IOP.M("pcie_adapter_strip_height"), "com_lobulo": IOP.M("pcie_adapter_total_height"),
+    res["alturas_csv"] = {"sem_lobulo": IOP.M("pcie_adapter_total_height_without_lobe"), "faixa": IOP.M("pcie_adapter_strip_height"), "com_lobulo": IOP.M("pcie_adapter_total_height"),
                           "comprimento": IOP.M("pcie_adapter_length")}
     res["alturas_grade_da_foto"] = {"sem_lobulo": round(IOP.AD_EDGE_XI - 246.05, 2), "faixa": round(IOP.AD_EDGE_XI - 264.15, 2),
                                     "com_lobulo": round(IOP.AD_EDGE_XI - 242.42, 2), "comprimento": round(116.5 - 14.3, 2)}
