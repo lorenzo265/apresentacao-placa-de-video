@@ -331,7 +331,8 @@ def build_bracket():
     m = g("br_panel_margin")
     rel = g("br_panel_relief")
     pan = rrect(by(p0), by(p1), bz(zb0 + m), bz(T - m), 2.0, 5)
-    panel = extrude(face_on(pan, Plane.YZ.offset(-t)), rel, dir=(-1, 0, 0), taper=40)
+    pan_out = rrect(by(p0) + rel, by(p1) - rel, bz(zb0 + m) + rel, bz(T - m) - rel, 2.0 - rel, 5)
+    panel = extrude(face_on(pan_out, Plane.YZ.offset(-t - rel)), rel + 0.01, dir=(1, 0, 0), taper=-45)
     body = plate + panel
     x_out = -t - rel                                        # face externa do painel
 
@@ -352,7 +353,7 @@ def build_bracket():
     # aberturas dos DisplayPort
     ow, oh = g("br_dp_open")
     for y in DP_Y:
-        body = body - prism_x(dp_shape(y, DP_ZC + DZ * 0 if MODE == "foto" else DP_ZC, ow, oh, g("br_dp_chamfer"), g("br_dp_open_r")), -5, 1)
+        body = body - prism_x(dp_shape(y, DP_ZC, ow, oh, g("br_dp_chamfer"), g("br_dp_open_r")), -5, 1)
     # etiquetas como áreas planas
     lt = g("label_t")
     for name, kind, ya, yb, za, zb in g("labels"):
@@ -373,19 +374,11 @@ def build_screws():
     pid = "fasteners.e1_bracket"
     d, h = g("screw_head")
     rd, rdep = g("screw_recess")
-    x_out = -M("bracket_thickness") - g("br_panel_relief") - g("label_t") * 0   # cabeça apoiada no painel
+    x_out = -M("bracket_thickness") - g("br_panel_relief")      # cabeça apoiada no painel
     out = []
     for yr, zr in g("br_screws"):
         cy, cz = by(yr), bz(zr)
-        prof = [(x_out, 0), (x_out, d / 2), (x_out - h + 0.45, d / 2), (x_out - h + 0.1, d / 2 - 0.5), (x_out - h, d / 2 - 1.0), (x_out - h, 0)]
-        # cabeça de panela: perfil (x, raio) girado em torno do eixo x
         n = 36
-        sk = []
-        for k in range(n):
-            a = 2 * math.pi * k / n
-            sk.append(a)
-        head = None
-        # sólido de revolução por prismas: anéis concêntricos (cilindro + domo em degraus)
         head = prism_x(circle(cy, cz, d / 2, n), x_out - h + 0.45, x_out)
         head = head + prism_x(circle(cy, cz, d / 2 - 0.5, n), x_out - h + 0.1, x_out - h + 0.46)
         head = head + prism_x(circle(cy, cz, d / 2 - 1.0, n), x_out - h, x_out - h + 0.11)
@@ -538,11 +531,9 @@ def build_adapter():
     # chanfro da borda de inserção, só na zona dos contatos
     bv = g("ad_bevel")
     fx0, fx1 = f(0, AD_END_YI)[0] - 1, f(0, AD_GOLD[1][1])[0] + 0.3
-    for zf, s in ((zb + pt, -1), (za - pt, 1)):
-        wedge = [(-0.01, zf + 0.01 * -s), (bv + 0.01, zf + 0.01 * -s), (-0.01, zf + s * (bv + pt))]
-        w = [(yy, zz) for yy, zz in wedge]
-        pr = extrude(face_on(w, Plane.YZ.offset(fx0)), fx1 - fx0, dir=(1, 0, 0))
-        board = board - pr
+    for w in ([(-0.01, zb + pt + 0.01), (bv, zb + pt + 0.01), (-0.01, zb + pt - bv)],
+              [(-0.01, za - pt - 0.01), (bv, za - pt - 0.01), (-0.01, za - pt + bv)]):
+        board = board - prism_x(w, fx0, fx1)
     # conector J3 de placa a placa (face do lado do PCB)
     jx, jy = M("pcie_adapter_connector_x"), M("pcie_adapter_connector_center_y")
     jl, jw, jh = M("pcie_adapter_connector_length"), g("j3_width"), g("j3_height")
