@@ -81,6 +81,8 @@ G = {
     # memória
     "mem_standoff": (0.25, "inferred", "esferas sob o chip GDDR7: a altura total segue gddr7_package_thickness"),
     "mem_chamfer": (0.12, "inferred", "chanfro das arestas de cima do encapsulamento"),
+    "mem_substrate_t": (0.25, "inferred", "espessura do substrato (laminado) do FBGA sob o corpo de epóxi; a soma com as esferas e o epóxi fecha em gddr7_package_thickness; sem cota"),
+    "mem_mold_inset": (0.3, "inferred", "o corpo de epóxi fica 0,3 mm para dentro da borda do substrato: anel estreito do substrato à vista em volta do epóxi (borda clara nos chips de sabareesh/wb-bare-pcb e na auditoria visual, achado 20); largura sem cota"),
     # indutores e estágios (posições lidas na pcb-b retificada e na foto sabareesh, frente)
     "ind_h": (2.8, "inferred", "altura dos indutores: a moldura da base do cooler começa em iface_die_contact_z (3,0 mm acima da frente); o indutor real deve ser mais alto e entrar num rebaixo da base, sem foto de perfil"),
     "ind_fillet": (0.35, "inferred", "arredondamento das arestas do corpo moldado"),

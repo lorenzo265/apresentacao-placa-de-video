@@ -88,6 +88,7 @@ G = {
     "lam_pitch_b": (1.45, "derived", "passo das lâminas da grade da face B: cerca de 1,45 mm (pny/back)"),
     "lam_t_b": (0.6, "inferred", "espessura das lâminas da face B"),
     "lam_recess_b": (0.5, "inferred", "recuo das lâminas da face B em relação à moldura"),
+    "relief_floor_t": (0.1, "inferred", "espessura do fundo que fecha o rebaixo do E5 sob a grade da face B, encostado no fundo da cabeça do parafuso (N7)"),
     "adapter_clear": (0.5, "inferred", "folga do recorte da faixa do adaptador PCIe na face B, no aro e na fenda da parede inferior (o recorte aparece em gn-20, sem cota)"),
     "rim_screw_yz": ((22.86, 1.6), "inferred", "centro (y, z) do parafuso do aro (fasteners.e2_rim), com o eixo em x na ponta do bracket: y = iface_shroud_y_min + 9 (posição do blockout), z no meio do aro; sem foto (falta gn-16 em resolução maior, o quadro do vídeo da GN no passo 2 ou a ponta da placa sem o bracket)"),
     "rim_screw_head": ((2.4, 0.9), "inferred", "diâmetro e altura da cabeça do parafuso do aro; a cabeça fica de x = 0 até a altura, dentro do recuo da placa de extremidade (shroud_end_plate_recess), escondida pelo bracket"),
@@ -615,15 +616,17 @@ def build_face_b():
     part = part - box3(*adapter_strip_cut())
     for r in reliefs(z1 + 1):
         part = part - r
-    # onde um rebaixo do E5 cai sob a grade, o fundo fica fechado: um disco da face das lâminas até o fundo do
-    # rebaixo; antes as lâminas cortadas deixavam ver a cabeça do parafuso (quatro marcas que pny/back e gn-08
-    # não mostram: visual-qa-placa-final-2, N7)
+    # onde um rebaixo do E5 cai sob a grade, as lâminas voltam até o fundo da cabeça do parafuso (sem a folga
+    # cover_relief_clear) e um fundo fino fecha o rebaixo ali: de fora a grade continua com as mesmas lâminas e
+    # frestas sombreadas, sem deixar ver a cabeça (antes, quatro marcas que pny/back e gn-08 não mostram:
+    # visual-qa-placa-final-2, N7)
     r5 = M("fastener_e5_head_diameter") / 2 + M("cover_relief_clear")
+    z_head = M("layer_center_covers") - M("fastener_e5_head_height")
     n_floor = 0
     for x, y in e5_heads():
         disc = (Pos(x, y) * Circle(r5)) & wins
         if disc.faces() and disc.area > 1e-3:
-            part = part + ext(disc, g("lam_recess_b"), M("iface_cover_relief_e5_z_min") + 0.01)
+            part = part + (lam & ext(disc, M("iface_cover_relief_e5_z_min") - 0.01, z_head)) + ext(disc, z_head - g("relief_floor_t"), z_head)
             n_floor += 1
     # a face B não passa da pcb.plate (que começa em z = layer_center_covers)
     pcx, pcy = M("iface_pcb_center_x"), M("iface_pcb_center_y")
@@ -637,8 +640,8 @@ def build_face_b():
     note(pid, "rebaixos por baixo (não aparecem de fora): sob as 4 cabeças de fasteners.e5_plate (diâmetro %.1f, fundo em z = %.1f) e sobre a aba do adaptador com a presilha e as cabeças do E4 (contorno da aba mais %.1f, fundo em z = %.1f)" % (
         M("fastener_e5_head_diameter") + 2 * M("cover_relief_clear"), M("iface_cover_relief_e5_z_min"), M("cover_relief_clear"), M("iface_cover_relief_adapter_z_min")))
     note(pid, "a parte da face B sobre a pcb.plate vai só até z = %.1f (face da placa), não até %.1f: escolha para não cruzar a pcb.plate" % (ztop_plate, z1))
-    note(pid, "%d rebaixos do E5 caem sob a grade (furos de canto do lado longe do bracket): fundo fechado por um disco de z = %.1f (face das lâminas) a %.1f, que não deixa ver a cabeça do parafuso (N7); em gn-20 os 4 parafusos da pcb.plate aparecem sobre o X, não sob as grades: a posição dos furos (iface_plate_holes_*, inferred) é pendência do contrato" % (
-        n_floor, g("lam_recess_b"), M("iface_cover_relief_e5_z_min")))
+    note(pid, "%d rebaixos do E5 caem sob a grade (furos de canto do lado longe do bracket): ali as lâminas vão até z = %.1f (fundo da cabeça, sem folga) e um fundo de %.1f mm fecha o rebaixo; de fora só se veem as lâminas (N7); em gn-20 os 4 parafusos da pcb.plate aparecem sobre o X, não sob as grades: a posição dos furos (iface_plate_holes_*, inferred) é pendência do contrato" % (
+        n_floor, z_head, g("relief_floor_t")))
     note(pid, "divisão: as grades das duas pontas e o X ficam numa peça só, como no assembly; na placa real elas parecem fazer parte das carcaças das pontas (gn-27), sem foto da junção")
     return part
 
