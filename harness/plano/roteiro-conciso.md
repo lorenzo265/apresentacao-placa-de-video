@@ -4,7 +4,7 @@ Sessão de roteiro conciso, aberta em 2026-11-11 a pedido do autor: "remontar a 
 
 Divisão de donos: esta sessão cuida do texto (`harness/content/pt-BR/beats.json`) e dos campos de texto e duração (`hold`, `priority`) do `storyboard.json`. A sessão de câmera e desmontagem com GSAP cuida de `camera`, `view`, `explode_state` e da desmontagem.
 
-**Estado: proposta, aguardando o autor. Nenhum texto foi reescrito.**
+**Estado (2026-11-11): aprovado pelo autor e aplicado no commit b4cad83. O corte do seminário tem 27 beats e o plano de herói da sessão de câmera. Auditoria do `fact-checker` em andamento.** As seções 1 a 5 guardam a proposta original. O que vale está nas seções 5.1, 6 e 6.1.
 
 ## 1. Diagnóstico do corte atual
 
@@ -86,8 +86,8 @@ Hoje são 48 beats e cerca de 20 minutos. Proposta: **cerca de 34 beats e 18 a 1
 
 - Ressalvas saem da fala e vão para o bloco de Q&A deste arquivo: **sim**.
 - Fechar a lista de beats com a sessão de câmera: **sim**.
-- Enfoque: **manter a placa**, e a explicação foca **só no que o enunciado pede de forma explícita** (registradores, instruções, CISC ou RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). Leitura em confirmação, ver a conversa.
-- Formato da fala (roteiro ou tópicos): em aberto.
+- Enfoque: **manter a placa**, e a explicação foca **só no que o enunciado pede de forma explícita** (registradores, instruções, CISC ou RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). Leitura confirmada: a placa é o fio visual, o texto explica só os oito itens. "Quero ser direto na apresentação."
+- Formato da fala: **tópicos curtos**, separados por •, no campo `fala` (painel N).
 
 ## 6. Combinado com a sessão de câmera
 
@@ -96,6 +96,52 @@ Sessão irmã: `session_018iRo36DfXdjSBu15DhrohB`. Orquestradora: `session_018iR
 - 2026-11-11: proposta da seção 4 enviada à sessão de câmera, com pedido do plano dela (ordem, beats de desmontagem, duração mínima de câmera). Nada combinado ainda, aguardando o autor.
 - 2026-11-11, resposta da câmera (o plano dela também espera o autor): desmontagem num único beat com vários estágios (cerca de 2,2 s por estágio, campo `explode_seq` dela). Câmera mínima de 2,0 s para troca pequena e 3,0 s para troca grande, parada durante o texto. Possíveis beats novos: E8 (carcaça da face B solta, `inferred`) e plano de herói explodido de cerca de 7 s antes do chip. Minha resposta: E1 a E6 num único beat com fala curta, plano de herói mudo, hold = câmera + leitura + fala.
 
+## 6.1 Corte do seminário aplicado
+
+Ficam (priority 1), na ordem do storyboard: a0.1 (absorve a0.2), a1.1 (absorve a1.3), a2.1 (absorve a2.7, desmontagem E1 a E7 numa fala), **a2.13** (plano de herói mudo, criado pela sessão de câmera, texto já em `beats.json`), a3.1 (absorve a3.2), a3.6, t1.1 (absorve a4.1), a4.2, a4.4, t2.1 (absorve a5.4), a5.5, a5.1 (absorve a5.3), a5.2, a5.16, a5.6, a5.7, a5.8 (absorve a5.15), a5.9, a5.10, a5.12 (absorve a5.11), a5.13, a5.14, a6.1, a6.2, a6.3, a6.4, a7.4 e a7.5.
+
+Saem (priority 2, continuam no corte completo com o texto antigo): a0.2, a0.3, a0.4, a1.3, a1.4, a2.2, a2.4, a2.7, a2.8, a2.9, a2.10, a2.11, a3.2, a3.3, a4.1, a4.3, a4.5, a5.3, a5.4, a5.11, a5.15, a6.5 e a7.1.
+
+Números: 390 palavras na tela (antes 1.341), 799 de tópicos na fala (antes 2.779). `hold` = 0,8 s por palavra de tópico + 4 s, com o mínimo de leitura do validador e, nos beats com fluxos animados, 60% do `hold` antigo. Tocando sozinho dá **cerca de 13:40**. Ao vivo, com cada um falando os tópicos por extenso, a estimativa é de 15 a 17 minutos.
+
+Reserva, se o ensaio ficar curto (todas cobrem itens do enunciado): a5.15 (ocupação), a3.5 (ECC), a6.5 (AMP e escalonamento de contextos), a4.3 (conflito 192 contra 188).
+
+Pedidos à sessão de câmera: `explode_seq` E1 a E7 em a2.1, herói a2.13 entre a2.1 e a3.1, enquadramento dos beats fundidos.
+
 ## 7. Respostas para perguntas (Q&A)
 
-(preenchido na reescrita, por beat)
+Ressalvas que saíram da fala. Use se alguém perguntar.
+
+| Beat | Pergunta provável | Resposta curta |
+|---|---|---|
+| a1.1 | Por onde o ar entra? | Não achamos nas fontes lidas. A Gamers Nexus só diz que atravessa a placa e sai pelas aberturas do topo |
+| a2.1 | Quantos parafusos? Para que serve a placa que cobre o PCB? E a mola? | A fonte não diz. A contagem de sete passos é nossa, e a identificação das peças vem das fotos |
+| a2.1 | Não era metal líquido? | Na RTX 5090 Founders Edition é. A Gamers Nexus esperava metal líquido e achou pasta. Placa irmã é pista, não prova |
+| a3.1 | São 32 chips? | 32 posições. Se todas estiverem ocupadas, 32 x 3 GB = 96 GB, que é a dedução da própria fonte. 24 x 4 GB também fecha |
+| a3.1 | Como dois chips dividem um controlador? | Não achamos fonte. Proposta nossa, provável: cada chip usa 16 dos 32 bits |
+| a3.6 | De onde vem o 63 GB/s? | 32 GT/s por pista (PCI-SIG), 16 pistas e codificação 128b/130b, só achada em fonte secundária. Conta nossa |
+| t1.1 | O 4 de TSMC 4N é 4 nm? | Não. É o rótulo do processo, não a medida de nenhum elemento |
+| a4.2 | O chip não tinha 192 SMs? | O GB202 completo tem 96 TPCs e 192 SMs. O texto da p. 8 do whitepaper diz que esta placa usa o chip completo, mas a Tab. 4 dá 188, que fecha com os 24.064 núcleos. Adotamos 188 |
+| a4.2 | Como os 94 TPCs se distribuem nos 12 GPCs? | Não achamos nas fontes lidas |
+| a4.4 | Quanto o L2 cresceu? | 128 MB contra 96 MB da RTX 6000 Ada, um terço a mais (conta nossa) |
+| a5.5 | Por que "partição"? | O whitepaper não dá nome às quatro divisões. Partição é o nome que adotamos |
+| a5.5 | E FP64? | 2 núcleos FP64 por SM, a 1/64 da taxa de FP32. Latência medida na RTX 5080: cerca de 64 ciclos |
+| a5.1 | Quem decide qual SM recebe qual bloco? | O trecho do guia CUDA que lemos não diz. Lacuna declarada |
+| a5.2 | O escalonador esconde a latência? | A NVIDIA diz que ele escolhe a cada ciclo um warp pronto. Que isso esconda a espera pela memória é leitura nossa |
+| a5.16 | O hardware real faz exatamente isso? | É mais flexível: desde a compute capability 7.0 as threads divergem e reconvergem em grupos menores que o warp |
+| a5.6 | Quanto dá na placa toda? | 188 x 256 KB = 48.128 KB. A organização interna do banco (bancos e portas) não achamos para a Blackwell |
+| a5.7 | O que é o UR? | Caminho uniforme. Achamos só o nome das instruções, não o funcionamento |
+| a5.8 | E a ocupação total? | 48 warps x 32 = 1.536 threads por SM, 288.768 na placa (contas nossas). A granularidade de alocação de registradores não levantamos |
+| a5.9 | O que são LDC R1 e LDCU.64 UR4? | Cargas sem par no PTX, não documentadas. Hipótese nossa, sem confirmação: a LDCU.64 carrega o descritor usado em desc[UR4] |
+| a5.10 | Como são usados os 128 bits? | Na Volta (Jia et al.): ao menos 91 de instrução, ao menos 23 de controle, 14 aparentemente sem uso. Na Blackwell, não documentado |
+| a5.12 | Rodaram numa GPU? | Não. O SASS foi gerado com ptxas e nvdisasm, sem executar. A versão FP8, QMMA, faz 4.096 |
+| a5.12 | E microcódigo? | Nada público |
+| a5.13 | As latências são desta placa? | Não. Foram medidas na RTX 5080, por terceiros. Do L2 à memória, a latência sobe 2,4 vezes (conta nossa) |
+| a5.14 | Se são 128 KB, por que no máximo 100? | O guia CUDA lista até 100 KB de memória compartilhada na compute capability 12.0, e o Tuning Guide fala em 128 KB por SM. A diferença não está explicada |
+| a6.1 | Como se dividem os 57 bits? | Índices de 1, 9, 9, 9 e 8 bits, mais 9 no último nível para página de 4 KB, e 12 de deslocamento. Páginas de 2 MB e 512 MB terminam antes |
+| a6.2 | E um acesso ilegal? | Aparece no log como Xid 31, GPU memory page fault. Enquanto o driver não atende, o canal não pode ser trocado (fault and stall) |
+| a6.3 | Vale para todo programa CUDA? | Lemos só os canais do próprio driver (UVM). Supor o mesmo esquema para um programa comum é leitura nossa |
+| a6.4 | O que é Xid 13? | Erro de execução do programa na GPU, que o driver registra no log |
+| a7.4 | Por que a NVIDIA não publica? | Não sabemos o motivo. Dizemos só que não achamos nas fontes lidas |
+| fora do corte | Quanto a placa mudou em relação à Ada? | 142 para 188 SMs (1,32x), L2 1,33x, memória e potência 2,00x (contas nossas, Tab. 4 do whitepaper) |
+| fora do corte | E o MIG? | Divide a placa em 1 instância de 96 GB, 2 de 48 GB ou 4 de 24 GB |
