@@ -27,9 +27,9 @@ Dono: sessão de câmera (branch `claude/apresentacao-camera-gsap`). Texto dos b
 - E8 e a abertura da carcaça: `inferred`, porque não há foto do interior. Ver a pesquisa das placas irmãs.
 - Giro de parafuso, descolar, vitrine e herói: `illustrative` (gesto de apresentação).
 
-## 4. Combinado com o roteiro (pendente)
+## 4. Combinado com o roteiro (primeira proposta; ver seção 5)
 
-- A desmontagem é um beat com vários estágios e uma só fala (campo `explode_seq`), não uma sequência de beats mudos.
+- A desmontagem é um beat com vários estágios e uma só fala (no fim virou `explode_state` E7 com `camera.keys`; ver seção 5).
 - Duração mínima da entrada de câmera: 2,0 s para troca pequena e 3,0 s para troca grande. Cada estágio da sequência dura cerca de 2,2 s.
 
 ## 5. Combinado e feito (2026-11-11)
