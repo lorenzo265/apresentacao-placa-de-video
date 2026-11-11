@@ -116,6 +116,10 @@ A sessão de câmera fez, no branch `claude/apresentacao-camera-gsap`:
 
 Com a2.1 já em E7, os beats a2.2 a a2.6 (E2 a E6) remontariam a placa no corte completo. Por isso viraram `status: draft` neste branch. O schema só aceita prioridade de 1 a 3, e o viewer deixa fora de qualquer corte o beat que não está `ready`. O texto deles continua em `beats.json`. a2.7 a a2.12 seguem no corte completo.
 
+## 6.3 Aprovação do autor (2026-11-11)
+
+O autor aceitou o proposto ("está melhor, faça"): o roteiro conciso e o plano de câmera com a desmontagem num beat só e o plano de herói a2.13. O ensaio com cronômetro fica com o autor.
+
 ## 7. Respostas para perguntas (Q&A)
 
 Ressalvas que saíram da fala. Use se alguém perguntar.
