@@ -194,12 +194,14 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
    */
   const EIXOS = { '+x': [1, 0, 0], '-x': [-1, 0, 0], '+y': [0, 1, 0], '-y': [0, -1, 0], '+z': [0, 0, 1], '-z': [0, 0, -1] };
   function poseVitrine(v, cam, box = null) {
-    const c = caixas?.get(v.peca);
-    if (!c) return null;
+    // caixa de repouso da peça; uma instância (um chip de memória) não tem caixa própria: usa a da malha
+    let caixa = caixas?.get(v.peca)?.caixa ?? null;
+    if (!caixa) { const o = acha(v.peca); if (o) caixa = new THREE.Box3().setFromObject(o); }
+    if (!caixa || caixa.isEmpty()) return null;
     const n = new THREE.Vector3(...(EIXOS[v.face ?? '-z'] ?? EIXOS['-z']));
     let u = new THREE.Vector3(...(EIXOS[v.cima ?? '+y'] ?? EIXOS['+y']));
     u.addScaledVector(n, -u.dot(n)).normalize();
-    const tam = c.caixa.getSize(new THREE.Vector3());
+    const tam = caixa.getSize(new THREE.Vector3());
     // tamanho na tela: a maior dimensão no plano da face
     const xp = new THREE.Vector3().crossVectors(u, n);
     const ext = (d) => Math.abs(d.x) * tam.x + Math.abs(d.y) * tam.y + Math.abs(d.z) * tam.z;
@@ -732,7 +734,7 @@ function criaEstado3d(raiz, realista = null) {
      * Com k = 0 a peça volta ao lugar da explosão. O centro da caixa da peça vai até pos, girando em torno dele.
      */
     vitrine(lista) {
-      const pedidas = new Map((lista ?? []).filter((v) => v.k > 0 && pecas.has(v.peca)).map((v) => [v.peca, v]));
+      const pedidas = new Map((lista ?? []).filter((v) => v.k > 0 && v.pos && pecas.has(v.peca)).map((v) => [v.peca, v]));
       for (const [nome, st] of vitrines) {
         if (pedidas.has(nome)) continue;
         st.o.quaternion.copy(st.q0); poe(st.o); vitrines.delete(nome);
