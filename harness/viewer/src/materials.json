@@ -337,7 +337,7 @@
       "ref": [
         "pny/3qtr-top-right"
       ],
-      "nota": "Nylon preto do conector 12V-2x6 e dos cabeçotes: um pouco mais brilhante que o plástico das pás. As cavidades dos contatos (paredes e fundo) ficam escuras: a divisão entre casca (faces de apoio da peça: face de encaixe, lados) e interior sai da forma da peça, girada ou não; o interior leva oclusão procedural (a peça não passa pelo passo do Blender). Na referência as cavidades leem cinza-escuro sobre o corpo preto (achado N4).",
+      "nota": "Nylon preto do conector 12V-2x6 e dos cabeçotes: um pouco mais brilhante que o plástico das pás. As cavidades dos contatos (paredes e fundo) ficam escuras: a divisão entre casca (faces de apoio da peça: face de encaixe, lados) e interior sai da forma da peça, girada ou não; o interior leva oclusão procedural (a peça não passa pelo passo do Blender). Na referência as cavidades leem cinza-escuro sobre o corpo preto (achado N4). 'interior' 0,15: montado, o conector fica no fundo da luva e só recebe a luz que entra pela abertura (o ambiente não sabe da luva); volta a 1 com a carcaça aberta.",
       "textura": {
         "tipo": "abertura",
         "uv": "cavidade",
@@ -348,7 +348,8 @@
           "ao": 0.3
         }
       },
-      "micro_sombra": 1.0
+      "micro_sombra": 1.0,
+      "interior": 0.15
     },
     "pcb.mascara": {
       "cor": "#141516",
@@ -524,8 +525,9 @@
         "gn/gn-29",
         "gn/gn-28"
       ],
-      "nota": "Cabos flexíveis: película de poliimida âmbar (marrom-âmbar sobre as trilhas de cobre, levemente brilhante) com reforço preto nas pontas, como no teardown (gn/gn-29, gn-28). Comprimento do reforço e passo das trilhas illustrative; no teardown parte do cabo aparece coberta por película preta, que este material não separa. Rugosidade 0,52 (era 0,36): com a película lisa, nas vistas rasantes do E6 o reflexo da caixa de luz deixava o cabo bege-prateado (luminância 176 contra cerca de 55 em gn/gn-29, achado 16); a cobertura de poliimida do teardown é acetinada.",
-      "interior": 0.22
+      "nota": "Cabos flexíveis: película de poliimida âmbar (marrom-âmbar sobre as trilhas de cobre, levemente brilhante) com reforço preto nas pontas, como no teardown (gn/gn-29, gn-28). Comprimento do reforço e passo das trilhas illustrative; no teardown parte do cabo aparece coberta por película preta, que este material não separa. Rugosidade 0,52 (era 0,36): com a película lisa, nas vistas rasantes do E6 o reflexo da caixa de luz deixava o cabo bege-prateado (luminância 176 contra cerca de 55 em gn/gn-29, achado 16); a cobertura de poliimida do teardown é acetinada. 'env' 0,55: o cabo fica sob a mola e o cooler, que tapam boa parte do ambiente.",
+      "interior": 0.22,
+      "env": 0.55
     },
     "ouro.serigrafia": {
       "cor": "#d8c49c",

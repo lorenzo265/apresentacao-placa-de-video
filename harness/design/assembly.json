@@ -552,11 +552,11 @@
       "exists_provenance": "derived",
       "shape_provenance": "derived",
       "confidence": 0.5,
-      "rationale": "Conector auxiliar (rótulo neutro, D7): preto, pinos dourados em duas fileiras, na borda superior do PCB, no canto do lado do bracket (gn-21, gn-26, gn-30), sob o retângulo liso do painel (gn-13). Posição em u medida com a escala do PCB antigo: reconferir. A função provável (sincronismo) é inferred e não entra no texto sem o guia do usuário. Fixação: soldado no PCB.",
+      "rationale": "Conector auxiliar (rótulo neutro, D7): preto, pinos dourados em duas fileiras, na borda superior do PCB, no canto do lado do bracket (gn-21, gn-26, gn-30), sob o retângulo liso do painel (gn-13). Posição em u remedida em 2026-11-11 em sabareesh/wb-bare-pcb com o PCB corrigido como régua (aux_header_u = 17,3; corpo de 16,6 com as abas; antes 12 na escala antiga). A função provável (sincronismo) é inferred e não entra no texto sem o guia do usuário. Fixação: soldado no PCB.",
       "geometry": null,
       "measurements": ["aux_header_u", "aux_header_length", "pcb_main_card_x_min", "pcb_main_card_y_min", "pcb_main_height"],
       "explode": {"dir": [0, 0, -1], "distance": 0, "order": 7},
-      "anchors": [{"id": "anchor.io.aux_header.1", "pos": [111.98, 133.9, 7.7]}],
+      "anchors": [{"id": "anchor.io.aux_header.1", "pos": [117.28, 133.9, 7.7]}],
       "fasteners": [],
       "viewer_disclaimer": "Conector auxiliar visto em foto. A função não foi confirmada."
     },

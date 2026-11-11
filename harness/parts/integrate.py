@@ -69,9 +69,9 @@ EXPECTED = {
 # Resolvidas pelo contrato de 2026-11-11 (assembly-plan 12.4) e tiradas daqui: adaptador
 # contra face B, tampas, aro, pcb.plate e parafusos do E5; cabeças do E4 e do E5 sob as tampas;
 # mola contra pcb.back_frame e memória do verso; parafuso do aro sem furo; package contra memória.
-ISSUES = {
-    frozenset(("pcie.adapter", "fasteners.e6_spring")): ("assembly-planner, visual-qa", "a cabeça do parafuso da mola no furo (120,55; 37,61) (fastener_e6_head_*: 5,0 mm, z 3,2 a 4,1, inferred) passa cerca de 1,8 mm sobre a diagonal do lóbulo do adaptador, cujo contorno fica 0,72 mm fora do centro do furo; desde 2026-11-11 o adaptador está no plano da pcb.plate (z 2,5 a 4,07); decidir cabeça menor, rebaixo no adaptador ou outro z, ou conferir em gn-22 e gn-25 se a diagonal desvia do parafuso (como desvia do furo do E5)"),
-}
+# Resolvida em 2026-11-11 (achado 21 da segunda passada visual): adaptador PCIe contra a cabeça do
+# parafuso da mola, com o rebaixo do lado do PCB da aba (io_parts.py).
+ISSUES = {}
 
 
 # ---------------------------------------------------------------------------

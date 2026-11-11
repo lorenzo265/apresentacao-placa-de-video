@@ -462,7 +462,7 @@ def connector_rows():
     d = g("aux_header_depth")
     top = min(Y0 + H, channel_floor_y() - g("aux_header_clear"))
     rows.append(row("io.aux_header", 0, "conector auxiliar (2 x 7 pinos)", X0 + au, top - d / 2, 0.0, "frente", "derived",
-                    al, d, g("aux_header_h"), nota="posição em u e comprimento do CSV (escala antiga, sem correção no CSV: reconferir); fica %.2f mm para dentro da borda, abaixo do fundo do canal da carcaça" % (Y0 + H - top)))
+                    al, d, g("aux_header_h"), nota="posição em u e comprimento do CSV (remedidos em 2026-11-11 em sabareesh/wb-bare-pcb com o PCB corrigido como régua); fica %.2f mm para dentro da borda, abaixo do fundo do canal da carcaça" % (Y0 + H - top)))
     # conector de 4 vias da borda superior (frente): pcb_fan_header_* do CSV, dentro de pcb.smd
     x, y = uv2xy(M("pcb_fan_header_u"), M("pcb_fan_header_v"))
     rows.append(row("pcb.smd", 0, FAN_TIPO, x, y, 0.0, "frente", "derived", M("pcb_fan_header_length"), g("fan_conn_depth"),

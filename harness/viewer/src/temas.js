@@ -24,6 +24,7 @@ export const TEMAS = {
     cena: {
       realista: {
         exposicao: 1.0,
+        balanco_K: 5800,
         ambiente: 0.45,                // intensidade do mapa de ambiente
         // Ambiente no referencial canônico (câmera em -y olhando +y, acima da placa), unidades do
         // estúdio virtual: HDR escurecido da Poly Haven mais caixas de luz que desenham os reflexos.
@@ -39,7 +40,7 @@ export const TEMAS = {
           { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
           { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
           { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },
-          { nome: 'rebatedor', K: 5600, i: 14, pos: [0, -12, -5], tam: [30, 9], degrade: [1, 0.4] },
+          { nome: 'rebatedor', K: 5600, i: 12, pos: [0, -9, -8.5], tam: [30, 7], degrade: [1, 0.4] },
           { nome: 'recorte-fundo', K: 6500, i: 8, pos: [0, 15, 2], tam: [28, 1.4] },
         ],
         // Luzes diretas (mm a partir do centro da placa, no mesmo referencial canônico)
