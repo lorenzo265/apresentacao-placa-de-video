@@ -188,10 +188,12 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     if (pos) pos.render(camera.position.distanceTo(controls.getTarget(alvo)));
     else renderer.render(scene, camera);
     if (autoQ && nivelQ === 'media') {
-      // primeira medição: 20 quadros de aquecimento, depois 60 quadros; abaixo de 28 qps, baixa
+      // primeira medição: 20 quadros de aquecimento, depois 60 quadros; abaixo de 28 qps, baixa.
+      // Máquina claramente lenta (abaixo de 10 qps nos 10 primeiros quadros medidos) decide logo.
       const t = performance.now();
       medida.n++;
       if (medida.n === 20) medida.t0 = t;
+      else if (medida.n === 30 && 10000 / (t - medida.t0) < 10) defineQualidade('baixa');
       else if (medida.n === 80) {
         const qps = 60000 / (t - medida.t0);
         if (qps < 28) defineQualidade('baixa');

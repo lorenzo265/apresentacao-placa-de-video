@@ -131,7 +131,8 @@ function texGrao(def, p, N, rnd) {
     c.metal[i] = def.metal;
     c.alt[i] = fino[i];
   }
-  return finaliza(c, (p.relevo ?? 0.2) * 6);
+  // abaixo de 512 px o grão fica grosso demais para relevo (vira martelado): só a rugosidade varia
+  return finaliza(c, N < 512 ? 0 : (p.relevo ?? 0.2) * 6);
 }
 
 /** Cubo do ventilador: metal torneado (anisotropia concêntrica) dentro do raio do cubo; plástico fora. */

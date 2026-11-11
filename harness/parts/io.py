@@ -90,8 +90,7 @@ G = {
     "br_panel_relief": (0.40, "inferred", "altura do relevo do painel para fora (-x); sr-1 e gn-11 mostram a borda do painel com brilho, sem medida de altura"),
     "br_panel_margin": (0.8, "inferred", "folga entre a borda do painel em relevo e a borda da chapa em cima, embaixo e na ponta"),
     "br_corner_r": (0.6, "inferred", "raio dos cantos do contorno da chapa"),
-    "br_flange_len": (5.0, "inferred", "comprimento da aba dobrada para +x na ponta de cima; sr-1 mostra a dobra de perfil, sem o comprimento"),
-    "br_flange_slot": ((4.4, 3.0), "inferred", "largura e profundidade dos dois rasgos em U da aba, um por slot, centrados nas línguas"),
+    "br_flange_clear": (0.1, "inferred", "folga da dobra da ponta de cima até a carcaça (a dobra cabe no recuo da placa de extremidade)"),
     "br_bend_chamfer": (0.6, "inferred", "chanfro da aresta externa da dobra"),
     "dp_row_y_from_tip": (72.25, "derived", "centro da fileira de aberturas medido da ponta das línguas (sr-1: centros em 40,95; 61,77; 82,66; 103,60)"),
     "dp_row_z": (15.3, "derived", "centro das aberturas em z (sr-1): mais perto da face B que o meio da espessura"),
@@ -131,15 +130,15 @@ G = {
     "j3_contacts": ((42, 0.5, 0.25), "inferred", "contatos por fileira, passo e largura (gn-25 mostra duas fileiras finas, sem contagem legível)"),
     # conector de 16 pinos
     "p16_across": (7.40, "inferred", "espessura do corpo no plano do PCB, através das duas fileiras: cota 7,40 da vista lateral da Intel 613768 (Fig. 5-8, sem rótulo identificado); sabareesh dá cerca de 7,4 em perspectiva"),
-    "p16_depth": (9.91, "inferred", "profundidade do corpo na direção de encaixe: cota 9,91 da vista superior da Intel 613768 (Fig. 5-10, sem rótulo identificado); sabareesh dá cerca de 10"),
-    "p16_sense_w": (2.4, "inferred", "faixa dos 4 pinos de sinal ao lado das fileiras de potência"),
+    "p16_depth": (11.5, "derived", "profundidade do corpo na direção de encaixe: topo do corpo em sabareesh/wb-bare-pcb mede 12,2 mm (PCB de 119,6 mm em 572 px), corrigido por 1,08 de ampliação do topo (corpo de 19 mm a cerca de 250 mm da câmera): 11,3 a 11,6; tolerância de 1,5; a cota 9,91 da Intel (sem rótulo) fica como alternativa"),
+    "p16_sense_w": (2.3, "inferred", "faixa dos 4 pinos de sinal ao lado das fileiras de potência; com p16_across, o corpo mede 9,7 através, como o topo em sabareesh (10,3 corrigido para 9,5 a 9,7)"),
     "p16_sense_len_z": (9.0, "inferred", "extensão em z da faixa de sinal"),
     "p16_cavity": ((2.3, 6.5), "inferred", "cavidade de potência: lado e profundidade"),
     "p16_pin": (0.64, "inferred", "lado dos pinos de potência dentro das cavidades"),
     "p16_sense_cavity": ((1.1, 4.0, 0.4), "inferred", "cavidade de sinal: lado, profundidade e lado do pino"),
     "p16_latch": ((4.0, 2.5, 0.7), "inferred", "trava do lado dos pinos de sinal: extensão em z, comprimento e altura"),
     "p16_blade": ((0.8, 6.5), "derived", "lâminas de saída das duas fileiras: espessura (inferred) e alcance atrás do corpo; o PCB do Chiphell (visualqa/ab_conn) mostra um furo alongado por fileira, na direção de encaixe, e sabareesh mostra duas tiras metálicas"),
-    "p16_base": ((7.0, 1.2), "inferred", "base atrás do corpo (organizador das lâminas): comprimento e altura"),
+    "p16_base": ((6.5, 1.2), "inferred", "base atrás do corpo (organizador das lâminas), só sob as lâminas: comprimento e altura"),
 }
 
 
@@ -336,19 +335,16 @@ def build_bracket():
     body = plate + panel
     x_out = -t - rel                                        # face externa do painel
 
-    # aba dobrada na ponta de cima (para +x), com dois rasgos em U e chanfro na dobra
-    fl = g("br_flange_len")
-    sw, sd = g("br_flange_slot")
+    # dobra da ponta de cima (para +x), contida no recuo da placa de extremidade da carcaça
+    fl = M("shroud_end_plate_recess") - g("br_flange_clear")
     yt = by(L)
-    flange = box(-t, -t + fl, yt - t, yt, bz(zb0) + 0.3, bz(T) - 0.3)
-    for zc in ((u0 + u1) / 2, (l0 + l1) / 2):
-        slot = round_poly([(-t + fl - sd, bz(zc) - sw / 2), (-t + fl + 1, bz(zc) - sw / 2),
-                           (-t + fl + 1, bz(zc) + sw / 2), (-t + fl - sd, bz(zc) + sw / 2)], [sw / 2 - 0.01, 0, 0, sw / 2 - 0.01], 6)
-        flange = flange - prism_y(slot, yt - t - 1, yt + 1)
-    body = body + flange
+    fz0 = max(bz(zb0) + 0.3, M("layer_end_face_b_grid") + g("br_flange_clear"))
+    fz1 = min(bz(T) - 0.3, T - M("shroud_face_a_plate_thickness") - g("br_flange_clear"))
+    flange = round_poly([(-t, fz0), (fl, fz0), (fl, fz1), (-t, fz1)], [0, 0.5, 0.5, 0], 3)
+    body = body + prism_y([(x, z) for x, z in flange], yt - t, yt)
     c = g("br_bend_chamfer")
     body = body - prism_z([(-t - 0.01, yt - c), (-t - 0.01, yt + 0.01), (-t + c, yt + 0.01)], -5, T + 5)
-    note(pid, "aba da ponta de cima dobrada para +x (lado da placa, como num bracket de norma): %.1f mm de comprimento e rasgos em U (palpites); sr-1 mostra a dobra de perfil" % fl)
+    note(pid, "dobra da ponta de cima para +x (lado da placa) com %.2f mm além do plano do bracket, dentro do recuo da placa de extremidade (shroud_end_plate_recess) e entre a grade da face B e a chapa da face A: sr-1 e gn-11 mostram a dobra de perfil, sem a aba de parafuso de um bracket de norma; se a aba real for mais longa, a carcaça precisa de rasgo" % fl)
 
     # aberturas dos DisplayPort
     ow, oh = g("br_dp_open")
@@ -613,7 +609,7 @@ def build_power_connector():
         prof = [(-d / 2 + 0.01, z0 + H - 1.5), (-d / 2 - 1.2, z0 + H - 1.5), (-d / 2 - reach, z0 + 0.0),
                 (-d / 2 - reach + 2.2, z0 + 0.0), (-d / 2 + 0.01, z0 + H - 4.2)]
         blades.append(prism_y(prof, yy - bt / 2, yy + bt / 2))
-    base = box(-d / 2 - bl, -d / 2 + 0.01, -w / 2, w / 2, z0, z0 + bh)
+    base = box(-d / 2 - bl, -d / 2 + 0.01, -pp / 2 - bt / 2 - 0.6, pp / 2 + bt / 2 + 0.6, z0, z0 + bh)
     local = body + base + Compound(blades) + Compound(pins)
     ang = M("power_connector_rotation_deg") + 90.0
     cx, cy = M("power_connector_center_from_bracket_end"), M("power_connector_center_y")
@@ -702,7 +698,7 @@ def anchor_check(pid, mesh):
 FEATURE_PROV = {
     "io.bracket": {"comprimento e espessura": "confirmed (CEM 3.0, Fig. 9-5)", "largura de dois slots": "derived (conta 18,42 + 20,32)",
                    "línguas, entalhe, painel, aberturas, etiquetas, posição na placa": "derived (storagereview/sr-1; nesta tarefa)",
-                   "relevo do painel, aba dobrada e rasgos": "inferred"},
+                   "relevo do painel e dobra da ponta": "inferred"},
     "fasteners.e1_bracket": {"quantidade e posição": "derived (sr-1, gn-11)", "diâmetro da cabeça": "derived (sr-1)", "altura e fenda": "inferred"},
     "io.board": {"forma": "illustrative (D6)"},
     "io.board.dp": {"cotas do receptáculo": "derived (fonte secundária, CSV)", "passo dos contatos": "confirmed (Molex)",

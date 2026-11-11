@@ -44,7 +44,7 @@ export const TEMAS = {
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
         apaga: 0.92,                   // destaque: quanto as outras peças escurecem e perdem a cor
-        realce: { cor: 0xeef8e6, forca: 0.45 },   // recorte de luz na peça destacada (branco com um toque do acento)
+        realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)
         ao: { raio: 10, espessura: 4, intensidade: 0.9 },
         dof: { abertura: 7, maxCoc: 3, maxCocAlta: 5 },   // px do palco de 1920 x 1080
       },

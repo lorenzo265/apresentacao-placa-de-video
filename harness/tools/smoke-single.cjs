@@ -25,6 +25,9 @@ async function main() {
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, deviceScaleFactor: 1 });
   await ctx.setOffline(true);
   const page = await ctx.newPage();
+  // Ao vivo (sem ?capture) o tour redesenha a cada quadro; com render por software (SwiftShader) um
+  // quadro do tema realista passa de 1 s até a troca automática para a baixa. Limite folgado.
+  page.setDefaultTimeout(180000);
   const falhas = [];
   const pedidos = [];
   page.on('console', (m) => { if (m.type() === 'error') falhas.push(`console: ${m.text()}`); });

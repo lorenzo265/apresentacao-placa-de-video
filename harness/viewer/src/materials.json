@@ -82,13 +82,13 @@
       "nota": "Lâminas finas das grades dos cantos. Só vale quando o passo do Blender separar o material das grades (contrato em viewer/README.md, passo do Blender)."
     },
     "ventilador.pa": {
-      "cor": "#131416", "metal": 0.0, "rug": 0.62,
+      "cor": "#131416", "metal": 0.0, "rug": 0.74,
       "textura": { "tipo": "grao", "tile_mm": 20, "rug_var": 0.05, "relevo": 0.02, "manchas": 0.0 },
       "ref": ["storagereview/sr-4", "pny/3qtr-top-right"],
       "nota": "Pás em plástico preto injetado, fosco com brilho suave na borda."
     },
     "ventilador.cubo": {
-      "cor": "#18191b", "metal": 0.0, "rug": 0.62,
+      "cor": "#131416", "metal": 0.0, "rug": 0.72,
       "textura": {
         "tipo": "usinagem", "uv": "planar_bbox",
         "raio_cubo_mm": { "medida": "fan_hub_diameter", "fator": 0.5, "reserva": 20 },

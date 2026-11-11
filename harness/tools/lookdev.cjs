@@ -45,14 +45,18 @@ async function main() {
             const e = lista.find((b) => b.id === id);
             if (!e) { console.log(`  ${col}: beat ${id} não está no corte ${corte}`); continue; }
             await s.page.evaluate((t) => window.__tour.seek(t), e.settle + 0.35);
-            await s.page.screenshot({ path: path.join(dir, `${id}.png`) });
+            await s.page.screenshot({ path: path.join(dir, `${id}.png`), timeout: 180000 });
             if (process.argv.includes('--tempo')) {
               tempos[col] ??= {};
               tempos[col][id] = await s.page.evaluate((b) => {
                 const ts = Array.from({ length: 8 }, (_, i) => b.start + (b.settle + 1 - b.start) * (i / 7));
-                window.__tour.seek(ts[0]);
+                // readPixels de 1 pixel espera o quadro terminar: mede o desenho, não só o envio dos comandos
+                const gl = document.querySelector('#cena3d canvas').getContext('webgl2');
+                const px = new Uint8Array(4);
+                const fim = () => gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+                window.__tour.seek(ts[0]); fim();
                 const t0 = performance.now();
-                for (const t of ts) window.__tour.seek(t);
+                for (const t of ts) { window.__tour.seek(t); fim(); }
                 return (performance.now() - t0) / ts.length;
               }, e);
             }
