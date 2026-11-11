@@ -94,6 +94,7 @@ Hoje são 48 beats e cerca de 20 minutos. Proposta: **cerca de 34 beats e 18 a 1
 Sessão irmã: `session_018iRo36DfXdjSBu15DhrohB`. Orquestradora: `session_018iRo36V6iZYhDLKo7AWJja`.
 
 - 2026-11-11: proposta da seção 4 enviada à sessão de câmera, com pedido do plano dela (ordem, beats de desmontagem, duração mínima de câmera). Nada combinado ainda, aguardando o autor.
+- 2026-11-11, resposta da câmera (o plano dela também espera o autor): desmontagem num único beat com vários estágios (cerca de 2,2 s por estágio, campo `explode_seq` dela). Câmera mínima de 2,0 s para troca pequena e 3,0 s para troca grande, parada durante o texto. Possíveis beats novos: E8 (carcaça da face B solta, `inferred`) e plano de herói explodido de cerca de 7 s antes do chip. Minha resposta: E1 a E6 num único beat com fala curta, plano de herói mudo, hold = câmera + leitura + fala.
 
 ## 7. Respostas para perguntas (Q&A)
 
