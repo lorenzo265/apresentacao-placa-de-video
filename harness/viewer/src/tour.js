@@ -62,6 +62,11 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
   const chamada = criaChamada(palco);
   const corLinha = tema?.linha ?? '#f1f4f8';
   const cabecalho = criaCabecalho(palco);
+  // selo da vitrine: só enquanto alguma peça está fora da posição (a procedência do beat não muda)
+  const seloVit = document.createElement('div');
+  seloVit.id = 'selo-vitrine';
+  seloVit.innerHTML = '<span class="selo s-illustrative"><svg viewBox="0 0 16 16" width="22" height="22"><path d="M8,2 L14,8 L8,14 L2,8 Z"/></svg>Ilustrativo: peça fora da posição</span>';
+  palco.appendChild(seloVit);
   const caminhos = criaCaminhos(palco, cena);
   if (!cena.blockout) caminhos.avisos.forEach((a) => console.warn(`[3D] ${a}`));
 
@@ -159,6 +164,7 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
     const mergulhando = !!e.mergulho && t < e.entrada && !cena.blockout;
     cena.renderer.domElement.style.visibility = ocultar3d ? 'hidden' : 'visible';
     cena.renderer.domElement.style.opacity = 1 - mix;
+    if (ocultar3d && !mergulhando) seloVit.style.visibility = 'hidden';
     if (!ocultar3d || mergulhando) {
       const af = e.mergulho?.afasta ? { g: e.mergulho.afasta.g, f: q(S.afasta) } : null;
       const vAnt = i > 0 ? beats[i - 1].beat.vitrine : null;
@@ -166,6 +172,9 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
       if (b.vitrine) vit.push({ ...b.vitrine, ...vitrineDe(b), k: q(S.vit) });
       if (vAnt && vAnt.peca !== b.vitrine?.peca) vit.push({ ...vAnt, ...vitrineDe(beats[i - 1].beat), k: q(S.vitR) });
       cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl, af, vit);
+      const kv = Math.max(0, ...vit.map((v) => v.k));
+      seloVit.style.opacity = Math.min(1, kv * 2) * (1 - mix);
+      seloVit.style.visibility = kv > 0.001 && mix < 0.999 ? 'visible' : 'hidden';
       if (!livre) cena.ajustaCamera(cam);
       // na captura, a cena só acumula quadros fora da entrada do beat (o estado 3D só muda nela)
       if (!ocultar3d) cena.desenha({ parado: !capture || t > e.entrada + 1e-6 });
