@@ -94,11 +94,11 @@ G = {
     "rim_screw_shank_d": (1.4, "inferred", "diâmetro do corpo do parafuso do aro, que vai até a face interna do aro (rim_w)"),
     "rim_screw_clear": (0.15, "inferred", "folga radial do furo do aro em volta da cabeça e do corpo do parafuso"),
     # borda inferior
-    "notch_r": (1.5, "inferred", "raio dos cantos do entalhe ao lado dos contatos PCIe"),
+    "notch_r": (0.3, "inferred", "raio dos cantos do entalhe ao lado dos contatos PCIe; era 1,5: o canto côncavo arredondado, com normais suaves, virava uma faixa vertical branca sob luz rasante (a 'haste' dos beats a2.7 e a3.3, em x 145,5 a 147, de z 3 a 40); sem cota na referência"),
     # canal da borda superior
     "ch_lip_a": (4.0, "inferred", "borda do lado da face A entre a aresta e o canal, medida da face A para dentro"),
     "ch_pcb_clear": (1.5, "inferred", "folga entre o fim do canal (lado da face B) e a face do PCB, para o fundo do canal não cruzar o PCB"),
-    "ch_corner_r": (2.0, "inferred", "raio dos cantos do canal no plano xz"),
+    "ch_corner_r": (0.5, "inferred", "raio dos cantos do canal no plano xz; era 2,0: os cantos côncavos nas pontas do canal brilhavam como traços curtos sob luz rasante; sem cota na referência"),
     "slot_w": (2.0, "inferred", "largura das duas fendas do canal (proporção em perspectiva, pny/3qtr-top-right)"),
     "slot_z": ((7.5, 11.5), "inferred", "centros das fendas, medidos da face A para dentro (perspectiva, pny/3qtr-top-right)"),
     "slot_x_margin": (8.0, "inferred", "distância do começo do canal ao começo das fendas"),
