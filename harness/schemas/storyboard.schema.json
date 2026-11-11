@@ -131,6 +131,21 @@
             "type": "string",
             "pattern": "^(assembled|E[1-8])$"
           },
+          "vitrine": {
+            "description": "Apresentação (illustrative): a peça sai da posição da placa e fica diante da câmera do beat, com a face pedida para o público. Volta ao lugar na entrada do beat seguinte. Ver harness/plano/camera-gsap.md.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["peca"],
+            "properties": {
+              "peca": { "type": "string" },
+              "face": { "enum": ["+x", "-x", "+y", "-y", "+z", "-z"] },
+              "cima": { "enum": ["+x", "-x", "+y", "-y", "+z", "-z"] },
+              "ocupa": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "lado": { "type": "number", "minimum": -0.5, "maximum": 0.5 },
+              "pos": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+              "giro": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+            }
+          },
           "camera": {
             "type": "object",
             "required": [

@@ -128,6 +128,14 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
     return [x0, y0, u[2] * k(), u[3] * k()];
   }
 
+  // vitrine: sem pos explícita, a pose é calculada uma vez por beat a partir da câmera dele
+  const posesVit = new Map();
+  function vitrineDe(b) {
+    if (b.vitrine.pos) return {};
+    if (!posesVit.has(b.id)) posesVit.set(b.id, cena.poseVitrine(b.vitrine, b.camera, b.callout?.box) ?? {});
+    return posesVit.get(b.id);
+  }
+
   let livre = false;       // usuário orbitando com camera-controls
   let tocando = false;
   let paraEm = null;
@@ -155,8 +163,8 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
       const af = e.mergulho?.afasta ? { g: e.mergulho.afasta.g, f: q(S.afasta) } : null;
       const vAnt = i > 0 ? beats[i - 1].beat.vitrine : null;
       const vit = [];
-      if (b.vitrine) vit.push({ ...b.vitrine, k: q(S.vit) });
-      if (vAnt && vAnt.peca !== b.vitrine?.peca) vit.push({ ...vAnt, k: q(S.vitR) });
+      if (b.vitrine) vit.push({ ...b.vitrine, ...vitrineDe(b), k: q(S.vit) });
+      if (vAnt && vAnt.peca !== b.vitrine?.peca) vit.push({ ...vAnt, ...vitrineDe(beats[i - 1].beat), k: q(S.vitR) });
       cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl, af, vit);
       if (!livre) cena.ajustaCamera(cam);
       // na captura, a cena só acumula quadros fora da entrada do beat (o estado 3D só muda nela)

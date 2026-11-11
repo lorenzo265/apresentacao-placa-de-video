@@ -186,6 +186,42 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     if (bTmp.isEmpty()) { o.getWorldPosition(vTmp); return { min: vTmp.clone(), max: vTmp.clone() }; }
     return { min: bTmp.min.clone(), max: bTmp.max.clone() };
   }
+  /**
+   * Pose de vitrine relativa à câmera do beat (cam = {pos, target, fov}): a face pedida da peça
+   * (v.face, ex. "-z" = face B) vira para o público, com v.cima (padrão "+y", a borda superior da placa)
+   * para cima na tela; a peça ocupa v.ocupa (fração da altura da tela, padrão 0,42) e fica deslocada
+   * para o lado livre (v.lado, fração da largura; padrão: oposto à caixa de texto). Pose em mm, mundo.
+   */
+  const EIXOS = { '+x': [1, 0, 0], '-x': [-1, 0, 0], '+y': [0, 1, 0], '-y': [0, -1, 0], '+z': [0, 0, 1], '-z': [0, 0, -1] };
+  function poseVitrine(v, cam, box = null) {
+    const c = caixas?.get(v.peca);
+    if (!c) return null;
+    const n = new THREE.Vector3(...(EIXOS[v.face ?? '-z'] ?? EIXOS['-z']));
+    let u = new THREE.Vector3(...(EIXOS[v.cima ?? '+y'] ?? EIXOS['+y']));
+    u.addScaledVector(n, -u.dot(n)).normalize();
+    const tam = c.caixa.getSize(new THREE.Vector3());
+    // tamanho na tela: a maior dimensão no plano da face
+    const xp = new THREE.Vector3().crossVectors(u, n);
+    const ext = (d) => Math.abs(d.x) * tam.x + Math.abs(d.y) * tam.y + Math.abs(d.z) * tam.z;
+    const larg = ext(xp), alt = ext(u);
+    const P = new THREE.Vector3(...cam.pos), T = new THREE.Vector3(...cam.target);
+    const f = T.clone().sub(P).normalize();
+    const dir = new THREE.Vector3().crossVectors(f, new THREE.Vector3(0, 0, 1));
+    if (dir.lengthSq() < 1e-6) dir.set(1, 0, 0);
+    dir.normalize();
+    const cimaCam = new THREE.Vector3().crossVectors(dir, f).normalize();
+    const tg = Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2);
+    const asp = STAGE_W / STAGE_H;
+    const ocupa = v.ocupa ?? 0.42;
+    const d = Math.max(alt / (2 * tg * ocupa), larg / (2 * tg * asp * ocupa * 1.2));
+    const lado = v.lado ?? (String(box ?? '').includes('left') ? 0.17 : String(box ?? '').includes('right') ? -0.17 : 0);
+    const pos = P.clone().addScaledVector(f, d).addScaledVector(dir, lado * 2 * d * tg * asp);
+    // rotação: base da peça (xp, u, n) -> base da câmera (dir, cimaCam, -f)
+    const mPeca = new THREE.Matrix4().makeBasis(xp, u, n);
+    const mCam = new THREE.Matrix4().makeBasis(dir, cimaCam, f.clone().negate());
+    const qw = new THREE.Quaternion().setFromRotationMatrix(mCam.multiply(mPeca.transpose()));
+    return { pos: pos.toArray(), qw };
+  }
   /** Posição de um nó (âncora ou peça) em mm, no estado atual. */
   function pontoNo(nome) {
     const o = acha(nome);
@@ -381,7 +417,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     renderer, camera, controls, scene, blockout, avisos,
     qualidade: () => nivelQ, materiais: () => materiais, defineQualidade,
     temAncora: (n) => !!acha(n),
-    caixaPeca, caixaNo, pontoNo, caixaEm, faceDe, poseMergulho, preparaAfastamento,
+    caixaPeca, caixaNo, pontoNo, poseVitrine, caixaEm, faceDe, poseMergulho, preparaAfastamento,
     /** Estado da acumulação (para os testes): amostras na média e o alvo. */
     acumulacao: () => ({ n: ac.n, alvo: pos ? Math.max(1, nAcumDe()) : 1 }),
     temPeca: (n) => !!estado && estado.temPeca(n),
@@ -710,7 +746,7 @@ function criaEstado3d(raiz, realista = null) {
         const Cp = o.parent.worldToLocal(new THREE.Box3().setFromObject(o).getCenter(new THREE.Vector3()));
         const Tp = o.parent.worldToLocal(new THREE.Vector3(...v.pos));
         const g = (v.giro ?? [0, 0, 0]).map((x) => THREE.MathUtils.degToRad(x));
-        const qw = new THREE.Quaternion().setFromEuler(new THREE.Euler(g[0], g[1], g[2], 'XYZ'));
+        const qw = v.qw ?? new THREE.Quaternion().setFromEuler(new THREE.Euler(g[0], g[1], g[2], 'XYZ'));
         const qpw = o.parent.getWorldQuaternion(new THREE.Quaternion());
         const qp = qpw.clone().invert().multiply(qw).multiply(qpw);
         const s = suave(Math.min(1, Math.max(0, v.k)));

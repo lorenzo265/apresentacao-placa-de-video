@@ -969,7 +969,15 @@
       "provenance": [
         "confirmed"
       ],
-      "speaker": "Vitor"
+      "speaker": "Vitor",
+      "vitrine": {
+        "peca": "gpu.package",
+        "face": "+z",
+        "ocupa": 0.4
+      },
+      "highlight": [
+        "gpu.package"
+      ]
     },
     {
       "id": "a3.1",
