@@ -29,7 +29,13 @@ export const TEMAS = {
         // estúdio virtual: HDR escurecido da Poly Haven mais caixas de luz que desenham os reflexos.
         hdr: { K: 5600, i: 0.5 },
         caixas: [
-          { nome: 'teto-fundo', K: 5600, i: 4.0, pos: [0, 10, 11], tam: [20, 6], degrade: [0.02, 1] },
+          // teto-fundo em quatro faixas de borda nítida (vãos a 8%): nas tampas do X, que são espelho
+          // preto, o reflexo ganha bordas, como em storagereview/sr-2 e sr-5; nas superfícies foscas
+          // a média fica perto da caixa lisa de antes (4,0 em 20 x 6)
+          { nome: 'teto-fundo', K: 5600, i: 4.4, pos: [0, 10, 11], tam: [20, 12], degrade: [0.02, 1], listras: [4, 0.5], vao: 0.08 },
+          // zênite: caixa larga e fraca quase sobre a placa; nas vistas de frente as tampas do X ganham
+          // o reflexo largo e escuro das fotos em vez de um preto morto
+          { nome: 'zenite-tampas', K: 5600, i: 0.7, pos: [0, 3, 16], tam: [14, 8], degrade: [0.35, 1] },
           { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
           { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
           { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },

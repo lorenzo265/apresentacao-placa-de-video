@@ -37,7 +37,7 @@ conjunto do bracket nas âncoras; --foto posiciona pela foto (topo do bracket a
 bracket_top_below_shroud_top do topo da carcaça). Os dois modos coincidem; o relatório traz a
 diferença.
 
-Uso:   python3 -I harness/parts/io_parts.py [--foto]
+Uso:   python3 -I harness/parts/io_parts.py [--foto] [--pecas=io.bracket,fasteners.e1_bracket]
 Saídas: harness/build/parts/<id>.glb e .step, harness/build/parts/io-report.json
 """
 import csv
@@ -82,6 +82,12 @@ MODE = "foto" if "--foto" in sys.argv else "ancoras"
 # ---------------------------------------------------------------------------
 G = {
     # bracket (sr-1)
+    "br_flange_above_contacts": (104.86, "confirmed (norma rev 3.0)",
+                                 "altura da aba de fixação do bracket (topo) acima do datum W, a borda dos contatos PCIe: 104,86 ± 0,52 (CEM 3.0, Fig. 9-3, p. 130; "
+                                 "datum W na Fig. 9-1, p. 128); com bracket_height_overall (120,02, Fig. 9-5) a ponta das línguas fica 15,16 mm além dos contatos. "
+                                 "Conferência nos renders quase ortogonais (2,2716 px/mm, bordas pelo alfa): pny/front aba a 104,55 e ponta a 16,68 além dos contatos; "
+                                 "pny/back 104,6 e 15,0. Substitui, para a posição em y do bracket, a conta por bracket_top_below_shroud_top (ponta a 11,46), que "
+                                 "dependia da altura da carcaça sobre os contatos (Q1); achado 17 do visual-qa de 2026-11-11"),
     "br_face_a_flush": (0.0, "derived", "a borda do bracket do lado da face A fica rente à face A (sr-1); a outra borda sai da largura de dois slots (conta)"),
     "br_tongue_z": (((7.10, 16.50), (27.60, 37.06)), "derived", "faixas em z das duas línguas (sr-1); centros a 20,46 mm, passo de slot da norma 20,32"),
     "br_tongue_len": ((9.9, 7.3), "derived", "comprimento das línguas, do lado da face B e do lado da face A, até a borda da chapa (sr-1)"),
@@ -278,6 +284,15 @@ def io_placement():
 
 
 Y_TIP, DZ, DP_YC, DP_ZC, MODE_DIFF = io_placement()
+# Achado 17 (visual-qa, 2026-11-11): a ponta das línguas sai da norma (aba a br_flange_above_contacts
+# acima da borda dos contatos), nos dois modos. As aberturas dos DisplayPort continuam nas âncoras
+# de io.board.dp (DP_Y); enquanto o contrato não mudar, a fileira fica DP_ROW_SHIFT acima do lugar
+# que sr-1 dá dentro do bracket (dp_row_from_bracket_tip). Mudança proposta no relatório.
+Y_TIP_ROW = Y_TIP                                       # ponta que a fileira (sr-1) e o modo implicam
+Y_TIP = g("br_flange_above_contacts") - M("bracket_height_overall")
+DP_ROW_SHIFT = (DP_YC - Y_TIP) - M("dp_row_from_bracket_tip")
+MODE_DIFF["y_tip_norma_menos_modo"] = round(Y_TIP - Y_TIP_ROW, 3)
+MODE_DIFF["fileira_dp_acima_de_sr1_no_bracket"] = round(DP_ROW_SHIFT, 3)
 BR_Z0 = T - (M("bracket_slot_width_single") + M("pcie_slot_pitch")) + DZ     # borda do lado da face B
 BR_Z1 = T + DZ                                                              # borda do lado da face A
 PITCH = M("dp_port_pitch")
@@ -354,9 +369,11 @@ def build_bracket():
     zone(pid, "marcas_regulatorias", "serigrafia_branca", plane_x=-t, y=[by(ya), by(yb)], z=[bz(za), bz(zb)])
     zone(pid, "chapa", "aco_pintado_preto_fosco", note="todo o resto da peça")
     note(pid, "contorno: comprimento e espessura da norma (bracket_height_overall, bracket_thickness), largura de dois slots por conta; línguas, entalhe, painel, aberturas e etiquetas medidos em sr-1")
-    note(pid, "posição em y: %s; ponta das línguas em y = %.2f, ponta de cima em %.2f (%.2f abaixo do topo da carcaça; bracket_top_below_shroud_top = %.1f); diferença entre os dois modos: %.3f mm" % (
-        "pela foto (bracket_top_below_shroud_top)" if MODE == "foto" else "pelas âncoras de io.board.dp (dp_row_from_bracket_tip)", Y_TIP, Y_TIP + L,
-        M("card_envelope_height") - Y_TIP - L, M("bracket_top_below_shroud_top"), MODE_DIFF["y_tip_ancoras_menos_foto"]))
+    note(pid, "posição em y pela norma (br_flange_above_contacts, CEM 3.0 Fig. 9-3): ponta das línguas em y = %.2f (%.2f além da borda dos contatos), ponta de cima em %.2f (%.2f abaixo do topo da carcaça; bracket_top_below_shroud_top = %.1f no CSV); o modo %s dava a ponta em %.2f" % (
+        Y_TIP, -Y_TIP, Y_TIP + L, M("card_envelope_height") - Y_TIP - L, M("bracket_top_below_shroud_top"), MODE, Y_TIP_ROW))
+    if abs(DP_ROW_SHIFT) > 0.05:
+        note(pid, "aberturas dos DisplayPort nas âncoras de io.board.dp: centro da fileira a %.2f da ponta das línguas, %.2f acima dos %.2f de sr-1 (dp_row_from_bracket_tip); some quando as âncoras descerem para y = ponta + dp_row_from_bracket_tip (mudança de contrato pedida)" % (
+            DP_YC - Y_TIP, DP_ROW_SHIFT, M("dp_row_from_bracket_tip")))
     note(pid, "painel em relevo de %.1f mm para fora com borda inclinada (palpite de forma: a borda aparece em sr-1 e gn-11)" % rel)
     return body
 
@@ -751,7 +768,7 @@ def anchor_check(pid, mesh):
 FEATURE_PROV = {
     "io.bracket": {"comprimento e espessura": "confirmed (CEM 3.0, Fig. 9-5)", "largura de dois slots": "derived (conta 18,42 + 20,32)",
                    "línguas, entalhe, painel, aberturas, etiquetas": "derived (storagereview/sr-1)",
-                   "posição na placa": "derived (arbitragem do visual-qa: bracket_top_below_shroud_top, dp_row_from_bracket_tip)",
+                   "posição na placa": "confirmed (CEM 3.0 Fig. 9-3: aba a 104,86 da borda dos contatos; conferida em pny/front e pny/back); z pela arbitragem (dp_row_center_z)",
                    "relevo do painel e dobra da ponta": "inferred"},
     "fasteners.e1_bracket": {"quantidade e posição": "derived (sr-1, gn-11)", "diâmetro da cabeça": "derived (sr-1)", "altura e fenda": "inferred"},
     "io.board": {"forma": "illustrative (D6)"},
@@ -770,15 +787,17 @@ FEATURE_PROV = {
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    adapter, holes = build_adapter()
-    shapes = {
-        "io.bracket": [build_bracket()],
-        "fasteners.e1_bracket": build_screws(),
-        "io.board": [build_io_board()],
-        "io.board.dp": build_dp(),
-        "pcie.adapter": [adapter],
-        "power.connector": [build_power_connector()],
+    # --pecas=id1,id2 gera só essas peças e atualiza só as entradas delas no io-report.json
+    only = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--pecas=")), None)
+    builders = {
+        "io.bracket": lambda: [build_bracket()],
+        "fasteners.e1_bracket": build_screws,
+        "io.board": lambda: [build_io_board()],
+        "io.board.dp": build_dp,
+        "pcie.adapter": lambda: [build_adapter()[0]],
+        "power.connector": lambda: [build_power_connector()],
     }
+    shapes = {pid: f() for pid, f in builders.items() if only is None or pid in only}
     report = {"mode": MODE, "parts": {}, "guess_values": {k: {"value": v[0], "provenance": v[1], "note": v[2]} for k, v in G.items()},
               "placement": {"y_tip": round(Y_TIP, 3), "dz": round(DZ, 3), "dp_row_center_y": round(DP_YC, 3), "dp_row_z": round(DP_ZC, 3),
                             "dp_y": [round(v, 3) for v in DP_Y], "bracket_z": [round(BR_Z0, 3), round(BR_Z1, 3)],
@@ -832,10 +851,19 @@ def main():
         print("    caixa: (%.2f, %.2f, %.2f) a (%.2f, %.2f, %.2f)" % (*lo, *hi))
         for a in anchors:
             print("    %-34s dist %6.2f mm %s" % (a["anchor"], a["dist_mm"], "OK" if a["ok"] else "ACIMA DE %.0f mm" % TOL_ANCHOR))
-    report["triangles_total"] = total
     report["triangle_budget"] = TRI_BUDGET
     report["csv_keys_used"] = sorted(USED)
     report["interface_conflicts"] = CONFLICTS
+    if only is not None and (OUT / "io-report.json").exists():
+        old = json.loads((OUT / "io-report.json").read_text(encoding="utf-8"))
+        old["parts"].update(report["parts"])
+        total = sum(v["triangles"] for v in old["parts"].values())
+        old["csv_keys_used"] = sorted(set(old.get("csv_keys_used", [])) | USED)
+        if "pcie.adapter" not in only:
+            report["interface_conflicts"] = old.get("interface_conflicts", [])
+        old.update({k: report[k] for k in ("mode", "guess_values", "placement", "triangle_budget", "interface_conflicts")})
+        report = old
+    report["triangles_total"] = total
     for c in CONFLICTS:
         print("CONFLITO DE INTERFACE (%s): %s; dono: %s" % (c["peca"], c["tema"], c["dono"]))
     all_ok &= total <= TRI_BUDGET

@@ -1,7 +1,11 @@
 {
   "versao": 1,
-  "descricao": "Materiais PBR da placa no modo realista (tema Keynote). Resolução, nesta ordem: nome do material no GLB (só os listados em materiais_glb: slots do passo do Blender), id do nó ou de um ancestral (inclui instance_of), padrão de nome (regex), grupo (extras.group) e padrão. Se o GLB trouxer mapas próprios (cor, ORM, normal, oclusão), eles valem canal a canal: o canal que o GLB não traz continua com a textura procedural (a oclusão assada sozinha não tira o grão). Atenção: a cor assada no GLB (build/card_final.glb) vem desta tabela no momento do passo do Blender; mudou a cor de um material com mapa de cor, rode parts/blender_pass.py de novo (o cache faz isso em segundos). Cores em sRGB; metal e rug (rugosidade) de 0 a 1. Com oclusão assada no GLB: 'micro_sombra' (0 a 1) faz a oclusão também apagar a luz direta rasante (fórmula da micro-sombra da HDRP, para cavidades que o mapa de sombra não resolve) e 'env' multiplica a luz do ambiente (padrão 1; a three ignora envMapIntensity com scene.environment). 'textura' descreve um mapa procedural gerado em src/lookdev.js; valores 'medida' vêm de design/measurements.csv. Os valores seguem materiais reais (ver 'ref' e 'nota'); quem diz o que é cada peça é o assembly, não esta tabela.",
+  "descricao": "Materiais PBR da placa no modo realista (tema Keynote). Resolução, nesta ordem: nome do material no GLB (só os listados em materiais_glb: slots do passo do Blender), id do nó ou de um ancestral (inclui instance_of), padrão de nome (regex), grupo (extras.group) e padrão. Se o GLB trouxer mapas próprios (cor, ORM, normal, oclusão), eles valem canal a canal: o canal que o GLB não traz continua com a textura procedural (a oclusão assada sozinha não tira o grão). Atenção: a cor assada no GLB (build/card_final.glb) vem desta tabela no momento do passo do Blender; mudou a cor de um material com mapa de cor, rode parts/blender_pass.py de novo (o cache faz isso em segundos). Cores em sRGB; metal e rug (rugosidade) de 0 a 1. Com oclusão assada no GLB: 'micro_sombra' (0 a 1) faz a oclusão também apagar a luz direta rasante (fórmula da micro-sombra da HDRP, para cavidades que o mapa de sombra não resolve) e 'env' multiplica a luz do ambiente (padrão 1; a three ignora envMapIntensity com scene.environment). 'textura' descreve um mapa procedural gerado em src/lookdev.js; valores 'medida' vêm de design/measurements.csv. Os valores seguem materiais reais (ver 'ref' e 'nota'); quem diz o que é cada peça é o assembly, não esta tabela. 'interior' (0 a 1) marca peça de dentro da carcaça: com a placa montada, toda a luz dela cai para essa fração (só a luz principal faz sombra e o ambiente não sabe da carcaça; sem isto o interior acende pelas grades e por trás das pás) e volta a 1 quando o desmonte abre a carcaça, entre os níveis de explosão 'interior_aberto.de' e '.ate' (contínuo).",
   "padrao": "plastico.preto",
+  "interior_aberto": {
+    "de": 1.5,
+    "ate": 3.0
+  },
   "pecas": {
     "frame.shroud": "carcaca.anodizado",
     "frame.face_b": "carcaca.anodizado",
@@ -9,7 +13,7 @@
     "frame.center_covers": "carcaca.tampa_x",
     "io.bracket": "aco.bracket",
     "io.board": "pcb.mascara",
-    "io.board.dp": "aco.estanhado",
+    "io.board.dp": "dp.receptaculo",
     "io.aux_header": "plastico.conector",
     "pcie.adapter": "pcb.contatos_pcie",
     "pcb.plate": "aco.placa",
@@ -73,46 +77,41 @@
   },
   "materiais": {
     "carcaca.anodizado": {
-      "cor": "#3d4044",
+      "cor": "#383b3f",
       "metal": 1.0,
-      "rug": 0.36,
+      "rug": 0.4,
       "micro_sombra": 0.6,
       "textura": {
         "tipo": "grao",
         "tile_mm": 48,
-        "rug_var": 0.035,
+        "rug_var": 0.015,
         "relevo": 0.03,
-        "manchas": 0.02
+        "manchas": 0.01
       },
       "ref": [
         "pny/3qtr-top-right",
         "pny/front",
         "storagereview/sr-4"
       ],
-      "nota": "Alumínio anodizado grafite, jateado: metal com refletância baixa e reflexo largo e suave. O grão quebra o reflexo como na foto real."
+      "nota": "Alumínio anodizado grafite, jateado: metal com refletância baixa e reflexo largo e suave. O grão do jato fica abaixo do pixel na distância do tour: só uma variação leve de rugosidade (mais que isso vira granulado). Nas fotos (storagereview/sr-2, sr-3) o aro e os braços do X leem grafite, mais escuros que o reflexo, com só o fio do chanfro claro."
     },
     "carcaca.tampa_x": {
-      "cor": "#1d1e21",
-      "metal": 1.0,
-      "rug": 0.22,
+      "cor": "#0b0b0c",
+      "metal": 0.0,
+      "rug": 0.12,
       "micro_sombra": 0.4,
-      "textura": {
-        "tipo": "grao",
-        "tile_mm": 30,
-        "rug_var": 0.03,
-        "relevo": 0.02,
-        "manchas": 0.02
-      },
       "verniz": {
-        "forca": 0.6,
-        "rug": 0.1
+        "forca": 1.0,
+        "rug": 0.07,
+        "especular_base": 0.0
       },
       "ref": [
+        "storagereview/sr-2",
+        "storagereview/sr-5",
         "pny/back",
-        "pny/3qtr-back-right",
-        "storagereview/sr-4"
+        "pny/3qtr-back-right"
       ],
-      "nota": "Tampas do X: anodizado quase preto e fechado, sob um verniz liso. Em pny/back e pny/3qtr-back-right são o trecho mais escuro e mais brilhante da face B: o reflexo largo do estúdio passa nelas como em vidro fumê, sem clarear o fundo. O texto RTX PRO 6000 vem pintado no mapa de cor do passo do Blender (ouro.serigrafia)."
+      "nota": "Triângulos do X, nas duas faces: preto brilhante, como laca preta sob verniz (o processo de acabamento não tem fonte; a aparência é a de storagereview/sr-2 e sr-5, onde as tampas refletem o ambiente como espelho escuro). Dielétrico preto: o reflexo é só o do verniz (cerca de 4% de frente, mais na rasante), nítido; a camada de baixo não tem especular próprio (especular_base 0), senão o reflexo dobra e a tampa clareia. Rugosidade do verniz 0,07: nítido para as bordas das caixas de luz, mas sem mostrar os pixels do HDR do estúdio (256 x 128). 'rug' 0,12 vale só na qualidade baixa, sem verniz. Sem grão: o grão deixava a tampa fosca e granulada. O texto RTX PRO 6000 vem pintado no mapa de cor do passo do Blender (ouro.serigrafia): fica como tinta sob o verniz."
     },
     "carcaca.grade": {
       "cor": "#121315",
@@ -166,19 +165,22 @@
           "reserva": 20
         },
         "cubo": {
-          "cor": "#5f6266",
+          "cor": "#46484c",
           "metal": 1.0,
-          "rug": 0.26,
-          "anisotropia": 0.75,
-          "passo_mm": 0.35
+          "rug": 0.44,
+          "anisotropia": 0.35,
+          "passo_mm": 0.35,
+          "var_rug": 0.03,
+          "var_cor": 0.02,
+          "relevo": 0.03
         }
       },
       "ref": [
-        "storagereview/sr-4",
-        "pny/3qtr-top-right",
-        "pny/front"
+        "storagereview/sr-5",
+        "storagereview/sr-3",
+        "pny/3qtr-top-right"
       ],
-      "nota": "No blockout o nó do ventilador junta anel e cubo numa malha só: fora do raio do cubo é plástico fosco; dentro, metal torneado com reflexo anisotrópico concêntrico (o 'laço' de luz que cruza o cubo na foto)."
+      "nota": "No blockout o nó do ventilador junta anel e cubo numa malha só: fora do raio do cubo é plástico fosco; dentro, alumínio torneado cinza-escuro e acetinado (storagereview/sr-5 e sr-3): o torneado aparece só como um laço de luz suave, por anisotropia concêntrica fraca. Estrias com pouco contraste de rugosidade e quase sem relevo (com mais, o cubo virava cromo riscado)."
     },
     "aletas.pretas": {
       "cor": "#1a1b1d",
@@ -201,12 +203,13 @@
       "ref": [
         "rtx5090/wccftech-cooler-1"
       ],
-      "nota": "Alumínio com pintura preta. A textura imita as frestas entre aletas sobre a caixa do blockout (passo e espessura inferred, do CSV); some quando a pilha tiver geometria."
+      "nota": "Alumínio com pintura preta. A textura imita as frestas entre aletas sobre a caixa do blockout (passo e espessura inferred, do CSV); some quando a pilha tiver geometria.",
+      "interior": 0.22
     },
     "aluminio.jateado": {
-      "cor": "#a6a8ab",
+      "cor": "#5a5c60",
       "metal": 1.0,
-      "rug": 0.46,
+      "rug": 0.5,
       "micro_sombra": 0.7,
       "textura": {
         "tipo": "grao",
@@ -218,7 +221,8 @@
       "ref": [
         "rtx5090/wccftech-cooler-1"
       ],
-      "nota": "Moldura do cooler: alumínio jateado cinza claro (placa irmã, derived)."
+      "nota": "Moldura do cooler: alumínio jateado cinza-escuro. Na placa irmã (rtx5090/wccftech-cooler-1, derived) a moldura é escura e só os ressaltos de contato são cinza-claros; escura, ela também não acende o interior visto pelas grades e por trás das pás.",
+      "interior": 0.22
     },
     "cobre.niquelado": {
       "cor": "#c3bcb2",
@@ -239,13 +243,15 @@
         "rtx5090/wccftech-cooler-1",
         "sabareesh/wb-bare-pcb"
       ],
-      "nota": "Câmara de vapor e tubos: cobre niquelado, acetinado, com marcas de usinagem lineares (anisotropia ao longo de x). Na placa irmã a câmara aparece niquelada; os tubos sem foto nítida (illustrative)."
+      "nota": "Câmara de vapor e tubos: cobre niquelado, acetinado, com marcas de usinagem lineares (anisotropia ao longo de x). Na placa irmã a câmara aparece niquelada; os tubos sem foto nítida (illustrative).",
+      "interior": 0.22
     },
     "aco.mola": {
       "cor": "#34363a",
       "metal": 1.0,
       "rug": 0.38,
-      "nota": "Mola em X de aço com acabamento escuro (illustrative: sem foto da peça desta placa)."
+      "nota": "Mola em X de aço com acabamento escuro (illustrative: sem foto da peça desta placa).",
+      "interior": 0.22
     },
     "aco.parafuso": {
       "cor": "#2f3033",
@@ -278,7 +284,8 @@
       "cor": "#4a4c50",
       "metal": 1.0,
       "rug": 0.42,
-      "nota": "Chapas de reforço e moldura traseira: aço escuro (illustrative)."
+      "nota": "Chapas de reforço e moldura traseira: aço escuro (illustrative).",
+      "interior": 0.22
     },
     "aco.estanhado": {
       "cor": "#c9cacc",
@@ -287,7 +294,7 @@
       "ref": [
         "storagereview/sr-1"
       ],
-      "nota": "Carcaças dos DisplayPort: aço estanhado claro."
+      "nota": "Aço estanhado claro (reserva do grupo io; as saídas DisplayPort usam dp.receptaculo)."
     },
     "plastico.preto": {
       "cor": "#242528",
@@ -322,7 +329,8 @@
         "rtx5090/pcgamesn-pcb-angle",
         "chiphell/pcb-a"
       ],
-      "nota": "Máscara de solda preta fosca com trilhas em relevo, vias e serigrafia branca. O desenho das trilhas é illustrative (o layout real não é público): é textura de superfície, não informação."
+      "nota": "Máscara de solda preta fosca com trilhas em relevo, vias e serigrafia branca. O desenho das trilhas é illustrative (o layout real não é público): é textura de superfície, não informação.",
+      "interior": 0.22
     },
     "pcb.smd": {
       "cor": "#141516",
@@ -338,7 +346,8 @@
       "ref": [
         "sabareesh/wb-bare-pcb"
       ],
-      "nota": "Região de capacitores pequenos: corpos cerâmicos bege e terminais estanhados sobre a máscara (posições illustrative)."
+      "nota": "Região de capacitores pequenos: corpos cerâmicos bege e terminais estanhados sobre a máscara (posições illustrative).",
+      "interior": 0.22
     },
     "pcb.contatos_pcie": {
       "cor": "#141516",
@@ -374,19 +383,20 @@
     "chip.epoxi": {
       "cor": "#1b1c1e",
       "metal": 0.0,
-      "rug": 0.52,
+      "rug": 0.7,
       "textura": {
         "tipo": "grao",
         "tile_mm": 10,
-        "rug_var": 0.06,
-        "relevo": 0.03,
+        "rug_var": 0.05,
+        "relevo": 0.02,
         "manchas": 0.0
       },
       "ref": [
         "sabareesh/wb-bare-pcb",
         "rtx5090/pcgamesn-pcb-power"
       ],
-      "nota": "Encapsulamento de epóxi preto (memória, estágios de potência, controladores), fosco."
+      "nota": "Encapsulamento de epóxi preto (memória, estágios de potência, controladores): composto de moldagem fosco, cinza muito escuro (sabareesh/wb-bare-pcb). Rugosidade alta: com menos, o reflexo da caixa de luz deixava os chips como placas claras.",
+      "interior": 0.22
     },
     "chip.package": {
       "cor": "#1b1c1e",
@@ -396,19 +406,19 @@
         "tipo": "package",
         "uv": "planar_bbox",
         "janela_rel": [
-          0.42,
-          0.6
+          0.507,
+          0.69
         ],
         "die_rel": [
-          0.36,
-          0.54
+          0.363,
+          0.534
         ],
         "moldura": {
-          "cor": "#cfc6b6",
+          "cor": "#c9bea8",
           "metal": 1.0,
-          "rug": 0.34
+          "rug": 0.42
         },
-        "substrato": "#1f3a2c",
+        "substrato": "#0f3d2a",
         "die": {
           "cor": "#2a2c30",
           "metal": 0.0,
@@ -418,7 +428,8 @@
       "ref": [
         "sabareesh/wb-bare-pcb"
       ],
-      "nota": "Package do GB202: moldura de reforço metálica clara, borda do substrato verde-escura e o die no centro. Proporções da janela e do die tiradas da pasta (gpu.tim) sobre o package no blockout (illustrative)."
+      "nota": "Package do GB202: moldura de reforço metálica cor de champanhe (acetinada), anel verde-escuro do substrato à vista entre a moldura e o die, e o die no centro (sabareesh/wb-bare-pcb, gn/gn-29). Janela da moldura e die medidos na malha do package (gpu.package, 2026-11-11: janela de 33,5 x 39,8 mm, die de 24,0 x 30,7 mm, frações da meia largura e da meia altura); se a malha mudar, medir de novo.",
+      "interior": 0.22
     },
     "chip.pasta": {
       "cor": "#8d9092",
@@ -434,7 +445,8 @@
       "ref": [
         "sabareesh/wb-bare-pcb"
       ],
-      "nota": "Interface térmica como pasta cinza espalhada (illustrative: o tipo de interface desta placa não tem fonte)."
+      "nota": "Interface térmica como pasta cinza espalhada (illustrative: o tipo de interface desta placa não tem fonte).",
+      "interior": 0.22
     },
     "energia.indutor": {
       "cor": "#2b2c2e",
@@ -451,24 +463,41 @@
         "sabareesh/wb-bare-pcb",
         "sabareesh/wb-choke-found"
       ],
-      "nota": "Indutores de pó metálico prensado: cinza-escuro, fosco, com leve brilho metálico."
+      "nota": "Indutores de pó metálico prensado: cinza-escuro, fosco, com leve brilho metálico.",
+      "interior": 0.22
     },
     "flex.poliimida": {
-      "cor": "#2a2520",
+      "cor": "#3e2616",
       "metal": 0.0,
-      "rug": 0.35,
-      "nota": "Cabos flexíveis com cobertura escura de poliimida (illustrative: cor sem foto desta placa)."
+      "rug": 0.36,
+      "textura": {
+        "tipo": "faixas",
+        "uv": "planar_bbox",
+        "reforco_mm": 9,
+        "reforco": {
+          "cor": "#0a0a0b",
+          "rug": 0.5
+        },
+        "passo_trilha_mm": 0.6,
+        "trilha": "#452a18"
+      },
+      "ref": [
+        "gn/gn-29",
+        "gn/gn-28"
+      ],
+      "nota": "Cabos flexíveis: película de poliimida âmbar (marrom-âmbar sobre as trilhas de cobre, levemente brilhante) com reforço preto nas pontas, como no teardown (gn/gn-29, gn-28). Comprimento do reforço e passo das trilhas illustrative; no teardown parte do cabo aparece coberta por película preta, que este material não separa.",
+      "interior": 0.22
     },
     "ouro.serigrafia": {
-      "cor": "#c9a45c",
+      "cor": "#d8c49c",
       "metal": 1.0,
-      "rug": 0.32,
+      "rug": 0.34,
       "ref": [
-        "pny/3qtr-top-right",
+        "pny/back",
         "pny/3qtr-back-right",
-        "pny/back"
+        "pny/3qtr-top-right"
       ],
-      "nota": "Logotipo NVIDIA da borda superior e texto RTX PRO 6000 da tampa do X: tinta dourada metálica. O passo do Blender pinta a cor no mapa da própria peça (frame.shroud, frame.center_covers.2); metal e rugosidade ficam os da peça (metal 1, rugosidade de 0,22 a 0,36), perto destes. Este slot (carcaca.logo) só vale se a marca vier como primitiva própria."
+      "nota": "Logotipo NVIDIA da borda superior e texto RTX PRO 6000 da tampa do X: tinta cor de champanhe, o tom dos renders oficiais (pny/back, pny/3qtr-back-right, pny/3qtr-top-right: nas letras iluminadas, cerca de #e6d5ae). A foto storagereview/sr-3 dá cinza-prata, mas a luz quente e a câmera mudam o tom; os renders são a referência. O passo do Blender pinta a cor no mapa da própria peça (frame.shroud, frame.center_covers.2); metal e rugosidade ficam os da peça. Este slot (carcaca.logo) só vale se a marca vier como primitiva própria."
     },
     "tubo.enegrecido": {
       "cor": "#17181a",
@@ -487,7 +516,28 @@
         "rtx5090/wccftech-cooler-3",
         "rtx5090/wccftech-cooler-4"
       ],
-      "nota": "Tubos de calor fora da câmara: escuros nas fotos da placa irmã (RTX 5090 Founders Edition), segundo o modelador do cooler; derived. Escuros também evitam as faixas claras que apareciam pelas frestas da grade da face oposta, que o render oficial (pny/back) não mostra."
+      "nota": "Tubos de calor fora da câmara: escuros nas fotos da placa irmã (RTX 5090 Founders Edition), segundo o modelador do cooler; derived. Escuros também evitam as faixas claras que apareciam pelas frestas da grade da face oposta, que o render oficial (pny/back) não mostra.",
+      "interior": 0.22
+    },
+    "dp.receptaculo": {
+      "cor": "#9a9c9f",
+      "metal": 1.0,
+      "rug": 0.4,
+      "textura": {
+        "tipo": "abertura",
+        "uv": "cavidade",
+        "interior": {
+          "cor": "#0a0a0b",
+          "metal": 0.0,
+          "rug": 0.62,
+          "ao": 0.08
+        }
+      },
+      "ref": [
+        "storagereview/sr-1"
+      ],
+      "nota": "Saídas DisplayPort: casca de aço niquelado (só a borda frontal e os lados ficam à vista) e, dentro da abertura, paredes, língua de plástico preto e fundo escuros, como as aberturas pretas de storagereview/sr-1. A divisão casca e interior sai da forma da peça (faces sobre a caixa envolvente contra faces de dentro). O interior leva oclusão procedural forte (a peça não passa pelo passo do Blender): a luz não entra na cavidade.",
+      "micro_sombra": 1.0
     }
   }
 }

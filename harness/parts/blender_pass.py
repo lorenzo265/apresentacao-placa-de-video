@@ -110,7 +110,10 @@ ACABAMENTOS = {
     "tampa": ["carcaca.tampa_x"],
     "bracket": ["aco.bracket"],
 }
-DESGASTE = {"carcaca.anodizado": 0.22, "carcaca.tampa_x": 0.14, "carcaca.grade": 0.0, "aco.bracket": 0.25}
+# desgaste do fio da aresta (fração da cor de COR_DESGASTE): as tampas do X são preto brilhante sob verniz
+# (viewer/src/materials.json, carcaca.tampa_x) e quase não mostram metal na aresta; o fio claro do X vem
+# do chanfro dos braços (carcaca.anodizado), como em storagereview/sr-2
+DESGASTE = {"carcaca.anodizado": 0.22, "carcaca.tampa_x": 0.04, "carcaca.grade": 0.0, "aco.bracket": 0.25}
 COR_DESGASTE = "#8c8f93"   # alumínio sob o anodizado, visto só no fio da aresta
 
 # Logotipo NVIDIA da borda superior (illustrative: medido neste passo nas referências, ver docstring)

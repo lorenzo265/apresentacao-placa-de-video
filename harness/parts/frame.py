@@ -74,6 +74,7 @@ G = {
     "lam_t_a": (0.5, "inferred", "espessura das lâminas da face A"),
     "lam_recess_a": (0.4, "inferred", "recuo das lâminas da face A em relação à chapa"),
     "lam_depth_a": (1.0, "inferred", "quanto as lâminas da face A entram na carcaça além da chapa"),
+    "lam_overlap": (0.15, "inferred", "sobreposição das lâminas em V (vista de frente): a dobra de cada lâmina avança (passo - espessura + sobreposição) em x, de modo que nenhuma linha reta no plano xz atravessa a grade; na foto (pny/front, pny/back, sr-4) as grades são opacas, com nervuras verticais uniformes; dobra e ângulo sem foto de perfil"),
     # extremidade do lado das portas
     "dp_clear": (0.3, "inferred", "folga das aberturas dos DisplayPort na placa de extremidade"),
     # face B, aro e tampas
@@ -101,12 +102,13 @@ G = {
     "slot_w": (2.0, "inferred", "largura das duas fendas do canal (proporção em perspectiva, pny/3qtr-top-right)"),
     "slot_z": ((7.5, 11.5), "inferred", "centros das fendas, medidos da face A para dentro (perspectiva, pny/3qtr-top-right)"),
     "slot_x_margin": (8.0, "inferred", "distância do começo do canal ao começo das fendas"),
-    "slot_end_gap": (5.0, "inferred", "distância do fim das fendas à abertura do conector"),
+    "slot_end_gap": (5.0, "inferred", "distância do fim das fendas à luva do túnel do conector, medida no fundo do canal"),
     "pad_len_x": (40.0, "inferred", "comprimento da placa lisa elevada do canal, do lado do bracket"),
     "pad_z": ((15.0, 28.0), "inferred", "faixa da placa lisa do canal, medida da face A para dentro (do lado da face B)"),
     "pad_h": (0.4, "inferred", "altura da placa lisa sobre o fundo do canal"),
-    "open_x_depth": (8.0, "inferred", "abertura do conector ao longo de x (profundidade do cabeçote entre as fileiras; sem cota)"),
-    "open_clear": (1.5, "inferred", "folga da abertura do conector além da largura do cabeçote (conn16_header_width), em z"),
+    "pw_hood": (1.5, "inferred", "quanto a luva do túnel do conector de energia avança para trás da face de encaixe, em volta da boca do corpo (sem foto do interior)"),
+    "pw_body_clear": (0.3, "inferred", "folga entre o corpo do conector e o furo do colar no fundo da luva (do lado da trava soma-se a altura da trava, p16_latch do io_parts.py)"),
+    "pw_reach": (60.0, "inferred", "comprimento auxiliar do túnel ao longo da direção de encaixe, além da carcaça (só garante que o corte atravessa a parede; não é medida)"),
 }
 
 
@@ -262,6 +264,83 @@ def strips(x0, x1, pitch, t):
     return Sketch() + [Pos(x, YC) * Rectangle(t, 2 * BIG) for x in xs]
 
 
+def chevron_louvres(region, pitch, t, z0, z1, clip):
+    """Lâminas verticais (ao longo de y) com perfil em V no plano xz, de z0 a z1, recortadas pela
+    região (esboço xy). Espessura t em x; a dobra no meio da profundidade avança
+    pitch - t + lam_overlap em x: o canal entre duas lâminas desvia mais do que a própria largura,
+    e nenhuma linha reta no plano xz (de frente ou oblíqua) atravessa a grade. As lâminas passam
+    pitch - t + lam_overlap + t além da borda da janela (por baixo da chapa, dentro de clip), para
+    nenhum pedaço de lâmina ficar solto onde a dobra cruza a borda."""
+    amp = pitch - t + g("lam_overlap")
+    zm = (z0 + z1) / 2
+    bb = region.bounding_box()
+    xs = np.arange(pitch / 2 + 0.11, L, pitch)       # fase deslocada: nenhuma face de lâmina coincide com a borda da janela
+    xs = xs[(xs > bb.min.X - pitch - amp) & (xs < bb.max.X + pitch)]
+    prof = Sketch()
+    for xc in xs:
+        x0 = xc - t / 2
+        prof = prof + Face(Wire.make_polygon([Vector(x0, z0, 0), Vector(x0 + t, z0, 0), Vector(x0 + t + amp, zm, 0),
+                                              Vector(x0 + t, z1, 0), Vector(x0, z1, 0), Vector(x0 + amp, zm, 0)], close=True))
+    y_lo, y_hi = bb.min.Y - 1, bb.max.Y + 1
+    vanes = extrude(Plane.XZ.offset(-y_hi) * prof, y_hi - y_lo, dir=(0, -1, 0))
+    reach = offset(region, amp + t, kind=Kind.ARC) & clip
+    return vanes & ext(reach, z0, z1), amp
+
+
+def drop_loose(shape, pid):
+    """Tira pedaços soltos (lâmina em V cortada pela curva do contorno interno, por exemplo): fica
+    só o sólido maior, e a nota registra o que saiu."""
+    sols = sorted(shape.solids(), key=lambda so: -so.volume)
+    if len(sols) > 1:
+        note(pid, "%d pedaços soltos de lâmina retirados (%.2f mm3 no total), onde a dobra cruza o contorno interno" % (len(sols) - 1, sum(so.volume for so in sols[1:])))
+    return sols[0]
+
+
+def power_axis():
+    """Eixo do conector de energia no plano xy (CSV): centro do corpo c, direção de encaixe u e
+    direção através das fileiras n (u girado de +90 graus), como em io_parts.build_power_connector."""
+    cx, cy = M("power_connector_center_from_bracket_end"), M("power_connector_center_y")
+    a = math.radians(M("power_connector_rotation_deg") + 90.0)
+    return np.array([cx, cy]), np.array([math.cos(a), math.sin(a)]), np.array([-math.sin(a), math.cos(a)])
+
+
+def latch_height():
+    """Altura da trava do conector (io_parts.G['p16_latch']), para o furo do colar."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import io_parts as IO
+    return IO.G["p16_latch"][0][2]
+
+
+def power_tunnel_half_width():
+    """Meia largura do túnel através das fileiras: metade de power_connector_body_across mais a
+    folga shroud_power_opening_clear (a mesma folga do contrato em z)."""
+    return M("power_connector_body_across") / 2 + M("shroud_power_opening_clear")
+
+
+def power_tunnel_xy(grow, s0, s1):
+    """Contorno xy (lista de pontos) do túnel do conector: |t| <= meia largura + grow, s de s0 a s1
+    ao longo da direção de encaixe, a partir do centro do corpo."""
+    c, u, n = power_axis()
+    hw = power_tunnel_half_width() + grow
+    return [tuple(c + s * u + t * n) for s, t in ((s0, -hw), (s1, -hw), (s1, hw), (s0, hw))]
+
+
+def power_tunnel(grow, s0, s1):
+    """Prisma do túnel: contorno de power_tunnel_xy, z de iface_shroud_power_opening_z_min - grow
+    a iface_shroud_power_opening_z_max + grow."""
+    return ext(poly(power_tunnel_xy(grow, s0, s1)), M("iface_shroud_power_opening_z_min") - grow,
+               M("iface_shroud_power_opening_z_max") + grow)
+
+
+def power_tunnel_x_at(y, t):
+    """x da linha do túnel de coordenada através t no nível y."""
+    c, u, n = power_axis()
+    s = (y - c[1] - t * n[1]) / u[1]
+    return float(c[0] + s * u[0] + t * n[0])
+
+
 def box3(x0, x1, y0, y1, z0, z1):
     return ext(rect(x0, x1, y0, y1), z0, z1)
 
@@ -331,8 +410,10 @@ def keepouts():
         "placa_de_extremidade": (0, rec + tE, Y0, Y1, Z_FACE_B, T),
         "parede_da_ponta": (L - WALL, L, Y0, Y1, Z_FACE_B, T),
         "chapa_da_face_a": (0, L, Y0, Y1, T - T_A, T),
-        "encaixe_do_conector": (M("iface_shroud_power_opening_x") - g("open_x_depth") / 2 - WALL, M("iface_shroud_power_opening_x") + g("open_x_depth") / 2 + WALL,
-                                Y1 - M("shroud_channel_depth"), Y1, M("iface_shroud_power_opening_z_min") - WALL, cz0),
+        # caixa da boca do túnel do conector na borda superior (o túnel corre a 45 graus para dentro)
+        "encaixe_do_conector": (power_tunnel_x_at(Y1, power_tunnel_half_width() + WALL), power_tunnel_x_at(Y1, -power_tunnel_half_width() - WALL),
+                                Y1 - M("shroud_channel_depth") - WALL, Y1, M("iface_shroud_power_opening_z_min") - WALL,
+                                M("iface_shroud_power_opening_z_max") + WALL),
         "fenda_do_adaptador": adapter_strip_cut()[:2] + (Y0, adapter_strip_cut()[3], M("iface_adapter_board_z_min") - g("adapter_clear"), adapter_strip_cut()[5]),
     }
 
@@ -395,10 +476,14 @@ def build_shroud():
     w_c = ((pod - disks[0]) & rect(-1, FAN_X[0], Y0, Y1)) + ((pod - disks[1]) & rect(FAN_X[1], L + 1, Y0, Y1))
     w_c = round_convex(w_c, g("win_r_a"))
     body = body - ext(w_x, T - tA - 0.01, T + 1) - ext(w_c, T - tA - 0.01, T + 1)
-    lam = strips(0, L, g("lam_pitch_a"), g("lam_t_a")) & w_c
-    body = body + ext(lam, T - tA - g("lam_depth_a"), T - g("lam_recess_a"))
-    note(pid, "janelas do X da face A abertas, sem lâminas: no cruzamento a referência mostra as aletas centrais (cooler.fins.3) pela abertura")
-    note(pid, "lâminas das grades dos cantos: espessura %.1f, recuo %.1f e profundidade são palpite; podem ser as próprias aletas vistas pela grade" % (g("lam_t_a"), g("lam_recess_a")))
+    clip_a = inner - tris[0] - tris[1]
+    for fx in FAN_X:
+        clip_a = clip_a - Pos(fx, FAN_Y) * Circle(R_OPEN + 0.2)
+    lam, amp_a = chevron_louvres(w_c + w_x, g("lam_pitch_a"), g("lam_t_a"), T - tA - g("lam_depth_a"), T - g("lam_recess_a"), clip_a)
+    body = body + lam
+    note(pid, "janelas do X da face A com a mesma grade dos cantos: em pny/front os braços do X entre as tampas e os anéis mostram nervuras verticais uniformes, como os cantos; antes ficavam abertas e mostravam tubos de calor e a câmara (visual-qa-placa-final, achado 3)")
+    note(pid, "lâminas das grades da face A (cantos e braços do X) em V no plano xz: passo %.1f (derived), espessura %.1f, recuo %.1f e profundidade de z = %.1f a %.1f (palpite); a dobra avança %.2f mm em x, mais que o vão entre lâminas (%.2f), e a grade fica opaca de frente e em vista oblíqua (achados 2 e 3)" % (
+        g("lam_pitch_a"), g("lam_t_a"), g("lam_recess_a"), T - tA - g("lam_depth_a"), T - g("lam_recess_a"), amp_a, g("lam_pitch_a") - g("lam_t_a")))
 
     # entalhe da borda inferior ao lado dos contatos PCIe
     nx0, nx1 = M("shroud_pcie_side_notch_x_start"), M("shroud_pcie_side_notch_x_end")
@@ -433,27 +518,48 @@ def build_shroud():
     oz0, oz1 = M("iface_shroud_power_opening_z_min"), M("iface_shroud_power_opening_z_max")
     assert abs((oz0 + oz1) / 2 - a_open[2]) < 0.05, "abertura do conector fora da âncora"
     assert abs(a_open[0] - ox) < 0.05
-    od_x = g("open_x_depth")
-    sx1 = ox - od_x / 2 - g("slot_end_gap")
+    # fendas: terminam slot_end_gap antes da luva do túnel do conector, medido no fundo do canal
+    hw = power_tunnel_half_width()
+    sx1 = power_tunnel_x_at(floor_y - WALL, hw + WALL) - g("slot_end_gap")
+    assert sx1 > sx0 + 10, "fendas curtas demais"
     for dz in g("slot_z"):
         zc = T - dz
         body = body - xz_extrude(rrect_xz(sx0, sx1, zc - g("slot_w") / 2, zc + g("slot_w") / 2, g("slot_w") / 2 - 0.01), floor_y + 0.5, WALL + 1)
     pd0, pd1 = g("pad_z")
     body = body + xz_extrude(rrect_xz(sx0, sx0 + g("pad_len_x"), T - pd1, T - pd0, r), floor_y + g("pad_h"), g("pad_h") + 0.01)
-    if oz0 < cz0:
-        # no encaixe o canal desce até a abertura: bolso de x = ox ± od_x / 2 com paredes nos
-        # lados e no fundo, da borda de cima até o fundo do canal (acima do PCB, que vai até
-        # pcb_main_card_y_min + pcb_main_height)
-        assert Y1 - d > M("pcb_main_card_y_min") + M("pcb_main_height"), "bolso do encaixe sobre o PCB"
-        walls = xz_extrude(rrect_xz(ox - od_x / 2 - WALL, ox + od_x / 2 + WALL, oz0 - WALL, cz0, 0), Y1, d)
-        body = body + (walls & ext(O, Z_FACE_B, T))
-        body = body - xz_extrude(rrect_xz(ox - od_x / 2, ox + od_x / 2, oz0, cz0 + 0.5, 0), Y1 + 1, d + 1)
-    body = body - xz_extrude(rrect_xz(ox - od_x / 2, ox + od_x / 2, oz0, oz1, 1.0), floor_y + 0.5, WALL + 1)
+
+    # túnel do conector de energia: o corpo fica a 45 graus no canto chanfrado do PCB, com a face de
+    # encaixe para (+x, +y) (contrato: power_connector_rotation_deg); a carcaça abre um túnel ao longo
+    # da direção de encaixe, da boca do corpo até a borda superior, para o plugue entrar e para a face
+    # 2 x 6 aparecer de fora, como em pny/3qtr-top-right e storagereview/sr-3. Uma luva de parede
+    # WALL fecha o túnel por dentro (de fora não se vê o interior da placa pela abertura).
+    s_face = M("power_connector_body_depth") / 2
+    s_hood = s_face - g("pw_hood")
+    canal_void = xz_extrude(rrect_xz(cx0, cx1, cz0, cz1, r), Y1 + 1, d + 1)
+    sleeve = (power_tunnel(WALL, s_hood - WALL, g("pw_reach")) & ext(O, Z_FACE_B, T)) - canal_void
+    body = body + sleeve
+    body = body - power_tunnel(0.0, s_hood - 1.0, g("pw_reach"))
+    # colar no fundo da luva: fecha o túnel em volta do corpo (de fora não se vê o PCB pelas folgas)
+    c_ax, u_ax, n_ax = power_axis()
+    bc = g("pw_body_clear")
+    t_lo = -M("power_connector_body_across") / 2 - bc
+    t_hi = M("power_connector_body_across") / 2 + latch_height() + bc
+    zb0, zb1 = M("iface_pcb_front_z") - bc, M("iface_pcb_front_z") + M("power_connector_body_height_z") + bc
+    s_c0, s_c1 = s_hood - WALL, s_hood
+    hole = ext(poly([tuple(c_ax + sv * u_ax + tv * n_ax) for sv, tv in ((s_c0 - 1, t_lo), (s_c1 + 1, t_lo), (s_c1 + 1, t_hi), (s_c0 - 1, t_hi))]), zb0, zb1)
+    collar = power_tunnel(0.0, s_c0, s_c1) - hole
+    body = body + collar
+    x_open = (power_tunnel_x_at(Y1, hw), power_tunnel_x_at(Y1, -hw))
+    assert x_open[0] < ox < x_open[1], "a boca do túnel não contém iface_shroud_power_opening_x"
+    assert abs((power_tunnel_x_at(Y1, 0.0)) - ox) < 0.05, "o eixo do conector não cruza o topo em iface_shroud_power_opening_x"
     note(pid, "canal da borda superior de x = %.1f a %.1f (onde as bordas da tampa lisa da face A chegam ao topo) e z = %.1f a %.1f; profundidade, fendas, placa lisa e abertura do conector com medidas de palpite (sem cota nas referências)" % (cx0, cx1, cz0, cz1))
-    note(pid, "abertura do conector centrada em iface_shroud_power_opening_x, de z = %.2f a %.2f (iface_shroud_power_opening_z_min e _max, centrada no corpo do conector de pé); o lado longo (largura do cabeçote, %.2f mm) fica em z, como em pny/3qtr-top-right" % (oz0, oz1, M("conn16_header_width")))
-    note(pid, "no encaixe o canal desce até z = %.2f: bolso de %.1f mm em x com paredes de %.1f, do topo até o fundo do canal (y = %.2f), acima da borda do PCB" % (oz0, od_x, WALL, Y1 - d))
+    note(pid, "túnel do conector de energia a 45 graus, ao longo da direção de encaixe (power_connector_rotation_deg + 90), da boca do corpo (power_connector_body_depth / 2 = %.2f do centro, menos pw_hood) até fora da carcaça: %.2f mm através (power_connector_body_across + 2 x shroud_power_opening_clear) por z = %.2f a %.2f (iface_shroud_power_opening_z_min e _max); o eixo cruza o topo em x = %.2f (iface_shroud_power_opening_x) e a boca na borda superior vai de x = %.2f a %.2f" % (
+        s_face, 2 * hw, oz0, oz1, power_tunnel_x_at(Y1, 0.0), x_open[0], x_open[1]))
+    note(pid, "luva de parede %.1f em volta do túnel, do topo até %.1f mm atrás da face de encaixe, recortada pelo vão do canal: de fora, pela abertura, só aparecem a face 2 x 6 e as paredes da luva (antes a abertura era um rasgo vertical sobre o canal e mostrava a lateral do corpo, componentes e o PCB: visual-qa-placa-final, achado 1)" % (WALL, g("pw_hood")))
+    note(pid, "colar de %.1f mm no fundo da luva (s de %.2f a %.2f do centro do corpo), com furo do corpo mais %.1f de folga (t de %.2f a %.2f, z de %.2f a %.2f): fecha as folgas entre o corpo e a luva" % (WALL, s_c0, s_c1, bc, t_lo, t_hi, zb0, zb1))
+    note(pid, "fendas do canal até x = %.2f (%.1f mm antes da luva, no fundo do canal)" % (sx1, g("slot_end_gap")))
     note(pid, "logotipo NVIDIA da borda superior não modelado (detalhe de superfície do passo do Blender)")
-    return body
+    return drop_loose(body, pid)
 
 
 def face_b_regions():
@@ -475,8 +581,8 @@ def build_face_b():
     z1 = Z_FACE_B                         # a face B vai de z = 0 (face externa) a z1
     frame = ext(in_rim - covers[0] - covers[1], 0, z1)
     frame = frame - ext(wins, -1, z1 + 1)
-    lam = strips(0, L, g("lam_pitch_b"), g("lam_t_b")) & wins
-    part = frame + ext(lam, g("lam_recess_b"), z1)
+    lam, amp_b = chevron_louvres(wins, g("lam_pitch_b"), g("lam_t_b"), g("lam_recess_b"), z1, in_rim - covers[0] - covers[1])
+    part = frame + lam
     # recorte da faixa do adaptador PCIe (gn-20 mostra a placa adaptadora num rebaixo da face B),
     # aberto até a face; a aba fica por dentro, sob um rebaixo que não aparece de fora
     part = part - box3(*adapter_strip_cut())
@@ -488,6 +594,8 @@ def build_face_b():
     part = part - box3(pcx - M("pcb_plate_outline_x") / 2, pcx + M("pcb_plate_outline_x") / 2,
                        pcy - M("pcb_plate_outline_y") / 2, pcy + M("pcb_plate_outline_y") / 2, ztop_plate, z1 + 1)
     note(pid, "estrutura do X e moldura das grades na mesma peça; as grades são lâminas reais (passo %.2f, espessura %.1f; espessura e recuo são palpite)" % (g("lam_pitch_b"), g("lam_t_b")))
+    note(pid, "lâminas em V no plano xz, de z = %.1f a %.1f: a dobra avança %.2f mm em x, mais que o vão entre lâminas (%.2f); de frente e em vista oblíqua a grade fica opaca, com nervuras verticais uniformes, como em pny/back (antes as lâminas eram retas e o interior aparecia: visual-qa-placa-final, achado 2); forma da dobra sem foto de perfil (inferred)" % (
+        g("lam_recess_b"), z1, amp_b, g("lam_pitch_b") - g("lam_t_b")))
     note(pid, "recorte para a faixa do adaptador PCIe ao longo da borda dos contatos, de iface_adapter_x_min a _max (folga %.1f mm), aberto da face até z = %.2f (iface_adapter_board_z_max): forma vista em gn-20, sem cota" % (g("adapter_clear"), M("iface_adapter_board_z_max")))
     note(pid, "rebaixos por baixo (não aparecem de fora): sob as 4 cabeças de fasteners.e5_plate (diâmetro %.1f, fundo em z = %.1f) e sobre a aba do adaptador com a presilha e as cabeças do E4 (contorno da aba mais %.1f, fundo em z = %.1f)" % (
         M("fastener_e5_head_diameter") + 2 * M("cover_relief_clear"), M("iface_cover_relief_e5_z_min"), M("cover_relief_clear"), M("iface_cover_relief_adapter_z_min")))
@@ -607,11 +715,12 @@ FEATURE_PROV = {
     "frame.shroud": {
         "contorno, cantos, altura e comprimento": "derived (CSV: renders da PNY)",
         "canto do bracket junto aos contatos quase reto": "derived (shroud_corner_radius_bracket_bottom; pny/front, pny/back)",
-        "fenda do adaptador e bolso do encaixe do conector": "inferred (contrato de 2026-11-11, assembly-plan 12.3 e 12.4)",
+        "fenda do adaptador": "inferred (contrato de 2026-11-11, assembly-plan 12.3 e 12.4)",
+        "túnel do conector a 45 graus com luva": "derived (eixo, ângulo e z do CSV; pny/3qtr-top-right, storagereview/sr-3); inferred (luva)",
         "anéis e aberturas dos ventiladores": "derived (CSV)",
         "X da face A (cruzamento e ângulo)": "derived (CSV)",
         "vértices, faixas e moldura das cápsulas da face A": "derived (pny/front; nesta tarefa)",
-        "grades dos cantos da face A": "derived (posição); inferred (lâminas)",
+        "grades dos cantos e dos braços do X da face A": "derived (posição, passo); inferred (lâminas em V)",
         "entalhe PCIe": "derived (CSV)",
         "canal da borda superior: extensão em x": "derived (geometria do X; pny/front)",
         "canal: profundidade, fendas, placa lisa, abertura": "inferred (vistos em perspectiva, sem cota)",
@@ -619,7 +728,7 @@ FEATURE_PROV = {
     },
     "frame.face_b": {
         "grades e estrutura do X (posição, faixas, vértices)": "derived (pny/back; nesta tarefa)",
-        "lâminas (passo)": "derived (pny/back); espessura e recuo inferred",
+        "lâminas (passo)": "derived (pny/back); espessura, recuo e perfil em V inferred",
         "recorte do adaptador PCIe": "derived (gn-20, forma); inferred (medida)",
         "rebaixos sob as cabeças do E5 e sobre a aba do adaptador": "inferred (assembly-plan 12.4)",
     },

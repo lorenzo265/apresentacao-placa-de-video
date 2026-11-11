@@ -196,11 +196,11 @@ function texUsinagem(def, p, N, rnd, ctx) {
       const borda = !dentro && r < Rc;                       // chanfro escuro na borda do cubo
       if (dentro) {
         const anel = aneis[Math.floor(r / cb.passo_mm) % 4096];
-        c.rug[i] = clamp01(cb.rug + (anel - 0.5) * 0.08);
+        c.rug[i] = clamp01(cb.rug + (anel - 0.5) * (cb.var_rug ?? 0.08));
         c.metal[i] = cb.metal;
-        const k = 1 + (anel - 0.5) * 0.06;
+        const k = 1 + (anel - 0.5) * (cb.var_cor ?? 0.06);
         for (let j = 0; j < 3; j++) c.cor[i * 3 + j] = corCubo[j] * k;
-        c.alt[i] = anel * 0.15;
+        c.alt[i] = anel * (cb.relevo ?? 0.15);
         const tx = r > 1e-6 ? -py / r : 1, ty = r > 1e-6 ? px / r : 0;   // direção circunferencial
         c.aniso[i * 4] = byte(tx * 0.5 + 0.5); c.aniso[i * 4 + 1] = byte(ty * 0.5 + 0.5); c.aniso[i * 4 + 2] = 255;
       } else {
@@ -383,7 +383,60 @@ function texPackage(def, p, N, rnd) {
   return finaliza(c, 1.5, false);
 }
 
-const GERADORES = { grao: texGrao, usinagem: texUsinagem, aletas: texAletas, pcb: texPcb, smd: texSmd, contatos_pcie: texContatos, package: texPackage };
+/**
+ * Abertura (receptáculo de conector): a UV 'cavidade' põe u = 0,25 nas faces da casca (sobre a caixa
+ * envolvente: borda frontal e lados) e u = 0,75 nas faces de dentro (paredes, língua, fundo). A textura
+ * tem duas metades: casca metálica e interior escuro.
+ */
+function texAbertura(def, p) {
+  const W = 4, H = 1;
+  const c = canais(W, H);
+  c.temCor = true;
+  const fora = hexRgb(def.cor), dentro = hexRgb(p.interior.cor);
+  for (let x = 0; x < W; x++) {
+    const casca = x < W / 2;
+    corEm(c, x, casca ? fora : dentro);
+    c.metal[x] = casca ? def.metal : p.interior.metal;
+    c.rug[x] = casca ? def.rug : p.interior.rug;
+    c.alt[x] = 0;
+  }
+  const r = finaliza(c, 0, false);
+  // oclusão do interior (canal R): a luz do ambiente e, com micro_sombra, a luz direta rasante quase
+  // não entram na cavidade (a peça não tem oclusão assada)
+  const ao = new Uint8Array(W * H * 4);
+  for (let x = 0; x < W; x++) { const v = byte(x < W / 2 ? 1 : (p.interior.ao ?? 1)); ao.set([v, v, v, 255], x * 4); }
+  r.ao = dataTex(ao, W, H, false);
+  return r;
+}
+
+/**
+ * Faixas ao longo do maior eixo da malha (cabo flat): reforço nas duas pontas ('reforco_mm' de
+ * comprimento, cor e acabamento próprios) e, no meio, a película com trilhas finas paralelas por baixo.
+ */
+function texFaixas(def, p, N, rnd, ctx) {
+  const c = canais(N, N);
+  c.temCor = true;
+  const [L, Wd] = ctx.bbox.tam;
+  const base = hexRgb(def.cor), ref = hexRgb(p.reforco.cor), trilha = hexRgb(p.trilha ?? def.cor);
+  const grao = fbm(N, [32, 64], [0.5, 0.5], rnd);
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
+      const i = y * N + x;
+      const u = ((x + 0.5) / N) * L, v = ((y + 0.5) / N) * Wd;
+      const naPonta = u < p.reforco_mm || u > L - p.reforco_mm;
+      if (naPonta) {
+        corEm(c, i, ref); c.metal[i] = 0; c.rug[i] = p.reforco.rug + (grao[i] - 0.5) * 0.06; c.alt[i] = 0.5;
+      } else {
+        const fase = ((v % p.passo_trilha_mm) + p.passo_trilha_mm) % p.passo_trilha_mm / p.passo_trilha_mm;
+        const tr = Math.abs(fase - 0.5) < 0.22;
+        corEm(c, i, tr ? trilha : base); c.metal[i] = 0; c.rug[i] = def.rug + (grao[i] - 0.5) * 0.04; c.alt[i] = tr ? 0.25 : 0;
+      }
+    }
+  }
+  return finaliza(c, 1, false);
+}
+
+const GERADORES = { grao: texGrao, usinagem: texUsinagem, aletas: texAletas, pcb: texPcb, smd: texSmd, contatos_pcie: texContatos, package: texPackage, abertura: texAbertura, faixas: texFaixas };
 
 // ---------------------------------------------------------------------------------------------
 // UV e normais para malhas que chegam sem (blockout)
@@ -406,6 +459,26 @@ function uvCaixa(geo, tileMm) {
       else { u = v.z; w = v.y; }
       uv[(t + j) * 2] = u * k; uv[(t + j) * 2 + 1] = w * k;
     }
+  }
+  geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
+}
+/**
+ * Cavidade: classifica cada triângulo da malha (não indexada) como casca, se o centro dele está sobre um
+ * plano da caixa envolvente (borda frontal e lados do receptáculo), ou interior (paredes, língua, fundo).
+ * u = 0,25 na casca, 0,75 no interior (ver texAbertura).
+ */
+function uvCavidade(geo) {
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox, pos = geo.attributes.position, n = pos.count;
+  const tol = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y, bb.max.z - bb.min.z) * 0.004;
+  const uv = new Float32Array(n * 2);
+  const c = new THREE.Vector3(), t = new THREE.Vector3();
+  for (let k = 0; k + 2 < n; k += 3) {
+    c.set(0, 0, 0);
+    for (let j = 0; j < 3; j++) c.add(t.fromBufferAttribute(pos, k + j));
+    c.multiplyScalar(1 / 3);
+    const naCaixa = ['x', 'y', 'z'].some((e) => Math.abs(c[e] - bb.min[e]) < tol || Math.abs(c[e] - bb.max[e]) < tol);
+    for (let j = 0; j < 3; j++) { uv[(k + j) * 2] = naCaixa ? 0.25 : 0.75; uv[(k + j) * 2 + 1] = 0.5; }
   }
   geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
 }
@@ -455,7 +528,7 @@ export function resolveMaterial(o, nomeMatGlb) {
   return { id: TABELA.padrao, por: 'padrão' };
 }
 
-const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\n';
+const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\n';
 // Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
 // resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
 // oclusão assada também apaga a luz direta que chega rasante: sombra = sat(|N.L| + 2 ao² - 1). Superfície
@@ -472,12 +545,24 @@ void RE_Direct_Micro( IncidentLight directLight, const in vec3 geometryPosition,
 #endif`;
 // 'env' do material: multiplica a luz que vem do ambiente (a three ignora envMapIntensity com
 // scene.environment).
-const FRAG_MICRO = `reflectedLight.indirectDiffuse *= uEnvLd;
-reflectedLight.indirectSpecular *= uEnvLd;
+//
+// 'interior' do material: peça de dentro da carcaça (cooler, placa de circuito, cabos). Montada, ela só
+// recebe a luz que passa pelas grades e pela abertura do conector; mas só a luz principal faz sombra e o
+// ambiente não sabe da carcaça, então o interior visto pelas grades e por trás das pás acenderia. Com a
+// placa montada, toda a luz dessas peças cai para a fração 'interior' e volta a 1 conforme o desmonte
+// abre a carcaça (uAbertoLd, de 0 a 1: o uniforme ABERTO, que o estúdio atualiza a cada quadro).
+const FRAG_MICRO = `float interiorLd = mix( uInteriorLd, 1.0, uAbertoLd );
+reflectedLight.indirectDiffuse *= uEnvLd * interiorLd;
+reflectedLight.indirectSpecular *= uEnvLd * interiorLd;
+reflectedLight.directDiffuse *= interiorLd;
+reflectedLight.directSpecular *= interiorLd;
 #ifdef USE_CLEARCOAT
-	clearcoatSpecularIndirect *= uEnvLd;
+	clearcoatSpecularIndirect *= uEnvLd * interiorLd;
+	clearcoatSpecularDirect *= interiorLd;
 #endif
 #include <aomap_fragment>`;
+/** Quanto a carcaça está aberta (0 montada, 1 aberta): uniforme comum a todos os materiais. */
+const ABERTO = { value: 1 };
 const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
@@ -497,19 +582,21 @@ const FRAG_FIM = `#include <opaque_fragment>
 
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
 export function preparaMaterial(m, corRealce) {
-  m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 } };
+  m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 }, interior: { value: m.userData.interior ?? 1 } };
   m.onBeforeCompile = (sh) => {
     sh.uniforms.uApaga = m.userData.ld.apaga;
     sh.uniforms.uRealce = m.userData.ld.realce;
     sh.uniforms.uRealceCor = m.userData.ld.cor;
     sh.uniforms.uMicro = m.userData.ld.micro;
     sh.uniforms.uEnvLd = m.userData.ld.env;
+    sh.uniforms.uInteriorLd = m.userData.ld.interior;
+    sh.uniforms.uAbertoLd = ABERTO;
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\n${FRAG_PARS}`)
       .replace('#include <lights_physical_pars_fragment>', `#include <lights_physical_pars_fragment>\n${FRAG_MICRO_PARS}`)
       .replace('#include <aomap_fragment>', FRAG_MICRO)
       .replace('#include <opaque_fragment>', FRAG_FIM);
   };
-  m.customProgramCacheKey = () => 'lookdev-destaque-5';
+  m.customProgramCacheKey = () => 'lookdev-destaque-6';
   return m;
 }
 
@@ -539,7 +626,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     const mapasGlb = !!(orig?.map || orig?.normalMap || orig?.roughnessMap || orig?.metalnessMap || orig?.aoMap);
     let geo = o.geometry;
     const tx = def.textura;
-    if (!geo.attributes.normal || (tx && !geo.attributes.uv2)) {
+    if (!geo.attributes.normal || (tx && !geo.attributes.uv2) || (tx?.uv === 'cavidade' && geo.index)) {
       if (geo.index) geo = geo.toNonIndexed();
       if (!geo.attributes.normal) geo.computeVertexNormals();      // não indexada: normais planas
       o.geometry = geo;
@@ -548,6 +635,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (tx) {
       let bbox = null;
       if (tx.uv === 'planar_bbox') bbox = uvPlanar(geo);
+      else if (tx.uv === 'cavidade') uvCavidade(geo);
       else if (!geo.attributes.uv2 || geo.userData.ldTile !== (tx.tipo === 'aletas' ? valor(tx.passo_mm) : tx.tile_mm)) {
         const tile = tx.tipo === 'aletas' ? valor(tx.passo_mm) : tx.tile_mm;
         uvCaixa(geo, tile);
@@ -573,7 +661,12 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       m.anisotropy = def.anisotropia?.forca ?? tx?.cubo?.anisotropia ?? 0.5;
       if (tex?.aniso) m.anisotropyMap = tex.aniso;
     }
-    if (fis && def.verniz) { m.clearcoat = def.verniz.forca; m.clearcoatRoughness = def.verniz.rug; }
+    if (fis && def.verniz) {
+      m.clearcoat = def.verniz.forca; m.clearcoatRoughness = def.verniz.rug;
+      // laca sob verniz: o reflexo é o do verniz; a camada de baixo (pigmento) quase não tem especular
+      // próprio (sem isto o reflexo dobra e a peça clareia). Sem verniz (qualidade baixa) vale 'rug'.
+      if (def.verniz.especular_base != null) m.specularIntensity = def.verniz.especular_base;
+    }
     if (mapasGlb) {
       // cor, ORM, normal e oclusão assados no Blender; a tabela dá só o que o GLB não traz
       for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap']) if (orig[k]) m[k] = orig[k];
@@ -584,8 +677,10 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       if (orig.normalMap) m.normalScale.copy(orig.normalScale);
       if (orig.emissiveMap) m.emissive.copy(orig.emissive);
     }
-    if (orig?.aoMap) m.userData.micro = def.micro_sombra ?? 0;
+    if (tex?.ao && !orig?.aoMap) { m.aoMap = tex.ao; m.aoMapIntensity = def.ao ?? 1; }
+    if (orig?.aoMap || tex?.ao) m.userData.micro = def.micro_sombra ?? 0;
     if (def.env != null) m.userData.env = def.env;
+    if (def.interior != null) m.userData.interior = def.interior;
     preparaMaterial(m, corRealce);
     o.material = m;
     o.castShadow = o.receiveShadow = true;
@@ -624,12 +719,27 @@ function criaAmbiente(renderer, cfg, corDe) {
   cena.add(esfera);
   for (const c of cfg.caixas) {
     const mat = new THREE.MeshBasicMaterial({ color: corDe(c.K).multiplyScalar(c.i), side: THREE.DoubleSide, toneMapped: false });
-    if (c.degrade) {
+    if (c.degrade || c.listras) {
       // softbox com degradê (de c.degrade[0] a c.degrade[1] ao longo da largura): o reflexo nas faces
-      // planas vira um degradê, como nas fotos de produto, em vez de um cinza chapado
-      const n = 64, d = new Uint8Array(n * 4);
-      for (let i = 0; i < n; i++) { const t = i / (n - 1); const v = byte(c.degrade[0] + (c.degrade[1] - c.degrade[0]) * suave(t)); d.set([v, v, v, 255], i * 4); }
-      const t = new THREE.DataTexture(d, n, 1);
+      // planas vira um degradê, como nas fotos de produto, em vez de um cinza chapado. 'listras' [n,
+      // fração acesa]: n faixas acesas ao longo da altura, de borda nítida, com vãos escuros entre elas;
+      // nas superfícies espelhadas (tampas do X) o reflexo ganha bordas e não lê como tinta cinza; nas
+      // foscas a média é que conta
+      const n = 64, m = c.listras ? 128 : 1, d = new Uint8Array(n * m * 4);
+      for (let j = 0; j < m; j++) {
+        let k = 1;
+        if (c.listras) {
+          const [nl, fr] = c.listras, f = ((j + 0.5) / m) * nl % 1;
+          k = Math.abs(f - 0.5) < fr / 2 ? 1 : (c.vao ?? 0);
+        }
+        for (let i = 0; i < n; i++) {
+          const t = i / (n - 1);
+          const g = c.degrade ? c.degrade[0] + (c.degrade[1] - c.degrade[0]) * suave(t) : 1;
+          const v = byte(g * k);
+          d.set([v, v, v, 255], (j * n + i) * 4);
+        }
+      }
+      const t = new THREE.DataTexture(d, n, m);
       t.magFilter = t.minFilter = THREE.LinearFilter;
       t.needsUpdate = true;
       mat.map = t;
@@ -674,7 +784,8 @@ function sombraContato(L, H, c) {
  * Estúdio que acompanha a câmera, como numa mesa giratória de foto de produto: as luzes e o ambiente
  * giram com o azimute da câmera (a luz principal fica sempre do mesmo lado do quadro) e viram para o
  * outro lado da placa, de forma contínua, quando a câmera passa para a outra face (z abaixo do meio
- * da espessura). O chão vira junto e some durante a virada e durante a explosão.
+ * da espessura). O chão só aparece com a câmera do lado dos ventiladores e acima do plano da placa:
+ * some na virada, do lado da face oposta, com a câmera rasante e durante a explosão.
  */
 export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
   const m = (k, d) => medidas?.[k]?.value_mm ?? d;
@@ -747,7 +858,17 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
       e.setFromRotationMatrix(Rinv);
       scene.environmentRotation.set(-e.x, -e.y, -e.z, e.order);
       chao.rotation.x = theta;
-      const fChao = Math.pow(Math.abs(Math.cos(theta)), 8) * (1 - suave(clamp01(explosao / 0.6)));
+      // O chão só aparece com a câmera do lado dos ventiladores (a placa deitada sobre a mesa, vista de
+      // cima). Com a câmera do lado da face oposta, o chão viraria um teto atrás da placa e a sombra, uma
+      // laje solta no fundo preto; e com a câmera rasante ao plano da placa, a sombra se descola da placa
+      // e vira uma faixa. Nos dois casos o chão some, de forma contínua.
+      const lado = suave(clamp01(d.z / cfg.virada));
+      const elev = Math.asin(clamp01(Math.abs(d.z) / Math.max(d.length(), 1e-6))) * (180 / Math.PI);
+      const fElev = suave(clamp01((elev - (cfg.chao.elev_min ?? 12)) / ((cfg.chao.elev_cheia ?? 28) - (cfg.chao.elev_min ?? 12))));
+      const fChao = Math.pow(Math.abs(Math.cos(theta)), 8) * lado * fElev * (1 - suave(clamp01(explosao / 0.6)));
+      // carcaça aberta: de TABELA.interior_aberto.de a .ate no nível de explosão (contínuo)
+      const ab = TABELA.interior_aberto ?? { de: 1.5, ate: 3 };
+      ABERTO.value = suave(clamp01((explosao - ab.de) / (ab.ate - ab.de)));
       recebe.material.opacity = cfg.chao.sombra * fChao;
       contato.material.opacity = cfg.chao.contato.opacidade * fChao;
       chao.visible = fChao > 0.002;

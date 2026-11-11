@@ -68,9 +68,16 @@ G = {
                      "posição angular da borda de ataque relativa à de r = 22, média dos dois ventiladores (diferença entre eles até 0,17 grau; dispersão entre pás 0,2 a 0,8 grau)"),
     "phase_deg": ((14.40, 13.50), "derived",
                   "ângulo da borda de ataque da pá 1 em r = 22 no render (posição do rotor na foto, sem significado físico; mantida para a comparação)"),
-    "gap_deg": (13.2, "derived", "vão escuro entre pás vistas de frente, de r = 23 a 45: 12,9 a 13,6 graus (limiar de 12 %, pny/front); extensão projetada da pá = 360/7 menos o vão"),
-    "tip_round_start": (46.0, "derived", "raio a partir do qual o vão escuro alarga (canto da borda de fuga arredondado): 14,4 graus em r = 50, 15,5 em 53, 17,8 em 55"),
-    "tip_round_k": (0.057, "derived", "coeficiente do encurtamento da corda angular perto da ponta, (r - tip_round_start)^2 graus por mm^2, ajustado às larguras acima"),
+    "gap_deg": (11.8, "derived",
+                "vão projetado entre pás vistas de frente (extensão projetada da pá = 360/7 menos o vão). Correção de 2026-11-11 (achado 5 do visual-qa): "
+                "a faixa escura de pny/front (12,9 a 13,6 graus, limiar de 12 %; valor anterior 13,2) inclui a borda de fuga da pá seguinte na sombra e é "
+                "só um teto do vão; em gn-02 (foto, aletas visíveis pelos vãos) a fração do disco em que o interior aparece, medida pela textura das aletas "
+                "na mesma escala do render do modelo, fica 0,03 a 0,05 abaixo da do modelo de 13,2 graus: vão real de cerca de 11,3 a 12,3 graus"),
+    "tip_round_start": (46.0, "derived", "raio a partir do qual o canto da borda de fuga começa a arredondar (pny/front: o vão escuro alarga de r = 46 em diante)"),
+    "tip_round_k": (0.02, "derived",
+                    "coeficiente do encurtamento da corda angular perto da ponta, (r - tip_round_start)^2 graus por mm^2. Antes 0,057, ajustado ao vão "
+                    "escuro de pny/front (14,4 graus em r = 50, 17,8 em 55); em gn-02 o vão com aletas visíveis quase não alarga na faixa de r = 50 a 56 "
+                    "(fração 0,29 a 0,33 contra 0,29 a 0,31 no meio da pá): o alargamento de pny/front era sombra; mantido um arredondamento pequeno do canto"),
     # perfil axial (sem vista lateral: palpite dentro do orçamento fan_axial_depth)
     "hub_top_recess": (0.8, "inferred", "o anel do cubo fica 0,8 mm abaixo da face A; nos renders de três quartos o cubo parece rente à face, sem cota"),
     "le_z_below_face": (1.4, "inferred", "a borda de ataque fica 1,4 mm abaixo da face A, dentro da boca da chapa (shroud_face_a_plate_thickness)"),

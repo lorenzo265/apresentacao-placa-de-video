@@ -8,7 +8,7 @@
 // --tempo: mede também o tempo médio de desenho por quadro (ms; seeks síncronos, SwiftShader) e grava tempos.json.
 // Grava harness/dist/lookdev/<qualidade>[-<luz>]/<beat>.png (1920 x 1080, modo de captura, no fim da
 // chamada do beat), a folha harness/dist/lookdev/folha.png (beats por linha, qualidades e luzes por coluna)
-// e harness/dist/lookdev/referencia.png (nossos quadros lado a lado com pny/3qtr-top-right e storagereview/sr-4).
+// e harness/dist/lookdev/referencia.png (cada beat ao lado das referências da mesma face, tabela REFS).
 // As referências são de terceiros e não são versionadas (spec/references/cache/); só entram na folha local.
 const fs = require('fs');
 const path = require('path');
@@ -18,10 +18,19 @@ const arg = (k, def) => { const a = process.argv.slice(2); return a.includes(k) 
 const OUT = path.resolve(arg('--saida', path.join(HARNESS, 'dist', 'lookdev')));
 const ACUMULA = arg('--acumula', null);
 const BEATS_PADRAO = 'a0.2,a1.1,a1.3,a1.4,a2.4,a2.7,a3.1';
-const REFS = [
-  ['PNY, render oficial (3qtr-top-right)', path.join(HARNESS, 'spec', 'references', 'cache', 'pny', '3qtr-top-right.png')],
-  ['StorageReview, foto real (sr-4)', path.join(HARNESS, 'spec', 'references', 'cache', 'storagereview', 'sr-4.jpg')],
-];
+// Referência de cada beat: a mesma face da placa e um ângulo parecido (face A = ventiladores, face B =
+// grades e X com "RTX PRO 6000"; ver ARCHITECTURE.md, seção 7.6). Comparar vistas de faces diferentes
+// dá falso alarme de espelhamento. Render oficial para o tom, foto real para o material.
+const CACHE = path.join(HARNESS, 'spec', 'references', 'cache');
+const REFS = {
+  'a0.2': [['face B, foto real de frente (storagereview/sr-2)', 'storagereview/sr-2.jpg'], ['face B, render oficial (pny/back)', 'pny/back.png']],
+  'a1.1': [['face A, vista da ponta oposta ao bracket (pny/3qtr-right)', 'pny/3qtr-right.png'], ['face A, foto real (storagereview/sr-5)', 'storagereview/sr-5.jpg']],
+  'a1.3': [['face B, render oficial (pny/back)', 'pny/back.png'], ['face B, foto real (storagereview/sr-2)', 'storagereview/sr-2.jpg']],
+  'a1.4': [['face B e borda superior, render oficial (pny/3qtr-back-right)', 'pny/3qtr-back-right.png'], ['borda superior, foto real (storagereview/sr-3)', 'storagereview/sr-3.jpg']],
+  'a1.5': [['bracket e saídas, foto real (storagereview/sr-1)', 'storagereview/sr-1.jpg']],
+  'a2.8': [['verso do PCB no teardown (gn/gn-29)', 'gn/gn-29.jpg']],
+  'a3.1': [['verso do PCB, memória e cabo flat (gn/gn-29)', 'gn/gn-29.jpg'], ['frente do PCB, package e memória (sabareesh/wb-bare-pcb)', 'sabareesh/wb-bare-pcb.jpg']],
+};
 
 async function main() {
   const beats = arg('--beats', BEATS_PADRAO).split(',');
@@ -95,13 +104,19 @@ async function main() {
     ${beats.map((id) => `<div class="lado">${id}</div>${todas.map((t) => `<figure><img src="${img(path.join(OUT, t, `${id}.png`))}"></figure>`).join('')}`).join('')}</div>`);
   await page.screenshot({ path: path.join(OUT, 'folha.png'), fullPage: true });
   await page.close();
-  // referência: duas referências e os nossos quadros mais próximos delas (placa montada)
+  // referência: cada beat ao lado das referências da mesma face (tabela REFS)
   const col = colunas[0];
-  const nossos = ['a0.2', 'a1.1', 'a1.3'].filter((b) => beats.includes(b)).map((b) => [`nosso ${b} (${col})`, path.join(OUT, col, `${b}.png`)]);
+  const linhas = beats.filter((b) => REFS[b]);
+  const semRef = beats.filter((b) => !REFS[b]);
+  if (semRef.length) console.log(`lookdev: sem referência pareada na tabela REFS: ${semRef.join(', ')}`);
   page = await browser.newPage({ viewport: { width: 1900, height: 800 } });
-  await page.setContent(`<style>${css}</style><h1>Referência contra o nosso quadro (julgar material, luz e sombra; a forma ainda é blockout fora da carcaça)</h1>
-    <div class="g" style="grid-template-columns:repeat(${Math.min(3, REFS.length + nossos.length)},1fr)">
-    ${[...REFS, ...nossos].map(([r, p]) => `<figure><img style="height:520px" src="${img(p)}"><figcaption>${r}</figcaption></figure>`).join('')}</div>`);
+  await page.setContent(`<style>${css}</style><h1>Referência contra o nosso quadro, mesma face (julgar material, luz e sombra)</h1>
+    <div class="g" style="grid-template-columns:28px repeat(3,1fr)">
+    ${linhas.map((b) => {
+    const figs = [[`nosso ${b} (${col})`, path.join(OUT, col, `${b}.png`)], ...REFS[b].map(([r, p]) => [r, path.join(CACHE, p)])].slice(0, 3);
+    while (figs.length < 3) figs.push(['', '']);
+    return `<div class="lado">${b}</div>${figs.map(([r, p]) => (p ? `<figure><img style="height:420px" src="${img(p)}"><figcaption>${r}</figcaption></figure>` : '<div></div>')).join('')}`;
+  }).join('')}</div>`);
   await page.screenshot({ path: path.join(OUT, 'referencia.png'), fullPage: true });
   await browser.close();
   console.log(`lookdev: ${path.relative(process.cwd(), OUT)}`);

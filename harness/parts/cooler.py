@@ -81,6 +81,8 @@ CREASE_DEG = 30.0      # quebra das normais suaves (o mesmo do integrate.py)
 G = {
     # folgas
     "clear": (0.3, "inferred", "folga entre as peças do cooler e a carcaça, os conectores e a placa de portas (a mesma do blockout)"),
+    "far_end_gap": (4.0, "inferred", "folga entre a última lâmina da pilha da ponta (e a ponta dos tubos) e a parede da ponta da carcaça; sem foto do interior. Com a folga de 0,3 mm, as lâminas e os furos dos tubos, paralelos à parede de 0,8 mm, apareciam através dela no viewer (visual-qa-placa-final, achado 8); com 4 mm não aparecem (teste no viewer em 2026-11-11)"),
+    "c_top_gap": (3.0, "inferred", "folga entre o topo da pilha central e a chapa da face A; com 0,3 mm as arestas de cima das lâminas apareciam como linhas claras através das tampas do X no viewer (visual-qa-placa-final, achado 7); a altura real das aletas sob as tampas não tem foto"),
     "window_gap": (0.25, "inferred", "folga entre a câmara (e a face de contato) e o furo da moldura"),
     # base e câmara
     "base_corner_r": (2.0, "inferred", "raio dos cantos da moldura"),
@@ -168,7 +170,7 @@ assert abs(Z_HP - M("iface_heatpipe_axis_z")) < 0.05, "eixo dos tubos fora de if
 Z_F1 = T - M("layer_end_fan_ring")
 Z_F0 = Z_F1 - M("fin_stack_end_depth_z")
 # pilha central: da câmara até a chapa da face A
-Z_C_FULL = T - T_A - CLR
+Z_C_FULL = T - T_A - g("c_top_gap")
 ANG = math.radians(M("x_rib_angle_deg"))
 K = math.tan(ANG)
 XA = M("x_rib_cross_face_a_from_bracket_end")
@@ -305,7 +307,7 @@ def stack_ranges():
     a0 = max(end_in, IO_X1) + CLR
     a1 = M("fin_stack_end_1_length_x")
     b0 = L - M("fin_stack_end_2_length_x")
-    b1 = L - WALL - CLR
+    b1 = L - WALL - g("far_end_gap")
     n1 = int(math.floor((a1 - a0 - T_FIN) / P_FIN + 1e-9)) + 1
     n2 = int(math.floor((b1 - b0 - T_FIN) / P_FIN + 1e-9)) + 1
     xs1 = [a1 - T_FIN - k * P_FIN for k in range(n1)][::-1]        # a lâmina de dentro encosta no PCB
@@ -481,7 +483,7 @@ def build_center_stack():
     note(pid, "%d lâminas de %.2f mm no passo de %.2f mm (fin_pitch, derived), de x = %.2f a %.2f (fin_stack_center_length_x = %.0f centrado no die, pendente de medida); assembly: %d" % (n, T_FIN, P_FIN, xs[0], xs[-1] + T_FIN, lc, PARTS[pid]["count"]["value"]))
     note(pid, "recorte em X: sob as nervuras do X da face A (cruzamento em x_rib_cross_face_a, ângulo x_rib_angle_deg) as lâminas descem %.1f mm e recebem uma placa lisa de %.1f mm (o X liso da placa irmã, wccftech-cooler-3 e -4); cunhas laterais, vistas pelas janelas do X da face A, %.1f mm abaixo do topo; triângulos de cima e de baixo em 3 degraus de %.1f mm subindo para longe do cruzamento (gn-26, desta placa)" % (
         g("c_x_drop"), g("c_x_plate_t"), g("c_side_drop"), g("c_step_drop")))
-    note(pid, "de z = %.2f (topo da câmara e da moldura mais um vão de %.2f, sem significado físico) a %.1f (chapa da face A menos a folga); em y da borda da base até o fundo do canal da borda superior, recortada no entalhe PCIe e em volta do conector de energia" % (Z_TOP + g("c_seat_gap"), g("c_seat_gap"), Z_C_FULL))
+    note(pid, "de z = %.2f (topo da câmara e da moldura mais um vão de %.2f, sem significado físico) a %.1f (chapa da face A menos c_top_gap); em y da borda da base até o fundo do canal da borda superior, recortada no entalhe PCIe e em volta do conector de energia" % (Z_TOP + g("c_seat_gap"), g("c_seat_gap"), Z_C_FULL))
     note(pid, "entalhes por baixo para os tubos que correm sobre a câmara; pad branco da borda superior (gn-21, gn-30) não modelado")
     return fins, plate
 
@@ -497,7 +499,10 @@ def frame_sketch():
     ]
     for _, (a0, a1, b0, b1) in cuts:
         sk = sk - rect(a0, a1, b0, b1)
-    return sk, [c[0] for c in cuts]
+    # túnel do conector de energia (frame.py): a luva da carcaça desce a 45 graus sobre a moldura
+    s_hood = M("power_connector_body_depth") / 2 - FR.g("pw_hood")
+    sk = sk - poly(FR.power_tunnel_xy(WALL + CLR, s_hood - WALL - CLR, FR.g("pw_reach")))
+    return sk, [c[0] for c in cuts] + ["túnel do conector de energia com a luva da carcaça (frame.power_tunnel_xy)"]
 
 
 def holes8():
@@ -745,7 +750,7 @@ def to_gltf(v):
 
 MATERIAL = {   # cor base de viewer/src/materials.json (sRGB), só para quem abre o GLB solto
     "cooler.fins.1": ("aletas.pretas", "#1a1b1d", 0.0, 0.5), "cooler.fins.2": ("aletas.pretas", "#1a1b1d", 0.0, 0.5),
-    "cooler.fins.3": ("aletas.pretas", "#1a1b1d", 0.0, 0.5), "cooler.base": ("aluminio.jateado", "#a6a8ab", 1.0, 0.46),
+    "cooler.fins.3": ("aletas.pretas", "#1a1b1d", 0.0, 0.5), "cooler.base": ("aluminio.jateado", "#5a5c60", 1.0, 0.5),
     "cooler.vapor_chamber": ("cobre.niquelado", "#c3bcb2", 1.0, 0.3), "cooler.heatpipes": ("cobre.niquelado", "#c3bcb2", 1.0, 0.3),
     "cooler.leaf_spring": ("aco.mola", "#34363a", 1.0, 0.38),
 }
