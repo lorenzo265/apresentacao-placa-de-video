@@ -304,13 +304,15 @@ def power_axis():
     return np.array([cx, cy]), np.array([math.cos(a), math.sin(a)]), np.array([-math.sin(a), math.cos(a)])
 
 
-def latch_height():
-    """Altura da trava do conector (io_parts.G['p16_latch']), para o furo do colar."""
+def connector_profile():
+    """Perfil do corpo do conector (io_parts.G): largura da parte de potência através das fileiras
+    (p16_across), extensão em z da faixa dos 4 pinos de sinal (p16_sense_len_z) e altura da trava
+    (p16_latch), para o furo do colar seguir o corpo."""
     here = str(Path(__file__).resolve().parent)
     if here not in sys.path:
         sys.path.insert(0, here)
     import io_parts as IO
-    return IO.G["p16_latch"][0][2]
+    return IO.G["p16_across"][0], IO.G["p16_sense_len_z"][0], IO.G["p16_latch"][0][2]
 
 
 def power_tunnel_half_width():
@@ -542,11 +544,19 @@ def build_shroud():
     # colar no fundo da luva: fecha o túnel em volta do corpo (de fora não se vê o PCB pelas folgas)
     c_ax, u_ax, n_ax = power_axis()
     bc = g("pw_body_clear")
-    t_lo = -M("power_connector_body_across") / 2 - bc
-    t_hi = M("power_connector_body_across") / 2 + latch_height() + bc
-    zb0, zb1 = M("iface_pcb_front_z") - bc, M("iface_pcb_front_z") + M("power_connector_body_height_z") + bc
+    w_pw, sense_z, lh = connector_profile()
+    across = M("power_connector_body_across")
+    t_lo = -across / 2 - bc                         # lado oposto à faixa de sinal
+    t_pw = -across / 2 + w_pw + bc                  # fim da parte de potência
+    t_hi = across / 2 + lh + bc                     # faixa de sinal com a trava
+    zb0, zb1 = M("iface_pcb_front_z"), M("iface_pcb_front_z") + M("power_connector_body_height_z") + bc
+    zc_b = M("iface_pcb_front_z") + M("power_connector_body_height_z") / 2
     s_c0, s_c1 = s_hood - WALL, s_hood
-    hole = ext(poly([tuple(c_ax + sv * u_ax + tv * n_ax) for sv, tv in ((s_c0 - 1, t_lo), (s_c1 + 1, t_lo), (s_c1 + 1, t_hi), (s_c0 - 1, t_hi))]), zb0, zb1)
+
+    def slab(ta, tb, za, zz):
+        return ext(poly([tuple(c_ax + sv * u_ax + tv * n_ax) for sv, tv in ((s_c0 - 1, ta), (s_c1 + 1, ta), (s_c1 + 1, tb), (s_c0 - 1, tb))]), za, zz)
+    hole = slab(t_lo, t_pw, zb0, zb1) + slab(t_pw - 0.5, t_hi, zc_b - sense_z / 2 - bc, zc_b + sense_z / 2 + bc)
+    t_hi_note = t_hi
     collar = power_tunnel(0.0, s_c0, s_c1) - hole
     body = body + collar
     x_open = (power_tunnel_x_at(Y1, hw), power_tunnel_x_at(Y1, -hw))
@@ -556,7 +566,7 @@ def build_shroud():
     note(pid, "túnel do conector de energia a 45 graus, ao longo da direção de encaixe (power_connector_rotation_deg + 90), da boca do corpo (power_connector_body_depth / 2 = %.2f do centro, menos pw_hood) até fora da carcaça: %.2f mm através (power_connector_body_across + 2 x shroud_power_opening_clear) por z = %.2f a %.2f (iface_shroud_power_opening_z_min e _max); o eixo cruza o topo em x = %.2f (iface_shroud_power_opening_x) e a boca na borda superior vai de x = %.2f a %.2f" % (
         s_face, 2 * hw, oz0, oz1, power_tunnel_x_at(Y1, 0.0), x_open[0], x_open[1]))
     note(pid, "luva de parede %.1f em volta do túnel, do topo até %.1f mm atrás da face de encaixe, recortada pelo vão do canal: de fora, pela abertura, só aparecem a face 2 x 6 e as paredes da luva (antes a abertura era um rasgo vertical sobre o canal e mostrava a lateral do corpo, componentes e o PCB: visual-qa-placa-final, achado 1)" % (WALL, g("pw_hood")))
-    note(pid, "colar de %.1f mm no fundo da luva (s de %.2f a %.2f do centro do corpo), com furo do corpo mais %.1f de folga (t de %.2f a %.2f, z de %.2f a %.2f): fecha as folgas entre o corpo e a luva" % (WALL, s_c0, s_c1, bc, t_lo, t_hi, zb0, zb1))
+    note(pid, "colar de %.1f mm no fundo da luva (s de %.2f a %.2f do centro do corpo), com furo no perfil do corpo mais %.1f de folga (parte de potência: t de %.2f a %.2f, z de %.2f a %.2f; faixa de sinal com a trava até t = %.2f, em %.1f mm de z): fecha as folgas entre o corpo e a luva (antes, pelo lado da faixa de sinal, via-se o PCB)" % (WALL, s_c0, s_c1, bc, t_lo, t_pw, zb0, zb1, t_hi_note, sense_z + 2 * bc))
     note(pid, "fendas do canal até x = %.2f (%.1f mm antes da luva, no fundo do canal)" % (sx1, g("slot_end_gap")))
     note(pid, "logotipo NVIDIA da borda superior não modelado (detalhe de superfície do passo do Blender)")
     return drop_loose(body, pid)
