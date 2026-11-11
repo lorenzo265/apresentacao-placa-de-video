@@ -2,9 +2,11 @@
 // Quadros do lookdev (tema Keynote realista) para comparar com as fotos da placa real.
 // Uso: node harness/tools/lookdev.cjs [--beats a0.2,a1.1] [--qualidades media,alta] [--luzes neutra,fria,quente]
 //                                     [--cut seminario] [--sufixo x] [--no-build] [--sem-folha] [--tempo]
-//                                     [--acumula N] [--saida harness/dist/outra-pasta]
+//                                     [--acumula N] [--saida harness/dist/outra-pasta] [--so-folha]
 // --acumula N: amostras da acumulação de quadros (?acumula=N; menos amostras, captura mais rápida no SwiftShader).
 // --saida: pasta de saída no lugar de harness/dist/lookdev.
+// --so-folha: não captura; só refaz folha.png e referencia.png com os quadros que já estão na pasta (por
+// exemplo, depois de juntar beats capturados em cortes diferentes).
 // --tempo: mede também o tempo médio de desenho por quadro (ms; seeks síncronos, SwiftShader) e grava tempos.json.
 // Grava harness/dist/lookdev/<qualidade>[-<luz>]/<beat>.png (1920 x 1080, modo de captura, no fim da
 // chamada do beat), a folha harness/dist/lookdev/folha.png (beats por linha, qualidades e luzes por coluna)
@@ -39,9 +41,10 @@ async function main() {
   const luzes = arg('--luzes', 'neutra').split(',');
   const corte = arg('--cut', 'seminario');
   const sufixo = arg('--sufixo', '');
-  if (!process.argv.includes('--no-build')) garanteBuild();
+  const soFolha = process.argv.includes('--so-folha');
+  if (!process.argv.includes('--no-build') && !soFolha) garanteBuild();
   const { chromium } = require('playwright');
-  const { srv, url } = await serve(DIST);
+  const { srv, url } = soFolha ? { srv: null, url: null } : await serve(DIST);
   const colunas = [];
   const tempos = {};
   try {
@@ -49,6 +52,7 @@ async function main() {
       for (const luz of luzes) {
         const col = `${q}${luz === 'neutra' ? '' : `-${luz}`}${sufixo ? `-${sufixo}` : ''}`;
         colunas.push(col);
+        if (soFolha) continue;
         const dir = path.join(OUT, col);
         fs.mkdirSync(dir, { recursive: true });
         const t0 = Date.now();
@@ -82,7 +86,7 @@ async function main() {
         console.log(`lookdev: ${col} ok (${((Date.now() - t0) / 1000).toFixed(0)} s)`);
       }
     }
-  } finally { srv.close(); }
+  } finally { srv?.close(); }
   if (Object.keys(tempos).length) {
     console.log('tempo médio de desenho por quadro (ms, SwiftShader na CPU; vale a comparação entre colunas):');
     console.log(['', ...beats].map((x) => x.padEnd(14)).join(''));
