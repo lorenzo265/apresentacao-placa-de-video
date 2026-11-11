@@ -1241,7 +1241,7 @@
       "value": "a parte do L1 dedicada à memória compartilhada (carveout) é escolhida em tempo de execução",
       "provenance": "confirmed",
       "source": "spec/sources/mmu-interrupts-sources.md#conferencia-direta-quarta-rodada",
-      "note": "Blackwell Tuning Guide 13.5, 1.4.2.3. Os tamanhos listados no guia são do H100 e do B200; os da compute capability 12.0 não foram levantados"
+      "note": "Blackwell Tuning Guide 13.5, 1.4.2.3. Os tamanhos listados nesse guia são do H100 e do B200; os da compute capability 12.0 estão em mem.shared_sizes_cc120, tirados do guia CUDA"
     },
     {
       "id": "cmd.channel",

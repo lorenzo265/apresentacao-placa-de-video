@@ -68,6 +68,7 @@ TOL_ANCHOR = 2.0
 TRI_BUDGET = 150_000
 
 ZB, ZF = PL.ZB, PL.ZF
+SUBS = {}          # id -> [(nome, forma)]: submalhas do nó do id (integrate.py: nó filho <id>.<nome>)
 
 # cores de base (o lookdev troca pelos materiais do viewer)
 COLOR = {
@@ -188,12 +189,15 @@ def write_glb(path, nodes_spec, root_extras, pid):
 # Gabaritos (base em z = 0, centro em (0, 0), comprimento em x)
 # ---------------------------------------------------------------------------
 def tpl_memory():
+    """Chip GDDR7: corpo de epóxi (malha da instância) sobre o substrato um pouco maior, com as
+    esferas por baixo (submalha <instância>.substrato, para o lookdev dar o acabamento do laminado)."""
     gl, gw, gt = M("gddr7_package_length"), M("gddr7_package_width"), M("gddr7_package_thickness")
-    so = g("mem_standoff")
-    body = box(-gl / 2, gl / 2, -gw / 2, gw / 2, so, gt)
+    so, st, mi = g("mem_standoff"), g("mem_substrate_t"), g("mem_mold_inset")
+    body = box(-gl / 2 + mi, gl / 2 - mi, -gw / 2 + mi, gw / 2 - mi, so + st, gt)
     body = chamfer(body.edges().filter_by(lambda e: e.center().Z > gt - 1e-3), g("mem_chamfer"))
+    sub = box(-gl / 2, gl / 2, -gw / 2, gw / 2, so, so + st)
     under = box(-gl / 2 + 0.5, gl / 2 - 0.5, -gw / 2 + 0.5, gw / 2 - 0.5, 0, so + 0.01)
-    return body + under
+    return body, {"substrato": sub + under}
 
 
 def tpl_inductor(side):
@@ -322,9 +326,11 @@ def build_gpu():
         for k in range(n):
             xx = cx + (k - (n - 1) / 2) * 1.5
             caps.append(box(xx - 0.5, xx + 0.5, yr - 0.25, yr + 0.25, z2 - 0.01, z2 + 0.5))
-    part = balls + sub + stiff + die + caps
+    part = balls + stiff + die + caps
+    SUBS["gpu.package"] = [("substrato", sub)]
     note(pid, "esferas e underfill (campo de %.0f x %.0f do CSV, %.2f mm), substrato %.0f x %.1f (%.1f mm), moldura com janela %.0f x %.0f (%.1f mm), die %.1f x %.1f com topo a %.1f mm da frente do PCB" % (
         bx, by, g("gpu_ball_h"), px, py, g("gpu_substrate_t"), wx, wy, g("gpu_stiff_t"), dx, dy, M("gb202_die_top_above_pcb")))
+    note(pid, "substrato verde numa submalha à parte (gpu.package.substrato), para o lookdev dar o acabamento do laminado entre a moldura e a borda e em volta do die (gn-33, gn-42; auditoria visual, achado 20); o nó do id leva esferas, moldura, die e capacitores")
     note(pid, "die mais comprido em y, como no CSV; a foto sabareesh também mostra o die vertical (reconferência pedida no plano, seção 10.5)")
     note(pid, "%d capacitores do substrato em volta do die: ilustrativos (gn-33 mostra fileiras na janela)" % len(caps))
     return [part]
@@ -334,19 +340,26 @@ def rows_of(rows, pid):
     return [r for r in rows if r["part"] == pid]
 
 
-def build_instanced(rows, pid, tpl_fn):
-    """Uma malha por instância, a partir de gabaritos por tamanho."""
+def build_instanced(rows, pid, tpl_fn, subs_out=None):
+    """Uma malha por instância, a partir de gabaritos por tamanho. O gabarito pode devolver
+    (forma, {nome: forma}): as formas nomeadas viram submalhas da instância (subs_out[k])."""
     cache = {}
     meshes, shapes, rws = [], [], []
     for r in sorted(rows_of(rows, pid), key=lambda r: r["instance"]):
         key = (r["tipo"], r["comprimento"], r["largura"], r["altura"])
         if key not in cache:
             shp = tpl_fn(r)
-            cache[key] = (shp, to_mesh(shp))
-        shp, m = cache[key]
+            sub = {}
+            if isinstance(shp, tuple):
+                shp, sub = shp
+            cache[key] = (shp, to_mesh(shp), {k: (v, to_mesh(v)) for k, v in sub.items()})
+        shp, m, sub = cache[key]
         back = r["lado"] == "verso"
         meshes.append(place(m, r["x"], r["y"], r["z_base"], r["rot_deg"], back))
         shapes.append(place_shape(shp, r["x"], r["y"], r["z_base"], r["rot_deg"], back))
+        if subs_out is not None:
+            subs_out.append([(k, place(sm, r["x"], r["y"], r["z_base"], r["rot_deg"], back)) for k, (ss, sm) in sub.items()])
+            shapes.extend(place_shape(ss, r["x"], r["y"], r["z_base"], r["rot_deg"], back) for ss, sm in sub.values())
         rws.append(r)
     return meshes, shapes, rws
 
@@ -476,6 +489,10 @@ def main():
     shapes["gpu.package"] = build_gpu()
     for pid in ("pcb.main", "gpu.package"):
         meshes[pid] = [to_mesh(s) for s in shapes[pid]]
+    root_subs = {pid: [(nm, to_mesh(sh)) for nm, sh in v] for pid, v in SUBS.items()}
+    for pid, v in SUBS.items():
+        shapes[pid] = list(shapes[pid]) + [sh for _, sh in v]
+    inst_subs = {}
 
     def mem_t(r):
         return tpl_memory()
@@ -494,11 +511,17 @@ def main():
 
     for pid, fn in (("mem.front", mem_t), ("mem.back", mem_t), ("power.inductors", ind_t), ("power.vrm.gpu", blk_t),
                     ("power.vrm.mem", blk_t), ("power.controller", blk_t), ("power.aux", aux_t), ("io.aux_header", hdr_t)):
-        ms, ss, rw = build_instanced(rows, pid, fn)
+        so = []
+        ms, ss, rw = build_instanced(rows, pid, fn, so)
         meshes[pid], shapes[pid], inst_rows[pid] = ms, ss, rw
+        if any(so):
+            inst_subs[pid] = so
     note("mem.front", "16 chips de %.0f x %.0f x %.1f mm (encapsulamento da Micron) na grade arbitrada (passo %.2f, escala corrigida pelo fator do pcb-a); lado de 14 mm atravessado na fileira nas laterais e na borda de energia; os 2 chips da borda dos contatos giram (14 ao longo da borda); esferas como um bloco recuado de %.2f mm" % (
         M("gddr7_package_length"), M("gddr7_package_width"), M("gddr7_package_thickness"), M("mem_side_v_pitch"), g("mem_standoff")))
     note("mem.back", NOTES["mem.front"][0])
+    for pid in ("mem.front", "mem.back"):
+        note(pid, "cada chip em duas malhas: corpo de epóxi %.1f mm para dentro da borda (nó da instância) sobre o substrato de %.2f mm com as esferas (submalha %s.<k>.substrato), para o anel do substrato aparecer com o acabamento do laminado (auditoria visual, achado 20); medidas do anel e do substrato inferred" % (
+            g("mem_mold_inset"), g("mem_substrate_t"), pid))
     note("power.inductors", "lado %.1f (vrm_inductor_side) e %.1f nos menores da borda superior, altura %.1f (limite da base do cooler); texto 85N só como área (extras)" % (
         M("vrm_inductor_side"), g("ind_top_side"), g("ind_h")))
     note("power.vrm.gpu", "estágios na frente, para dentro de cada indutor, como os blocos cinza da foto sabareesh; o blockout os punha no verso")
@@ -519,10 +542,11 @@ def main():
     for pid in IDS:
         p = PARTS[pid]
         ms = meshes[pid]
-        mesh = trimesh.util.concatenate(ms)
+        sub_all = [m for _, m in root_subs.get(pid, [])] + [m for lst in inst_subs.get(pid, []) for _, m in lst]
+        mesh = trimesh.util.concatenate(ms + sub_all)
         ntri = int(len(mesh.faces))
         total += ntri
-        closed = [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for m in ms]
+        closed = [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for m in ms + sub_all]
         lo, hi = mesh.bounds
         anchors = frame.anchor_check(pid, mesh) if p["anchors"] else []
         extras = {
@@ -555,8 +579,13 @@ def main():
                     ex["text_box_cad_mm"] = {"text": "85N", "center_xy": [r["x"], r["y"]], "z": zt, "size": [2 * s, s],
                                              "reading_dir_xy": [1, 0], "engrave": False, "provenance": "derived"}
                 spec.append(("%s.%d" % (pid, k), ex, m, None, 0))
+                ik = len(spec) - 1
+                for nm, sm in (inst_subs.get(pid) or [[]] * len(ms))[k - 1]:
+                    spec.append(("%s.%d.%s" % (pid, k, nm), {"submesh": nm, "part": pid, "instance": k, "acabamento": "substrato (laminado)"}, sm, None, ik))
         else:
-            spec.append((pid, extras, ms[0] if len(ms) == 1 else mesh, None, None))
+            spec.append((pid, extras, ms[0] if len(ms) == 1 else trimesh.util.concatenate(ms), None, None))
+            for nm, sm in root_subs.get(pid, []):
+                spec.append(("%s.%s" % (pid, nm), {"submesh": nm, "part": pid, "acabamento": "substrato (laminado verde)"}, sm, None, 0))
         for a in p["anchors"]:
             spec.append((a["id"], {"anchor": True, "part": pid}, None, to_gltf([a["pos"]])[0], 0))
         glb = OUT / ("%s.glb" % pid)

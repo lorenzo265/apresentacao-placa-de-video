@@ -436,7 +436,111 @@ function texFaixas(def, p, N, rnd, ctx) {
   return finaliza(c, 1, false);
 }
 
-const GERADORES = { grao: texGrao, usinagem: texUsinagem, aletas: texAletas, pcb: texPcb, smd: texSmd, contatos_pcie: texContatos, package: texPackage, abertura: texAbertura, faixas: texFaixas };
+/**
+ * Decalque (etiqueta, marcas impressas): texto e padrões desenhados num canvas 2D sobre a caixa da
+ * malha (UV plana: u no maior eixo, v no médio). Fundo com a cor e o acabamento do material; tinta com
+ * os de 'tinta'. Blocos empilhados de cima para baixo: {texto, alt_mm} (linha de texto, comprimida na
+ * largura se não couber), {barras, alt_mm} (código de barras ilustrativo) e {simbolos, alt_mm} (fileira
+ * de marcas: texto em caixa ou a lixeira riscada 'WEEE'); 'qr' põe um código 2D ilustrativo à esquerda.
+ * Fonte genérica do navegador (sans-serif): o desenho é o mesmo a cada carga.
+ */
+function texDecal(def, p, N, rnd, ctx) {
+  const [L, A] = ctx.bbox.tam;
+  const pxmm = Math.min(p.px_mm ?? 40, (N * 2) / Math.max(L, A));
+  const W = Math.max(8, Math.round(L * pxmm)), H = Math.max(8, Math.round(A * pxmm));
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);             // máscara da tinta: branco = tinta
+  g.fillStyle = '#fff'; g.strokeStyle = '#fff';
+  // 'gira': o texto corre ao longo do eixo menor da caixa (u é o maior). O desenho é feito num quadro
+  // lógico de lw x lh px que a transformação põe sobre o canvas: leitura = -v, linhas para baixo = +u.
+  const lw = p.gira ? H : W, lh = p.gira ? W : H;
+  if (p.gira) g.setTransform(0, -1, 1, 0, 0, H);
+  const mm = (x) => x * pxmm;
+  const m = mm(p.margem_mm ?? 0.5);
+  let x0 = m;
+  if (p.qr) {                                                // código 2D ilustrativo (não é dado)
+    const lado = lh - 2 * m, n = 21, c = lado / n;
+    const finder = (i, j) => (i < 7 && j < 7) || (i < 7 && j >= n - 7) || (i >= n - 7 && j < 7);
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      let on = rnd() < 0.5;
+      if (finder(i, j)) { const a = i % (n - 7), b = j % (n - 7); const k = Math.max(Math.abs(a - 3), Math.abs(b - 3)); on = k !== 2; }
+      if (on) g.fillRect(m + j * c, m + i * c, Math.ceil(c), Math.ceil(c));
+    }
+    x0 = m + lado + mm(0.8);
+  }
+  const larg = lw - x0 - m;
+  let y = m;
+  const texto = (t, x, yy, h, negrito) => {
+    g.font = `${negrito ? 'bold ' : ''}${Math.round(h)}px sans-serif`;
+    g.textBaseline = 'top';
+    g.fillText(t, x, yy);
+    return g.measureText(t).width;
+  };
+  for (const b of p.blocos ?? []) {
+    const h = mm(b.alt_mm);
+    if (b.texto != null) {
+      g.font = `${b.negrito ? 'bold ' : ''}${Math.round(h * 0.82)}px sans-serif`;
+      g.textBaseline = 'top';
+      const w = g.measureText(b.texto).width;
+      g.save(); g.translate(x0, y); if (w > larg) g.scale(larg / w, 1); g.fillText(b.texto, 0, h * 0.06); g.restore();
+    } else if (b.barras) {
+      let x = x0;
+      while (x < x0 + larg * (b.fracao ?? 0.8)) { const w = mm(0.08 + rnd() * 0.22); if (rnd() < 0.55) g.fillRect(x, y, w, h * 0.92); x += w; }
+    } else if (b.simbolos) {
+      let x = x0;
+      g.lineWidth = Math.max(1, mm(0.12));
+      const folga = mm(b.folga_mm ?? 0.9);
+      for (const s of b.simbolos) {
+        if (s === 'WEEE') {                                  // lixeira riscada
+          const a = h * 0.8, top = y + h * 0.1;
+          g.strokeRect(x + a * 0.2, top + a * 0.15, a * 0.6, a * 0.75);
+          g.beginPath(); g.moveTo(x, top); g.lineTo(x + a, top + a); g.moveTo(x + a, top); g.lineTo(x, top + a); g.stroke();
+          x += a + folga;
+        } else if (s === 'TRI') {                            // triângulo com visto (RCM)
+          const a = h * 0.9;
+          g.beginPath(); g.moveTo(x + a / 2, y); g.lineTo(x + a, y + a * 0.85); g.lineTo(x, y + a * 0.85); g.closePath(); g.stroke();
+          g.beginPath(); g.moveTo(x + a * 0.3, y + a * 0.58); g.lineTo(x + a * 0.46, y + a * 0.72); g.lineTo(x + a * 0.72, y + a * 0.4); g.stroke();
+          x += a + folga;
+        } else if (s.startsWith('ANEL')) {                   // marca circular com texto curto (ou traço)
+          const r = h * 0.45, cx = x + r, cy = y + h * 0.5;
+          g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
+          const t = s.slice(5);
+          if (t) { g.font = `bold ${Math.round(h * 0.5)}px sans-serif`; g.textBaseline = 'middle'; g.textAlign = 'center'; g.fillText(t, cx, cy); g.textAlign = 'left'; }
+          else { g.beginPath(); g.moveTo(cx - r * 0.6, cy + r * 0.2); g.lineTo(cx + r * 0.6, cy - r * 0.2); g.stroke(); }
+          x += 2 * r + folga;
+        } else {
+          x += texto(s, x, y + h * 0.08, h * 0.78, true) + folga;
+        }
+      }
+    }
+    y += h + mm(b.espaco_mm ?? 0.25);
+  }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  const px = g.getImageData(0, 0, W, H).data;
+  const c = canais(W, H);
+  c.temCor = true;
+  const fundo = hexRgb(def.cor), tinta = hexRgb(p.tinta.cor);
+  for (let i = 0; i < W * H; i++) {
+    const k = px[i * 4] / 255;
+    for (let j = 0; j < 3; j++) c.cor[i * 3 + j] = p.transparente ? tinta[j] : fundo[j] + (tinta[j] - fundo[j]) * k;
+    c.rug[i] = def.rug + ((p.tinta.rug ?? def.rug) - def.rug) * k;
+    c.metal[i] = def.metal + ((p.tinta.metal ?? def.metal) - def.metal) * k;
+    c.alt[i] = k * 0.3;
+  }
+  const r = finaliza(c, 0.6, false);
+  if (p.transparente) {                                      // película: fora da tinta é transparente (alphaTest)
+    const cor = new Uint8Array(W * H * 4);
+    for (let i = 0; i < W * H; i++) { for (let k = 0; k < 3; k++) cor[i * 4 + k] = byte(lin2srgb(c.cor[i * 3 + k])); cor[i * 4 + 3] = px[i * 4]; }
+    r.map = dataTex(cor, W, H, true);
+    r.alfa = true;
+  }
+  if (p.espelha_u || p.espelha_v) for (const t of [r.map, r.orm, r.normal]) { t.repeat.set(p.espelha_u ? -1 : 1, p.espelha_v ? -1 : 1); t.offset.set(p.espelha_u ? 1 : 0, p.espelha_v ? 1 : 0); }
+  return r;
+}
+
+const GERADORES = { decal: texDecal, grao: texGrao, usinagem: texUsinagem, aletas: texAletas, pcb: texPcb, smd: texSmd, contatos_pcie: texContatos, package: texPackage, abertura: texAbertura, faixas: texFaixas };
 
 // ---------------------------------------------------------------------------------------------
 // UV e normais para malhas que chegam sem (blockout)
@@ -463,22 +567,37 @@ function uvCaixa(geo, tileMm) {
   geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
 }
 /**
- * Cavidade: classifica cada triângulo da malha (não indexada) como casca, se o centro dele está sobre um
- * plano da caixa envolvente (borda frontal e lados do receptáculo), ou interior (paredes, língua, fundo).
- * u = 0,25 na casca, 0,75 no interior (ver texAbertura).
+ * Cavidade: classifica cada triângulo da malha (não indexada) como casca, se o plano dele é um plano de
+ * apoio da malha (nenhum vértice fica além dele, na direção da normal: borda frontal, lados, face de
+ * encaixe), ou interior (paredes e fundo das cavidades, língua). Vale para peça girada em relação aos
+ * eixos (o conector de energia, a 45 graus). u = 0,25 na casca, 0,75 no interior (ver texAbertura).
  */
 function uvCavidade(geo) {
   geo.computeBoundingBox();
   const bb = geo.boundingBox, pos = geo.attributes.position, n = pos.count;
   const tol = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y, bb.max.z - bb.min.z) * 0.004;
   const uv = new Float32Array(n * 2);
-  const c = new THREE.Vector3(), t = new THREE.Vector3();
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), nn = new THREE.Vector3();
+  const apoio = new Map();                  // normal quantizada -> maior projeção dos vértices
+  const maxProj = (nx, ny, nz) => {
+    const k = `${Math.round(nx * 500)},${Math.round(ny * 500)},${Math.round(nz * 500)}`;
+    if (!apoio.has(k)) {
+      let m = -Infinity;
+      for (let i = 0; i < n; i++) m = Math.max(m, pos.getX(i) * nx + pos.getY(i) * ny + pos.getZ(i) * nz);
+      apoio.set(k, m);
+    }
+    return apoio.get(k);
+  };
   for (let k = 0; k + 2 < n; k += 3) {
-    c.set(0, 0, 0);
-    for (let j = 0; j < 3; j++) c.add(t.fromBufferAttribute(pos, k + j));
-    c.multiplyScalar(1 / 3);
-    const naCaixa = ['x', 'y', 'z'].some((e) => Math.abs(c[e] - bb.min[e]) < tol || Math.abs(c[e] - bb.max[e]) < tol);
-    for (let j = 0; j < 3; j++) { uv[(k + j) * 2] = naCaixa ? 0.25 : 0.75; uv[(k + j) * 2 + 1] = 0.5; }
+    a.fromBufferAttribute(pos, k); b.fromBufferAttribute(pos, k + 1); c.fromBufferAttribute(pos, k + 2);
+    nn.subVectors(c, b).cross(a.clone().sub(b));
+    let casca = false;
+    if (nn.lengthSq() > 0) {
+      nn.normalize();
+      const cx = (a.x + b.x + c.x) / 3, cy = (a.y + b.y + c.y) / 3, cz = (a.z + b.z + c.z) / 3;
+      casca = cx * nn.x + cy * nn.y + cz * nn.z >= maxProj(nn.x, nn.y, nn.z) - tol;
+    }
+    for (let j = 0; j < 3; j++) { uv[(k + j) * 2] = casca ? 0.25 : 0.75; uv[(k + j) * 2 + 1] = 0.5; }
   }
   geo.setAttribute('uv2', new THREE.BufferAttribute(uv, 2));
 }
@@ -515,6 +634,24 @@ function nomesDe(o) {
 }
 function grupoDe(o) { for (let a = o; a; a = a.parent) if (a.userData?.group) return a.userData.group; return null; }
 
+/**
+ * Região escura da tabela ('escuros': interior de abertura que a malha não separa) para a malha, no
+ * espaço da própria geometria: a caixa vem em mm do CAD (placa montada), com o GLB em metros e Y para
+ * cima sob a raiz; null se a peça não tem região.
+ */
+function escuroDe(o, raiz) {
+  const nomes = nomesDe(o);
+  const r = (TABELA.escuros ?? []).find((e) => nomes.includes(e.peca));
+  if (!r) return null;
+  raiz.updateMatrixWorld(true);
+  const rel = new THREE.Matrix4().copy(raiz.matrixWorld).invert().multiply(o.matrixWorld).invert();   // raiz -> malha
+  const cad = (x, y, z) => new THREE.Vector3(x / 1000, z / 1000, -y / 1000).applyMatrix4(rel);
+  const [x0, y0, z0] = r.caixa_mm.de, [x1, y1, z1] = r.caixa_mm.ate;
+  const caixa = new THREE.Box3();
+  for (const x of [x0, x1]) for (const y of [y0, y1]) for (const z of [z0, z1]) caixa.expandByPoint(cad(x, y, z));
+  return { min: caixa.min, max: caixa.max, trans: (r.transicao_mm ?? 1) / 1000, luz: r.luz ?? 0.1 };
+}
+
 /** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). */
 export function resolveMaterial(o, nomeMatGlb) {
   // slot de material do passo do Blender (nome listado em materiais_glb) é mais específico que a peça
@@ -528,7 +665,9 @@ export function resolveMaterial(o, nomeMatGlb) {
   return { id: TABELA.padrao, por: 'padrão' };
 }
 
-const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\n';
+const MASCARA_DBG = typeof location !== 'undefined' && new URLSearchParams(location.search).has('ldmascara');
+const MASCARA_POS = typeof location !== 'undefined' && new URLSearchParams(location.search).get('ldmascara') === 'pos';
+const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\nuniform float uContorno;\n#ifdef LD_ESCURO\nuniform vec3 uEscMin;\nuniform vec3 uEscMax;\nuniform float uEscTrans;\nuniform float uEscLuz;\nvarying vec3 vPosLd;\n#endif\n';
 // Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
 // resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
 // oclusão assada também apaga a luz direta que chega rasante: sombra = sat(|N.L| + 2 ao² - 1). Superfície
@@ -552,6 +691,12 @@ void RE_Direct_Micro( IncidentLight directLight, const in vec3 geometryPosition,
 // placa montada, toda a luz dessas peças cai para a fração 'interior' e volta a 1 conforme o desmonte
 // abre a carcaça (uAbertoLd, de 0 a 1: o uniforme ABERTO, que o estúdio atualiza a cada quadro).
 const FRAG_MICRO = `float interiorLd = mix( uInteriorLd, 1.0, uAbertoLd );
+#ifdef LD_ESCURO
+	// região escura da peça (interior de abertura, 'escuros' da tabela), no espaço da própria malha:
+	// acompanha a peça na explosão; borda suave de uEscTrans
+	vec3 dentroLd = smoothstep( uEscMin - uEscTrans, uEscMin + uEscTrans, vPosLd ) * ( 1.0 - smoothstep( uEscMax - uEscTrans, uEscMax + uEscTrans, vPosLd ) );
+	interiorLd *= mix( 1.0, uEscLuz, dentroLd.x * dentroLd.y * dentroLd.z );
+#endif
 reflectedLight.indirectDiffuse *= uEnvLd * interiorLd;
 reflectedLight.indirectSpecular *= uEnvLd * interiorLd;
 reflectedLight.directDiffuse *= interiorLd;
@@ -563,6 +708,8 @@ reflectedLight.directSpecular *= interiorLd;
 #include <aomap_fragment>`;
 /** Quanto a carcaça está aberta (0 montada, 1 aberta): uniforme comum a todos os materiais. */
 const ABERTO = { value: 1 };
+/** Recorte de luz permanente no contorno (Fresnel), para a carcaça preta não sumir no fundo em qualquer ângulo; vem de cfg.contorno. */
+const CONTORNO = { value: 0 };
 const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
@@ -577,13 +724,20 @@ const FRAG_FIM = `#include <opaque_fragment>
 			aoRealceLd = texture2D( aoMap, vAoMapUv ).r;
 			aoRealceLd *= aoRealceLd * aoRealceLd;
 		#endif
-		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * uRealce * aoRealceLd;
+		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * ( uRealce + uContorno * ( 1.0 - uApaga ) ) * aoRealceLd;
 	}`;
 
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
 export function preparaMaterial(m, corRealce) {
   m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 }, interior: { value: m.userData.interior ?? 1 } };
+  const esc = m.userData.escuro ?? null;      // { min, max (espaço da malha), trans, luz }
   m.onBeforeCompile = (sh) => {
+    if (esc) {
+      sh.defines = { ...(sh.defines ?? {}), LD_ESCURO: '' };
+      Object.assign(sh.uniforms, { uEscMin: { value: esc.min }, uEscMax: { value: esc.max }, uEscTrans: { value: esc.trans }, uEscLuz: { value: esc.luz } });
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vPosLd;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvPosLd = position;');
+    }
     sh.uniforms.uApaga = m.userData.ld.apaga;
     sh.uniforms.uRealce = m.userData.ld.realce;
     sh.uniforms.uRealceCor = m.userData.ld.cor;
@@ -591,12 +745,13 @@ export function preparaMaterial(m, corRealce) {
     sh.uniforms.uEnvLd = m.userData.ld.env;
     sh.uniforms.uInteriorLd = m.userData.ld.interior;
     sh.uniforms.uAbertoLd = ABERTO;
+    sh.uniforms.uContorno = CONTORNO;
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\n${FRAG_PARS}`)
       .replace('#include <lights_physical_pars_fragment>', `#include <lights_physical_pars_fragment>\n${FRAG_MICRO_PARS}`)
       .replace('#include <aomap_fragment>', FRAG_MICRO)
       .replace('#include <opaque_fragment>', FRAG_FIM);
   };
-  m.customProgramCacheKey = () => 'lookdev-destaque-6';
+  m.customProgramCacheKey = () => (esc ? 'lookdev-destaque-8-escuro' : 'lookdev-destaque-8');
   return m;
 }
 
@@ -656,6 +811,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       m.roughnessMap = tex.orm; m.metalnessMap = tex.orm; m.roughness = 1; m.metalness = 1;
       m.normalMap = tex.normal; m.normalScale.set(1, 1);
       if (tex.map) { m.map = tex.map; m.color.set(0xffffff); }
+      if (tex.alfa) m.alphaTest = 0.45;       // decalque em película: só a tinta existe
     }
     if (fis && (def.anisotropia || tex?.aniso)) {
       m.anisotropy = def.anisotropia?.forca ?? tx?.cubo?.anisotropia ?? 0.5;
@@ -681,8 +837,23 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (orig?.aoMap || tex?.ao) m.userData.micro = def.micro_sombra ?? 0;
     if (def.env != null) m.userData.env = def.env;
     if (def.interior != null) m.userData.interior = def.interior;
+    const esc = escuroDe(o, raiz);
+    if (esc) m.userData.escuro = esc;
+    if (def.sobre_coplanar) {
+      // superfície fina sobre outra quase coplanar (fração de mm): ganha o teste de profundidade
+      m.polygonOffset = true; m.polygonOffsetFactor = -1; m.polygonOffsetUnits = -4;
+    }
     preparaMaterial(m, corRealce);
     o.material = m;
+    if (MASCARA_DBG) {
+      const idx = Object.keys(TABELA.materiais).indexOf(id) + 1;
+      o.material = new THREE.ShaderMaterial({
+        uniforms: { uId: { value: idx * 9 / 255 } },
+        vertexShader: 'varying vec3 vN; varying vec3 vP; void main(){ vN = normalize(mat3(modelMatrix) * normal); vP = (modelMatrix * vec4(position, 1.0)).xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+        fragmentShader: MASCARA_POS ? 'uniform float uId; varying vec3 vN; varying vec3 vP; void main(){ gl_FragColor = vec4(vP.x / 320.0, vP.y / 160.0, (vP.z + 10.0) / 60.0, 1.0); }' : 'uniform float uId; varying vec3 vN; void main(){ vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n; gl_FragColor = vec4(uId, abs(n.z), 1.0, 1.0); }',
+        side: THREE.DoubleSide,
+      });
+    }
     o.castShadow = o.receiveShadow = true;
     const doGlb = mapasGlb ? ['map', 'normalMap', 'roughnessMap', 'aoMap'].filter((k) => orig[k]).map((k) => (k === 'map' ? 'cor' : k.replace('Map', ''))) : [];
     relatorio.push({ malha: o.name, material: id, por, mapas: mapasGlb ? `glb (${doGlb.join(', ')})${tx ? ` + ${tx.tipo}` : ''}` : tx ? tx.tipo : null });
@@ -717,7 +888,9 @@ function criaAmbiente(renderer, cfg, corDe) {
     new THREE.MeshBasicMaterial({ map: hdr, side: THREE.BackSide, color: corDe(cfg.hdr.K).multiplyScalar(cfg.hdr.i), toneMapped: false }));
   esfera.rotation.x = Math.PI / 2;                           // equirretangular com Y para cima -> Z para cima
   cena.add(esfera);
+  const SEM_DBG = new URLSearchParams(location.search).get('ldsem')?.split(',') ?? [];
   for (const c of cfg.caixas) {
+    if (SEM_DBG.includes(c.nome)) continue;
     const mat = new THREE.MeshBasicMaterial({ color: corDe(c.K).multiplyScalar(c.i), side: THREE.DoubleSide, toneMapped: false });
     if (c.degrade || c.listras) {
       // softbox com degradê (de c.degrade[0] a c.degrade[1] ao longo da largura): o reflexo nas faces
@@ -792,13 +965,26 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
   const L = m('card_envelope_length', 304.8), H = m('card_envelope_height', 137.16), T = 40;
   const centro = new THREE.Vector3(L / 2, H / 2, T / 2);
   const Kforcado = luz === 'fria' ? cfg.luzFria : luz === 'quente' ? cfg.luzQuente : null;
-  const corDe = (K) => kelvin(Kforcado ?? K);
+  // Balanço de branco da câmera, como numa foto de produto: a câmera é balanceada na luz principal do
+  // estúdio (cfg.balanco_K, se o tema der; senão a temperatura da luz 'principal'). Sem isto, kelvin()
+  // mede contra o branco do sRGB (D65, cerca de 6500 K) e as luzes de 5200 a 5800 K deixavam a placa
+  // inteira quente (R > G > B nas pás e nas tampas, segunda passada do visual-qa, achado N2). O balanço
+  // é fixo: com ?luz=fria|quente as luzes mudam e a câmera não, e a conferência mostra a diferença.
+  CONTORNO.value = cfg.contorno ?? 0;
+  const Kbalanco = cfg.balanco_K ?? cfg.luzes.find((l) => l.papel === 'principal')?.K ?? 6500;
+  const branco = kelvin(Kbalanco);
+  const corDe = (K) => {
+    const c = kelvin(Kforcado ?? K);
+    c.setRGB(c.r / branco.r, c.g / branco.g, c.b / branco.b);
+    return c.multiplyScalar(1 / (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b));   // mantém a luminância 1
+  };
 
   scene.environment = criaAmbiente(renderer, cfg, corDe);
   scene.environmentIntensity = cfg.ambiente;
 
+  const SEM_DBG = new URLSearchParams(location.search).get('ldsem')?.split(',') ?? [];
   const luzes = cfg.luzes.map((l) => {
-    const d = new THREE.DirectionalLight(corDe(l.K), l.i);
+    const d = new THREE.DirectionalLight(corDe(l.K), SEM_DBG.includes(l.papel) ? 0 : l.i);
     d.userData.off = new THREE.Vector3(...l.pos);
     if (l.sombra && q.sombra) {
       d.castShadow = true;

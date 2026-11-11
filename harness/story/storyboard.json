@@ -246,18 +246,18 @@
       "explode_state": "assembled",
       "camera": {
         "pos": [
-          480,
-          -380,
-          380
+          805,
+          -246,
+          230
         ],
         "target": [
-          50,
-          95,
-          10
+          220,
+          170,
+          15
         ],
-        "fov": 32,
+        "fov": 28,
         "duration": 3.0,
-        "ease": "power3.inOut"
+        "ease": "power2.inOut"
       },
       "highlight": [
         "cooler.fan.2",
@@ -267,7 +267,7 @@
       ],
       "callout": {
         "anchor": "anchor.cooler.fan.1",
-        "box": "left-center",
+        "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -1107,7 +1107,12 @@
         "confirmed",
         "derived"
       ],
-      "speaker": "Arthur"
+      "speaker": "Arthur",
+      "vitrine": {
+        "peca": "mem.back.3",
+        "face": "-z",
+        "ocupa": 0.24
+      }
     },
     {
       "id": "a3.2",
