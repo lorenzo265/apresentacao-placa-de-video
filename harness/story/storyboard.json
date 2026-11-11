@@ -109,11 +109,29 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
-      "hold": 0,
-      "provenance": [],
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          560,
+          -330,
+          420
+        ],
+        "target": [
+          45,
+          80,
+          10
+        ],
+        "fov": 28,
+        "duration": 2.0,
+        "ease": "power2.out"
+      },
+      "hold": 13.0,
+      "provenance": [
+        "derived"
+      ],
       "speaker": "Vitor"
     },
     {
@@ -122,10 +140,32 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "card",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          200,
+          -330,
+          -560
+        ],
+        "target": [
+          220,
+          75,
+          10
+        ],
+        "fov": 28,
+        "duration": 3.0,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.card.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 12.0,
       "provenance": [
         "confirmed"
       ],
@@ -137,10 +177,26 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          -230,
+          -330,
+          400
+        ],
+        "target": [
+          50,
+          85,
+          0
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "hold": 11.0,
       "provenance": [
         "confirmed"
       ],
@@ -152,11 +208,29 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
-      "hold": 0,
-      "provenance": [],
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          300,
+          -620,
+          190
+        ],
+        "target": [
+          50,
+          75,
+          10
+        ],
+        "fov": 27,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "hold": 14.0,
+      "provenance": [
+        "derived"
+      ],
       "speaker": "Vitor"
     },
     {
@@ -165,10 +239,38 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "cooler.fan.1",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          480,
+          -380,
+          380
+        ],
+        "target": [
+          50,
+          95,
+          10
+        ],
+        "fov": 32,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "cooler.fan.2",
+        "tag:carcaca",
+        "io.bracket",
+        "pcie.adapter"
+      ],
+      "callout": {
+        "anchor": "anchor.cooler.fan.1",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 14.5,
       "provenance": [
         "confirmed",
         "derived"
@@ -181,10 +283,37 @@
       "section": "01",
       "level": 0,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "card",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          249.7,
+          -39.8,
+          655.6
+        ],
+        "target": [
+          249.7,
+          72.4,
+          19.3
+        ],
+        "fov": 28,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:carcaca",
+        "io.bracket",
+        "pcie.adapter"
+      ],
+      "callout": {
+        "anchor": "anchor.frame.shroud.1",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 12.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -197,10 +326,37 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "frame.face_b",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          80,
+          -460,
+          -560
+        ],
+        "target": [
+          250,
+          75,
+          10
+        ],
+        "fov": 30,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:carcaca",
+        "io.bracket",
+        "pcie.adapter"
+      ],
+      "callout": {
+        "anchor": "anchor.frame.face_b.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 14.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -213,10 +369,32 @@
       "section": "01",
       "level": 0,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "power.connector",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          330,
+          420,
+          110
+        ],
+        "target": [
+          195,
+          130,
+          17
+        ],
+        "fov": 26,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.power.connector.1",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 16.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -229,12 +407,41 @@
       "section": "01",
       "level": 0,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "io.bracket",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          -516.3,
+          -159.9,
+          -151.1
+        ],
+        "target": [
+          25.8,
+          -14.7,
+          9.9
+        ],
+        "fov": 28,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "io.board.dp",
+        "tag:carcaca",
+        "io.bracket",
+        "pcie.adapter"
+      ],
+      "callout": {
+        "anchor": "anchor.io.bracket.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 12.0,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "derived"
       ],
       "speaker": "Vitor"
     },
@@ -244,11 +451,39 @@
       "section": "01",
       "level": 0,
       "priority": 3,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "frame.shroud",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          430,
+          560,
+          300
+        ],
+        "target": [
+          170,
+          80,
+          10
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:carcaca",
+        "io.bracket",
+        "pcie.adapter"
+      ],
+      "callout": {
+        "anchor": "anchor.frame.shroud.1",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 11.5,
       "provenance": [
+        "confirmed",
         "derived"
       ],
       "speaker": "Vitor"
@@ -259,12 +494,91 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
-      "diagram": null,
-      "hold": 0,
+      "status": "ready",
+      "part": "gpu.tim",
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          152,
+          -40,
+          -2
+        ],
+        "target": [
+          152,
+          62,
+          -42
+        ],
+        "fov": 30,
+        "duration": 15.4,
+        "ease": "power1.inOut",
+        "keys": [
+          {
+            "at": 0.12,
+            "pos": [
+              -330,
+              -400,
+              300
+            ],
+            "target": [
+              130,
+              55,
+              10
+            ],
+            "fov": 33
+          },
+          {
+            "at": 0.36,
+            "pos": [
+              430,
+              -700,
+              330
+            ],
+            "target": [
+              120,
+              60,
+              -100
+            ],
+            "fov": 32
+          },
+          {
+            "at": 0.78,
+            "pos": [
+              560,
+              -760,
+              260
+            ],
+            "target": [
+              110,
+              60,
+              -90
+            ],
+            "fov": 32
+          },
+          {
+            "at": 0.9,
+            "pos": [
+              152,
+              -380,
+              40
+            ],
+            "target": [
+              152,
+              62,
+              -42
+            ],
+            "fov": 30
+          }
+        ],
+        "explode_ate": 0.8
+      },
+      "callout": {
+        "anchor": "anchor.gpu.tim.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 16.0,
       "provenance": [
-        "confirmed",
         "derived"
       ],
       "speaker": "Vitor"
@@ -275,12 +589,33 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "frame.rim",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E2",
+      "camera": {
+        "pos": [
+          430,
+          -700,
+          330
+        ],
+        "target": [
+          120,
+          60,
+          -100
+        ],
+        "fov": 32,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.frame.rim.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 10.0,
       "provenance": [
-        "confirmed",
         "derived"
       ],
       "speaker": "Vitor"
@@ -291,10 +626,32 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "frame.center_covers",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E3",
+      "camera": {
+        "pos": [
+          -160,
+          -700,
+          300
+        ],
+        "target": [
+          160,
+          60,
+          -90
+        ],
+        "fov": 32,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.frame.center_covers.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 13.5,
       "provenance": [
         "confirmed"
       ],
@@ -306,10 +663,32 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "pcie.adapter",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E4",
+      "camera": {
+        "pos": [
+          290,
+          -430,
+          110
+        ],
+        "target": [
+          120,
+          35,
+          -65
+        ],
+        "fov": 34,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.pcie.adapter.fingers",
+        "box": "right-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 13.0,
       "provenance": [
         "confirmed"
       ],
@@ -321,12 +700,35 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "pcb.plate",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E5",
+      "camera": {
+        "pos": [
+          -120,
+          -640,
+          260
+        ],
+        "target": [
+          170,
+          60,
+          -60
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.fasteners.e5_plate.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 12.0,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "inferred"
       ],
       "speaker": "Vitor"
     },
@@ -336,12 +738,38 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "cooler.leaf_spring",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E6",
+      "camera": {
+        "pos": [
+          420,
+          -600,
+          220
+        ],
+        "target": [
+          130,
+          60,
+          -50
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "flex.dp"
+      ],
+      "callout": {
+        "anchor": "anchor.fasteners.e6_spring.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 13.0,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "inferred"
       ],
       "speaker": "Vitor"
     },
@@ -351,12 +779,39 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "gpu.tim",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          152,
+          -40,
+          -2
+        ],
+        "target": [
+          152,
+          62,
+          -42
+        ],
+        "fov": 30,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "gpu.package"
+      ],
+      "callout": {
+        "anchor": "anchor.gpu.tim.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 15.0,
       "provenance": [
-        "confirmed"
+        "confirmed",
+        "derived",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },
@@ -366,11 +821,30 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
-      "hold": 0,
-      "provenance": [],
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          560,
+          -760,
+          260
+        ],
+        "target": [
+          110,
+          60,
+          -90
+        ],
+        "fov": 32,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "hold": 10.0,
+      "provenance": [
+        "derived",
+        "inferred"
+      ],
       "speaker": "Vitor"
     },
     {
@@ -379,12 +853,42 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "power.connector",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          370,
+          380,
+          50
+        ],
+        "target": [
+          205,
+          80,
+          -38
+        ],
+        "fov": 28,
+        "duration": 2.0,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "power.inductors",
+        "gpu.package"
+      ],
+      "callout": {
+        "anchor": "anchor.power.connector.1",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "overlay": {
+        "path": "energy"
+      },
+      "hold": 15.5,
       "provenance": [
         "confirmed",
+        "derived",
         "inferred"
       ],
       "speaker": "Vitor"
@@ -395,13 +899,47 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "pcie.adapter",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          -230,
+          -430,
+          60
+        ],
+        "target": [
+          110,
+          45,
+          -60
+        ],
+        "fov": 32,
+        "duration": 2.0,
+        "ease": "sine.inOut"
+      },
+      "highlight": [
+        "gpu.package",
+        "mem.front",
+        "flex.dp",
+        "io.board",
+        "io.board.dp"
+      ],
+      "callout": {
+        "anchor": "anchor.pcie.adapter.fingers",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "overlay": {
+        "path": "data"
+      },
+      "hold": 15.0,
       "provenance": [
         "confirmed",
-        "derived"
+        "derived",
+        "inferred",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },
@@ -411,10 +949,42 @@
       "section": "02",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "cooler.base",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E8",
+      "camera": {
+        "pos": [
+          560,
+          -700,
+          260
+        ],
+        "target": [
+          150,
+          70,
+          -20
+        ],
+        "fov": 32,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "gpu.package",
+        "cooler.fins.1",
+        "cooler.fins.2",
+        "cooler.fan.1",
+        "cooler.fan.2"
+      ],
+      "callout": {
+        "anchor": "anchor.cooler.base.1",
+        "box": "left-bottom",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "overlay": {
+        "path": "heat"
+      },
+      "hold": 16.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -428,12 +998,74 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "gpu.package",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          297.8,
+          -219.3,
+          56.6
+        ],
+        "target": [
+          114.6,
+          42.3,
+          -35.0
+        ],
+        "fov": 26,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.gpu.package.1",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 11.0,
       "provenance": [
         "confirmed"
+      ],
+      "speaker": "Vitor",
+      "vitrine": {
+        "peca": "gpu.package",
+        "face": "+z",
+        "ocupa": 0.4
+      },
+      "highlight": [
+        "gpu.package"
+      ]
+    },
+    {
+      "id": "a2.13",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "ready",
+      "explode_state": "E8",
+      "camera": {
+        "pos": [
+          520,
+          -600,
+          300
+        ],
+        "target": [
+          150,
+          60,
+          -70
+        ],
+        "fov": 34,
+        "duration": 4.0,
+        "ease": "power2.inOut",
+        "hold_orbit": 40
+      },
+      "hold": 8.0,
+      "provenance": [
+        "confirmed",
+        "inferred",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },
@@ -443,10 +1075,32 @@
       "section": "03",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "mem.back",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          253.6,
+          -159.6,
+          -182.7
+        ],
+        "target": [
+          188.8,
+          82.1,
+          -38.2
+        ],
+        "fov": 28,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.mem.back.3",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 16.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -459,10 +1113,32 @@
       "section": "03",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "mem.front",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          235,
+          -115,
+          -3
+        ],
+        "target": [
+          150,
+          75,
+          -36
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.mem.front.8",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 16.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -475,10 +1151,35 @@
       "section": "03",
       "level": 1,
       "priority": 1,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "gpu.package",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          152,
+          -95,
+          -8
+        ],
+        "target": [
+          152,
+          66,
+          -46
+        ],
+        "fov": 30,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "mem.front"
+      ],
+      "callout": {
+        "anchor": "anchor.gpu.package.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 16.5,
       "provenance": [
         "confirmed",
         "derived",
@@ -492,10 +1193,32 @@
       "section": "03",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "mem.back",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          -23.3,
+          -150.7,
+          -176.0
+        ],
+        "target": [
+          117.2,
+          92.7,
+          -39.0
+        ],
+        "fov": 28,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.mem.back.12",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 12.0,
       "provenance": [
         "confirmed"
       ],
@@ -507,10 +1230,73 @@
       "section": "03",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "mem.back",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          307.0,
+          -127.9,
+          -172.8
+        ],
+        "target": [
+          194.8,
+          66.4,
+          -43.3
+        ],
+        "fov": 28,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "callout": {
+        "anchor": "anchor.mem.back.16",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 11.0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Arthur"
+    },
+    {
+      "id": "a3.7",
+      "act": 3,
+      "section": "03",
+      "level": 1,
+      "priority": 3,
+      "status": "ready",
+      "part": "io.board.dp",
+      "diagram": null,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          -376.7,
+          -160.9,
+          -91.4
+        ],
+        "target": [
+          10.9,
+          19.8,
+          15.2
+        ],
+        "fov": 28,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "io.board",
+        "flex.dp"
+      ],
+      "callout": {
+        "anchor": "anchor.io.board.dp.2",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 13.0,
       "provenance": [
         "confirmed"
       ],
@@ -522,28 +1308,38 @@
       "section": "03",
       "level": 1,
       "priority": 2,
-      "status": "draft",
-      "part": null,
+      "status": "ready",
+      "part": "mem.front",
       "diagram": null,
-      "hold": 0,
+      "explode_state": "E7",
+      "camera": {
+        "pos": [
+          274.2,
+          -185.0,
+          36.7
+        ],
+        "target": [
+          115.2,
+          42.1,
+          -37.5
+        ],
+        "fov": 28,
+        "duration": 3.0,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "gpu.package"
+      ],
+      "callout": {
+        "anchor": "anchor.mem.front.3",
+        "box": "left-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 14.0,
       "provenance": [
         "confirmed",
         "derived"
-      ],
-      "speaker": "Arthur"
-    },
-    {
-      "id": "a3.7",
-      "act": 3,
-      "section": "03",
-      "level": 1,
-      "priority": 3,
-      "status": "draft",
-      "part": null,
-      "diagram": null,
-      "hold": 0,
-      "provenance": [
-        "confirmed"
       ],
       "speaker": "Arthur"
     },
@@ -664,7 +1460,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -759,7 +1555,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -912,7 +1708,7 @@
       "act": 4,
       "section": "05",
       "level": 3,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.sm",
@@ -1020,7 +1816,7 @@
       "act": 5,
       "section": "12",
       "level": 4,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.warp",
@@ -1163,7 +1959,7 @@
       "act": 5,
       "section": "07",
       "level": 4,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.isa",
@@ -1296,7 +2092,7 @@
       "act": 5,
       "section": "08",
       "level": 4,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.risc",
@@ -1551,7 +2347,7 @@
       "act": 6,
       "section": "11",
       "level": 4,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "sys.cmd",
@@ -1559,7 +2355,9 @@
         "diagram": "sys.cmd",
         "focus": [
           "cmd.lane.cpu",
-          "cmd.lane.gpu"
+          "cmd.lane.gpu",
+          "cmd.note.user",
+          "cmd.channels"
         ],
         "padding": 0.03,
         "duration": 2.8,
@@ -1586,8 +2384,8 @@
       },
       "hold": 30,
       "provenance": [
+        "inferred",
         "confirmed",
-        "derived",
         "illustrative"
       ],
       "speaker": "Thiago"
@@ -1757,21 +2555,6 @@
       "speaker": "Vitor"
     },
     {
-      "id": "a7.3",
-      "act": 7,
-      "section": "14",
-      "level": 0,
-      "priority": 1,
-      "status": "draft",
-      "part": null,
-      "diagram": null,
-      "hold": 0,
-      "provenance": [
-        "derived"
-      ],
-      "speaker": "Vitor"
-    },
-    {
       "id": "a7.4",
       "act": 7,
       "section": "14",
@@ -1799,7 +2582,8 @@
       "hold": 30,
       "provenance": [
         "confirmed",
-        "illustrative"
+        "illustrative",
+        "derived"
       ],
       "speaker": "Vitor"
     },
@@ -1809,11 +2593,32 @@
       "section": "14",
       "level": 0,
       "priority": 1,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
-      "hold": 0,
-      "provenance": [],
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          420,
+          -560,
+          300
+        ],
+        "target": [
+          70,
+          75,
+          10
+        ],
+        "fov": 30,
+        "duration": 5.0,
+        "ease": "power2.inOut"
+      },
+      "hold": 22.0,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "inferred",
+        "illustrative"
+      ],
       "speaker": "Vitor"
     },
     {
@@ -1822,11 +2627,29 @@
       "section": "14",
       "level": 0,
       "priority": 2,
-      "status": "draft",
+      "status": "ready",
       "part": null,
       "diagram": null,
-      "hold": 0,
-      "provenance": [],
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          80,
+          -330,
+          -560
+        ],
+        "target": [
+          110,
+          75,
+          10
+        ],
+        "fov": 28,
+        "duration": 3.0,
+        "ease": "sine.inOut"
+      },
+      "hold": 14.0,
+      "provenance": [
+        "derived"
+      ],
       "speaker": "Vitor"
     }
   ]

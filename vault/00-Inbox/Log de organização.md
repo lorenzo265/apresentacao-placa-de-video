@@ -54,3 +54,16 @@
 - O principal: a revisão do artigo acusava quatro afirmações que têm fonte oficial (quatro escalonadores por SM, divergência, compilação do PTX pelo driver, GSP em RISC-V). Revisão reescrita.
 - Notas do roteiro corrigidas: `06` e `07` (Fig. 5 do whitepaper: quatro blocos por SM, quatro bancos de 16.384 registradores), `08` (evidências e frase do seminário), `10` (conta dos bits por tamanho de página, GB202 listado na família GB20x), `11` (interrupção legada, falhas de página, GSP, e a leitura sobre os SMs marcada como análise do grupo).
 
+## 2026-11-10 (duração nova e fechamento)
+- Duração do seminário atualizada para 22 minutos (alvo de 20) no `CLAUDE.md` do vault, no [[Briefing]], em [[Requisitos da disciplina]] e em [[Decisões do projeto]].
+- Tabela GPU contra CPU retirada do fechamento: nota [[14 - GPU contra CPU e encerramento]] ajustada no objetivo e na lista do que levantar. O nome da nota não mudou.
+- Divisão da fala registrada como definida.
+
+## 2026-11-10 (fonte nova da placa física)
+- Nota de fonte criada: [[NVIDIA - Guia de início rápido RTX PRO Blackwell]], ligada na tabela de fontes de [[Requisitos da disciplina]]. Status `revisar` até a segunda passada da auditoria.
+
+## 2026-11-10 (decisões de modelagem)
+- Cinco decisões do autor registradas em [[Decisões do projeto]]: cadeia de modelagem com Blender, design igual ao da placa original, sem compras, vídeo generativo como experimento posterior, placa irmã e water blocks como referência.
+
+## 2026-11-10 (estilo visual)
+- Decisão do autor registrada em [[Decisões do projeto]]: tema Keynote, com a placa hiper-realista.

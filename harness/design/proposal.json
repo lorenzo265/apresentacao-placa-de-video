@@ -1,0 +1,1058 @@
+{
+  "card_id": "rtx-pro-6000-blackwell-ws",
+  "document": "proposta de engenharia da F2 (skill gpu-assembly-proposal)",
+  "version": "0.1",
+  "date": "2026-11-10",
+  "status": "aprovada no gate humano da F2 em 2026-11-10 (D1 a D8 conforme recomendado); alimenta design/assembly.json",
+  "author": "architecture-inferencer",
+  "inputs": [
+    "harness/spec/card.spec.json (fatos e gaps)",
+    "harness/design/assembly-plan.md v0.3 (seção 8: fila de 9 itens)",
+    "harness/design/measurements.csv",
+    "harness/spec/sources/physical-card-sources.md",
+    "harness/spec/sources/standards-sources.md",
+    "harness/spec/references/index.md e imagens em cache/gn e cache/nvidia",
+    "harness/qa/fact-check-fisico.md"
+  ],
+  "conventions": {
+    "faces": "face A = ventiladores; face B = oposta; borda superior = oposta aos contatos PCIe",
+    "card_frame": "origem card.envelope_min (canto do lado do bracket e dos contatos PCIe); x ao longo do comprimento, afastando do bracket; y ao longo da altura, rumo à borda superior; z ao longo da espessura, da face A (z=0) para a face B. O sentido de z é proposta desta rodada",
+    "pcb_frame": "u ao longo de x, a partir da borda do PCB do lado do bracket; v ao longo de y, a partir da borda do PCB do lado dos contatos PCIe",
+    "units": "mm",
+    "provenance": "confirmed, derived, inferred, illustrative (regra do projeto). Leitura de foto por este agente vale no máximo derived até a passada do visual-qa",
+    "seen_vs_deduced": "cada peça separa photo_evidence (vi na foto, com id) de deduction (deduzi)",
+    "image_resolution_caveat": "as imagens foram abertas reduzidas a 2000 x 1125 (originais de 3840 x 2160) e sem ferramenta de recorte. Textos pequenos e contagens finas têm leitura incerta"
+  },
+  "analogs": [
+    {
+      "id": "5090fe",
+      "name": "GeForce RTX 5090 Founders Edition",
+      "why": "mesmo chip GB202, cooler double flow through, carcaça 'quase idêntica' segundo a Puget; opção (a) da skill",
+      "limits": "usa metal líquido e 16 chips de memória em uma face; esta placa usa pasta e 32 posições em duas faces. TGP de 575 W contra 600 W"
+    },
+    {
+      "id": "class_practice",
+      "name": "prática de mercado para placas de 450 a 600 W",
+      "why": "opção (c) da skill, só onde não há foto nem placa irmã"
+    }
+  ],
+  "web_sources_this_round": [
+    {
+      "url": "https://www.pcgameshardware.de/Geforce-RTX-5090-Grafikkarte-281029/Specials/Founders-Edition-mit-High-Density-PCB-und-Double-Pass-Through-1463646/",
+      "accessed": "2026-11-10",
+      "method": "resumo automático (WebFetch)",
+      "about": "5090 FE",
+      "used_for": "três placas ('aus gleich drei einzelnen Platinen'), dez heat pipes ('insgesamt zehn Heatpipes'), câmara de vapor 3D, 34 fases, 12V-2x6 com 55 A"
+    },
+    {
+      "url": "https://gamersnexus.net/gpus/nvidia-geforce-rtx-5090-founders-edition-review-benchmarks-gaming-thermals-power",
+      "accessed": "2026-11-10",
+      "method": "resumo automático (WebFetch)",
+      "about": "5090 FE",
+      "used_for": "placa de E/S 'connected via a flex cable to the main PCB'; 72 °C e cerca de 1570 RPM; 569 W de média em carga; memória a 89 a 90 °C"
+    },
+    {
+      "url": "https://gamersnexus.net/gpus/nvidia-rtx-pro-6000-blackwell-benchmarks-tear-down-thermals-gaming-llm-acoustic-tests",
+      "accessed": "2026-11-10",
+      "method": "resumo automático (WebFetch), releitura",
+      "about": "esta placa",
+      "used_for": "'The PRO 6000 ran at 1700' RPM; núcleo a 82 °C contra 72 °C da 5090; sequência do teardown"
+    },
+    {
+      "url": "https://www.notebookcheck.net/Nvidia-shares-what-makes-the-Founders-Edition-RTX-5090-special.951354.0.html",
+      "accessed": "2026-11-10",
+      "method": "resumo automático (WebFetch), releitura",
+      "about": "5090 FE",
+      "used_for": "'semi-pass-through design ... two-thirds blow-through cooling system'; '3D vapor chamber with artery wicks'"
+    },
+    {
+      "url": "https://images.nvidia.com/aem-dam/Solutions/design-visualization/quadro-product-literature/rtx-pro-blackwell-online-qsg-210x148mm-20250718-r14.pdf",
+      "accessed": "2026-11-10",
+      "method": "leitura direta como imagem, páginas 1 a 8 de um PDF maior",
+      "about": "esta placa (guia rápido oficial da linha RTX PRO Blackwell)",
+      "used_for": "fonte oficial NOVA, ainda não registrada em spec/sources: acompanha a placa um cabo 'Auxiliary Power Cable (4x PCIe 8-pin (PSU) to 1x PCIe Gen5 16-pin (GPU) power adapter)' e um 'Enhanced Straight Extender'; a RTX PRO 6000 é 'dual-slot'. As páginas seguintes (instalação, possível diagrama da placa) não foram lidas"
+    },
+    {
+      "url": "busca: techspot.com/news/105693, guru3d.com (rumor GB202 744 mm2), tomshardware.com (foto Chiphell)",
+      "accessed": "2026-11-10",
+      "method": "só resumo de busca; páginas não abertas",
+      "about": "GB202",
+      "used_for": "vazamento de 2024 (MEGAsizeGPU): die de 24 x 31 mm e package de 63 x 56 mm; outra medida, em foto, dá 64 x 59 mm. Baixa autoridade"
+    },
+    {
+      "url": "busca: monolithicpower.com/en/mp29816-c.html",
+      "accessed": "2026-11-10",
+      "method": "só resumo de busca; a página não carregou no WebFetch",
+      "about": "controlador MPS MP29816",
+      "used_for": "'up to 16 phases in one rail or 8+8 (maximum) phases in two-rail applications'; TQFN-56 de 7 x 7 mm. Variante C, não a A lida em foto"
+    },
+    {
+      "url": "busca: techpowerup.com/review/nvidia-geforce-rtx-5090-founders-edition/4.html e tomshardware (verso do PCB da 5090 FE)",
+      "accessed": "2026-11-10",
+      "method": "só resumo de busca; TechPowerUp deu 403 e o corpo da Tom's veio truncado",
+      "about": "5090 FE",
+      "used_for": "'large vapor-chamber baseplate', 'five double-length heatpipes'; 19 fases de VGPU e 8 de memória; 4 fases no verso (34 no total); capacitores de tântalo no verso; espessura de 40 mm"
+    }
+  ],
+  "blocked_or_unread": [
+    "tweaktown.com/news/102629 (teardown da solução térmica da RTX 50 FE): 403",
+    "hothardware.com/news/nvidia-details-rtx-5090-fe-cooler: 403",
+    "guru3d.com/story/nvidia-geforce-rtx-5090-pcb-design-is-incredibly-small: 403",
+    "techpowerup.com (review da 5090 FE, p. 4): 403",
+    "tomshardware.com (verso do PCB da 5090 FE; RTX Pro 6000 up close): corpo truncado",
+    "monolithicpower.com/en/mp29816-c.html: página não carregou",
+    "hwcooling.net (review da 5090 FE): aberta, sem dados físicos além de 304 x 137 mm",
+    "guia rápido da NVIDIA: páginas além da 8 não lidas",
+    "figura 3 da Jon Peddie (creditada à NVIDIA): não localizada"
+  ],
+  "human_decisions": [
+    {
+      "id": "D1",
+      "question": "Memória: adotar 32 chips de 24 Gbit (3 GB), 16 por face, cada chip da frente atrás de um do verso?",
+      "recommendation": "Sim, como derived. Os pads da frente desenham as mesmas 16 posições do verso (gn-33, gn-36, gn-40, gn-42) e a conta fecha. O mecanismo elétrico (16 bits por chip, par por controlador) continua inferred e aparece com o selo 'provável'."
+    },
+    {
+      "id": "D2",
+      "question": "Altura: tratar os 137,16 mm (5,4 pol) como medida da ponta dos contatos PCIe até o topo da carcaça, e modelar a carcaça com 126 mm?",
+      "recommendation": "Sim. É a convenção da norma CEM e reduz o conflito de 15 mm para 4 mm (3 %), dentro dos ±4 % da foto. Muda o critério de aceite da seção 6.2: o envelope de 137,16 passa a incluir os contatos. Se alguém do grupo tiver acesso a uma 5090 FE, uma medida com paquímetro encerra a dúvida."
+    },
+    {
+      "id": "D3",
+      "question": "A foto de terceiro (TechPowerUp, dentro de gn-05) pode entrar em measurements.csv como derived?",
+      "recommendation": "Sim, com a ressalva de origem. A razão comprimento por altura de gn-03, que é desta placa, aponta para a mesma altura de carcaça (118 a 122 mm)."
+    },
+    {
+      "id": "D4",
+      "question": "Fases de energia: modelar contagem representativa (nível C) ou contagem exata?",
+      "recommendation": "Representativa: 24 fases de núcleo e 4 de memória, em duas fileiras nas bordas longas, com o aviso na tela. O texto não cita o número como fato. Só o que foi visto em foto (duas fileiras de indutores, estágios atrás deles, um controlador MPS) é dito sem ressalva de quantidade."
+    },
+    {
+      "id": "D5",
+      "question": "Interior do cooler (estágio E8): mostrar câmara de vapor com 10 heat pipes, derivados da 5090 FE?",
+      "recommendation": "Sim, com selo 'derivado da placa irmã' e lembrando o exemplo da pasta térmica (a placa irmã usa metal líquido e esta não). A base de contato e as três regiões de aletas, que são vistas em foto, não levam esse selo."
+    },
+    {
+      "id": "D6",
+      "question": "Modelar a placa das saídas de vídeo como terceira placa, ligada por cabo flat?",
+      "recommendation": "Sim, como derived. O cabo flat grande sai do PCB e entra na carcaça do lado do bracket (gn-29, gn-31), as portas ficam nessa ponta e a 5090 FE tem essa placa. A forma é ilustrativa: nenhuma foto mostra a placa."
+    },
+    {
+      "id": "D7",
+      "question": "O conector de pinos dourados da borda superior (gn-21, gn-30) entra no modelo? Com que nome?",
+      "recommendation": "Entra como geometria, com o rótulo neutro 'conector auxiliar'. A função provável (sincronismo com a placa RTX PRO Sync) é inferred e só deve aparecer se o grupo abrir o guia do usuário e confirmar."
+    },
+    {
+      "id": "D8",
+      "question": "Dimensões do PCB: aceitar 108 x 112 mm com ±10 mm, ou pedir nova medição antes de modelar?",
+      "recommendation": "Pedir ao visual-qa uma medição em recortes de resolução cheia de gn-29 e gn-25 antes de travar o número. As duas escalas possíveis dão 100 ou 117 mm de largura. Até lá, 108 x 112 serve para o bloqueio de volumes."
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q1",
+      "topic": "altura oficial",
+      "detail": "Com os contatos, a foto dá 133 mm (±4 %), contra 137,16 mm. A diferença de 4 mm não tem explicação. Tentei conferir a escala de gn-05 pela altura do bracket e não foi conclusivo.",
+      "check": "geometry",
+      "state": "não fecha por 3 %"
+    },
+    {
+      "id": "Q2",
+      "topic": "dimensões do PCB",
+      "detail": "Usando o chip GDDR7 como régua em gn-29: se o lado de 14 mm fica ao longo da borda, a largura dá 115 a 120 mm; se é o de 12 mm, dá 100 a 104 mm. O conector de placa a placa (23 mm, medido em gn-25) favorece a primeira leitura, mas não sei se os dois conectores têm o mesmo comprimento.",
+      "check": "geometry",
+      "state": "faixa larga"
+    },
+    {
+      "id": "Q3",
+      "topic": "orçamento de espaço na borda de energia",
+      "detail": "Com PCB de 112 mm de altura e package de 63 mm nessa direção, sobram cerca de 10,5 mm para estágios de potência e indutores na borda do conector. É apertado. Ou o PCB tem perto de 116 mm, ou o package está girado (56 mm nessa direção), ou está deslocado.",
+      "check": "geometry",
+      "state": "apertado"
+    },
+    {
+      "id": "Q4",
+      "topic": "parafusos",
+      "detail": "Vistos ou citados: 4 (bracket) + 1 (aro) + 6 (adaptador PCIe) + 4 (placa que cobre o PCB) + 4 (mola) = 19. O tapete acumula de 15 a 20 em gn-31 e gn-32. O texto da GN fala em 'some screws around the center' para as tampas centrais, que não aparecem em foto. Se existirem, a soma passa de 20.",
+      "check": "assembly",
+      "state": "não fecha se E3 tiver parafusos próprios"
+    },
+    {
+      "id": "Q5",
+      "topic": "caminho do ar nas aletas centrais",
+      "detail": "As aletas centrais são placas empilhadas ao longo do comprimento (gn-26, gn-34). O PCB fecha a passagem para a face B nessa região. O ar só pode sair pela borda superior (duas fendas, gn-13) ou pelos recortes em V da face A. Não sei qual ventilador alimenta essa pilha nem em que sentido o ar passa.",
+      "check": "thermal",
+      "state": "sem evidência"
+    },
+    {
+      "id": "Q6",
+      "topic": "sobreposição entre ventilador e PCB",
+      "detail": "Com ventiladores de 115 mm centrados a 61 e 244 mm e um PCB de 108 mm no centro, cerca de 20 mm de cada disco ficam sobre o PCB (15 % da área). Bate com o 'two-thirds blow-through' descrito para a 5090 FE, mas é conta sobre três medidas de foto.",
+      "check": "geometry",
+      "state": "plausível, não verificado"
+    },
+    {
+      "id": "Q7",
+      "topic": "contagem de fases",
+      "detail": "O número central (24) vem de fileiras parciais em foto (18 a 20 indutores vistos) e de um blog de baixa autoridade. As fontes da 5090 FE divergem (27, 30, 34). Nenhuma foto mostra as bordas inteiras.",
+      "check": "power_budget",
+      "state": "a conta de potência fecha com folga; a contagem não é verificável"
+    },
+    {
+      "id": "Q8",
+      "topic": "folga do conector de 16 pinos",
+      "detail": "Proponho que quase toda a potência entre pelo conector (o adaptador PCIe usa conector de passo fino). Então 600 W ÷ 12 V = 50 A contra 55 A da tabela da norma: 10 % de folga, ou 14 % por pino contra 9,5 A da Molex. Fecha, com pouca margem, e continua valendo a ressalva das três suposições da seção 5 do plano.",
+      "check": "power_budget",
+      "state": "fecha com folga pequena"
+    },
+    {
+      "id": "Q9",
+      "topic": "térmica",
+      "detail": "A conta fecha só em ordem de grandeza: com 0,55 m² de aletas, h de 50 W/m²K (suposto) e 44 a 60 CFM, a estimativa dá 78 a 85 °C no núcleo, contra 82 °C medidos pela GN. O coeficiente de troca e a vazão são supostos.",
+      "check": "thermal",
+      "state": "ordem de grandeza"
+    },
+    {
+      "id": "Q10",
+      "topic": "leituras de texto em foto",
+      "detail": "'MPS ... MP29816-A' (gn-40), '85N' nos indutores, '4R7' e '330' foram lidos em imagem reduzida. O visual-qa precisa reler em resolução cheia.",
+      "check": "evidence",
+      "state": "a reconferir"
+    },
+    {
+      "id": "Q11",
+      "topic": "orientação do package",
+      "detail": "Proponho 56 mm ao longo do comprimento e 63 mm ao longo da altura, porque o die aparece mais comprido na direção da altura (gn-42) e a moldura tem largura parecida nos quatro lados. O vazamento só dá '63 x 56'.",
+      "check": "geometry",
+      "state": "confiança 0,5"
+    },
+    {
+      "id": "Q12",
+      "topic": "sentido de giro e de curvatura das pás",
+      "detail": "Não consegui determinar o sentido com segurança na resolução vista. Os dois ventiladores têm a mesma curvatura (catálogo).",
+      "check": "evidence",
+      "state": "a reconferir em gn-05 e gn-02"
+    }
+  ],
+  "items": [
+    {
+      "id": "cooler.vapor_chamber",
+      "queue_item": 1,
+      "provenance": "derived",
+      "confidence": 0.6,
+      "confidence_breakdown": {"existe": 0.75, "geometria": 0.4},
+      "analog": "5090fe: página NVIDIA ('3D Vapor Chamber with integrated heat pipes'), TechPowerUp por resumo de busca ('large vapor-chamber baseplate'); para esta placa, Jon Peddie ('bilateral 3D vapor chambers'), sem abrir a placa",
+      "photo_evidence": [
+        "gn-32, gn-34, gn-35, gn-39: placa de contato plana, de tom acobreado escuro, com a marca da pasta e um código datamatrix",
+        "gn-34, gn-39: moldura preta em volta da placa, com colunas roscadas e pads"
+      ],
+      "deduction": "A placa de contato vista é a face de evaporação de uma câmara de vapor. Nenhuma foto mostra o interior nem a lateral da placa.",
+      "parameters": {
+        "type": "câmara de vapor 3D: corpo plano sobre o chip com heat pipes soldados que compartilham o vapor",
+        "contact_plate_x_mm": {"value": 60, "range": [54, 70], "basis": "gn-34, marca da pasta (die de 24,2 mm) como régua"},
+        "contact_plate_y_mm": {"value": 68, "range": [60, 76], "basis": "gn-34, entre os pads de cima e de baixo"},
+        "thickness_mm": {"value": 4, "range": [3, 6], "basis": "prática de mercado; sem foto"},
+        "material": "cobre (tom visto em foto); acabamento não identificado",
+        "position": "centrada no die; face de contato voltada para a face B, encostada no chip",
+        "z_from_face_b_mm": {"value": 11, "range": [9, 14], "basis": "soma de espessuras, ver card.thickness"}
+      },
+      "rationale": "A existência vem de duas fontes sobre esta família e de uma descrição desta placa. As dimensões da face de contato vêm de foto; a espessura e o interior não têm evidência.",
+      "alternatives_considered": [
+        "bloco de cobre maciço com heat pipes soldados (sem câmara): descartado porque a NVIDIA anuncia câmara de vapor na placa irmã e 600 W em dois slots pedem espalhamento melhor",
+        "duas câmaras separadas, uma por lado ('bilateral' na Jon Peddie): possível; a foto mostra uma única placa de contato"
+      ],
+      "consistency_checks": {
+        "thermal": "ok em ordem de grandeza (Q9)",
+        "geometry": "ok: cabe entre o PCB e as aletas centrais no orçamento de 40 mm",
+        "assembly": "ok: a mola em X puxa o PCB contra a placa com 4 parafusos (gn-29)"
+      },
+      "viewer_disclaimer": "Estrutura provável, derivada da RTX 5090 Founders Edition: nenhuma foto desta placa mostra a câmara de vapor por dentro. Só a face de contato foi vista."
+    },
+    {
+      "id": "cooler.heatpipes",
+      "queue_item": 1,
+      "new_in_tree": true,
+      "provenance": "derived",
+      "confidence": 0.45,
+      "analog": "5090fe: PCGH ('insgesamt zehn Heatpipes', página aberta por resumo); TechPowerUp ('five double-length heatpipes', só resumo de busca)",
+      "photo_evidence": ["nenhuma: o catálogo registra 'heatpipes: nenhum visível'"],
+      "deduction": "Cinco tubos saem da câmara para cada pilha de aletas das pontas, ao longo do comprimento, atravessando as aletas.",
+      "parameters": {
+        "count_total": {"value": 10, "range": [8, 12], "note": "5 por lado; 'cinco de comprimento duplo' e 'dez' descrevem a mesma coisa"},
+        "diameter_mm": {"value": 8, "range": [6, 8], "basis": "prática de mercado"},
+        "length_per_side_mm": {"value": 110, "range": [95, 120], "basis": "comprimento da pilha de aletas da ponta"},
+        "direction": "ao longo de x, perpendicular às aletas"
+      },
+      "rationale": "As aletas das pontas são placas empilhadas ao longo do comprimento (visto em gn-02 e gn-31). Tubos ao longo do comprimento atravessam todas elas: a geometria da foto é compatível com o análogo.",
+      "alternatives_considered": [
+        "câmara de vapor única que se estende sob as duas pilhas, sem tubos: descartada pelo texto das fontes da placa irmã",
+        "6 ou 8 tubos no total"
+      ],
+      "consistency_checks": {
+        "thermal": "ok: 10 tubos de 8 mm levam de 50 a 80 W cada em prática de mercado, 500 a 800 W no total, acima de 600 W",
+        "geometry": "ok: 5 tubos de 8 mm lado a lado ocupam 40 a 50 mm dos cerca de 118 mm de altura da pilha"
+      },
+      "viewer_disclaimer": "Tubos de calor derivados da placa irmã (RTX 5090 Founders Edition). Quantidade e trajeto não foram vistos nesta placa."
+    },
+    {
+      "id": "cooler.base",
+      "queue_item": 1,
+      "provenance": "derived",
+      "confidence": 0.6,
+      "analog": "nenhum: fotos desta placa",
+      "photo_evidence": [
+        "gn-34: placa acobreada com marca de pasta do tamanho do die; faixas de pads sobre barras cinza nas laterais; pad com nervuras junto à borda superior",
+        "gn-39: moldura preta com código de peça impresso (leitura incerta) e coluna roscada com trava vermelha"
+      ],
+      "deduction": "A base é a face de contato da câmara de vapor (cooler.vapor_chamber) mais uma moldura preta que carrega os pads de memória e de energia e as colunas dos parafusos.",
+      "parameters": {
+        "contact_plate": "ver cooler.vapor_chamber",
+        "frame_outline_mm": {"value": [108, 112], "tolerance": 10, "note": "acompanha o contorno do PCB"},
+        "standoffs": {"value": 8, "range": [6, 10], "note": "4 da mola e 4 da placa que cobre o PCB; 2 vistas em gn-34"}
+      },
+      "rationale": "Forma e posição vêm de foto; a contagem de colunas é dedução a partir dos furos do PCB.",
+      "alternatives_considered": ["base e moldura como peça única fundida"],
+      "consistency_checks": {"assembly": "ok", "geometry": "ok"},
+      "viewer_disclaimer": "Forma simplificada a partir de fotos oblíquas."
+    },
+    {
+      "id": "cooler.fins.1_2",
+      "tree_ids": ["cooler.fins.1", "cooler.fins.2"],
+      "queue_item": 1,
+      "provenance": "derived",
+      "confidence": 0.5,
+      "confidence_breakdown": {"existe e orientação": 0.8, "contagem e passo": 0.3},
+      "analog": "fotos desta placa para forma e orientação; prática de mercado para passo e espessura",
+      "photo_evidence": [
+        "gn-02: aletas finas verticais atrás das pás",
+        "gn-29, gn-31: duas carcaças quase quadradas, uma em cada ponta, com a face B em grade de nervuras",
+        "gn-16: as nervuras continuam na lateral arredondada da ponta do bracket"
+      ],
+      "deduction": "Cada pilha é um conjunto de placas finas no plano altura por espessura, empilhadas ao longo do comprimento. O ar entra pela face A, empurrado pelo ventilador, e sai pela face B.",
+      "parameters": {
+        "stack_x_mm": {"value": 98, "range": [90, 105]},
+        "stack_y_mm": {"value": 118, "range": [110, 124]},
+        "stack_z_mm": {"value": 22, "range": [18, 26], "note": "40 mm menos ventilador e grade"},
+        "fin_count_each": {"value": 60, "range": [48, 75], "fidelity": "C, representativa"},
+        "fin_pitch_mm": {"value": 1.6, "range": [1.3, 2.0]},
+        "fin_thickness_mm": {"value": 0.3, "range": [0.2, 0.4]},
+        "material": "alumínio com acabamento preto (cor vista; material suposto)",
+        "depression": "leve rebaixo nas aletas (texto da GN); aletas mais altas onde termina a placa do PCB"
+      },
+      "rationale": "Orientação e contorno vêm de foto. Não consegui contar aletas na resolução vista; o passo é prática de mercado.",
+      "alternatives_considered": ["passo de 1,2 mm com 80 aletas", "aletas de cobre nas primeiras fileiras"],
+      "consistency_checks": {
+        "thermal": "ok em ordem de grandeza: 2 x 60 x (0,098 x 0,022 x 2) = 0,52 m², mais a pilha central",
+        "geometry": "ok: 98 + 108 + 98 = 304 mm"
+      },
+      "viewer_disclaimer": "Quantidade de aletas representativa: não foi contada em foto."
+    },
+    {
+      "id": "cooler.fins.3",
+      "queue_item": 1,
+      "provenance": "derived",
+      "confidence": 0.5,
+      "confidence_breakdown": {"existe e posição": 0.8, "ligação com as outras pilhas": 0.3},
+      "analog": "fotos desta placa",
+      "photo_evidence": [
+        "gn-26: pilha central em três degraus entre os ventiladores, vista pela face A sem o painel da borda superior",
+        "gn-21, gn-30, gn-34: aletas sob a borda superior do PCB, com um pad branco entre as aletas e os componentes da borda"
+      ],
+      "deduction": "Pilha separada das duas grandes, montada sobre a câmara de vapor do lado da face A. Além do chip, recebe calor dos indutores da borda pelo pad branco.",
+      "parameters": {
+        "length_x_mm": {"value": 64, "range": [55, 75], "basis": "gn-34, marca da pasta como régua"},
+        "tiers": {"value": 3, "basis": "gn-26"},
+        "orientation": "mesma das pilhas das pontas (placas empilhadas ao longo de x)",
+        "joined_to_end_stacks": {"value": false, "confidence": 0.3}
+      },
+      "rationale": "A existência e a posição são vistas. A ligação com as outras pilhas e o caminho do ar não aparecem (Q5).",
+      "alternatives_considered": ["uma única pilha contínua de ponta a ponta, com um rebaixo no centro"],
+      "consistency_checks": {"thermal": "aberto (Q5)", "geometry": "ok", "assembly": "ok"},
+      "viewer_disclaimer": "Pilha central vista em foto; o caminho do ar por ela é hipótese."
+    },
+    {
+      "id": "cooler.heat_path",
+      "queue_item": 1,
+      "kind": "subsystem",
+      "provenance": "inferred",
+      "confidence": 0.5,
+      "analog": "5090fe e física de câmara de vapor",
+      "parameters": {
+        "steps": [
+          "die do GB202 (frente do PCB, voltada para a face A)",
+          "pasta térmica (confirmed, GN)",
+          "face de contato da câmara de vapor (vista em foto)",
+          "vapor dentro da câmara e dos 10 tubos (derived)",
+          "aletas: pilha central sobre a câmara e duas pilhas das pontas, atravessadas pelos tubos",
+          "ar: entra pela face A com os dois ventiladores, atravessa as pilhas das pontas e sai pela face B; parte sai pela borda superior"
+        ],
+        "secondary_paths": [
+          "memória e estágios de potência da frente: pads sobre a moldura da base (gn-34, gn-39)",
+          "memória do verso: pads para a placa que cobre o PCB (gn-27)",
+          "indutores da borda superior: pad branco para a pilha central (gn-30)"
+        ],
+        "thermal_check": {
+          "power_w": 600,
+          "airflow_needed_cfm": {"value": 44, "note": "600 / (1,16 x 1005 x 25 K) = 0,0206 m³/s"},
+          "fin_area_m2": {"value": 0.55, "range": [0.45, 0.75]},
+          "h_assumed_w_m2k": 50,
+          "estimated_core_c": [78, 85],
+          "measured_core_c": {"value": 82, "source": "GN, esta placa, ventiladores a 1700 RPM"},
+          "analog_core_c": {"value": 72, "source": "GN, 5090 FE, cerca de 1570 RPM, 569 W, metal líquido"}
+        }
+      },
+      "rationale": "A ordem dos passos é a de qualquer cooler de câmara de vapor. A diferença de 10 °C para a placa irmã tem o sinal esperado: mais potência e pasta no lugar de metal líquido.",
+      "alternatives_considered": ["ar em sentido inverso (entra pela face B): descartado pelo texto da GN ('pushes air straight through the card')"],
+      "consistency_checks": {"thermal": "ordem de grandeza (Q9)"},
+      "viewer_disclaimer": "Caminho do calor provável. O estágio com o cooler aberto é didático: os ventiladores nunca saem nas fotos."
+    },
+    {
+      "id": "pcb.main",
+      "queue_item": 2,
+      "provenance": "derived",
+      "confidence": 0.45,
+      "confidence_breakdown": {"contorno e posição relativa": 0.7, "dimensões": 0.4},
+      "analog": "fotos desta placa; encapsulamento GDDR7 de 12 x 14 mm (measurements.csv) e conector do adaptador PCIe (gn-25) como réguas",
+      "photo_evidence": [
+        "gn-29, gn-31: PCB quase quadrado entre as duas carcaças, com as bordas laterais avançando um pouco sobre elas",
+        "gn-29, gn-30: chanfro e entalhe no canto do conector de energia, na borda superior, do lado oposto ao bracket",
+        "gn-40, gn-41, gn-38: rebaixo raso na borda dos contatos PCIe, com um controlador e uma fileira de indutores",
+        "gn-33, gn-40: 4 furos grandes nos cantos do package (parafusos da mola)"
+      ],
+      "deduction": "Dimensões por proporção em foto oblíqua; posição no cartão por simetria (os ventiladores são simétricos em gn-05 e o X cruza em 152 mm).",
+      "parameters": {
+        "width_x_mm": {"value": 108, "range": [98, 118]},
+        "height_y_mm": {"value": 112, "range": [102, 118]},
+        "thickness_mm": {"value": 1.6, "range": [1.57, 2.4], "note": "1,57 é a referência da norma; placas de muitas camadas costumam ser mais grossas"},
+        "card_x_range_mm": {"value": [98, 206], "tolerance": 8},
+        "card_y_range_mm": {"value": [14, 126], "tolerance": 6, "note": "vale se D2 for aceita"},
+        "z_plane": "perto da face B; verso do PCB voltado para a face B",
+        "outline": "retângulo com chanfro e entalhe no canto (u máximo, v máximo) e rebaixo raso na borda v = 0",
+        "gpu_center_uv_mm": {"value": [54, 56], "tolerance": 5},
+        "power_connector": {
+          "edge": "v máximo (borda superior do cartão)",
+          "u_center_mm": {"value": 97, "range": [88, 104]},
+          "card_x_mm": {"value": 195, "range": [185, 205], "check": "55 % a 70 % do comprimento dá 168 a 213 mm (catálogo)"},
+          "rotation_in_plane_deg": {"value": 40, "range": [20, 60], "confidence": 0.3, "note": "o corpo acompanha o chanfro do PCB em gn-29; sentido a conferir"}
+        },
+        "aux_header": {"edge": "v máximo", "u_center_mm": {"value": 12, "range": [6, 20]}},
+        "mounting_holes": {"spring": 4, "plate": {"value": 4, "range": [2, 4]}}
+      },
+      "rationale": "O contorno e a posição relativa das peças são vistos. As dimensões dependem de qual lado do chip de memória fica ao longo da borda (Q2).",
+      "alternatives_considered": [
+        "100 x 104 mm (chip com o lado de 12 mm ao longo da borda)",
+        "117 x 119 mm (lado de 14 mm)",
+        "estimativa do catálogo: 85 a 100 mm de largura"
+      ],
+      "consistency_checks": {
+        "geometry": "ok com ressalvas: 98 + 108 + 98 = 304 mm; altura cabe em 126 mm de carcaça; borda de energia apertada (Q3)",
+        "assembly": "ok: sai por último, preso só pelos 4 parafusos da mola e pelos conectores"
+      },
+      "viewer_disclaimer": "Contorno visto em foto; dimensões estimadas por proporção, com tolerância de 10 mm."
+    },
+    {
+      "id": "mem.topology",
+      "queue_item": 2,
+      "kind": "subsystem",
+      "provenance": "derived",
+      "confidence": 0.75,
+      "confidence_breakdown": {"32 chips de 3 GB": 0.8, "um par por controlador, 16 bits por chip": 0.5},
+      "provenance_breakdown": {"32 chips de 3 GB, 16 por face": "derived", "mecanismo do par (16 bits por chip)": "inferred"},
+      "analog": "norma GDDR7 (comunicado JEDEC: modo de 2 canais; tabela Micron: 'Clam shell: Yes'); a 5090 FE NÃO serve de análogo aqui, porque usa um chip por controlador",
+      "photo_evidence": [
+        "gn-29: 16 chips no verso, nenhuma posição vazia",
+        "gn-33, gn-36, gn-37, gn-40, gn-42: na frente, pads com a mesma disposição do verso (5 lóbulos de cada lado, 2 pads com nervuras na borda de energia, 2 pads arredondados na borda dos contatos)"
+      ],
+      "deduction": "Os pads da frente cobrem 16 posições espelhadas às do verso. Não vi os chips sob os pads.",
+      "parameters": {
+        "chips": {"value": 32, "range": [24, 32]},
+        "density_gbit": {"value": 24, "alternatives": [32]},
+        "chips_per_face": 16,
+        "chips_per_controller": 2,
+        "bits_per_chip": {"value": 16, "provenance": "inferred", "note": "modo de 2 canais; conta de standards-sources C3, sem a norma aberta"},
+        "pair_arrangement": "um chip na frente e outro no verso, na mesma posição (clamshell)"
+      },
+      "rationale": "É a única ocupação que usa as 32 posições, fecha os 96 GB com um chip que existe em produção (24 Gbit) e dá a mesma carga aos 16 controladores.",
+      "alternatives_considered": [
+        "24 chips de 32 Gbit (16 no verso e 8 na frente): fecha a capacidade, mas deixa 8 controladores com dois chips e 8 com um, e os pads da frente cobrem 16 posições",
+        "16 chips de 48 Gbit: não existe na norma (16 a 32 Gbit)"
+      ],
+      "consistency_checks": {
+        "memory": "ok: 32 x 3 GB = 96 GB; 32 x 16 bits = 512 bits; 32 / 16 controladores = 2",
+        "thermal": "atenção: a memória do verso só tem a placa que cobre o PCB como dissipador; a GN mediu 89 a 90 °C na memória da 5090 FE"
+      },
+      "viewer_disclaimer": "Ocupação provável: 32 chips de 3 GB, dois por controlador. A marcação dos chips não foi lida e a frente só foi vista coberta por pads."
+    },
+    {
+      "id": "mem.back.1..16",
+      "queue_item": 2,
+      "provenance": "derived",
+      "confidence": 0.6,
+      "analog": "fotos desta placa; encapsulamento 12 x 14 x 1,1 mm (Micron via Jon Peddie)",
+      "photo_evidence": ["gn-29, gn-30: 5 + 5 nas laterais, 4 junto ao conector de energia, 2 na borda dos contatos, encostados uns nos outros"],
+      "deduction": "Coordenadas calculadas a partir do package no centro e de 2 mm de folga, não medidas.",
+      "parameters": {
+        "package_mm": [12, 14, 1.1],
+        "tolerance_mm": 4,
+        "layout_uv_mm": {
+          "lado_bracket (5, 12 em u por 14 em v)": [[18, 26], [18, 41], [18, 56], [18, 71], [18, 86]],
+          "lado_oposto (5)": [[90, 26], [90, 41], [90, 56], [90, 71], [90, 86]],
+          "borda_energia (4, 14 em u por 12 em v)": [[31.5, 95.5], [46.5, 95.5], [61.5, 95.5], [76.5, 95.5]],
+          "borda_contatos (2)": [[38, 16.5], [70, 16.5]]
+        }
+      },
+      "rationale": "A disposição é vista; as coordenadas são um arranjo regular compatível com ela.",
+      "alternatives_considered": ["chips das laterais com o lado de 14 mm em u"],
+      "consistency_checks": {"geometry": "ok: nenhuma colisão no arranjo proposto", "memory": "ok"},
+      "viewer_disclaimer": "Disposição vista em foto; posições exatas aproximadas."
+    },
+    {
+      "id": "mem.front.1..16",
+      "queue_item": 8,
+      "provenance": "derived",
+      "confidence": 0.7,
+      "confidence_breakdown": {"16 posições espelhadas": 0.8, "todas ocupadas por chips de 3 GB": 0.75, "coordenadas": 0.5},
+      "analog": "fotos desta placa; modo clamshell da norma",
+      "photo_evidence": [
+        "gn-33: faixa com 5 lóbulos numa lateral; dois pads arredondados, do tamanho de um chip, na borda dos contatos",
+        "gn-36, gn-42: dois pads com nervuras (dois chips cada) entre o package e a fileira de indutores da borda de energia",
+        "gn-37: faixa longa com lóbulos na outra lateral",
+        "gn-40: os dois pads arredondados entre dois furos, com um indutor '4R7' no meio"
+      ],
+      "deduction": "Cada pad ou lóbulo cobre um chip. As 16 posições da frente ficam exatamente atrás das 16 do verso.",
+      "parameters": {
+        "positions": 16,
+        "layout": "mesmas coordenadas (u, v) de mem.back, na outra face",
+        "contents": "chip GDDR7 de 24 Gbit em cada posição",
+        "cooling": "pads para a moldura da base do cooler"
+      },
+      "rationale": "A contagem de pads por lado (5, 5, 4, 2) repete a do verso. Um pad sobre posição vazia não teria função.",
+      "alternatives_considered": ["8 posições ocupadas e 8 vazias sob pads contínuos (hipótese dos 24 chips de 4 GB)"],
+      "consistency_checks": {"memory": "ok", "geometry": "ok: chip de 1,1 mm é mais baixo que o package"},
+      "viewer_disclaimer": "As 16 posições da frente só foram vistas cobertas por pads térmicos. Chips e posições são dedução."
+    },
+    {
+      "id": "boards.topology",
+      "queue_item": 3,
+      "kind": "subsystem",
+      "provenance": "derived",
+      "confidence": 0.65,
+      "analog": "5090fe: 'unique 3-piece PCB' (NVIDIA); GN ('connected via a flex cable to the main PCB')",
+      "photo_evidence": [
+        "gn-29, gn-33: PCB principal",
+        "gn-24, gn-25: adaptador PCIe com conector de placa a placa 'J3'",
+        "gn-29, gn-31, gn-32: cabo flat marrom largo, que sai do canto do PCB do lado do bracket e entra na carcaça dessa ponta",
+        "gn-30: conector pequeno de cabo plano no verso, junto ao canto do lado do bracket"
+      ],
+      "deduction": "A terceira placa (saídas de vídeo) não aparece. Deduzo que existe porque o cabo largo vai para a ponta das portas.",
+      "parameters": {
+        "board_count": {"value": 3, "range": [3, 4]},
+        "boards": ["pcb.main", "pcie.adapter", "io.board"],
+        "links": [
+          {"from": "pcb.main", "to": "pcie.adapter", "via": "conector de placa a placa (J3), sem cabo", "provenance": "derived (foto)"},
+          {"from": "pcb.main", "to": "io.board", "via": "flex.dp", "provenance": "derived"},
+          {"from": "pcb.main", "to": "cooler.fan.1 e cooler.fan.2", "via": "flex.fan.1 e flex.fan.2", "provenance": "inferred"}
+        ]
+      },
+      "rationale": "Duas placas são vistas e a terceira é a explicação mais simples para o cabo e para a posição das portas.",
+      "alternatives_considered": [
+        "quatro placas (uma só para os ventiladores): um resumo de busca citava quatro partes, sem página aberta",
+        "portas ligadas por cabos coaxiais, sem placa: improvável para 4 saídas"
+      ],
+      "consistency_checks": {"assembly": "ok: os cabos soltam em E6, antes do PCB", "geometry": "ok"},
+      "viewer_disclaimer": "Três placas: duas vistas em foto e uma (saídas de vídeo) deduzida."
+    },
+    {
+      "id": "pcie.adapter",
+      "queue_item": 3,
+      "provenance": "derived",
+      "confidence": 0.65,
+      "analog": "foto desta placa; zona de contatos x16 de 84,3 mm (norma) como régua",
+      "photo_evidence": ["gn-25: placa fina em L, com contatos x16, entalhe, gancho de retenção, conector J3 de duas fileiras, 4 furos com anel de cobre em volta do conector, 2 furos na faixa e 1 furo no topo"],
+      "deduction": "Medidas por proporção em foto quase frontal, segurada na mão.",
+      "parameters": {
+        "length_mm": {"value": 100, "tolerance": 8},
+        "strip_height_mm": {"value": 16.5, "tolerance": 2},
+        "total_height_mm": {"value": 35, "tolerance": 3},
+        "tab_width_base_mm": {"value": 39, "tolerance": 4},
+        "connector_length_mm": {"value": 23, "tolerance": 2},
+        "connector_center_above_finger_bottom_mm": {"value": 25, "tolerance": 3},
+        "card_x_of_connector_mm": {"value": 125, "tolerance": 8},
+        "screw_holes": {"tab": 4, "strip": 2}
+      },
+      "rationale": "É a peça com a melhor régua do conjunto: os contatos x16 têm dimensão de norma.",
+      "alternatives_considered": [],
+      "consistency_checks": {
+        "geometry": "ok: o conector cai em u de cerca de 27 mm no PCB, onde gn-29 mostra um conector fino junto à borda",
+        "power_budget": "o passo fino do conector indica que pouca potência vem do slot (Q8)"
+      },
+      "viewer_disclaimer": "Forma vista em foto; medidas por proporção."
+    },
+    {
+      "id": "io.board",
+      "queue_item": 3,
+      "provenance": "derived",
+      "confidence": 0.55,
+      "confidence_breakdown": {"existe": 0.65, "forma": 0.2},
+      "analog": "5090fe",
+      "photo_evidence": ["gn-16: placa de extremidade preta que segura as 4 portas, com parafusos pequenos em volta de cada uma; a placa de circuito atrás dela não aparece"],
+      "deduction": "Placa estreita atrás da placa de extremidade, com 4 receptáculos DisplayPort em fileira e o conector do cabo flat.",
+      "parameters": {
+        "outline_mm": {"value": [100, 22], "range": [[85, 115], [15, 30]], "provenance": "illustrative"},
+        "ports": 4,
+        "port_pitch_mm": {"value": 19.5, "range": [18, 22], "basis": "gn-16, receptáculo de 16,1 mm como régua"}
+      },
+      "rationale": "Existência derivada; forma só para dar volume ao modelo.",
+      "alternatives_considered": ["portas soldadas em duas placas menores"],
+      "consistency_checks": {"geometry": "ok: cabe nos 40 mm de espessura", "assembly": "fica presa à placa de extremidade, que não sai no teardown"},
+      "viewer_disclaimer": "Placa das saídas de vídeo deduzida: nenhuma foto a mostra. Forma ilustrativa."
+    },
+    {
+      "id": "flex.dp",
+      "queue_item": 3,
+      "provenance": "derived",
+      "confidence": 0.55,
+      "analog": "5090fe (GN: placa de E/S ligada por cabo flat)",
+      "photo_evidence": ["gn-29, gn-31, gn-32, gn-34: cabo flat marrom com reforço, de 20 a 25 mm de largura, solto do PCB numa ponta e entrando na carcaça do lado do bracket pela beirada dos contatos PCIe"],
+      "deduction": "Leva os sinais das 4 DisplayPort até io.board, por um canal ao longo da pilha de aletas dessa ponta.",
+      "parameters": {
+        "width_mm": {"value": 22, "range": [18, 26]},
+        "length_mm": {"value": 130, "range": [110, 150]},
+        "pcb_end": "conector fino no verso, perto da borda dos contatos",
+        "far_end": "io.board (não visto)"
+      },
+      "rationale": "A ponta que se vê entra na carcaça da ponta das portas; não há outro destino plausível para um cabo dessa largura.",
+      "alternatives_considered": ["o cabo leva só ventilador e iluminação: largo demais para isso"],
+      "consistency_checks": {"assembly": "ok"},
+      "viewer_disclaimer": "Só uma ponta do cabo foi vista. O destino é dedução."
+    },
+    {
+      "id": "flex.fan",
+      "tree_ids": ["flex.fan.1", "flex.fan.2"],
+      "queue_item": 3,
+      "provenance": "inferred",
+      "confidence": 0.35,
+      "analog": "prática de mercado",
+      "photo_evidence": ["gn-30, gn-34: cabo plano pequeno junto ao canto da carcaça do lado do bracket; gn-29: possível conector pequeno do outro lado (incerto)"],
+      "deduction": "Um cabo plano fino para cada ventilador.",
+      "parameters": {"count": {"value": 2, "range": [1, 3]}, "width_mm": {"value": 5, "range": [3, 8]}},
+      "rationale": "Os ventiladores precisam de alimentação e o PCB não tem conector de fio visível.",
+      "alternatives_considered": ["os dois ventiladores no mesmo cabo de flex.dp"],
+      "consistency_checks": {"assembly": "ok"},
+      "viewer_disclaimer": "Cabos dos ventiladores prováveis: função não vista."
+    },
+    {
+      "id": "io.aux_header",
+      "queue_item": 3,
+      "new_in_tree": true,
+      "provenance": "derived",
+      "confidence": 0.5,
+      "confidence_breakdown": {"existe e posição": 0.8, "função (sincronismo)": 0.3},
+      "provenance_breakdown": {"existe e posição": "derived (foto)", "função": "inferred"},
+      "analog": "geração anterior da linha profissional (conectores de sincronismo na borda superior); existe um kit desta placa com a RTX PRO Sync (resumo de busca)",
+      "photo_evidence": [
+        "gn-21, gn-26, gn-30: conector preto com pinos dourados em duas fileiras, na borda superior do PCB, no canto do lado do bracket",
+        "gn-13: retângulo liso no painel da borda superior, do lado do bracket, acima dessa posição"
+      ],
+      "deduction": "O retângulo liso é uma tampa sobre esse conector. A função provável é a ligação com a placa de sincronismo.",
+      "parameters": {"rows": 2, "pins": {"value": 14, "range": [12, 20]}, "length_mm": {"value": 14, "range": [10, 20]}},
+      "rationale": "Posição vista em duas etapas da desmontagem; função sem fonte aberta.",
+      "alternatives_considered": ["conector de depuração de fábrica"],
+      "consistency_checks": {"geometry": "ok"},
+      "viewer_disclaimer": "Conector auxiliar visto em foto. A função não foi confirmada."
+    },
+    {
+      "id": "power.vrm.gpu",
+      "queue_item": 4,
+      "provenance": "inferred",
+      "confidence": 0.35,
+      "confidence_breakdown": {"duas fileiras nas bordas longas": 0.75, "contagem": 0.3, "controlador MPS": 0.5},
+      "provenance_breakdown": {"disposição em duas fileiras": "derived (foto)", "contagem de fases": "inferred", "controlador": "derived (leitura de foto, incerta)"},
+      "analog": "5090fe (27, 30 ou 34 fases no total, fontes divergentes; 4 fases no verso segundo resumo de busca); blog sabareesh sobre esta placa ('identical to the 23 still on the board')",
+      "photo_evidence": [
+        "gn-33: cerca de 10 indutores em fileira numa borda, com uma fileira de estágios de potência atrás",
+        "gn-36, gn-42: 6 a 8 indutores na borda do conector de energia, entre o conector auxiliar e o conector de 16 pinos, com uma faixa de pad sobre os estágios",
+        "gn-38: fileira de indutores e de estágios alternados, e mais indutores numa lateral",
+        "gn-40: CI quadrado com marcação que li como 'MPS ... MP29816-A' e um indutor isolado '85N'",
+        "gn-29, gn-30: no verso, duas filas de componentes retangulares na borda de energia"
+      ],
+      "deduction": "Os indutores de mesmo tipo alimentam os trilhos de núcleo do GB202. Vi de 18 a 20 nas fotos da frente, sem ver as bordas inteiras.",
+      "parameters": {
+        "phases": {"value": 24, "range": [20, 30], "note": "soma dos trilhos de núcleo"},
+        "stage": "estágio de potência integrado (DrMOS), cerca de 5 x 6 mm",
+        "stage_rating_a": {"value": 50, "range": [50, 90], "note": "suposto, conservador"},
+        "layout": {
+          "borda_contatos_frente": {"value": 12, "range": [10, 13]},
+          "borda_energia_frente": {"value": 8, "range": [6, 9]},
+          "lateral_ou_verso": {"value": 4, "range": [0, 8]}
+        },
+        "inductor_mm": {"value": [6.5, 6.5, 5], "range": "5 a 8 de lado, 4 a 6 de altura", "marking": "85N (leitura incerta)"},
+        "controller": {"value": "MPS MP29816-A (leitura incerta em gn-40)", "count": {"value": 2, "range": [1, 2]}, "note": "a variante C do mesmo controlador admite até 16 fases num trilho ou 8 + 8 (resumo de busca)"},
+        "fidelity": "C: quantidade representativa"
+      },
+      "power_budget": {
+        "tbp_w": 600,
+        "fans_and_misc_w": 25,
+        "memory_input_w": 78,
+        "core_input_w": 497,
+        "vrm_efficiency": 0.91,
+        "core_output_w": 452,
+        "core_voltage_v": {"value": 0.9, "range": [0.85, 1.05]},
+        "core_current_a": {"value": 502, "range": [430, 535]},
+        "capacity_a": {"value": 1200, "calc": "24 x 50 A"},
+        "margin": "2,4 vezes; 21 A por fase"
+      },
+      "rationale": "24 é o número do blog, é compatível com o que se vê e fica dentro do que a placa irmã mostra. Com 16 fases a conta ainda fecharia; com 30 também.",
+      "alternatives_considered": [
+        "20 fases, todas na frente",
+        "30 fases como o número divulgado para a 5090 FE",
+        "16 + 8 em dois trilhos, um por controlador: combina com os limites do MP29816, mas é coincidência numérica sem fonte"
+      ],
+      "consistency_checks": {
+        "power_budget": "ok: 1200 A de capacidade contra cerca de 500 A",
+        "geometry": "apertado na borda de energia (Q3)",
+        "thermal": "ok: pads sobre os estágios (gn-36) e pad dos indutores para a pilha central (gn-30)"
+      },
+      "viewer_disclaimer": "Estrutura provável: não achamos fonte com o número de fases, e nenhuma foto vista mostra as fileiras inteiras. A quantidade no modelo é representativa."
+    },
+    {
+      "id": "power.vrm.mem",
+      "queue_item": 4,
+      "provenance": "inferred",
+      "confidence": 0.3,
+      "analog": "5090fe (8 fases 'de memória' segundo resumo de busca da TechPowerUp, para 16 chips; o número pode incluir outro trilho)",
+      "photo_evidence": ["gn-33, gn-38, gn-40: indutor menor '4R7' junto ao package; gn-38, gn-42: componente '330'. São de conversores auxiliares, não das fases principais"],
+      "deduction": "Um conversor separado de poucas fases alimenta os 32 chips.",
+      "parameters": {
+        "phases": {"value": 4, "range": [3, 8]},
+        "stage_rating_a": {"value": 30, "range": [25, 60]},
+        "aux_rails": {"value": 3, "range": [2, 5], "note": "conversores pequenos, vistos pelos indutores '4R7' e '330'"}
+      },
+      "power_budget": {
+        "chips": 32,
+        "w_per_chip": {"value": 2.2, "range": [1.5, 3.0], "note": "suposto"},
+        "memory_w": 70,
+        "rail_v": 1.2,
+        "current_a": {"value": 59, "range": [40, 80]},
+        "capacity_a": {"value": 120, "calc": "4 x 30 A"},
+        "margin": "2 vezes no valor central; 1,5 vez no pior caso"
+      },
+      "rationale": "A potência da memória dobra em relação à placa irmã (32 chips contra 16), mas continua pequena perto do núcleo.",
+      "alternatives_considered": ["8 fases, como o número citado para a 5090 FE", "2 fases de alta corrente"],
+      "consistency_checks": {"power_budget": "ok no valor central", "geometry": "ok"},
+      "viewer_disclaimer": "Estrutura provável: nenhuma fonte descreve a alimentação da memória desta placa."
+    },
+    {
+      "id": "power.split",
+      "queue_item": 4,
+      "kind": "subsystem",
+      "provenance": "inferred",
+      "confidence": 0.45,
+      "analog": "norma (Intel ATX12VO 2.11 reproduzindo a CEM 5.1; CEM 3.0 para o slot)",
+      "photo_evidence": ["gn-25: o adaptador PCIe liga-se ao PCB por um conector de passo fino, sem barras nem contatos largos de potência"],
+      "deduction": "Quase toda a potência entra pelo conector de 16 pinos. O slot fornece no máximo alguns watts (3,3 V e uma fração dos 12 V).",
+      "parameters": {
+        "connector_w": {"value": 590, "range": [525, 600]},
+        "slot_w": {"value": 10, "range": [0, 75]},
+        "connector_current_a": {"value": 49, "calc": "590 / 12"},
+        "norm_limit_a": 55,
+        "per_pin_a": {"value": 8.2, "limit": 9.5}
+      },
+      "rationale": "Um conector de passo fino não leva 5,5 A por poucos contatos sem aquecer; a divisão exata não tem fonte.",
+      "alternatives_considered": ["slot fornecendo os 66 W de 12 V previstos na norma"],
+      "consistency_checks": {"power_budget": "fecha com folga pequena (Q8)"},
+      "viewer_disclaimer": "Divisão provável da potência entre o conector e o slot: sem fonte."
+    },
+    {
+      "id": "gpu.package",
+      "queue_item": 5,
+      "provenance": "derived",
+      "confidence": 0.55,
+      "confidence_breakdown": {"die 24 x 31": 0.7, "package 56 x 63": 0.5, "orientação": 0.5, "alturas": 0.3},
+      "analog": "vazamento de 2024 sobre o GB202 (die 24 x 31 mm, package 63 x 56 mm; só resumo de busca); fotos desta placa para proporção, cor e orientação",
+      "photo_evidence": [
+        "gn-33, gn-42: die escuro e espelhado, mais comprido na direção da altura do cartão; substrato verde à vista em volta do die; moldura larga, bege ou bronze, quase quadrada",
+        "gn-41: razão entre a largura externa da moldura e a do die de cerca de 2,4; razão entre a janela e o die de cerca de 1,35",
+        "gn-42: marcação 'NVIDIA', 'S TW 2508', 'e1', 'GB202-870-A1' (parcialmente legível)",
+        "gn-05: foto de terceiro de um GB202, die com proporção de 1 para 1,28"
+      ],
+      "deduction": "Die: 750 mm² (confirmed) com proporção de 1 para 1,28 dá 24,2 x 31,0 mm. Moldura: 2,4 x 24,2 = 57 mm, que bate com o lado de 56 mm do vazamento.",
+      "parameters": {
+        "package_x_mm": {"value": 56, "range": [54, 60]},
+        "package_y_mm": {"value": 63, "range": [60, 66]},
+        "die_x_mm": {"value": 24.2, "range": [23, 25.5]},
+        "die_y_mm": {"value": 31.0, "range": [29.5, 32.5]},
+        "window_x_mm": {"value": 34, "range": [31, 37]},
+        "window_y_mm": {"value": 40, "range": [37, 43]},
+        "stiffener_ring_width_mm": {"value": 11, "range": [9, 13]},
+        "stiffener_color": "bege ou bronze (gn-33, gn-42)",
+        "substrate_color": "verde",
+        "height_die_top_above_pcb_mm": {"value": 2.9, "range": [2.4, 3.6], "provenance": "inferred"},
+        "stiffener_below_die_top_mm": {"value": 0.2, "range": [0, 0.5], "provenance": "inferred"},
+        "die_internal_structures": "illustrative"
+      },
+      "rationale": "A área do die é oficial e a proporção vem de duas fotos. O package depende de um vazamento de baixa autoridade, conferido por proporção em foto numa direção só.",
+      "alternatives_considered": ["package de 64 x 59 mm (medida em foto citada pela Tom's Hardware)", "package girado: 63 mm ao longo do comprimento"],
+      "consistency_checks": {
+        "geometry": "ok: 24,2 x 31,0 = 750 mm²; a moldura cabe entre as fileiras de memória",
+        "assembly": "ok: 4 furos da mola nos cantos do package (gn-33, gn-40)"
+      },
+      "viewer_disclaimer": "Dimensões do encapsulamento estimadas por proporção em foto e por um vazamento sobre o mesmo chip. As estruturas internas do die são ilustrativas."
+    },
+    {
+      "id": "fasteners.by_stage",
+      "tree_ids": ["fasteners.*"],
+      "queue_item": 6,
+      "provenance": "derived",
+      "confidence": 0.5,
+      "analog": "fotos desta placa para contagem; 5090fe para o tipo de cabeça (T6, só resumo de busca)",
+      "photo_evidence": [
+        "gn-11, gn-15: 4 parafusos pretos de cabeça em cruz no bracket",
+        "gn-16: 4 parafusos com arruela clara e 9 parafusos pequenos de cabeça em estrela na placa de extremidade; um furo pequeno com parafuso ao lado de um dos cantos",
+        "gn-22, gn-18: 4 parafusos pretos na peça que prende a aba do adaptador PCIe e 2 na faixa dos contatos",
+        "gn-24: 6 parafusos sobre o tapete depois de sair o adaptador",
+        "gn-20, gn-22, gn-24: 4 parafusos claros com arruela na placa central, ainda no lugar depois de erguer a tampa",
+        "gn-29: 4 parafusos na mola em X",
+        "gn-28: tampa de chave com símbolo de estrela (leitura incerta)"
+      ],
+      "deduction": "Os 4 parafusos claros prendem a placa que cobre o PCB (E5), não as tampas centrais (E3). O parafuso do aro pode ser o pequeno ao lado do canto da placa de extremidade, que só fica acessível sem o bracket.",
+      "parameters": {
+        "stages": [
+          {"stage": "E1", "part": "io.bracket", "count": 4, "head": "cruz (Phillips)", "size": "M2,5 a M3 (suposto)", "provenance": "derived (foto)", "confidence": 0.8},
+          {"stage": "não sai", "part": "placa de extremidade", "count": {"value": 14, "range": [13, 15]}, "detail": "4 com arruela clara e 9 a 10 pequenos em volta das portas", "head": "estrela (Torx)", "provenance": "derived (foto)", "confidence": 0.7},
+          {"stage": "E2", "part": "frame.rim", "count": 1, "head": "Torx (suposto)", "location": "placa de extremidade, ao lado de um canto (gn-16)", "provenance": "confirmed (contagem, texto da GN); inferred (posição)", "confidence": 0.4},
+          {"stage": "E3", "part": "frame.center_covers", "count": {"value": 0, "range": [0, 4]}, "detail": "tampas presas por encaixe; o texto da GN fala em 'some screws around the center'", "provenance": "inferred", "confidence": 0.3},
+          {"stage": "E4", "part": "pcie.clamp e pcie.adapter", "count": 6, "detail": "4 na peça sobre a aba e 2 na faixa", "head": "Torx (suposto)", "provenance": "derived (foto)", "confidence": 0.7},
+          {"stage": "E5", "part": "pcb.plate", "count": 4, "detail": "claros, com arruela", "head": "Torx (suposto)", "provenance": "derived (foto)", "confidence": 0.65},
+          {"stage": "E6", "part": "cooler.leaf_spring", "count": 4, "detail": "com mola ou arruela, atravessam o PCB e entram em colunas da base", "head": "Torx (suposto)", "provenance": "derived (foto)", "confidence": 0.8},
+          {"stage": "E7", "part": "pcb.main", "count": 0, "detail": "o PCB sai depois dos cabos e da mola, sem parafuso próprio (sequência da GN)", "provenance": "derived", "confidence": 0.55}
+        ],
+        "total_removed_e1_e7": {"value": 19, "range": [19, 23], "check": "o tapete mostra de 15 a 20 (catálogo)"},
+        "internal_head": {"value": "Torx T6", "range": "T5 a T8", "confidence": 0.4},
+        "fidelity": "C"
+      },
+      "rationale": "As contagens vêm de foto por etapa. O tipo de cabeça interno vem de leitura fraca de foto e de um resumo sobre a placa irmã.",
+      "alternatives_considered": ["os 4 parafusos claros pertencerem a E3: contradiz gn-20, em que a tampa sobe com eles no lugar"],
+      "consistency_checks": {"assembly": "ok para E1, E4, E5, E6 e E7; aberto para E2 e E3 (Q4)"},
+      "viewer_disclaimer": "Quantidades contadas em fotos por etapa. O tipo de cabeça e os parafusos das tampas centrais não foram vistos."
+    },
+    {
+      "id": "cooler.fan.blade",
+      "tree_ids": ["cooler.fan.1", "cooler.fan.2"],
+      "queue_item": 7,
+      "provenance": "derived",
+      "confidence": 0.5,
+      "confidence_breakdown": {"7 pás largas em foice, cubo de 40 mm": 0.75, "anel nas pontas": 0.5, "ângulos e espessura": 0.3},
+      "analog": "fotos desta placa; prática de mercado para ângulos",
+      "photo_evidence": [
+        "gn-02, gn-26: 7 pás largas, curvadas em foice, que quase se tocam vistas de frente; cubo com tampa de acabamento concêntrico",
+        "gn-05: os dois ventiladores com a mesma curvatura",
+        "gn-26: aro em volta do ventilador"
+      ],
+      "deduction": "Não consegui separar, na resolução vista, se o aro gira com as pás ou se é parte da carcaça.",
+      "parameters": {
+        "blades": {"value": 7, "range": [7, 8]},
+        "ring_outer_diameter_mm": {"value": 115, "tolerance": 6},
+        "rotor_diameter_mm": {"value": 111, "range": [106, 114]},
+        "hub_diameter_mm": {"value": 40, "tolerance": 3},
+        "tip_ring": {"value": true, "confidence": 0.5},
+        "blade_sweep_deg": {"value": 45, "range": [30, 60], "note": "ângulo entre a raiz e a ponta, visto de frente"},
+        "blade_solidity": {"value": 0.85, "range": [0.75, 0.95], "note": "fração do anel coberta pelas pás, vista de frente"},
+        "pitch_root_deg": {"value": 35, "range": [28, 42], "provenance": "illustrative"},
+        "pitch_tip_deg": {"value": 20, "range": [15, 26], "provenance": "illustrative"},
+        "axial_depth_mm": {"value": 13, "range": [10, 15], "provenance": "inferred"},
+        "both_identical": true,
+        "rotation_direction": "a conferir (Q12)",
+        "airflow": "da face A para a face B",
+        "rpm_under_load": {"value": 1700, "source": "GN, esta placa"}
+      },
+      "rationale": "Contagem, cubo e formato geral vêm de foto. Passo e espessura da pá não têm vista lateral.",
+      "alternatives_considered": ["pás sem anel nas pontas", "9 pás mais estreitas: contradiz a contagem em gn-02"],
+      "consistency_checks": {
+        "thermal": "ok em ordem de grandeza: dois ventiladores de 115 mm a 1700 RPM entregam a vazão necessária (44 CFM) com a restrição das aletas",
+        "geometry": "ok: 13 mm de rotor + 22 mm de aletas + grades = 40 mm"
+      },
+      "viewer_disclaimer": "Forma da pá aproximada a partir de fotos de frente. Ângulo e espessura são ilustrativos."
+    },
+    {
+      "id": "card.thickness",
+      "tree_ids": ["card", "frame.shroud"],
+      "queue_item": 9,
+      "provenance": "derived",
+      "confidence": 0.65,
+      "analog": "5090fe: 42 mm (Puget), 40 mm (Tom's Hardware, resumo de busca); banco de dados da TechPowerUp sobre esta placa, legível em gn-05: '304 mm x 137 mm x 40 mm'",
+      "photo_evidence": [
+        "gn-05: texto da página de terceiro com a espessura de 40 mm",
+        "gn-16: face da extremidade com as 4 portas; pela largura do receptáculo, a parte plana tem cerca de 30 mm, mais os cantos arredondados"
+      ],
+      "deduction": "Espessura de dois slots, um pouco abaixo do passo de 40,64 mm.",
+      "parameters": {
+        "thickness_mm": {"value": 40, "range": [39, 42]},
+        "stack_center_from_face_b_mm": [
+          {"layer": "tampas centrais (X)", "value": 2.5},
+          {"layer": "placa que cobre o PCB", "value": 1.5},
+          {"layer": "pad e memória do verso", "value": 2.1},
+          {"layer": "PCB", "value": 1.6},
+          {"layer": "package e pasta", "value": 3.0},
+          {"layer": "câmara de vapor", "value": 4.0},
+          {"layer": "aletas centrais e tampa da face A", "value": 25.3}
+        ],
+        "stack_end_from_face_a_mm": [
+          {"layer": "ventilador e aro", "value": 15},
+          {"layer": "pilha de aletas", "value": 22},
+          {"layer": "grade da face B", "value": 3}
+        ],
+        "shroud_wall_mm": {"value": 2.0, "range": [1.5, 3.0], "provenance": "illustrative"},
+        "shroud_material": {"value": "liga de alumínio fundida, pintada", "provenance": "inferred", "note": "o peso de 1,9 kg (Jon Peddie) é compatível com metal"}
+      },
+      "rationale": "Três fontes de terceiros concordam em 40 a 42 mm e a norma limita a 40,64 mm de passo. A divisão em camadas é orçamento, não medida.",
+      "alternatives_considered": ["42 mm, como a ficha da Puget para a 5090 FE"],
+      "consistency_checks": {
+        "geometry": "ok: as duas pilhas somam 40 mm; componentes do lado da frente ficam abaixo dos 34,8 mm da norma de dois slots"
+      },
+      "viewer_disclaimer": "Espessura derivada de terceiros e da placa irmã; a NVIDIA só informa 'dois slots'."
+    },
+    {
+      "id": "card.height_reference",
+      "tree_ids": ["card", "frame.shroud"],
+      "queue_item": 9,
+      "provenance": "derived",
+      "confidence": 0.55,
+      "analog": "norma CEM 3.0, p. 127: 'card height is measured from the bottom of the edge finger to the top of the card'",
+      "photo_evidence": [
+        "gn-05 (foto de terceiro): carcaça com 122 mm; com os contatos, 133 mm; os contatos descem 11 mm abaixo da carcaça",
+        "gn-03 (esta placa): razão comprimento por altura de cerca de 2,6 com a placa um pouco girada, ou seja, carcaça de 118 a 122 mm"
+      ],
+      "deduction": "A cota oficial de 5,4 pol inclui os contatos PCIe. A carcaça sozinha é mais baixa.",
+      "parameters": {
+        "official_height_mm": 137.16,
+        "official_height_includes": "da ponta dos contatos PCIe até o topo da carcaça; não inclui o bracket",
+        "shroud_height_mm": {"value": 126, "range": [122, 129], "calc": "137,16 - 11"},
+        "fingers_below_shroud_mm": {"value": 11, "tolerance": 2},
+        "residual_mm": {"value": 4, "note": "133 medido contra 137,16; 3 %, dentro dos ±4 % da foto"},
+        "length_reference": "304,8 mm é o comprimento da carcaça, sem o bracket (suposição do catálogo, mantida)"
+      },
+      "rationale": "É a leitura que segue a norma e a única em que a foto e a cota oficial ficam dentro da tolerância.",
+      "alternatives_considered": [
+        "a cota inclui o bracket: não fecha, o bracket padrão tem 120 mm",
+        "a carcaça tem mesmo 137 mm e a foto de terceiro é de outra placa ou está distorcida: contradita por gn-03, que é desta placa",
+        "5,4 pol é arredondamento herdado da ficha da 5090 FE (137 mm)"
+      ],
+      "consistency_checks": {"geometry": "não fecha por 4 mm (Q1)"},
+      "viewer_disclaimer": "A altura oficial de 137 mm parece incluir os contatos dourados. A carcaça, medida em foto, tem cerca de 126 mm."
+    },
+    {
+      "id": "pcb.plate",
+      "queue_item": "extra (ajuda os itens 3 e 6)",
+      "provenance": "derived",
+      "confidence": 0.65,
+      "analog": "fotos desta placa",
+      "photo_evidence": [
+        "gn-27: placa preta com furo quadrado no centro, pads na disposição da memória do verso (5, 5, 4 e 2) e uma faixa longa, e 4 abas de fixação nos cantos",
+        "gn-20, gn-24: a mesma placa montada, com etiqueta QR; pelo furo quadrado aparecem os capacitores do verso do chip"
+      ],
+      "deduction": "É o dissipador da memória do verso. A 'matriz de contatos no centro do X' do catálogo são os capacitores do verso do chip vistos pelo furo.",
+      "parameters": {
+        "outline_mm": {"value": [104, 108], "tolerance": 10},
+        "window_mm": {"value": [22, 22], "range": [[18, 28], [18, 28]]},
+        "thickness_mm": {"value": 1.5, "range": [1.0, 2.5]},
+        "screws": 4,
+        "material": {"value": "alumínio preto", "provenance": "inferred"}
+      },
+      "rationale": "Função deduzida dos pads; forma vista.",
+      "alternatives_considered": ["blindagem sem função térmica: os pads dizem o contrário"],
+      "consistency_checks": {"assembly": "ok: sai em E5, depois do adaptador", "thermal": "ok"},
+      "viewer_disclaimer": "Forma vista em foto; função térmica deduzida dos pads."
+    },
+    {
+      "id": "cooler.leaf_spring",
+      "queue_item": "extra",
+      "provenance": "derived",
+      "confidence": 0.6,
+      "analog": "fotos desta placa",
+      "photo_evidence": [
+        "gn-29: quadro com janela quadrada sobre o verso do chip, 4 parafusos nos cantos",
+        "gn-31, gn-32: peça metálica cinza em X, com janela central e 4 braços, solta sobre o tapete",
+        "gn-30: depois de tirar a mola, fica no PCB uma chapa preta com anéis nos pontos dos parafusos"
+      ],
+      "deduction": "São duas peças: a mola metálica em X e uma chapa preta de apoio que fica no PCB.",
+      "parameters": {
+        "outline_mm": {"value": [78, 84], "tolerance": 8},
+        "window_mm": {"value": [40, 44], "tolerance": 6},
+        "arms": 4,
+        "screws": 4,
+        "thickness_mm": {"value": 1.2, "range": [0.8, 2.0]}
+      },
+      "rationale": "Forma vista em três fotos, todas oblíquas.",
+      "alternatives_considered": [],
+      "consistency_checks": {"assembly": "ok"},
+      "viewer_disclaimer": "Forma simplificada a partir de fotos."
+    },
+    {
+      "id": "frame.center_covers",
+      "queue_item": "extra",
+      "provenance": "derived",
+      "confidence": 0.65,
+      "analog": "fotos desta placa",
+      "photo_evidence": ["gn-20: tampa triangular 'RTX PRO 6000' erguida; gn-27: duas tampas triangulares brilhantes sobre o tapete"],
+      "deduction": "Duas tampas triangulares na face B. As da face A não saem no teardown.",
+      "parameters": {"count_face_b": {"value": 2, "range": [2, 2]}},
+      "rationale": "Contagem direta em foto.",
+      "alternatives_considered": [],
+      "consistency_checks": {"assembly": "aberto: fixação não vista (Q4)"},
+      "viewer_disclaimer": "Duas tampas vistas em foto; a fixação não aparece."
+    }
+  ],
+  "proposed_measurements": [
+    {"feature": "card_thickness", "value_mm": 40, "tolerance_mm": 2, "method": "banco de dados de terceiro legível em gn-05; 5090 FE (Puget 42 mm)", "source": "proposal.json: card.thickness", "provenance": "derived"},
+    {"feature": "shroud_height_proposed", "value_mm": 126, "tolerance_mm": 4, "method": "137,16 menos 11 mm de contatos; hipótese de que a cota oficial inclui os contatos", "source": "proposal.json: card.height_reference", "provenance": "derived"},
+    {"feature": "pcie_fingers_below_shroud", "value_mm": 11, "tolerance_mm": 2, "method": "proporção em foto (gn-05)", "source": "references/index.md: Proporções medidas em foto", "provenance": "derived"},
+    {"feature": "pcb_main_width", "value_mm": 108, "tolerance_mm": 10, "method": "proporção em foto oblíqua (gn-29), chip GDDR7 e conector J3 como réguas", "source": "proposal.json: pcb.main", "provenance": "derived"},
+    {"feature": "pcb_main_height", "value_mm": 112, "tolerance_mm": 8, "method": "proporção em foto oblíqua (gn-29) e orçamento de componentes", "source": "proposal.json: pcb.main", "provenance": "derived"},
+    {"feature": "pcb_main_center_from_bracket_end", "value_mm": 152, "tolerance_mm": 6, "method": "simetria dos ventiladores e cruzamento do X (gn-05)", "source": "proposal.json: pcb.main", "provenance": "derived"},
+    {"feature": "pcb_main_thickness", "value_mm": 1.6, "tolerance_mm": 0.4, "method": "referência da norma; sem medida", "source": "proposal.json: pcb.main", "provenance": "inferred"},
+    {"feature": "power_connector_center_from_bracket_end", "value_mm": 195, "tolerance_mm": 10, "method": "canto do PCB (gn-29) e faixa de 55 % a 70 % do comprimento (gn-02, gn-46)", "source": "proposal.json: pcb.main", "provenance": "derived"},
+    {"feature": "gb202_package_x", "value_mm": 56, "tolerance_mm": 3, "method": "vazamento sobre o GB202 conferido por proporção em gn-41", "source": "proposal.json: gpu.package", "provenance": "derived"},
+    {"feature": "gb202_package_y", "value_mm": 63, "tolerance_mm": 3, "method": "vazamento sobre o GB202; sem conferência em foto", "source": "proposal.json: gpu.package", "provenance": "derived"},
+    {"feature": "gb202_die_x", "value_mm": 24.2, "tolerance_mm": 1.3, "method": "750 mm² com proporção de 1 para 1,28 (gn-05, gn-42)", "source": "proposal.json: gpu.package", "provenance": "derived"},
+    {"feature": "gb202_die_y", "value_mm": 31.0, "tolerance_mm": 1.5, "method": "750 mm² com proporção de 1 para 1,28 (gn-05, gn-42)", "source": "proposal.json: gpu.package", "provenance": "derived"},
+    {"feature": "gb202_stiffener_ring_width", "value_mm": 11, "tolerance_mm": 2, "method": "(56 - 34) / 2; janela por proporção em gn-05 e gn-41", "source": "proposal.json: gpu.package", "provenance": "derived"},
+    {"feature": "gb202_die_top_above_pcb", "value_mm": 2.9, "tolerance_mm": 0.6, "method": "prática de mercado", "source": "proposal.json: gpu.package", "provenance": "inferred"},
+    {"feature": "pcie_adapter_length", "value_mm": 100, "tolerance_mm": 8, "method": "proporção em foto (gn-25), zona de contatos de 84,3 mm como régua", "source": "proposal.json: pcie.adapter", "provenance": "derived"},
+    {"feature": "pcie_adapter_strip_height", "value_mm": 16.5, "tolerance_mm": 2, "method": "proporção em foto (gn-25)", "source": "proposal.json: pcie.adapter", "provenance": "derived"},
+    {"feature": "pcie_adapter_total_height", "value_mm": 35, "tolerance_mm": 3, "method": "proporção em foto (gn-25)", "source": "proposal.json: pcie.adapter", "provenance": "derived"},
+    {"feature": "pcie_adapter_connector_length", "value_mm": 23, "tolerance_mm": 2, "method": "proporção em foto (gn-25)", "source": "proposal.json: pcie.adapter", "provenance": "derived"},
+    {"feature": "vapor_chamber_contact_plate_x", "value_mm": 60, "tolerance_mm": 8, "method": "proporção em foto (gn-34), marca da pasta como régua", "source": "proposal.json: cooler.vapor_chamber", "provenance": "derived"},
+    {"feature": "vapor_chamber_contact_plate_y", "value_mm": 68, "tolerance_mm": 8, "method": "proporção em foto (gn-34)", "source": "proposal.json: cooler.vapor_chamber", "provenance": "derived"},
+    {"feature": "vapor_chamber_thickness", "value_mm": 4, "tolerance_mm": 1.5, "method": "prática de mercado", "source": "proposal.json: cooler.vapor_chamber", "provenance": "inferred"},
+    {"feature": "heatpipe_diameter", "value_mm": 8, "tolerance_mm": 2, "method": "prática de mercado", "source": "proposal.json: cooler.heatpipes", "provenance": "inferred"},
+    {"feature": "fin_stack_end_length_x", "value_mm": 98, "tolerance_mm": 8, "method": "(304,8 - largura do PCB) / 2", "source": "proposal.json: cooler.fins.1_2", "provenance": "derived"},
+    {"feature": "fin_stack_end_depth_z", "value_mm": 22, "tolerance_mm": 4, "method": "orçamento de espessura", "source": "proposal.json: cooler.fins.1_2", "provenance": "inferred"},
+    {"feature": "fin_pitch", "value_mm": 1.6, "tolerance_mm": 0.4, "method": "prática de mercado; não contado em foto", "source": "proposal.json: cooler.fins.1_2", "provenance": "inferred"},
+    {"feature": "fin_stack_center_length_x", "value_mm": 64, "tolerance_mm": 10, "method": "proporção em foto (gn-34)", "source": "proposal.json: cooler.fins.3", "provenance": "derived"},
+    {"feature": "fan_rotor_diameter", "value_mm": 111, "tolerance_mm": 4, "method": "aro de 115 mm menos folga", "source": "proposal.json: cooler.fan.blade", "provenance": "inferred"},
+    {"feature": "fan_axial_depth", "value_mm": 13, "tolerance_mm": 3, "method": "orçamento de espessura", "source": "proposal.json: cooler.fan.blade", "provenance": "inferred"},
+    {"feature": "dp_port_pitch", "value_mm": 19.5, "tolerance_mm": 2, "method": "proporção em foto (gn-16), receptáculo de 16,1 mm como régua", "source": "proposal.json: io.board", "provenance": "derived"},
+    {"feature": "flex_dp_width", "value_mm": 22, "tolerance_mm": 4, "method": "proporção em foto (gn-29)", "source": "proposal.json: flex.dp", "provenance": "derived"},
+    {"feature": "vrm_inductor_side", "value_mm": 6.5, "tolerance_mm": 1.5, "method": "proporção em foto (gn-40) e prática de mercado", "source": "proposal.json: power.vrm.gpu", "provenance": "inferred"}
+  ],
+  "tree_changes_suggested": [
+    {"id": "cooler.heatpipes", "change": "acrescentar", "detail": "10 tubos (5 por lado), derived da 5090 FE, fidelidade B, estágio E8"},
+    {"id": "cooler.base", "change": "redefinir", "detail": "face de contato da câmara de vapor mais moldura preta com pads e colunas"},
+    {"id": "cooler.fins.3", "change": "manter como peça separada", "detail": "pilha central em três degraus; ligação com as outras pilhas não vista"},
+    {"id": "io.aux_header", "change": "acrescentar", "detail": "conector de pinos dourados na borda superior, sob a tampa lisa do painel; função a confirmar"},
+    {"id": "flex.*", "change": "desdobrar", "detail": "flex.dp (cabo largo até io.board), flex.fan.1 e flex.fan.2"},
+    {"id": "pcb.plate", "change": "completar", "detail": "dissipador da memória do verso, 4 parafusos claros, furo quadrado central"},
+    {"id": "pcb.back_frame", "change": "acrescentar", "detail": "chapa preta de apoio da mola, que fica no PCB (gn-30)"},
+    {"id": "cooler.leaf_spring", "change": "completar", "detail": "mola metálica em X com janela e 4 braços"},
+    {"id": "frame.center_covers", "change": "completar", "detail": "2 tampas triangulares na face B (gn-27)"},
+    {"id": "frame.face_b", "change": "ajustar", "detail": "as grades fazem parte das carcaças das pontas; as nervuras continuam nas laterais (gn-16, gn-29)"},
+    {"id": "fasteners.*", "change": "corrigir", "detail": "os 4 parafusos claros são de E5 (pcb.plate), não de E3; E4 tem 6; total de 19 mais os de E3"},
+    {"id": "mem.front.1..16", "change": "completar", "detail": "posições espelhadas às do verso, vistas pelos pads"},
+    {"id": "power.inductors", "change": "completar", "detail": "duas fileiras, uma em cada borda longa do PCB, e não só na borda do conector"},
+    {"id": "power.controller", "change": "acrescentar", "detail": "controlador MPS junto à borda dos contatos (gn-40), leitura a reconferir"},
+    {"id": "power.aux", "change": "acrescentar", "detail": "conversores auxiliares com indutores '4R7' e '330', fidelidade C"},
+    {"id": "card", "change": "ajustar a lacuna", "detail": "espessura proposta de 40 mm; altura de 137,16 mm inclui os contatos (D2)"},
+    {"id": "E8", "change": "manter inferred", "detail": "nenhuma evidência nova do interior do cooler; nenhum nível promovido"}
+  ],
+  "provenance_promotions": "nenhuma: nenhum item passou de inferred para derived ou de derived para confirmed sem foto ou fonte nova citada"
+}

@@ -10,6 +10,7 @@
     "dev": "vite",
     "prebuild": "node scripts/sync-data.mjs",
     "build": "vite build",
+    "build:single": "npm run build && node scripts/build-single.mjs",
     "preview": "vite preview",
     "smoke": "node ../tools/smoke.cjs",
     "capture": "node ../tools/capture.cjs"
@@ -22,6 +23,7 @@
     "three": "0.170.0"
   },
   "devDependencies": {
+    "meshoptimizer": "1.3.0",
     "vite": "8.3.7"
   }
 }

@@ -1,8 +1,8 @@
 {
   "id": "close.gaps",
   "level": 4,
-  "title": "O que não é público",
-  "disclaimer": "Lacunas declaradas: o que as fontes lidas não cobrem. 'Sabemos' resume fatos do spec; a disposição é ilustrativa.",
+  "title": "O que sabemos e o que falta",
+  "disclaimer": "Lacunas declaradas: o que as fontes lidas não cobrem. 'O que sabemos' resume fatos já citados nas seções anteriores; a disposição é ilustrativa.",
   "size": [
     1600,
     900
@@ -51,7 +51,7 @@
         590,
         46
       ],
-      "label": "o que não é público",
+      "label": "onde as fontes lidas param",
       "parent": null,
       "tags": [
         "header",
@@ -113,8 +113,9 @@
         590,
         88
       ],
-      "label": "bancos e portas do banco de registradores",
-      "label_size": 20,
+      "label": "bancos e portas: sem fonte da Blackwell",
+      "sublabel": "só há medidas de Volta, Turing e Ampere",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -151,7 +152,7 @@
         620,
         88
       ],
-      "label": "16 bytes cada; 258 mnemônicos",
+      "label": "16 bytes cada; 258 mnemônicos (contagem nossa)",
       "label_size": 20,
       "align": "left",
       "parent": null,
@@ -168,6 +169,7 @@
       "claims": [
         "isa.sass_mnemonics"
       ],
+      "provenance": "derived",
       "shape_provenance": "illustrative"
     },
     {
@@ -179,8 +181,9 @@
         590,
         88
       ],
-      "label": "bits de controle no sm_120",
-      "label_size": 20,
+      "label": "bits de controle do sm_120: sem fonte da Blackwell",
+      "sublabel": "medidos só em Volta, Turing e Ampere",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -241,8 +244,9 @@
         590,
         88
       ],
-      "label": "microcódigo; lista de modos de endereçamento",
-      "label_size": 20,
+      "label": "microcódigo: nada público",
+      "sublabel": "modos de endereçamento: não levantamos",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -308,8 +312,9 @@
         590,
         88
       ],
-      "label": "TLB: tamanho, níveis e política",
-      "label_size": 20,
+      "label": "TLB: tamanho, níveis e política sem fonte",
+      "sublabel": "doc. de hardware: só lemos o da Pascal",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -373,8 +378,9 @@
         590,
         88
       ],
-      "label": "preempção na Blackwell; interrupção no SM",
-      "label_size": 20,
+      "label": "preempção na Blackwell, interrupção no SM: sem fonte",
+      "sublabel": "caminho dentro da GPU: nv.c lido em parte",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -436,8 +442,9 @@
         590,
         88
       ],
-      "label": "espaço por programa; tamanhos do carveout",
-      "label_size": 20,
+      "label": "espaço por programa: sem fonte",
+      "sublabel": "memória unificada: não levantamos",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -445,7 +452,7 @@
         "gap"
       ],
       "shape_provenance": "illustrative",
-      "note": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa. | Memória compartilhada por SM na CC 12.0: Tuning Guide diz 128 KB por SM, Guia CUDA Tab. 35 (resumo) dá cache unificado de 128 KB e compartilhada até 100 KB, e 99 KB por bloco. Divergência de significado não resolvida por leitura direta."
+      "note": "Espaço de endereços virtual por programa e por processo: o driver dá max_channel_va = 1 << 57 e rm_va_size de 64 PB, mas nenhuma fonte descreve o espaço por programa. | Memória compartilhada na compute capability 12.0: o guia CUDA 13.5 (3.2.6) dá tamanhos de 0 a 100 KB, com máximo de 100 KB; o Tuning Guide 13.5 (1.4.1.1) diz 128 KB de capacidade por SM. A diferença de significado entre os dois números não está explicada em nenhuma fonte lida."
     },
     {
       "id": "gaps.pipeline.item",
@@ -502,7 +509,8 @@
         88
       ],
       "label": "profundidade e instruções por ciclo",
-      "label_size": 20,
+      "sublabel": "nada oficial; só estágios medidos na Ampere",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [
@@ -568,7 +576,8 @@
         88
       ],
       "label": "substituição, escrita, associatividade, linha",
-      "label_size": 20,
+      "sublabel": "o whitepaper não cobre",
+      "label_size": 19,
       "align": "left",
       "parent": null,
       "tags": [

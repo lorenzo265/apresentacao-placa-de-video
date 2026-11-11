@@ -21,7 +21,7 @@ assert val("sm.tensor_cores") == BLOCKS, "a figura tem um Tensor Core por parti�
 d = Diagram(
     "chip.sm", "sm", 3, "Um SM da Blackwell",
     "Redesenho ilustrativo da Fig. 5 do whitepaper (p. 10): as contagens são oficiais, "
-    "tamanhos e posições não.",
+    "tamanhos e posições não. Os nomes Partição 0 a 3 e a numeração são nossos; a figura não os traz.",
     size=(1000, 1700),
 )
 

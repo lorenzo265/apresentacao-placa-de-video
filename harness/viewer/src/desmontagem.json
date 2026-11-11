@@ -1,0 +1,31 @@
+{
+  "_doc": "Coreografia da desmontagem (sessão de câmera, harness/plano/camera-gsap.md). Complementa o explode_cad do GLB sem refazê-lo. Tempos em fração do estágio (0 a 1). Ordem dos estágios: a do teardown (confirmed). Gestos (giro de parafuso, descolar, escalonamento, abertura da carcaça no E8): illustrative.",
+  "fases": {
+    "fixadores": [0.0, 0.32],
+    "descola": [0.26, 0.4],
+    "viagem": [0.38, 1.0]
+  },
+  "descola_mm": 1.6,
+  "fixadores": {
+    "recuo_mm": 12,
+    "voltas": 3,
+    "alem_mm": 28,
+    "_doc": "Cada parafuso gira em torno do próprio eixo e recua recuo_mm na direção do estágio; durante a viagem da peça ele segue à frente dela, alem_mm a mais."
+  },
+  "escalona": {
+    "_doc": "Peças do mesmo estágio saem em sequência: atraso em fração do estágio, na ordem da lista.",
+    "passo": 0.1,
+    "E4": ["pcie.adapter"],
+    "E6": ["fasteners.e6_spring", "cooler.leaf_spring", "flex.fan.1", "flex.fan.2", "flex.dp"],
+    "E8": ["cooler.fan.1", "cooler.fan.2", "cooler.fins.1", "cooler.fins.2", "cooler.base"]
+  },
+  "abre_carcaca": {
+    "_doc": "E8 (inferred, didático): a carcaça com a grade da face B sobe para +y e deixa o cooler à vista; os filhos que não vão junto ficam onde estavam (o viewer compensa). +y porque -z já tem a coluna das peças de E2 a E7.",
+    "no": "frame.shroud",
+    "estagio": 8,
+    "janela": [0.45, 1.0],
+    "dir": [0, 1, 0],
+    "distancia": 190,
+    "leva": ["frame.face_b", "fasteners.end_plate", "io.board"]
+  }
+}

@@ -4,9 +4,9 @@
 html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-family: Inter, sans-serif; color: var(--texto); }
 #palco { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; background: #07090c; overflow: hidden; transform-origin: center; }
 body.capture #palco { left: 0; top: 0; transform: none; }
-#cena3d, #diagramas, #chamada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+#cena3d, #diagramas, #chamada, #caminhos { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
 #cena3d canvas { display: block; }
-#diagramas, #chamada { pointer-events: none; }
+#diagramas, #chamada, #caminhos { pointer-events: none; }
 #cena3d { background: #07090c; }  /* cor chapada: gradiente CSS rasteriza de forma diferente conforme o histórico e quebra o determinismo */
 
 /* cabeçalho */
@@ -23,6 +23,8 @@ body.capture #palco { left: 0; top: 0; transform: none; }
 #aviso-diagrama { position: absolute; left: 0; bottom: 0; width: 1920px; height: 52px; padding: 0 48px; display: flex; align-items: center;
   background: #0d1118; border-top: 1px solid #2a3340; color: #b7c0cd; font-size: 24px; pointer-events: none; }
 #aviso-diagrama::before { content: ""; width: 14px; height: 14px; margin-right: 16px; background: #8a93a3; transform: rotate(45deg); flex: none; }
+#selo-vitrine { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); pointer-events: none; visibility: hidden; }
+#selo-vitrine .selo { background: #0b0e13cc; }
 #aviso-blockout { position: absolute; right: 48px; bottom: 28px; padding: 6px 16px; border: 1px dashed #8a93a3; border-radius: 6px;
   color: #c9d1dc; font: 500 24px "JetBrains Mono", monospace; background: #0b0e13cc; pointer-events: none; }
 
@@ -30,6 +32,19 @@ body.capture #palco { left: 0; top: 0; transform: none; }
 #chamada .linha { fill: none; stroke: var(--cor-linha, #f1f4f8); stroke-width: 3px; stroke-linejoin: round; }
 #chamada .ponto { fill: var(--cor-linha, #f1f4f8); }
 #chamada .anel { fill: none; stroke: var(--cor-linha, #f1f4f8); stroke-width: 2px; opacity: .6; }
+
+/* caminhos na placa 3D (caminhos3d.js): luz que corre pelas peças, na cor do caminho */
+#caminhos .v-energy { color: var(--c-energia); } #caminhos .v-data { color: var(--c-dados); } #caminhos .v-heat { color: var(--c-calor); }
+#caminhos path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#caminhos .v-brilho { stroke: currentColor; stroke-width: 12px; opacity: .1; }
+#caminhos .v-base { stroke: currentColor; stroke-width: 2px; opacity: .55; }
+#caminhos .v-halo { stroke: currentColor; stroke-width: 14px; opacity: .22; }
+#caminhos .v-cauda { stroke: currentColor; stroke-width: 3.5px; }
+#caminhos .v-nucleo { stroke: #fffbf2; stroke-width: 3.5px; }
+#caminhos .v-marca { fill: #fffbf2; stroke: currentColor; stroke-width: 2px; }
+#caminhos .v-anel { fill: none; stroke: currentColor; stroke-width: 1.5px; opacity: .6; }
+#caminhos .v-frente { fill: #fffbf2; stroke: currentColor; stroke-width: 6px; stroke-opacity: .35; }
+#caminhos .v-dissipa { fill: none; stroke: currentColor; stroke-width: 2px; }
 
 /* caixa de texto */
 #caixa { position: absolute; width: 620px; max-height: 640px; overflow: hidden; padding: 22px 28px 24px; border-radius: 10px;

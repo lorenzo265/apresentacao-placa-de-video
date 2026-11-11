@@ -1,5 +1,6 @@
 // Copia os dados reais (ou os exemplos, quando faltam) para public/data/.
 // O viewer não tem conteúdo embutido: tudo o que aparece vem destes arquivos.
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -52,11 +53,26 @@ if (usaReais) {
 }
 manifest.source.diagrams = usaReais ? 'real' : 'examples';
 
-// GLB
+// GLB: o do passo do Blender (build/card_final.glb, parts/blender_pass.py) quando existe e foi feito
+// a partir do card.glb atual (sha256 gravado em asset.extras.blender_pass); senão o card.glb integrado.
 const glb = path.join(harness, 'build', 'card.glb');
+const glbFinal = path.join(harness, 'build', 'card_final.glb');
+function origemDoFinal(p) {
+  const b = fs.readFileSync(p);
+  const n = b.readUInt32LE(12);
+  const j = JSON.parse(b.subarray(20, 20 + n).toString('utf8'));
+  return j.asset?.extras?.blender_pass?.fonte_sha256_12 ?? null;
+}
 if (fs.existsSync(glb)) {
-  fs.copyFileSync(glb, path.join(out, 'card.glb'));
+  let usa = glb;
+  if (fs.existsSync(glbFinal)) {
+    const sha = crypto.createHash('sha256').update(fs.readFileSync(glb)).digest('hex').slice(0, 12);
+    if (origemDoFinal(glbFinal) === sha) usa = glbFinal;
+    else console.log('sync-data: card_final.glb é de um card.glb anterior; usando o card.glb (rode parts/blender_pass.py)');
+  }
+  fs.copyFileSync(usa, path.join(out, 'card.glb'));
   manifest.glb = true;
+  manifest.source.glb_arquivo = path.basename(usa);
 }
 manifest.source.glb = manifest.glb ? 'real' : 'absent';
 

@@ -1,0 +1,22 @@
+{
+  "descricao": "Mergulho contínuo da placa para um diagrama (beat t1.1). Quando um beat de diagrama entra vindo de um beat 3D e o diagrama da vista está listado aqui, a câmera 3D avança até a face externa da peça (quase de frente, inclinada pelo azimute da câmera anterior) e o nó do diagrama entra colado a ela: começa do tamanho e na posição da peça projetada na tela e cresce com a aproximação, até o enquadramento do beat. A pose final é calculada para a peça projetada coincidir com o enquadramento do nó. Configuração do viewer, não do storyboard. fov: da câmera no fim do mergulho (sem valor: o da câmera anterior). inclinacao_graus: ângulo entre a câmera e a normal da face (0 deixaria a câmera paralela ao eixo para cima). ease: da câmera. cola_ate: fração da entrada até onde o diagrama fica colado à peça; depois disso ele termina no enquadramento do beat. afasta: as peças que ficam sobre a face da peça (o cooler e a carcaça, na explosão E7) saem do caminho da câmera, para trás (recuo_mm, contra o azimute da câmera anterior) e para cima (sobe_mm), na primeira parte da entrada (afasta_ate, fração da entrada); sem isso a câmera que desce sobre o chip veria o cooler por dentro. mistura: janela da entrada (frações) em que a placa 3D se funde no diagrama.",
+  "diagramas": {
+    "chip.floorplan": {
+      "peca": "gpu.package",
+      "no": "chip.die",
+      "fov": 30,
+      "inclinacao_graus": 9,
+      "ease": "power2.inOut",
+      "cola_ate": 0.8,
+      "afasta": {
+        "recuo_mm": 320,
+        "sobe_mm": 140
+      },
+      "afasta_ate": 0.6,
+      "mistura": [
+        0.22,
+        0.95
+      ]
+    }
+  }
+}

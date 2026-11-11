@@ -1,8 +1,8 @@
 {
   "id": "close.delta",
   "level": 4,
-  "title": "RTX 6000 Ada contra RTX PRO 6000 Blackwell",
-  "disclaimer": "Valores oficiais (whitepaper, Tab. 4, e datasheet); as razões são contas nossas. Barras proporcionais dentro de cada linha, não entre linhas.",
+  "title": "RTX 6000 Ada contra RTX PRO 6000 Blackwell Workstation Edition",
+  "disclaimer": "Valores oficiais da Workstation Edition (whitepaper, Tab. 4, e datasheet); a variante Max-Q tem 300 W. As razões são contas nossas. Barras proporcionais dentro de cada linha, não entre linhas.",
   "size": [
     1600,
     900
@@ -408,7 +408,8 @@
         "provenance": "confirmed"
       },
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "As duas da linha 'TGP (Total Graphics Power)' da Tab. 4. O datasheet chama os 600 W de 'Total board power'."
     },
     {
       "id": "delta.tgp.bw",
@@ -436,7 +437,7 @@
       },
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Ada: TGP da Tab. 4. Blackwell: 'Total board power' do datasheet; não se sabe se inclui o slot."
+      "note": "As duas da linha 'TGP (Total Graphics Power)' da Tab. 4. O datasheet chama os 600 W de 'Total board power'."
     },
     {
       "id": "delta.tgp.ratio",
@@ -505,9 +506,13 @@
         "claim": "ada.bandwidth_gbs",
         "provenance": "confirmed"
       },
+      "claims": [
+        "ada.bus_bits",
+        "ada.pin_rate_gbps"
+      ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative",
-      "note": "Ada: 960 GB/s da Tab. 4 (confere com 384 bits x 20 Gbps); a Tab. 1 diz 1.008."
+      "note": "Ada: 960 GB/s da Tab. 4; confere com 384 bits × 20 Gbps ÷ 8. A Tab. 1 diz 1.008."
     },
     {
       "id": "delta.bw.bw",

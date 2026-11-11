@@ -31,9 +31,9 @@
       "id": "cmd.chan",
       "kind": "frame",
       "rect": [
-        40,
+        480,
         214,
-        1100,
+        660,
         360
       ],
       "label": "um canal",
@@ -73,12 +73,12 @@
       "rect": [
         210,
         64,
-        290,
+        220,
         100
       ],
       "label": "1. grava os comandos",
       "sublabel": "no pushbuffer",
-      "label_size": 22,
+      "label_size": 19,
       "parent": "cmd.lane.cpu",
       "tags": [
         "step",
@@ -95,14 +95,14 @@
       "id": "cmd.s2",
       "kind": "step",
       "rect": [
-        520,
+        450,
         64,
-        290,
+        390,
         100
       ],
-      "label": "2. reserva uma entrada",
-      "sublabel": "da GPFIFO do canal",
-      "label_size": 22,
+      "label": "2. aponta uma entrada da GPFIFO",
+      "sublabel": "para os comandos (set_gpfifo_entry)",
+      "label_size": 19,
       "parent": "cmd.lane.cpu",
       "tags": [
         "step",
@@ -119,14 +119,14 @@
       "id": "cmd.s3",
       "kind": "step",
       "rect": [
-        830,
+        860,
         64,
-        290,
+        260,
         100
       ],
       "label": "3. avança o ponteiro PUT",
       "sublabel": "write_gpu_put",
-      "label_size": 22,
+      "label_size": 19,
       "parent": "cmd.lane.cpu",
       "tags": [
         "step",
@@ -143,14 +143,14 @@
       "id": "cmd.pushbuffer",
       "kind": "memory",
       "rect": [
-        80,
-        280,
-        330,
-        260
+        40,
+        214,
+        420,
+        360
       ],
-      "label": "pushbuffer",
-      "label_size": 22,
-      "parent": "cmd.chan",
+      "label": "pushbuffer (um por GPU)",
+      "label_size": 20,
+      "parent": null,
       "tags": [
         "pushbuffer"
       ],
@@ -158,16 +158,17 @@
         "cmd.submit"
       ],
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "Segundo o driver oficial: 'usable only with a specific channel manager and hence a specific GPU'; 'each chunk can service pushes from multiple channels'."
     },
     {
       "id": "cmd.pushbuffer.cmd0",
       "kind": "codeline",
       "rect": [
-        96,
-        330,
-        298,
-        32.4
+        56,
+        256,
+        388,
+        43.6
       ],
       "label": "comando",
       "label_size": 16,
@@ -183,10 +184,10 @@
       "id": "cmd.pushbuffer.cmd1",
       "kind": "codeline",
       "rect": [
-        96,
-        370.4,
-        298,
-        32.4
+        56,
+        307.6,
+        388,
+        43.6
       ],
       "label": "comando",
       "label_size": 16,
@@ -202,10 +203,10 @@
       "id": "cmd.pushbuffer.cmd2",
       "kind": "codeline",
       "rect": [
-        96,
-        410.8,
-        298,
-        32.4
+        56,
+        359.2,
+        388,
+        43.6
       ],
       "label": "comando",
       "label_size": 16,
@@ -221,10 +222,10 @@
       "id": "cmd.pushbuffer.cmd3",
       "kind": "codeline",
       "rect": [
-        96,
-        451.2,
-        298,
-        32.4
+        56,
+        410.8,
+        388,
+        43.6
       ],
       "label": "comando",
       "label_size": 16,
@@ -240,10 +241,10 @@
       "id": "cmd.pushbuffer.cmd4",
       "kind": "codeline",
       "rect": [
-        96,
-        491.6,
-        298,
-        32.4
+        56,
+        462.4,
+        388,
+        43.6
       ],
       "label": "comando",
       "label_size": 16,
@@ -256,10 +257,31 @@
       "note": "Conteúdo dos comandos: ilustrativo."
     },
     {
+      "id": "cmd.pushbuffer.shared",
+      "kind": "note",
+      "rect": [
+        56,
+        516,
+        388,
+        46
+      ],
+      "label": "atende pushes de vários canais",
+      "label_size": 18,
+      "parent": "cmd.pushbuffer",
+      "tags": [
+        "pushbuffer"
+      ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative"
+    },
+    {
       "id": "cmd.ring",
       "kind": "frame",
       "rect": [
-        570,
+        650,
         224,
         400,
         340
@@ -280,7 +302,7 @@
       "id": "cmd.ring.e0",
       "kind": "step",
       "rect": [
-        733,
+        813,
         254,
         74,
         44
@@ -295,13 +317,13 @@
         "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative",
-      "note": "Entrada com trabalho a consumir (ilustrativo)."
+      "note": "Entrada ainda não concluída (ilustrativo)."
     },
     {
       "id": "cmd.ring.e1",
       "kind": "cell",
       "rect": [
-        816.44,
+        896.44,
         288.56,
         74,
         44
@@ -321,7 +343,7 @@
       "id": "cmd.ring.e2",
       "kind": "cell",
       "rect": [
-        851,
+        931,
         372,
         74,
         44
@@ -341,7 +363,7 @@
       "id": "cmd.ring.e3",
       "kind": "cell",
       "rect": [
-        816.44,
+        896.44,
         455.44,
         74,
         44
@@ -361,7 +383,7 @@
       "id": "cmd.ring.e4",
       "kind": "cell",
       "rect": [
-        733,
+        813,
         490,
         74,
         44
@@ -381,7 +403,7 @@
       "id": "cmd.ring.e5",
       "kind": "step",
       "rect": [
-        649.56,
+        729.56,
         455.44,
         74,
         44
@@ -396,13 +418,13 @@
         "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative",
-      "note": "Entrada com trabalho a consumir (ilustrativo)."
+      "note": "Entrada ainda não concluída (ilustrativo)."
     },
     {
       "id": "cmd.ring.e6",
       "kind": "step",
       "rect": [
-        615,
+        695,
         372,
         74,
         44
@@ -417,13 +439,13 @@
         "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative",
-      "note": "Entrada com trabalho a consumir (ilustrativo)."
+      "note": "Entrada ainda não concluída (ilustrativo)."
     },
     {
       "id": "cmd.ring.e7",
       "kind": "step",
       "rect": [
-        649.56,
+        729.56,
         288.56,
         74,
         44
@@ -438,13 +460,13 @@
         "cmd.gpfifo"
       ],
       "shape_provenance": "illustrative",
-      "note": "Entrada com trabalho a consumir (ilustrativo)."
+      "note": "Entrada ainda não concluída (ilustrativo)."
     },
     {
       "id": "cmd.ring.center",
       "kind": "header",
       "rect": [
-        700,
+        780,
         372,
         140,
         44
@@ -461,7 +483,7 @@
       "id": "cmd.ptr.get",
       "kind": "field",
       "rect": [
-        598.24,
+        678.24,
         508.94,
         72,
         36
@@ -479,13 +501,14 @@
         "cmd.gpfifo"
       ],
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "gpu_get: última entrada de GPFIFO concluída pela GPU, atualizado pelo driver."
     },
     {
       "id": "cmd.ptr.put",
       "kind": "field",
       "rect": [
-        869.76,
+        949.76,
         243.06,
         72,
         36
@@ -503,18 +526,43 @@
         "cmd.gpfifo"
       ],
       "provenance": "confirmed",
-      "shape_provenance": "illustrative"
+      "shape_provenance": "illustrative",
+      "note": "PUT: avançado pelo driver (write_gpu_put)."
+    },
+    {
+      "id": "cmd.get_note",
+      "kind": "note",
+      "rect": [
+        210,
+        628,
+        470,
+        100
+      ],
+      "label": "GET: até onde a GPU já concluiu",
+      "sublabel": "atualizado pelo driver",
+      "label_size": 24,
+      "parent": "cmd.lane.gpu",
+      "tags": [
+        "gpfifo",
+        "ptr-get"
+      ],
+      "claims": [
+        "cmd.gpfifo"
+      ],
+      "provenance": "confirmed",
+      "shape_provenance": "illustrative",
+      "note": "No trecho lido, gpu_get é 'Latest GPFIFO entry completed by the GPU', atualizado pelo driver."
     },
     {
       "id": "cmd.s4",
       "kind": "step",
       "rect": [
-        460,
+        700,
         628,
-        620,
+        420,
         100
       ],
-      "label": "4. a GPU consome a fila do canal",
+      "label": "4. a GPU lê a fila do canal",
       "label_size": 24,
       "parent": "cmd.lane.gpu",
       "tags": [
@@ -524,7 +572,8 @@
       ],
       "claims": [
         "cmd.gpfifo",
-        "cmd.channel"
+        "cmd.channel",
+        "cmd.submit"
       ],
       "provenance": "confirmed",
       "shape_provenance": "illustrative"
@@ -653,13 +702,37 @@
         80
       ],
       "label": "segundo o driver oficial",
-      "sublabel": "uvm_channel.c, uvm_pushbuffer.h",
+      "sublabel": "uvm_channel.h, uvm_channel.c, uvm_pushbuffer.h",
       "label_size": 20,
       "parent": null,
       "tags": [
         "note",
         "driver"
       ],
+      "shape_provenance": "illustrative"
+    },
+    {
+      "id": "cmd.note.reserve",
+      "kind": "note",
+      "rect": [
+        1170,
+        522,
+        390,
+        70
+      ],
+      "label": "uma entrada é reservada",
+      "sublabel": "ao começar o push",
+      "label_size": 20,
+      "parent": null,
+      "tags": [
+        "note",
+        "gpfifo",
+        "submit"
+      ],
+      "claims": [
+        "cmd.submit"
+      ],
+      "provenance": "confirmed",
       "shape_provenance": "illustrative"
     }
   ],
@@ -689,7 +762,7 @@
         ],
         [
           330,
-          280
+          214
         ]
       ],
       "path": "data",
@@ -702,12 +775,38 @@
       "to": "cmd.ring.e0",
       "points": [
         [
-          770,
+          830,
           164
         ],
         [
-          770,
+          830,
+          236
+        ],
+        [
+          850,
+          236
+        ],
+        [
+          850,
           254
+        ]
+      ],
+      "path": "control",
+      "provenance": "confirmed",
+      "claim": "cmd.submit"
+    },
+    {
+      "id": "cmd.flow.entry_pb",
+      "from": "cmd.ring.e0",
+      "to": "cmd.pushbuffer.cmd0",
+      "points": [
+        [
+          813,
+          277.8
+        ],
+        [
+          444,
+          277.8
         ]
       ],
       "path": "control",
@@ -720,15 +819,15 @@
       "to": "cmd.ptr.put",
       "points": [
         [
-          980,
+          1070,
           164
         ],
         [
-          980,
+          1070,
           261.06
         ],
         [
-          941.76,
+          1021.76,
           261.06
         ]
       ],
@@ -742,17 +841,24 @@
       "to": "cmd.s4",
       "points": [
         [
-          634.24,
+          714.24,
           544.94
         ],
         [
-          634.24,
+          714.24,
+          600
+        ],
+        [
+          900,
+          600
+        ],
+        [
+          900,
           628
         ]
       ],
       "path": "data",
-      "provenance": "confirmed",
-      "claim": "cmd.gpfifo"
+      "provenance": "illustrative"
     }
   ],
   "checks": []

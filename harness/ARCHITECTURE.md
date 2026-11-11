@@ -68,13 +68,14 @@ Variante: Workstation Edition (600 W). A Max-Q (300 W) e a Server Edition têm o
 
 | Camada | Escolha | Motivo |
 |---|---|---|
-| Geometria | **build123d** (Python, CAD paramétrico) | Medidas exatas, STEP + glTF, sem Blender |
+| Geometria | **build123d** (Python, CAD paramétrico) | Medidas exatas, STEP + glTF. Forma e medidas nascem aqui |
+| Detalhe de superfície | **Blender por script** (`bpy` 5.3.0, sem interface) | Chanfros, UV, oclusão e normais assadas, texturas do PCB, texto gravado. Decisão do autor em 2026-11-10 (seção 5.2) |
 | Malha / pós-processo | trimesh, gltf-transform (Node) | Simplificação, Draco/meshopt, validação |
 | Viewer | **Three.js + GSAP + camera-controls** (versões fixadas no build) | Timeline, câmera cinematográfica |
 | Linhas de chamada | SVG sobreposto, âncora 3D projetada por frame, `stroke-dashoffset` | Linha "desenha" e segue a peça |
 | Texto | DOM overlay (PT-BR) | Acessível e fácil de editar |
 | QA visual e vídeo | Playwright + Chromium headless + ffmpeg (já instalados) | Capturas e render da tour sem GPU |
-| Blender | **opcional**, não instalado | Só entra se precisarmos de render offline de alta qualidade |
+| Render offline | Blender (Cycles), opcional | Mesmos movimentos de câmera do storyboard com traçado de raios, se o grupo quiser imagem de cinema. Não substitui o viewer |
 
 Verificado em 2026-11-09: `build123d` 0.13.0 e `trimesh` 5.2.0 instalam em Python 3.13 e exportam STEP e GLB; Node 22, Playwright 1.63 e ffmpeg 6.1 estão no ambiente. As dependências Python estão em `requirements.txt`; o `package.json` do viewer é pendência. Achados do teste em `design/assembly-plan.md`, seção 7, e custo de captura em `story/video-plan.md`, seção 7.1.
 
@@ -94,7 +95,7 @@ F0 Escopo ──► F1 Pesquisa ──► F2 Arquitetura ──► F3 Modelagem 
 | F1 | `card_id` | `spec/card.spec.json` + `spec/sources/` (hardware e arquitetura: ISA, memória, MMU, interrupções) | `fact-checker` |
 | F2 | spec | `design/assembly.json` + `design/proposal.md` | humano (revisa o que é "provável") |
 | F3 | assembly | `parts/<id>/part.py`, `.glb`, `.step` por peça | `ops-runner` (lint) + `visual-qa` |
-| F4 | partes | `build/card.glb` | interferência, bounding box vs. spec |
+| F4 | partes | `build/card.glb` (por `parts/integrate.py`) | interferência, bounding box vs. spec |
 | F5 | GLB | materiais PBR, texturas procedurais | `visual-qa` |
 | F6 | GLB + assembly | `story/storyboard.json` + `content/pt-BR/*.md` | `fact-checker` + humano |
 | F7 | tudo | `viewer/` | Playwright smoke test |
@@ -115,6 +116,23 @@ Regras novas:
 1. **Animatic antes do detalhe.** A F3 começa por um *blockout*: cada peça é uma caixa com as dimensões do `assembly.json`. O viewer já roda o storyboard inteiro com o blockout. Câmeras, tempos e textos são aprovados aí (gate humano da F6), antes de qualquer peça detalhada.
 2. **A trilha D começa junto com a F2.** O esqueleto do viewer e a captura determinística não dependem do modelo final.
 3. **Prioridade em caso de aperto:** A, depois B, depois D, depois C. A placa física só recebe detalhe onde a câmera passa (níveis de fidelidade em `design/assembly-plan.md`, seção 4).
+
+### 5.2 Cadeia de fidelidade da placa (decisão do autor em 2026-11-10)
+
+O autor pediu o modelo mais fiel e detalhado possível. A fidelidade vem das referências e das medidas, não do renderizador. A cadeia tem três camadas, e cada uma só acrescenta o que a anterior não dá:
+
+1. **Forma e medidas: build123d.** Cada peça é gerada das linhas de `design/measurements.csv`. Nenhuma medida nasce no Blender.
+2. **Detalhe de superfície: Blender por script.** Recebe o GLB ou STEP do passo 1 e acrescenta chanfros, UV, mapas assados (oclusão, normais), texturas procedurais do PCB (trilhas, máscara de solda, serigrafia) e o texto gravado. O script é versionado e determinístico; nada é editado à mão na interface. O Blender não muda dimensão: o `integrator` confere o envelope depois do passo.
+3. **Imagem: three.js no viewer.** Materiais PBR, iluminação por ambiente, sombra de contato. É a etapa de design, depois da estrutura.
+
+Regras desta cadeia:
+- **Referência antes de modelar.** Cada peça de fidelidade A tem de citar as imagens de referência usadas (`spec/references/`) e as linhas do CSV. O `visual-qa` compara o render da peça com a referência antes de a peça entrar no GLB final.
+- **Design igual ao da placa original** (decisão do autor): textos e marcas visíveis na placa real, como "RTX PRO 6000" no X central e o logotipo lateral, entram no modelo onde uma referência os mostra. Isso substitui a regra anterior de "sem logos". Uso educacional; exige revisão antes de qualquer uso comercial (seção 10).
+- **Placa irmã.** A GeForce RTX 5090 Founders Edition (mesmo chip, mesmo conceito de fluxo duplo) serve de referência onde esta placa não tem fonte. Tudo o que vier dela é `derived` e leva o selo.
+- **Sem compra de modelo pronto.** Modelos de terceiros não são fonte de medida. Só entram como comparação visual, e só os gratuitos, com a licença registrada.
+- **GLB para o arquivo único:** sem compressão Draco (o decodificador não abre por `file://`). Para reduzir tamanho, meshopt, cujo decodificador já vai embutido no viewer.
+- **Estilo escolhido pelo autor em 2026-11-10: Keynote hiper-realista.** Fundo quase preto, um verde de acento, fluxos como luz nos diagramas, caixa de texto em vidro escuro. Na placa, realismo acima de efeito: materiais físicos, luz de ambiente, sombra e oclusão; nada de contorno verde em peça. Os temas ficam em `viewer/src/temas.*`; comparação das três direções em `dist/estilo/`.
+- **Vídeo generativo** (Higgsfield e parecidos): fica como experimento posterior ao seminário, só para abertura ou teaser, gerado a partir de renders do nosso modelo como quadro inicial e final, e sempre marcado como ilustrativo. Não entra nos beats que explicam, porque redesenha a placa a cada quadro.
 
 ## 6. Roster de agentes e modelos
 
@@ -178,12 +196,19 @@ Este é um julgamento de projeto, não uma medição. Reavalie depois do piloto,
     {"id": "cooler.heatsink", "parent": "cooler", "level": 1, "provenance": "derived",
      "confidence": 0.7, "rationale": "design análogo ao da placa irmã (teardown)",
      "geometry": "parts/cooler.heatsink/part.py",
-     "explode": {"dir": [0, 0, 1], "distance": 60, "order": 4},
-     "anchors": [{"id": "anchor.cooler.heatsink.1", "pos": [120, 40, 30]}],
+     "explode": {"dir": [0, 0, -1], "distance": 60, "order": 4},
+     "anchors": [{"id": "anchor.cooler.heatsink.1", "pos": [120, 40, 10]},
+                 {"id": "anchor.cooler.heatsink.vao", "pos": [150, 60, 0], "kind": "opening"}],
      "fasteners": ["screw.cooler.1", "screw.cooler.2"]}
   ]
 }
 ```
+
+Âncoras: `kind` é opcional. Sem ele (ou `surface`), a âncora fica no corpo da peça, até 2 mm. `opening` marca de propósito um vazio da peça, como o centro de uma abertura ou o vão entre duas tampas; a integração só exige que ela fique na caixa envolvente da peça. Hoje são duas: `anchor.frame.shroud.power_opening` e `anchor.frame.center_covers.1`.
+
+### 7.2.1 Integração (`parts/integrate.py`, F4)
+
+`build/card.glb` é gerado por `parts/integrate.py`, não pelo blockout. A integração parte dos corpos do blockout (`parts/blockout.py`, que grava o seu próprio `build/blockout.glb`) e troca a geometria de toda peça que tiver `build/parts/<id>.glb` com um `<id>` do assembly; a peça sem arquivo continua em blockout. Nome do nó, hierarquia, âncoras e `extras` (stage, group, procedência, `explode_cad`) vêm do assembly; o arquivo da peça só traz a malha e as notas dele, em `extras.detail`. Uma peça nova entra sem mudar código. A ordem de execução é `frame.py` (e os outros scripts de peça), depois `integrate.py`; o relatório sai em `build/integration-report.md` e `.json`, e as vistas em `dist/integracao/`.
 
 ### 7.3 `story/storyboard.json` (roteiro)
 ```json
@@ -215,7 +240,24 @@ Esse é o texto longo (`body`), que aparece só no viewer. O texto de cada beat 
 | `story/storyboard.json` | campos `id`, `act`, `section`, `level`, `priority`, `overlay`, `speaker`; bloco `cuts`; `fps`. Beats de nível 2 a 4 usam `view`, `highlight` e `flows` em vez de `camera`; `world` posiciona os diagramas | `story/video-plan.md`, seções 2, 4 e 7.2 |
 | `diagrams/<id>.json` | novo: cena declarativa dos níveis 2 a 4, com retângulo por nó, diagramas embutidos, fluxos e contas | `diagrams/README.md` |
 | Unidades | CAD, assembly e storyboard em mm e Z para cima. O GLB sai em metros e Y para cima (padrão glTF). A conversão é feita só no `integrator` | `design/assembly-plan.md`, seção 7 |
+| Referencial (2026-11-10) | face B em z = 0 e face A dos ventiladores em z = 40 (antes o contrário, o que espelhava a placa); âncora com `kind: opening`; `build/card.glb` passa a sair de `parts/integrate.py` | seção 7.6; `design/assembly-plan.md`, seção 11 |
 | `schemas/*.schema.json` | novo: cinco schemas e o validador `tools/validate.py`, que também confere limite de palavras, tempo de leitura, referências entre arquivos e as contas dos diagramas | feito em 2026-11-09 |
+
+### 7.6 Referencial (corrigido em 2026-11-10)
+
+Um só referencial para CAD, `assembly.json`, `measurements.csv` e `storyboard.json`, em mm, sistema destro:
+
+| Eixo | Origem e sentido | Conferência |
+|---|---|---|
+| x | do plano do bracket (x = 0) para a ponta oposta (x = 304,8); a chapa do bracket fica em x negativo | |
+| y | da ponta dos contatos PCIe (y = 0) para a borda superior (y = 137,16) | |
+| z | da **face B** (grades e X com "RTX PRO 6000", z = 0) para a **face A** dos ventiladores (z = `card_thickness` = 40) | visto de +z, a placa aparece como em `spec/references/cache/pny/front.png`: bracket à esquerda, contatos embaixo; visto de -z com os contatos para cima, como em `pny/back.png` |
+
+- As linhas `layer_*` do CSV são espessuras, não coordenadas: a face B, o aro e as tampas empilham de z = 0 para dentro; ventilador, aro do ventilador e chapa da face A, de z = 40 para dentro. As coordenadas absolutas de z ficam só nas linhas `iface_*_z`.
+- O desmonte do teardown sai pela face B: E2 a E7 explodem para -z; os ventiladores do E8, para +z.
+- Ângulos no plano xy contam a partir de +x, no sentido anti-horário visto de +z (do lado dos ventiladores).
+- O referencial anterior (face A em z = 0) era o espelho da placa real. A troca foi z_novo = 40 - z_antigo, com ids de peça e de âncora iguais; detalhes e como conferir em `design/assembly-plan.md`, seção 11.
+- O GLB sai em metros com Y para cima: (x, y, z) do CAD vira (x, z, -y) / 1000. O viewer desfaz a conversão e usa `camera.up = (0, 0, 1)`, o que põe a face A para cima na cena.
 
 ## 8. Estrutura de diretórios
 

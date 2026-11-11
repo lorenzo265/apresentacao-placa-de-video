@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // Smoke test do viewer: percorre todos os beats do corte e falha se algo estiver fora do lugar.
-// Uso: node harness/tools/smoke.cjs [--cut completo] [--no-build]
+// Uso: node harness/tools/smoke.cjs [--cut completo] [--tema keynote|estudio|blueprint] [--acumula N] [--no-build]
+// --acumula N: quadros acumulados com a cena parada no tema realista (padrão 2 aqui, para o teste caber no
+// tempo com render por software; o viewer usa 32 na média e 64 na alta). Com 2, o caminho da acumulação
+// (deslocamento de subpixel, luz de área, mistura) é exercitado em todo beat parado e no teste de determinismo.
 // Também exporta ferramentas (servidor estático, build) usadas por capture.cjs.
 const fs = require('fs');
 const path = require('path');
@@ -10,7 +13,6 @@ const { execSync } = require('child_process');
 const HARNESS = path.resolve(__dirname, '..');
 const VIEWER = path.join(HARNESS, 'viewer');
 const DIST = path.join(VIEWER, 'dist');
-const FRAMES = path.join(HARNESS, 'dist', 'frames');
 const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2', '.woff': 'font/woff', '.wasm': 'application/wasm', '.glb': 'model/gltf-binary', '.png': 'image/png' };
 
 function maisNovo(dir, ref) {
@@ -73,15 +75,39 @@ const palavras = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0);
 const dentro = (p, W, H) => p[0] >= 0 && p[0] <= W && p[1] >= 0 && p[1] <= H;
 const inter = (a, b) => a[0] < b[0] + b[2] && b[0] < a[0] + a[2] && a[1] < b[1] + b[3] && b[1] < a[1] + a[3];
 
+/** Cópia do dist com o storyboard de exemplo de beats 3D (e os diagramas de exemplo) no lugar dos reais. */
+function montaFixture3d() {
+  const site = path.join(HARNESS, 'dist', 'fixture3d-site');
+  fs.rmSync(site, { recursive: true, force: true });
+  fs.cpSync(DIST, site, { recursive: true });
+  const ex = path.join(HARNESS, 'schemas', 'examples');
+  const d = path.join(site, 'data');
+  fs.copyFileSync(path.join(ex, 'fixture3d.storyboard.example.json'), path.join(d, 'storyboard.json'));
+  fs.copyFileSync(path.join(ex, 'fixture3d.beats.example.json'), path.join(d, 'beats.json'));
+  fs.rmSync(path.join(d, 'diagrams'), { recursive: true, force: true });
+  fs.mkdirSync(path.join(d, 'diagrams'));
+  const diagrams = ['diagram.example.json', 'diagram.child.example.json'];
+  for (const f of diagrams) fs.copyFileSync(path.join(ex, f), path.join(d, 'diagrams', f));
+  const man = JSON.parse(fs.readFileSync(path.join(d, 'manifest.json'), 'utf8'));
+  man.diagrams = diagrams.map((file) => ({ file, source: 'examples' }));
+  fs.writeFileSync(path.join(d, 'manifest.json'), JSON.stringify(man));
+  return site;
+}
+
 async function main() {
   const args = process.argv.slice(2);
-  const corte = args.includes('--cut') ? args[args.indexOf('--cut') + 1] : 'completo';
+  const fixture = args.includes('--fixture3d');
+  const corte = fixture ? 'fixture3d' : args.includes('--cut') ? args[args.indexOf('--cut') + 1] : 'completo';
+  const tema = args.includes('--tema') ? args[args.indexOf('--tema') + 1] : null;
+  const acumula = args.includes('--acumula') ? Number(args[args.indexOf('--acumula') + 1]) : 2;
+  const FRAMES = path.join(HARNESS, 'dist', tema ? `frames-${tema}` : 'frames');
   if (!args.includes('--no-build')) garanteBuild();
   const { chromium } = require('playwright');
-  const { srv, url } = await serve(DIST);
+  const raiz = fixture ? montaFixture3d() : DIST;
+  const { srv, url } = await serve(raiz);
   const falhas = [];
   const falha = (id, msg) => { falhas.push(`${id}: ${msg}`); console.log(`  FALHA ${id}: ${msg}`); };
-  const dados = path.join(VIEWER, 'public', 'data');
+  const dados = path.join(raiz, 'data');
   const textos = JSON.parse(fs.readFileSync(path.join(dados, 'beats.json'), 'utf8')).beats;
   const storyboard = JSON.parse(fs.readFileSync(path.join(dados, 'storyboard.json'), 'utf8'));
   const porId = Object.fromEntries(storyboard.beats.map((b) => [b.id, b]));
@@ -89,10 +115,14 @@ async function main() {
 
   let sessao;
   try {
-    sessao = await abre(chromium, url, `cut=${corte}`);
+    sessao = await abre(chromium, url, `cut=${corte}${tema ? `&tema=${tema}` : ''}&acumula=${acumula}`);
     const { page, erros, avisos } = sessao;
     const info = await page.evaluate(() => ({ beats: window.__tour.beats, duration: window.__tour.duration, fps: window.__tour.fps, cut: window.__tour.cut }));
-    console.log(`smoke: corte ${info.cut}, ${info.beats.length} beats, ${info.duration.toFixed(1)} s, ${info.fps} fps`);
+    console.log(`smoke: corte ${info.cut}${tema ? `, tema ${tema}` : ''}, ${info.beats.length} beats, ${info.duration.toFixed(1)} s, ${info.fps} fps, acumulação ${acumula}`);
+    if (tema) {
+      const aplicado = await page.evaluate(() => document.documentElement.dataset.tema ?? null);
+      if (aplicado !== tema) falha('tema', `o tema pedido (${tema}) não foi aplicado (${aplicado})`);
+    }
 
     for (const e of info.beats) {
       const b = porId[e.id];
@@ -119,6 +149,13 @@ async function main() {
       if (est.fonte < 28) f(`corpo do caption com ${est.fonte}px (mín. 28)`);
       const [bx, by, bw, bh] = pr.box;
       if (bx < 0 || by < 0 || bx + bw > 1920 || by + bh > 1080) f(`caixa fora da tela [${pr.box.map(Math.round)}]`);
+      if (fixture && b.level <= 1) {
+        const st = await page.evaluate(() => window.__tour.estado());
+        const pedido = b.explode_state === 'assembled' ? 0 : Number(b.explode_state.slice(1));
+        if (st.expl !== pedido) f(`explosão no fim do beat é ${st.expl}, o pedido era ${b.explode_state} (${pedido})`);
+        if (st.mix !== 0) f(`mistura 3D/diagrama deveria ser 0, é ${st.mix}`);
+        if (!pr.anchor) f(`âncora 3D ${b.callout?.anchor} não resolvida`);
+      }
       if (b.callout) {
         if (!pr.anchor) {
           if (b.level >= 2) f(`âncora ${b.callout.anchor} não resolvida no diagrama`);
@@ -140,7 +177,12 @@ async function main() {
     }
 
     // Determinismo: mesmo instante, com um seek para outro ponto no meio, dá a mesma imagem.
-    const alvos = new Set([info.beats[0], info.beats.find((x) => porId[x.id].flows?.length), info.beats[info.beats.length - 1]].filter(Boolean));
+    if (fixture) {
+      const glb = await page.evaluate(() => window.__cena?.glb);
+      if (!glb) falha('fixture3d', 'o GLB não carregou (cena em blockout)');
+    }
+    const alvos = new Set(fixture ? info.beats.slice(1)
+      : [info.beats[0], info.beats.find((x) => porId[x.id].flows?.length), info.beats[info.beats.length - 1]].filter(Boolean));
     for (const e of alvos) {
       const tA = e.start + (e.settle - e.start) * 0.45 + 0.013;
       const tB = e.settle + 0.5;

@@ -186,6 +186,13 @@
                   },
                   "minItems": 3,
                   "maxItems": 3
+                },
+                "kind": {
+                  "enum": [
+                    "surface",
+                    "opening"
+                  ],
+                  "description": "surface (padrão): a âncora fica no corpo da peça, até 2 mm. opening: a âncora marca de propósito um vazio da peça (centro de uma abertura ou de um vão entre feições); a conferência só exige que fique dentro da caixa envolvente da peça"
                 }
               }
             }

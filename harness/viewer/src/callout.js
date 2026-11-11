@@ -18,8 +18,12 @@ export function criaChamada(palco) {
   const linha = document.createElementNS(NS, 'path');
   const ponto = document.createElementNS(NS, 'circle');
   const anel = document.createElementNS(NS, 'circle');
+  // halo (traço largo sob a linha) e mira (cruz em volta do ponto): só os temas os mostram
+  const halo = document.createElementNS(NS, 'path');
+  const mira = document.createElementNS(NS, 'path');
   linha.setAttribute('class', 'linha'); ponto.setAttribute('class', 'ponto'); anel.setAttribute('class', 'anel');
-  svg.append(linha, anel, ponto);
+  halo.setAttribute('class', 'halo'); mira.setAttribute('class', 'mira');
+  svg.append(halo, linha, anel, mira, ponto);
   palco.appendChild(svg);
 
   const caixa = document.createElement('div');
@@ -71,7 +75,12 @@ export function criaChamada(palco) {
     linha.setAttribute('d', `M${pts.map((p) => p.join(',')).join(' L')}`);
     linha.style.strokeDasharray = L;
     linha.style.strokeDashoffset = L * (1 - pLinha);
+    halo.setAttribute('d', linha.getAttribute('d'));
+    halo.style.strokeDasharray = L;
+    halo.style.strokeDashoffset = L * (1 - pLinha);
     const r = Math.min(1, pLinha * 6);
+    const m1 = 11 * r, m2 = 24 * r;
+    mira.setAttribute('d', `M${ax - m2},${ay} L${ax - m1},${ay} M${ax + m1},${ay} L${ax + m2},${ay} M${ax},${ay - m2} L${ax},${ay - m1} M${ax},${ay + m1} L${ax},${ay + m2}`);
     ponto.setAttribute('cx', ax); ponto.setAttribute('cy', ay); ponto.setAttribute('r', 7 * r);
     anel.setAttribute('cx', ax); anel.setAttribute('cy', ay); anel.setAttribute('r', 15 * r);
   }

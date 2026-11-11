@@ -34,7 +34,7 @@ Nem todo item existe em toda arquitetura. Quando um item não existir, ou não f
 | 2026-11-09 | Documentação escrita | 1,5 |
 | 2026-11-16 | Apresentação em seminário | 2,0 |
 
-Total em jogo: 4,0 pontos. O seminário tem de 15 a 20 minutos, no máximo (informado pelo grupo em 2026-11-09).
+Total em jogo: 4,0 pontos. O seminário tem 22 minutos (informado pelo autor em 2026-11-10; antes, de 15 a 20).
 
 ## Roteiro v2 (confirmado em 2026-10-19)
 O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardware físico) foi arquivado em `_arquivo/roteiro-v1/` e serve de material para a seção 02.
@@ -51,10 +51,10 @@ O tour desce em níveis, da placa até o interior do chip. O roteiro v1 (hardwar
 | Registradores | [[07 - Registradores]] | whitepaper (256 KB e Fig. 5: quatro bancos de 16.384), Tuning Guide (255 por thread), experimento | baixo |
 | Conjunto de instruções | [[08 - Instruções PTX e SASS, RISC ou CISC]] | PTX e Binary Utilities (auditados) e experimento `sm_120` | médio: opcodes documentados, campos de controle só pela Volta |
 | CISC ou RISC | [[08 - Instruções PTX e SASS, RISC ou CISC]] | lista oficial de 258 mnemônicos; whitepaper (o AMP é RISC-V) | baixo: análise do grupo, aprovada em 2026-11-10 e apresentada como tal |
-| MMU | [[10 - Memória virtual e MMU]] | código aberto do driver (57 bits, 6 níveis), documento da Pascal | médio: TLB é lacuna declarada; auditoria pendente |
+| MMU | [[10 - Memória virtual e MMU]] | código aberto do driver (57 bits, 6 níveis), documento da Pascal | médio: TLB e espaço de endereços por programa são lacunas declaradas |
 | Interrupções | [[11 - Escalonamento, CPU e interrupções]] | driver aberto (MSI, duas metades), PTX (`trap`), catálogo de Xid, whitepaper (AMP) | médio: envio de comandos lido só para os canais do próprio driver (UVM); o caminho de um programa CUDA comum é leitura nossa |
-| Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]], [[11 - Escalonamento, CPU e interrupções]] | whitepaper (hierarquia e GDDR7); driver aberto (tabela de páginas, falha de página atendida em lote) | médio: memória unificada no guia CUDA ainda não lida |
-| Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper (Fig. 5: quatro blocos com escalonador); guia CUDA (SIMT, escalonador de warp, divergência); Tuning Guide (48 warps) | médio: **o número de estágios do pipeline é lacuna declarada** |
+| Gerenciamento de memória | [[03 - Memória e barramentos]], [[09 - Hierarquia de memória e caches]], [[10 - Memória virtual e MMU]], [[11 - Escalonamento, CPU e interrupções]] | whitepaper (hierarquia e GDDR7); driver aberto (tabela de páginas, falha de página atendida em lote); Tuning Guide (divisão do L1 escolhida em tempo de execução) | médio: memória unificada no guia CUDA ainda não lida |
+| Pipeline | [[05 - Modelo de execução SIMT]], [[06 - O SM por dentro]], [[12 - Latência, ocupação e divergência]] | whitepaper (Fig. 5: quatro partições com escalonador); guia CUDA (SIMT, escalonador de warp, divergência); Tuning Guide (48 warps) | médio: **o número de estágios do pipeline é lacuna declarada** |
 | Cache | [[09 - Hierarquia de memória e caches]] | whitepaper (tamanhos); latências medidas na RTX 5080 (`derived`) | médio: **política e associatividade são lacuna declarada** |
 
 ## Fontes
@@ -77,6 +77,7 @@ As fontes marcadas como lidas foram abertas. As demais foram encontradas por bus
 | [[Ampere - Demystifying the Nvidia Ampere Architecture]] | lido por resumo, não auditado | mapeamento PTX para SASS |
 | Artigos da Hopper (arXiv 2501.12084) e do B200 (arXiv 2512.02189) | a ler | caches e pipeline |
 | [[NVIDIA - Datasheet da RTX PRO 6000 Workstation Edition]] | lida | conector de energia, formato, cooler, saídas |
+| [[NVIDIA - Guia de início rápido RTX PRO Blackwell]] | lida | adaptador de energia incluído, posição do conector, dois slots, desenho do bracket |
 | [[Gamers Nexus - Teardown da RTX PRO 6000 Blackwell]] | lida por resumo | ordem de desmontagem, memória, interface térmica |
 | [[Jon Peddie Research - The Nvidia RTX Pro 6000 Blackwell Edition]], [[Puget Systems - Review da RTX PRO 6000 Blackwell Workstation]], [[sabareesh - 4x RTX PRO 6000 Blackwell com water block]] | lidas por resumo | peso, posição do conector, carcaça (terceiros) |
 | [[NVIDIA - Anúncio da GeForce RTX 50 e Founders Edition da RTX 5090]], [[wccftech e Notebookcheck - RTX 5090 Founders Edition (PCB e cooler)]], [[Northridge Fix - Teardown da RTX 5090 Founders Edition (via imprensa)]] | lidas por resumo | placa irmã: três placas de circuito, câmara de vapor (derivado) |

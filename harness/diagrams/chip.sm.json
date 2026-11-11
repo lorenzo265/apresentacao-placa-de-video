@@ -2,7 +2,7 @@
   "id": "chip.sm",
   "level": 3,
   "title": "Um SM da Blackwell",
-  "disclaimer": "Redesenho ilustrativo da Fig. 5 do whitepaper (p. 10): as contagens são oficiais, tamanhos e posições não.",
+  "disclaimer": "Redesenho ilustrativo da Fig. 5 do whitepaper (p. 10): as contagens são oficiais, tamanhos e posições não. Os nomes Partição 0 a 3 e a numeração são nossos; a figura não os traz.",
   "size": [
     1000,
     1700
