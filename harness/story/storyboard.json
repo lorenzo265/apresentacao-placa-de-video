@@ -496,26 +496,84 @@
       "level": 1,
       "priority": 1,
       "status": "ready",
-      "part": "io.bracket",
-      "diagram": null,
-      "explode_state": "E1",
+      "part": "gpu.tim",
+      "explode_state": "E7",
       "camera": {
         "pos": [
-          -330,
-          -400,
-          300
+          152,
+          -40,
+          -2
         ],
         "target": [
-          130,
-          55,
-          10
+          152,
+          62,
+          -42
         ],
-        "fov": 33,
-        "duration": 2.5,
-        "ease": "power2.inOut"
+        "fov": 30,
+        "duration": 15.4,
+        "ease": "power1.inOut",
+        "keys": [
+          {
+            "at": 0.12,
+            "pos": [
+              -330,
+              -400,
+              300
+            ],
+            "target": [
+              130,
+              55,
+              10
+            ],
+            "fov": 33
+          },
+          {
+            "at": 0.36,
+            "pos": [
+              430,
+              -700,
+              330
+            ],
+            "target": [
+              120,
+              60,
+              -100
+            ],
+            "fov": 32
+          },
+          {
+            "at": 0.78,
+            "pos": [
+              560,
+              -760,
+              260
+            ],
+            "target": [
+              110,
+              60,
+              -90
+            ],
+            "fov": 32
+          },
+          {
+            "at": 0.9,
+            "pos": [
+              152,
+              -380,
+              40
+            ],
+            "target": [
+              152,
+              62,
+              -42
+            ],
+            "fov": 30
+          }
+        ],
+        "explode_ate": 0.8
       },
       "callout": {
-        "anchor": "anchor.io.bracket.1",
+        "anchor": "anchor.gpu.tim.1",
         "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
@@ -970,6 +1028,46 @@
       "hold": 11.0,
       "provenance": [
         "confirmed"
+      ],
+      "speaker": "Vitor",
+      "vitrine": {
+        "peca": "gpu.package",
+        "face": "+z",
+        "ocupa": 0.4
+      },
+      "highlight": [
+        "gpu.package"
+      ]
+    },
+    {
+      "id": "a2.13",
+      "act": 2,
+      "section": "02",
+      "level": 1,
+      "priority": 1,
+      "status": "ready",
+      "explode_state": "E8",
+      "camera": {
+        "pos": [
+          520,
+          -600,
+          300
+        ],
+        "target": [
+          150,
+          60,
+          -70
+        ],
+        "fov": 34,
+        "duration": 4.0,
+        "ease": "power2.inOut",
+        "hold_orbit": 40
+      },
+      "hold": 8.0,
+      "provenance": [
+        "confirmed",
+        "inferred",
+        "illustrative"
       ],
       "speaker": "Vitor"
     },

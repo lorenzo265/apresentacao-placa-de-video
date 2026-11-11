@@ -23,6 +23,8 @@ body.capture #palco { left: 0; top: 0; transform: none; }
 #aviso-diagrama { position: absolute; left: 0; bottom: 0; width: 1920px; height: 52px; padding: 0 48px; display: flex; align-items: center;
   background: #0d1118; border-top: 1px solid #2a3340; color: #b7c0cd; font-size: 24px; pointer-events: none; }
 #aviso-diagrama::before { content: ""; width: 14px; height: 14px; margin-right: 16px; background: #8a93a3; transform: rotate(45deg); flex: none; }
+#selo-vitrine { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); pointer-events: none; visibility: hidden; }
+#selo-vitrine .selo { background: #0b0e13cc; }
 #aviso-blockout { position: absolute; right: 48px; bottom: 28px; padding: 6px 16px; border: 1px dashed #8a93a3; border-radius: 6px;
   color: #c9d1dc; font: 500 24px "JetBrains Mono", monospace; background: #0b0e13cc; pointer-events: none; }
 

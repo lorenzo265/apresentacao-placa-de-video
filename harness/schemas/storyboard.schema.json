@@ -131,6 +131,21 @@
             "type": "string",
             "pattern": "^(assembled|E[1-8])$"
           },
+          "vitrine": {
+            "description": "Apresentação (illustrative): a peça sai da posição da placa e fica diante da câmera do beat, com a face pedida para o público. Volta ao lugar na entrada do beat seguinte. Ver harness/plano/camera-gsap.md.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["peca"],
+            "properties": {
+              "peca": { "type": "string" },
+              "face": { "enum": ["+x", "-x", "+y", "-y", "+z", "-z"] },
+              "cima": { "enum": ["+x", "-x", "+y", "-y", "+z", "-z"] },
+              "ocupa": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+              "lado": { "type": "number", "minimum": -0.5, "maximum": 0.5 },
+              "pos": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+              "giro": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+            }
+          },
           "camera": {
             "type": "object",
             "required": [
@@ -169,6 +184,29 @@
               },
               "ease": {
                 "type": "string"
+              },
+              "keys": {
+                "description": "Poses intermediárias da entrada (at em fração da duração), para um beat com vários estágios de desmontagem.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["at", "pos", "target"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "at": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+                    "pos": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+                    "target": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+                    "fov": { "type": "number", "minimum": 10, "maximum": 60 }
+                  }
+                }
+              },
+              "explode_ate": {
+                "description": "Fração da entrada em que a explosão termina (padrão 1).",
+                "type": "number", "exclusiveMinimum": 0, "maximum": 1
+              },
+              "hold_orbit": {
+                "description": "Graus de azimute que a câmera gira em torno do alvo depois da entrada (plano de herói).",
+                "type": "number"
               }
             }
           },
