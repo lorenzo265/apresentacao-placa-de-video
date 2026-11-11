@@ -82,7 +82,7 @@ G = {
     "rim_fillet": (1.0, "inferred", "arredondamento da aresta externa do aro"),
     "grille_inset_b": (6.2, "derived", "distância do contorno até as lâminas da grade da face B: 6,2 a 6,6 mm (pny/back)"),
     "cover_edge_off_b": (1.4, "derived", "a borda das tampas fica 1,4 mm (perpendicular) para dentro da linha do X que passa pelo cruzamento (pny/back, linhas a 15 e 30 mm do centro)"),
-    "x_band_b": (8.0, "derived", "largura perpendicular da estrutura do X entre a tampa e a grade (pny/back)"),
+    "x_band_b": (4.8, "derived", "largura perpendicular da estrutura do X entre a tampa e a grade, com o fio claro da borda da tampa: 4,5 a 4,8 mm em pny/back (linhas 350, 365 e 380 do render de 800 px, 2,27 px/mm pela largura da carcaça; 14 a 15 px na horizontal vezes sen 46,5 graus); era 8,0 e os braços do X ficavam grossos (pedido do agente de materiais, 2026-11-11)"),
     "apex_r_b": (7.0, "derived", "raio do vértice das tampas: vão vertical de 9,7 mm entre os vértices (pny/back)"),
     "win_r_b": (3.4, "derived", "raio do vértice das grades junto ao cruzamento: ponta a 10,8 mm do cruzamento (pny/back)"),
     "lam_pitch_b": (1.45, "derived", "passo das lâminas da grade da face B: cerca de 1,45 mm (pny/back)"),
@@ -757,6 +757,17 @@ FEATURE_PROV = {
 }
 
 
+def shroud_zones():
+    """Zonas de acabamento da carcaça (lidas pelo blender_pass.py, acab carcaca_a): as tampas lisas do X
+    da face A (topo rebaixado, normal +z) e as lâminas das grades da face A (cantos e braços do X)."""
+    return [
+        {"name": "tampas_do_x_face_a", "material": "carcaca.tampa_x", "normal_z_min": 0.95, "z": round(T - g("tri_recess_a"), 3), "tol": 0.02,
+         "nota": "topo rebaixado das tampas lisas do X da face A; preto espelhado como as tampas da face B (storagereview/sr-5, pny/front)"},
+        {"name": "laminas_da_face_a", "material": "carcaca.grade", "z_min": round(T - T_A - g("lam_depth_a"), 3), "z_max": round(T - g("lam_recess_a"), 3), "tol": 0.02,
+         "nota": "lâminas em V das grades da face A (cantos e braços do X); o fundo da chapa (z = card_thickness - shroud_face_a_plate_thickness), por dentro, cai na mesma faixa e não aparece"},
+    ]
+
+
 def text_angle_cad():
     """O CSV dá 45 graus medidos no render pny/back, que mostra a placa com os contatos
     para cima (x para a direita, y para baixo). Passado para (x, y) do assembly, o texto
@@ -852,6 +863,8 @@ def main():
             "referencial": "face B em z = 0, face A (ventiladores) em z = card_thickness",
             "explode_cad": p["explode"],
         }
+        if pid == "frame.shroud":
+            extras["material_zones_cad_mm"] = shroud_zones()
         spec = []
         if len(meshes) == 1:
             spec.append((pid, extras, meshes[0], None, None))

@@ -88,7 +88,7 @@ JPEG_Q = 90
 CARCACA = dict(cor=True, normal=True, ao=True)
 SO_AO = dict(cor=False, normal=False, ao=True)
 PECAS = {
-    "frame.shroud": dict(res=2048, acab="carcaca", marca="logo", **CARCACA),
+    "frame.shroud": dict(res=2048, acab="carcaca_a", marca="logo", **CARCACA),
     "frame.face_b": dict(res=2048, acab="face_b", **CARCACA),
     "frame.rim": dict(res=1024, acab="carcaca", **CARCACA),
     "frame.center_covers.1": dict(res=1024, acab="tampa", **CARCACA),
@@ -106,6 +106,9 @@ PECAS = {
 # slots de material: nome no GLB (ids de materials.json listados em materiais_glb, ou o id da peça)
 ACABAMENTOS = {
     "carcaca": ["carcaca.anodizado"],
+    # carcaça com a face A: tampas lisas do X (preto espelhado, como as tampas da face B) e lâminas das
+    # grades; os triângulos de cada slot vêm das zonas que frame.py grava em material_zones_cad_mm
+    "carcaca_a": ["carcaca.anodizado", "carcaca.tampa_x", "carcaca.grade"],
     "face_b": ["carcaca.anodizado", "carcaca.grade"],
     "tampa": ["carcaca.tampa_x"],
     "bracket": ["aco.bracket"],
@@ -635,16 +638,39 @@ def bl_cantos(ob):
 # ---------------------------------------------------------------------------------------------
 def idx_acabamento(peca, P_cad, I):
     """Índice do slot de cada triângulo. Face B: lâminas da grade (topo em z = 0,5 e paredes das frestas
-    abaixo dele) no slot 1 (carcaca.grade); estrutura do X e moldura no slot 0."""
+    abaixo dele, retas ou em V) no slot 1 (carcaca.grade); estrutura do X e moldura no slot 0.
+    Carcaça com a face A (acab carcaca_a): zonas de material_zones_cad_mm do nó (frame.py), cada uma
+    com material (nome do slot) e regras: normal_z_min (componente z mínima da normal), z (centro do
+    triângulo nesse z, com tol), z_min e z_max (triângulo inteiro entre eles, com tol)."""
     cfg = PECAS[peca]
-    if cfg.get("acab") != "face_b":
-        return np.zeros(len(I), np.int32)
     T = P_cad[I]
     n = np.cross(T[:, 1] - T[:, 0], T[:, 2] - T[:, 0])
     n /= np.maximum(np.linalg.norm(n, axis=1), 1e-12)[:, None]
-    zmin, zc = T[:, :, 2].min(1), T[:, :, 2].mean(1)
+    zmin, zmax, zc = T[:, :, 2].min(1), T[:, :, 2].max(1), T[:, :, 2].mean(1)
+    if cfg.get("acab") == "carcaca_a":
+        slots = ACABAMENTOS["carcaca_a"]
+        zonas = (_GLB.get("zonas") or {}).get(peca) or []
+        assert zonas, "frame.shroud sem material_zones_cad_mm no card.glb (rode frame.py e integrate.py)"
+        idx = np.zeros(len(I), np.int32)
+        for zn in zonas:
+            tol = zn.get("tol", 0.02)
+            m = np.ones(len(I), bool)
+            if "normal_z_min" in zn:
+                m &= n[:, 2] >= zn["normal_z_min"]
+            if "z" in zn:
+                m &= np.abs(zc - zn["z"]) < tol
+            if "z_min" in zn:
+                m &= zmin >= zn["z_min"] - tol
+            if "z_max" in zn:
+                m &= zmax <= zn["z_max"] + tol
+            idx[m & (idx == 0)] = slots.index(zn["material"])
+        return idx
+    if cfg.get("acab") != "face_b":
+        return np.zeros(len(I), np.int32)
     topo_lamina = (n[:, 2] < -0.95) & (np.abs(zc - 0.5) < 0.02)
-    parede = (np.abs(n[:, 0]) > 0.95) & (zmin >= 0.49)
+    # paredes das lâminas: retas (normal em x) ou em V (normal inclinada no plano xz), sempre abaixo do
+    # topo das lâminas; as paredes das janelas começam em z = 0 e ficam de fora
+    parede = (np.abs(n[:, 2]) < 0.95) & (np.abs(n[:, 1]) < 0.05) & (zmin >= 0.49)
     return (topo_lamina | parede).astype(np.int32)
 
 
@@ -672,6 +698,7 @@ def chave_cache(src_sha, peca, cfg, escala):
 def assa_pecas(j, binario, alvos, escala, usa_cache, src_sha, log):
     """Assa (ou lê do cache) UV, tangentes e mapas crus de cada peça da tabela."""
     rig = conjuntos_rigidos(j)
+    _GLB["zonas"] = {n["name"]: (n.get("extras", {}).get("detail", {}) or {}).get("material_zones_cad_mm") for n in j["nodes"]}
     malhas = {}
     for n in j["nodes"]:
         if "mesh" not in n:
