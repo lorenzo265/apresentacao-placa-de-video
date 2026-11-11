@@ -811,6 +811,13 @@ def build_scene(asm, R, detail=None, generator="harness/parts/blockout.py"):
                 iid = new_node("%s.%d" % (pid, k), ie, add_mesh("%s.%d" % (pid, k), bodies, g))
                 link(idx[pid], iid)
                 idx["%s.%d" % (pid, k)] = iid
+        # submalhas nomeadas da peça detalhada (integrate.py): nó filho <pai>.<nome>, com a malha de um
+        # acabamento próprio (o lookdev pinta pelo nome); pai é o nó da peça ou de uma instância
+        for parent, sname, body in r.get("subs", []):
+            se = {"stage": p["stage"], "group": g, "blockout": False, "submesh_of": parent, "submesh": sname, "part": pid}
+            sid = new_node("%s.%s" % (parent, sname), se, add_mesh("%s.%s" % (parent, sname), [body], g))
+            link(idx[parent], sid)
+            idx["%s.%s" % (parent, sname)] = sid
     for p in parts:
         if p["parent"]:
             link(idx[p["parent"]], idx[p["id"]])
@@ -873,8 +880,10 @@ def descendants(parts):
 
 
 def all_bodies(R, pid):
+    """Corpos da peça (ou de todas as instâncias), mais as submalhas nomeadas (integrate.py)."""
     r = R[pid]
-    return r["bodies"] if "bodies" in r else [b for inst in r["instances"] for b in inst]
+    out = list(r["bodies"]) if "bodies" in r else [b for inst in r["instances"] for b in inst]
+    return out + [b for _parent, _name, b in r.get("subs", [])]
 
 
 def penetration(a, b):

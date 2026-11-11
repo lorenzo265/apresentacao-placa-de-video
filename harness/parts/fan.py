@@ -80,6 +80,14 @@ G = {
                     "(fração 0,29 a 0,33 contra 0,29 a 0,31 no meio da pá): o alargamento de pny/front era sombra; mantido um arredondamento pequeno do canto"),
     # perfil axial (sem vista lateral: palpite dentro do orçamento fan_axial_depth)
     "hub_top_recess": (0.8, "inferred", "o anel do cubo fica 0,8 mm abaixo da face A; nos renders de três quartos o cubo parece rente à face, sem cota"),
+    # cubo como disco de borda fina sobre um copo recuado (visual-qa-placa-final-2, achado N1)
+    "cap_edge_h": (3.0, "derived",
+                   "altura da borda do disco do cubo: em pny/3qtr-front-left (ventilador 1, cerca de 2,25 px/mm, eixo inclinado cerca de 61 graus "
+                   "pela razão 44/90 da elipse do tampo) a faixa clara da borda sob o anel tem 6 a 8 px, ou 3 a 4 mm; abaixo dela só aparecem pás e sombra "
+                   "(gn-02 igual). Antes o cubo era um cilindro único de fan_axial_depth e a lateral clara aparecia por cerca de 10 mm entre as pás"),
+    "core_inset": (2.0, "inferred",
+                   "recuo radial do copo do rotor (onde as pás se prendem) sob o disco: o disco avança sobre a raiz das pás e a lateral do copo fica na "
+                   "sombra, como nas referências; raio do copo sem foto"),
     "le_z_below_face": (1.4, "inferred", "a borda de ataque fica 1,4 mm abaixo da face A, dentro da boca da chapa (shroud_face_a_plate_thickness)"),
     "blade_h_root": (10.8, "inferred", "altura axial da pá na raiz (da borda de ataque à de fuga); com a corda projetada isso dá cerca de 39 graus de passo na raiz"),
     "blade_h_tip": (10.0, "inferred", "altura axial na ponta; passo quase constante (hélice), cerca de 17 graus na ponta: torção de cerca de 22 graus"),
@@ -150,7 +158,9 @@ Z0 = T - DEPTH                                   # fundo do rotor
 Z_HUB = T - g("hub_top_recess")                  # topo do anel do cubo
 Z_LE = T - g("le_z_below_face")                  # borda de ataque
 Z_FINS = T - M("layer_end_fan_ring")             # topo das aletas das pontas (orçamento)
-R_ROOT = R_HUB - g("root_embed")
+Z_CAP0 = Z_HUB - g("cap_edge_h")                 # fundo do disco do cubo
+R_CORE = R_HUB - g("core_inset")                 # copo do rotor sob o disco
+R_ROOT = R_CORE - g("root_embed")
 
 _SW = np.polyfit(np.array(g("le_sweep_r"), float), np.array(g("le_sweep_deg"), float), 3)
 
@@ -230,7 +240,9 @@ def build_blade():
     secs = [section_wire(r, planar=(i in (0, len(SEC_R) - 1))) for i, r in enumerate(SEC_R)]
     loft = Solid.make_loft(secs)
     ann = Pos(0, 0, Z0 - 2) * (Solid.make_cylinder(R_TIP, DEPTH + 4) - Solid.make_cylinder(R_ROOT, DEPTH + 4))
-    b = loft & ann
+    # sob o disco do cubo a pá para no fundo dele (entra 0,05 mm no disco e na lateral, sem face coplanar)
+    under_cap = Pos(0, 0, Z_CAP0 + 0.05) * Solid.make_cylinder(R_HUB - 0.05, DEPTH)
+    b = (loft & ann) - under_cap
     sol = b.solids()
     assert len(sol) == 1 and sol[0].is_valid, "pá inválida"
     return sol[0]
@@ -239,8 +251,14 @@ def build_blade():
 # ---------------------------------------------------------------------------
 # Cubo e suporte
 # ---------------------------------------------------------------------------
+def build_core():
+    """Copo do rotor sob o disco (submalha <id>.copo: acabamento de plástico, como as pás)."""
+    return Pos(0, 0, Z0) * Solid.make_cylinder(R_CORE, Z_CAP0 - Z0)
+
+
 def build_hub():
-    cup = Pos(0, 0, Z0) * Solid.make_cylinder(R_HUB, Z_HUB - Z0)
+    """Disco do cubo (anel de reforço, ranhura e tampa usinada), de Z_CAP0 a Z_HUB."""
+    cup = Pos(0, 0, Z_CAP0) * Solid.make_cylinder(R_HUB, Z_HUB - Z_CAP0)
     cup = fillet(cup.edges().filter_by(lambda e: e.center().Z > Z_HUB - 1e-3 and e.radius > R_HUB - 0.01), g("rim_fillet"))
     gd = g("groove_depth")
     cup = cup - Pos(0, 0, Z_HUB - gd) * (Solid.make_cylinder(g("groove_r"), gd + 1) - Solid.make_cylinder(g("cap_r"), gd + 1))
@@ -445,9 +463,11 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     blade_local = build_blade()
     hub_local = build_hub()
+    core_local = build_core()
     stator_local = build_stator()
     m_blade = to_mesh(blade_local, TESS_BLADE)
     m_hub = to_mesh(hub_local, TESS_HUB)
+    m_core = to_mesh(core_local, TESS_HUB)
     m_stator = to_mesh(stator_local, TESS_HUB)
     geo = geometry_table()
     report = {"guess_values": {k: {"value": v[0], "provenance": v[1], "note": v[2]} for k, v in G.items()},
@@ -467,6 +487,7 @@ def main():
         phase = g("phase_deg")[n - 1]
         angs = [phase + PITCH * k for k in range(NB)]
         hub = place(trimesh.util.concatenate([m_hub, m_stator]), 0.0, cx, cy)
+        core = place(m_core, 0.0, cx, cy)
         blades = [place(m_blade, a, cx, cy) for a in angs]
         notes = [
             "7 pás de perfil arqueado (borda de ataque redonda, borda de fuga de %.2f mm), varredura medida em pny/front (%.1f graus da raiz à ponta), torção de %.0f graus (passo %.0f na raiz e %.0f na ponta, palpite)" % (
@@ -476,6 +497,8 @@ def main():
             "usinagem concêntrica da tampa: textura do passo do Blender (extras.surface_detail)",
             "suporte do motor com 4 ressaltos e parafusos a r = %.0f (dois pares a 50 graus; vistos em gn-02 e club386); prato e braços escondidos, palpite" % g("boss_r_pos"),
             "posição angular das pás igual à do render pny/front (sem significado físico)",
+            "cubo em duas malhas: disco de %.1f mm de borda (nó do id: anel, ranhura e tampa usinada) e copo do rotor recuado %.1f mm sob o disco "
+            "(submalha %s.copo, plástico como as pás); as pás saem de baixo do disco (visual-qa-placa-final-2, achado N1)" % (g("cap_edge_h"), g("core_inset"), pid),
         ]
         extras = {
             "id": pid, "stage": p["stage"], "fidelity": p["fidelity"], "exists_provenance": p["exists_provenance"],
@@ -498,6 +521,8 @@ def main():
                     blades[k])
         # arquivo do ventilador: cubo e suporte no nó do id, pás como nós filhos
         spec = [(pid, extras, hub, None), (bid, bextras, None, 0)]
+        spec.append(("%s.copo" % pid, {"submesh": "copo", "part": pid, "acabamento": "plástico do rotor (como ventilador.pa)",
+                                       "shape_provenance": "inferred"}, core, 0))
         spec += [(*inst(k), 1) for k in range(NB)]
         for a in p["anchors"]:
             spec.append((a["id"], {"anchor": True, "part": pid, "pos_cad": a["pos"]}, None, 0))
@@ -508,23 +533,24 @@ def main():
         # STEP
         moved = [Pos(cx, cy, 0) * Rot(0, 0, a) * blade_local for a in angs]
         hub_s = Pos(cx, cy, 0) * hub_local
+        core_s = Pos(cx, cy, 0) * core_local
         st_s = Pos(cx, cy, 0) * stator_local
-        hub_s.label, st_s.label = "%s.hub" % pid, "%s.stator" % pid
+        hub_s.label, core_s.label, st_s.label = "%s.hub" % pid, "%s.copo" % pid, "%s.stator" % pid
         for k, s in enumerate(moved):
             s.label = "%s.%d" % (bid, k + 1)
         cb = Compound(moved)
         cb.label = bid
         export_step(cb, str(OUT / ("%s.step" % bid)))
-        cf = Compound([hub_s, st_s, Compound(moved, label=bid)])
+        cf = Compound([hub_s, core_s, st_s, Compound(moved, label=bid)])
         cf.label = pid
         export_step(cf, str(OUT / ("%s.step" % pid)))
 
         # conferências
-        tri_hub = int(len(hub.faces))
+        tri_hub = int(len(hub.faces) + len(core.faces))
         tri_bl = int(sum(len(b.faces) for b in blades))
         allm = trimesh.util.concatenate([hub] + blades)
         lo, hi = allm.bounds
-        pen_hub = overlap_depth(blades[0], place(m_hub, 0.0, cx, cy))
+        pen_hub = max(overlap_depth(blades[0], place(m_hub, 0.0, cx, cy)), overlap_depth(blades[0], core))
         pen_st = overlap_depth(blades[0], place(m_stator, 0.0, cx, cy))
         gap_bb = min_gap(blades[0], blades[1])
         r_xy = np.hypot(allm.vertices[:, 0] - cx, allm.vertices[:, 1] - cy)
@@ -537,7 +563,7 @@ def main():
         for a in p["anchors"]:
             d = 0.0 if inside(th, [a["pos"]])[0] else float(th.find_nearest(V3(a["pos"]))[3])
             anchors.append({"anchor": a["id"], "dist_mm": round(d, 3), "ok": d <= TOL_ANCHOR})
-        ok_closed = closed(hub) and all(closed(b) for b in blades) and closed(m_blade)
+        ok_closed = closed(hub) and closed(core) and all(closed(b) for b in blades) and closed(m_blade)
         checks = {
             "malhas_fechadas": ok_closed,
             "triangulos": {"cubo_e_suporte": tri_hub, "pas": tri_bl, "total": tri_hub + tri_bl, "orcamento": TRI_BUDGET,

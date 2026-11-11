@@ -717,7 +717,9 @@ function criaAmbiente(renderer, cfg, corDe) {
     new THREE.MeshBasicMaterial({ map: hdr, side: THREE.BackSide, color: corDe(cfg.hdr.K).multiplyScalar(cfg.hdr.i), toneMapped: false }));
   esfera.rotation.x = Math.PI / 2;                           // equirretangular com Y para cima -> Z para cima
   cena.add(esfera);
+  const SEM_DBG = new URLSearchParams(location.search).get('ldsem')?.split(',') ?? [];
   for (const c of cfg.caixas) {
+    if (SEM_DBG.includes(c.nome)) continue;
     const mat = new THREE.MeshBasicMaterial({ color: corDe(c.K).multiplyScalar(c.i), side: THREE.DoubleSide, toneMapped: false });
     if (c.degrade || c.listras) {
       // softbox com degradê (de c.degrade[0] a c.degrade[1] ao longo da largura): o reflexo nas faces
@@ -792,13 +794,25 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
   const L = m('card_envelope_length', 304.8), H = m('card_envelope_height', 137.16), T = 40;
   const centro = new THREE.Vector3(L / 2, H / 2, T / 2);
   const Kforcado = luz === 'fria' ? cfg.luzFria : luz === 'quente' ? cfg.luzQuente : null;
-  const corDe = (K) => kelvin(Kforcado ?? K);
+  // Balanço de branco da câmera, como numa foto de produto: a câmera é balanceada na luz principal do
+  // estúdio (cfg.balanco_K, se o tema der; senão a temperatura da luz 'principal'). Sem isto, kelvin()
+  // mede contra o branco do sRGB (D65, cerca de 6500 K) e as luzes de 5200 a 5800 K deixavam a placa
+  // inteira quente (R > G > B nas pás e nas tampas, segunda passada do visual-qa, achado N2). O balanço
+  // é fixo: com ?luz=fria|quente as luzes mudam e a câmera não, e a conferência mostra a diferença.
+  const Kbalanco = cfg.balanco_K ?? cfg.luzes.find((l) => l.papel === 'principal')?.K ?? 6500;
+  const branco = kelvin(Kbalanco);
+  const corDe = (K) => {
+    const c = kelvin(Kforcado ?? K);
+    c.setRGB(c.r / branco.r, c.g / branco.g, c.b / branco.b);
+    return c.multiplyScalar(1 / (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b));   // mantém a luminância 1
+  };
 
   scene.environment = criaAmbiente(renderer, cfg, corDe);
   scene.environmentIntensity = cfg.ambiente;
 
+  const SEM_DBG = new URLSearchParams(location.search).get('ldsem')?.split(',') ?? [];
   const luzes = cfg.luzes.map((l) => {
-    const d = new THREE.DirectionalLight(corDe(l.K), l.i);
+    const d = new THREE.DirectionalLight(corDe(l.K), SEM_DBG.includes(l.papel) ? 0 : l.i);
     d.userData.off = new THREE.Vector3(...l.pos);
     if (l.sombra && q.sombra) {
       d.castShadow = true;
