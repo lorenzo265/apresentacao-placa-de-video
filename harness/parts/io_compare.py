@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Comparação das peças de I/O (parts/io.py) com as fotos de referência.
+"""Comparação das peças de I/O (parts/io_parts.py) com as fotos de referência.
 
 Lê as peças em build/parts/<id>.glb e as fotos em spec/references/cache/ (não versionada) e
 grava em dist/parts/io/:
@@ -30,7 +30,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import importlib.util  # noqa: E402
 
-_spec = importlib.util.spec_from_file_location("io_parts", HERE / "io.py")
+_spec = importlib.util.spec_from_file_location("io_parts", HERE / "io_parts.py")
 IOP = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(IOP)
 

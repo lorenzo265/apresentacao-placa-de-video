@@ -36,7 +36,7 @@ cerca de 13 mm mais perto dos contatos e 4,7 mm mais perto da face B. O padrão 
 foto e deixa as âncoras para o assembly-planner mover (relatório); --ancoras centra o conjunto
 do bracket nas âncoras atuais (o bracket fica deslocado em relação à placa).
 
-Uso:   python3 -I harness/parts/io.py [--ancoras]
+Uso:   python3 -I harness/parts/io_parts.py [--ancoras]
 Saídas: harness/build/parts/<id>.glb e .step, harness/build/parts/io-report.json
 """
 import csv
@@ -550,7 +550,7 @@ def build_adapter():
     zone(pid, "aneis", "cobre", centers=[h[0] for h in holes[:4]])
     zone(pid, "j3_corpo", "plastico_preto", x=[jx - jl / 2, jx + jl / 2], y=[jy - jw / 2, jy + jw / 2])
     zone(pid, "j3_contatos", "dourado")
-    note(pid, "contorno da foto retificada do Chiphell (am_adapter): comprimento pcie_adapter_length, altura sem o lóbulo pcie_adapter_total_height_without_lobe; a mesma grade dá alturas 5,5 %% maiores que o CSV (relatório)")
+    note(pid, "contorno da foto retificada do Chiphell (am_adapter): comprimento pcie_adapter_length, altura sem o lóbulo pcie_adapter_total_height_without_lobe; a mesma grade dá alturas 5,5 % maiores que o CSV (relatório)")
     note(pid, "posição em x pelo J3 em pcie_adapter_connector_x (interface com pcb.main); os contatos ficam de x = %.2f a %.2f (%d por face, passo edge_finger_pitch), contra pcie_fingers_start/end (48 e 131)" % (min(pads) - pw / 2, max(pads) + pw / 2, len(pads)))
     note(pid, "J3 centrado em (pcie_adapter_connector_x, pcie_adapter_connector_center_y); a foto põe o centro em y = %.2f" % f(*AD_J3_IMG)[1])
     note(pid, "J3 de %.1f mm de altura acima da placa (palpite): o par do PCB fica com os %.1f mm restantes até o verso do PCB" % (jh, M("iface_pcb_back_z") - zb - jh))
@@ -618,7 +618,7 @@ def build_power_connector():
     zone(pid, "pinos", "estanhado", note="12 de potência e 4 de sinal, dentro das cavidades")
     zone(pid, "laminas", "estanhado")
     note(pid, "orientação decidida pelas fotos: o lado longo do cabeçote (conn16_header_width, %.2f) fica em z, perpendicular ao PCB; as duas fileiras de 6 ficam lado a lado no plano do PCB, através do chanfro, e a face de encaixe aponta para (+x, +y) a %.0f graus de +x. Fontes: furos no PCB do Chiphell (um furo alongado por fileira e os 4 de sinal em linha, todos na direção de encaixe), sabareesh (corpo alto, duas tiras metálicas lado a lado), pny/3qtr-top-right (lado longo em z na abertura) e a 5090 (pcgamesn-pcb-power)" % (H, ang))
-    note(pid, "corpo de %.2f (através) x %.2f (encaixe) x %.2f (altura, de z = %.1f a %.2f): através e encaixe são cotas da Intel sem rótulo identificado (palpite); centro em (power_connector_center_from_bracket_end, power_connector_center_y)" % (w, d, H, z0, z0 + H))
+    note(pid, "corpo de %.2f (através) x %.2f (encaixe) x %.2f (altura, de z = %.1f a %.2f): através pela cota 7,40 da Intel sem rótulo identificado (palpite), encaixe medido em sabareesh; centro em (power_connector_center_from_bracket_end, power_connector_center_y)" % (w, d, H, z0, z0 + H))
     note(pid, "faixa dos 4 pinos de sinal e trava do lado (-x, +y); lâminas e base atrás do corpo: forma de palpite")
     note(pid, "power_connector_rotation_deg (%.0f) passa a ser lido como o eixo através das fileiras, não como a fileira de 6: a direção de encaixe continua a 45 graus" % M("power_connector_rotation_deg"))
     return shape
@@ -674,7 +674,7 @@ def write_glb(path, pid, nodes_spec, root_extras):
         if parent is not None:
             nodes[parent].setdefault("children", []).append(len(nodes) - 1)
     gltf = {
-        "asset": {"version": "2.0", "generator": "harness/parts/io.py", "extras": root_extras},
+        "asset": {"version": "2.0", "generator": "harness/parts/io_parts.py", "extras": root_extras},
         "scene": 0, "scenes": [{"name": nodes_spec[0][0], "nodes": [0]}], "nodes": nodes, "meshes": meshes,
         "materials": [{"name": pid, "pbrMetallicRoughness": {"baseColorFactor": COLORS[pid] + [1.0],
                                                              "metallicFactor": 0.0, "roughnessFactor": 0.7}}],
