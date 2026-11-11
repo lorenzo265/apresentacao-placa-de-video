@@ -36,25 +36,29 @@ export const TEMAS = {
           // teto-fundo em quatro faixas de borda nítida (vãos a 8%): nas tampas do X, que são espelho
           // preto, o reflexo ganha bordas, como em storagereview/sr-2 e sr-5; nas superfícies foscas
           // a média fica perto da caixa lisa de antes (4,0 em 20 x 6)
-          { nome: 'teto-fundo', K: 5600, i: 6.0, pos: [0, 10, 11], tam: [20, 12], degrade: [0.02, 1], listras: [4, 0.5], vao: 0.08 },
+          { nome: 'teto-fundo', K: 5600, i: 4.8, pos: [0, 10, 11], tam: [20, 12], degrade: [0.02, 1], listras: [4, 0.5], vao: 0.08 },
           // zênite: caixa larga e fraca quase sobre a placa; nas vistas de frente as tampas do X ganham
           // o reflexo largo e escuro das fotos em vez de um preto morto
           { nome: 'zenite-tampas', K: 5600, i: 0.7, pos: [0, 3, 16], tam: [14, 8], degrade: [0.35, 1] },
           { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
           { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
           { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },
-          { nome: 'rebatedor', K: 5600, i: 12, pos: [0, -9, -8.5], tam: [30, 7], degrade: [1, 0.4] },
+          { nome: 'rebatedor', K: 5600, i: 8, pos: [0, -9, -8.5], tam: [30, 7], degrade: [1, 0.4] },
           { nome: 'recorte-fundo', K: 6500, i: 14, pos: [0, 15, 2], tam: [28, 1.4] },
         ],
         // Luzes diretas (mm a partir do centro da placa, no mesmo referencial canônico)
         luzes: [
-          { papel: 'principal', K: 5400, i: 3.2, pos: [-420, -380, 640], sombra: true },
+          { papel: 'principal', K: 5400, i: 3.0, pos: [-420, -380, 640], sombra: true },
           { papel: 'preenchimento', K: 7200, i: 0.28, pos: [560, -320, 140] },
           { papel: 'recorte', K: 6500, i: 3.4, pos: [120, 700, 120] },
+          // segundo recorte, do outro lado e por trás: desenha o contorno da carcaça preta em qualquer azimute
+          // (o estúdio gira com a câmera) e na virada da face A para a B, quando a placa passa de quina
+          { papel: 'recorte-2', K: 6800, i: 2.6, pos: [-520, 640, 160] },
         ],
         luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
+        contorno: 0.10,                // recorte de luz permanente nas bordas (Fresnel), em qualquer ângulo
         apaga: 0.92,                   // destaque: quanto as outras peças escurecem e perdem a cor
         realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)
         ao: { raio: 10, espessura: 4, intensidade: 0.9 },

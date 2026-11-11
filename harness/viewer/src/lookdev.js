@@ -667,7 +667,7 @@ export function resolveMaterial(o, nomeMatGlb) {
 
 const MASCARA_DBG = typeof location !== 'undefined' && new URLSearchParams(location.search).has('ldmascara');
 const MASCARA_POS = typeof location !== 'undefined' && new URLSearchParams(location.search).get('ldmascara') === 'pos';
-const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\n#ifdef LD_ESCURO\nuniform vec3 uEscMin;\nuniform vec3 uEscMax;\nuniform float uEscTrans;\nuniform float uEscLuz;\nvarying vec3 vPosLd;\n#endif\n';
+const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\nuniform float uContorno;\n#ifdef LD_ESCURO\nuniform vec3 uEscMin;\nuniform vec3 uEscMax;\nuniform float uEscTrans;\nuniform float uEscLuz;\nvarying vec3 vPosLd;\n#endif\n';
 // Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
 // resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
 // oclusão assada também apaga a luz direta que chega rasante: sombra = sat(|N.L| + 2 ao² - 1). Superfície
@@ -708,6 +708,8 @@ reflectedLight.directSpecular *= interiorLd;
 #include <aomap_fragment>`;
 /** Quanto a carcaça está aberta (0 montada, 1 aberta): uniforme comum a todos os materiais. */
 const ABERTO = { value: 1 };
+/** Recorte de luz permanente no contorno (Fresnel), para a carcaça preta não sumir no fundo em qualquer ângulo; vem de cfg.contorno. */
+const CONTORNO = { value: 0 };
 const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
@@ -722,7 +724,7 @@ const FRAG_FIM = `#include <opaque_fragment>
 			aoRealceLd = texture2D( aoMap, vAoMapUv ).r;
 			aoRealceLd *= aoRealceLd * aoRealceLd;
 		#endif
-		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * uRealce * aoRealceLd;
+		gl_FragColor.rgb += uRealceCor * ( fr2Ld * fr2Ld * frLd ) * ( uRealce + uContorno * ( 1.0 - uApaga ) ) * aoRealceLd;
 	}`;
 
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
@@ -743,12 +745,13 @@ export function preparaMaterial(m, corRealce) {
     sh.uniforms.uEnvLd = m.userData.ld.env;
     sh.uniforms.uInteriorLd = m.userData.ld.interior;
     sh.uniforms.uAbertoLd = ABERTO;
+    sh.uniforms.uContorno = CONTORNO;
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\n${FRAG_PARS}`)
       .replace('#include <lights_physical_pars_fragment>', `#include <lights_physical_pars_fragment>\n${FRAG_MICRO_PARS}`)
       .replace('#include <aomap_fragment>', FRAG_MICRO)
       .replace('#include <opaque_fragment>', FRAG_FIM);
   };
-  m.customProgramCacheKey = () => (esc ? 'lookdev-destaque-7-escuro' : 'lookdev-destaque-7');
+  m.customProgramCacheKey = () => (esc ? 'lookdev-destaque-8-escuro' : 'lookdev-destaque-8');
   return m;
 }
 
@@ -967,6 +970,7 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
   // mede contra o branco do sRGB (D65, cerca de 6500 K) e as luzes de 5200 a 5800 K deixavam a placa
   // inteira quente (R > G > B nas pás e nas tampas, segunda passada do visual-qa, achado N2). O balanço
   // é fixo: com ?luz=fria|quente as luzes mudam e a câmera não, e a conferência mostra a diferença.
+  CONTORNO.value = cfg.contorno ?? 0;
   const Kbalanco = cfg.balanco_K ?? cfg.luzes.find((l) => l.papel === 'principal')?.K ?? 6500;
   const branco = kelvin(Kbalanco);
   const corDe = (K) => {
