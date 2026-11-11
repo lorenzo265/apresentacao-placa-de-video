@@ -128,9 +128,10 @@
         "duration": 2.0,
         "ease": "power2.out"
       },
-      "hold": 13.0,
+      "hold": 28.0,
       "provenance": [
-        "derived"
+        "derived",
+        "confirmed"
       ],
       "speaker": "Vitor"
     },
@@ -139,7 +140,7 @@
       "act": 0,
       "section": "01",
       "level": 0,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "card",
       "diagram": null,
@@ -176,7 +177,7 @@
       "act": 0,
       "section": "01",
       "level": 0,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": null,
@@ -207,7 +208,7 @@
       "act": 0,
       "section": "01",
       "level": 0,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": null,
@@ -270,7 +271,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 14.5,
+      "hold": 22.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -325,7 +326,7 @@
       "act": 1,
       "section": "01",
       "level": 0,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "frame.face_b",
       "diagram": null,
@@ -368,7 +369,7 @@
       "act": 1,
       "section": "01",
       "level": 0,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "power.connector",
       "diagram": null,
@@ -519,8 +520,9 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 16.0,
+      "hold": 26.0,
       "provenance": [
+        "confirmed",
         "derived"
       ],
       "speaker": "Vitor"
@@ -530,8 +532,8 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
-      "status": "ready",
+      "priority": 2,
+      "status": "draft",
       "part": "frame.rim",
       "diagram": null,
       "explode_state": "E2",
@@ -568,7 +570,7 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "ready",
+      "status": "draft",
       "part": "frame.center_covers",
       "diagram": null,
       "explode_state": "E3",
@@ -604,8 +606,8 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
-      "status": "ready",
+      "priority": 2,
+      "status": "draft",
       "part": "pcie.adapter",
       "diagram": null,
       "explode_state": "E4",
@@ -642,7 +644,7 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "ready",
+      "status": "draft",
       "part": "pcb.plate",
       "diagram": null,
       "explode_state": "E5",
@@ -680,7 +682,7 @@
       "section": "02",
       "level": 1,
       "priority": 2,
-      "status": "ready",
+      "status": "draft",
       "part": "cooler.leaf_spring",
       "diagram": null,
       "explode_state": "E6",
@@ -720,7 +722,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "gpu.tim",
       "diagram": null,
@@ -762,7 +764,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": null,
@@ -794,7 +796,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "power.connector",
       "diagram": null,
@@ -840,7 +842,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "pcie.adapter",
       "diagram": null,
@@ -890,7 +892,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "cooler.base",
       "diagram": null,
@@ -1002,7 +1004,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 16.0,
+      "hold": 28.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1014,7 +1016,7 @@
       "act": 3,
       "section": "03",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "mem.front",
       "diagram": null,
@@ -1052,7 +1054,7 @@
       "act": 3,
       "section": "03",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": "gpu.package",
       "diagram": null,
@@ -1209,7 +1211,7 @@
       "act": 3,
       "section": "03",
       "level": 1,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": "mem.front",
       "diagram": null,
@@ -1238,7 +1240,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 14.0,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1271,10 +1273,11 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 14,
+      "hold": 22.0,
       "provenance": [
         "confirmed",
-        "illustrative"
+        "illustrative",
+        "derived"
       ],
       "speaker": "João"
     },
@@ -1283,7 +1286,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -1350,7 +1353,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 17,
+      "hold": 20.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1362,7 +1365,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -1444,7 +1447,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 17,
+      "hold": 30.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1457,7 +1460,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -1518,7 +1521,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 22,
+      "hold": 25.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1530,7 +1533,7 @@
       "act": 5,
       "section": "06",
       "level": 3,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.sm",
@@ -1597,7 +1600,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26,
+      "hold": 29.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1610,7 +1613,7 @@
       "act": 4,
       "section": "05",
       "level": 3,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.sm",
@@ -1669,7 +1672,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 16,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1705,7 +1708,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 17,
+      "hold": 29.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -1718,7 +1721,7 @@
       "act": 5,
       "section": "12",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.warp",
@@ -1776,7 +1779,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26,
+      "hold": 34.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1814,7 +1817,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26,
+      "hold": 29.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1849,7 +1852,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 27,
+      "hold": 29.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1885,7 +1888,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 24,
+      "hold": 32.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1944,9 +1947,8 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 27,
+      "hold": 32.0,
       "provenance": [
-        "inferred",
         "confirmed",
         "derived",
         "illustrative"
@@ -1981,7 +1983,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26,
+      "hold": 24.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1994,7 +1996,7 @@
       "act": 5,
       "section": "08",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.risc",
@@ -2061,11 +2063,12 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 28,
+      "hold": 33.0,
       "provenance": [
         "inferred",
         "confirmed",
-        "illustrative"
+        "illustrative",
+        "derived"
       ],
       "speaker": "Lorenzo"
     },
@@ -2099,7 +2102,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26,
+      "hold": 30.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2112,7 +2115,7 @@
       "act": 5,
       "section": "09",
       "level": 3,
-      "priority": 3,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.memhier",
@@ -2137,7 +2140,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 24,
+      "hold": 28.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -2194,7 +2197,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 42,
+      "hold": 30.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2236,7 +2239,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 42,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2284,7 +2287,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 30,
+      "hold": 27.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2333,7 +2336,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 42,
+      "hold": 34.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2347,7 +2350,7 @@
       "act": 6,
       "section": "11",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "sys.irq",
@@ -2383,7 +2386,7 @@
       "act": 7,
       "section": "13",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "close.delta",
@@ -2481,7 +2484,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 30,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "illustrative",
@@ -2514,7 +2517,7 @@
         "duration": 5.0,
         "ease": "power2.inOut"
       },
-      "hold": 22.0,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "derived",
