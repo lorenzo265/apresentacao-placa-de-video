@@ -436,7 +436,84 @@ function texFaixas(def, p, N, rnd, ctx) {
   return finaliza(c, 1, false);
 }
 
-const GERADORES = { grao: texGrao, usinagem: texUsinagem, aletas: texAletas, pcb: texPcb, smd: texSmd, contatos_pcie: texContatos, package: texPackage, abertura: texAbertura, faixas: texFaixas };
+/**
+ * Decalque (etiqueta, marcas impressas): texto e padrões desenhados num canvas 2D sobre a caixa da
+ * malha (UV plana: u no maior eixo, v no médio). Fundo com a cor e o acabamento do material; tinta com
+ * os de 'tinta'. Blocos empilhados de cima para baixo: {texto, alt_mm} (linha de texto, comprimida na
+ * largura se não couber), {barras, alt_mm} (código de barras ilustrativo) e {simbolos, alt_mm} (fileira
+ * de marcas: texto em caixa ou a lixeira riscada 'WEEE'); 'qr' põe um código 2D ilustrativo à esquerda.
+ * Fonte genérica do navegador (sans-serif): o desenho é o mesmo a cada carga.
+ */
+function texDecal(def, p, N, rnd, ctx) {
+  const [L, A] = ctx.bbox.tam;
+  const pxmm = Math.min(p.px_mm ?? 40, (N * 2) / Math.max(L, A));
+  const W = Math.max(8, Math.round(L * pxmm)), H = Math.max(8, Math.round(A * pxmm));
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, W, H);             // máscara da tinta: branco = tinta
+  g.fillStyle = '#fff'; g.strokeStyle = '#fff';
+  const mm = (x) => x * pxmm;
+  const m = mm(p.margem_mm ?? 0.5);
+  let x0 = m;
+  if (p.qr) {                                                // código 2D ilustrativo (não é dado)
+    const lado = H - 2 * m, n = 21, c = lado / n;
+    const finder = (i, j) => (i < 7 && j < 7) || (i < 7 && j >= n - 7) || (i >= n - 7 && j < 7);
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      let on = rnd() < 0.5;
+      if (finder(i, j)) { const a = i % (n - 7), b = j % (n - 7); const k = Math.max(Math.abs(a - 3), Math.abs(b - 3)); on = k !== 2; }
+      if (on) g.fillRect(m + j * c, m + i * c, Math.ceil(c), Math.ceil(c));
+    }
+    x0 = m + lado + mm(0.8);
+  }
+  const larg = W - x0 - m;
+  let y = m;
+  for (const b of p.blocos ?? []) {
+    const h = mm(b.alt_mm);
+    if (b.texto != null) {
+      g.font = `${b.negrito ? 'bold ' : ''}${Math.round(h * 0.82)}px sans-serif`;
+      g.textBaseline = 'top';
+      const w = g.measureText(b.texto).width;
+      g.save(); g.translate(x0, y); if (w > larg) g.scale(larg / w, 1); g.fillText(b.texto, 0, h * 0.06); g.restore();
+    } else if (b.barras) {
+      let x = x0;
+      while (x < x0 + larg * (b.fracao ?? 0.8)) { const w = mm(0.08 + rnd() * 0.22); if (rnd() < 0.55) g.fillRect(x, y, w, h * 0.92); x += w; }
+    } else if (b.simbolos) {
+      let x = x0;
+      g.lineWidth = Math.max(1, mm(0.12));
+      for (const s of b.simbolos) {
+        if (s === 'WEEE') {                                  // lixeira riscada
+          const a = h * 0.8, top = y + h * 0.1;
+          g.strokeRect(x + a * 0.2, top + a * 0.15, a * 0.6, a * 0.75);
+          g.beginPath(); g.moveTo(x, top); g.lineTo(x + a, top + a); g.moveTo(x + a, top); g.lineTo(x, top + a); g.stroke();
+          x += a + mm(1.2);
+          continue;
+        }
+        g.font = `bold ${Math.round(h * 0.78)}px sans-serif`;
+        g.textBaseline = 'top';
+        g.fillText(s, x, y + h * 0.08);
+        x += g.measureText(s).width + mm(1.2);
+      }
+    }
+    y += h + mm(b.espaco_mm ?? 0.25);
+  }
+  const px = g.getImageData(0, 0, W, H).data;
+  const c = canais(W, H);
+  c.temCor = true;
+  const fundo = hexRgb(def.cor), tinta = hexRgb(p.tinta.cor);
+  for (let i = 0; i < W * H; i++) {
+    const k = px[i * 4] / 255;
+    for (let j = 0; j < 3; j++) c.cor[i * 3 + j] = fundo[j] + (tinta[j] - fundo[j]) * k;
+    c.rug[i] = def.rug + ((p.tinta.rug ?? def.rug) - def.rug) * k;
+    c.metal[i] = def.metal + ((p.tinta.metal ?? def.metal) - def.metal) * k;
+    c.alt[i] = k * 0.3;
+  }
+  const r = finaliza(c, 0.6, false);
+  if (p.espelha_u || p.espelha_v) for (const t of [r.map, r.orm, r.normal]) { t.repeat.set(p.espelha_u ? -1 : 1, p.espelha_v ? -1 : 1); t.offset.set(p.espelha_u ? 1 : 0, p.espelha_v ? 1 : 0); }
+  return r;
+}
+
+const GERADORES = { decal: texDecal, grao: texGrao, usinagem: texUsinagem, aletas: texAletas, pcb: texPcb, smd: texSmd, contatos_pcie: texContatos, package: texPackage, abertura: texAbertura, faixas: texFaixas };
 
 // ---------------------------------------------------------------------------------------------
 // UV e normais para malhas que chegam sem (blockout)
