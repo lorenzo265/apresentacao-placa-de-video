@@ -20,15 +20,16 @@ const ACUMULA = arg('--acumula', null);
 const BEATS_PADRAO = 'a0.2,a1.1,a1.3,a1.4,a2.4,a2.7,a3.1';
 // Referência de cada beat: a mesma face da placa e um ângulo parecido (face A = ventiladores, face B =
 // grades e X com "RTX PRO 6000"; ver ARCHITECTURE.md, seção 7.6). Comparar vistas de faces diferentes
-// dá falso alarme de espelhamento. Render oficial para o tom, foto real para o material.
+// dá falso alarme de espelhamento. Render oficial para o tom, foto real para o material. Mudou a câmera
+// de um beat no storyboard (lado da câmera em z), confira o par aqui.
 const CACHE = path.join(HARNESS, 'spec', 'references', 'cache');
 const REFS = {
   'a0.2': [['face B, foto real de frente (storagereview/sr-2)', 'storagereview/sr-2.jpg'], ['face B, render oficial (pny/back)', 'pny/back.png']],
   'a1.1': [['face A, vista da ponta oposta ao bracket (pny/3qtr-right)', 'pny/3qtr-right.png'], ['face A, foto real (storagereview/sr-5)', 'storagereview/sr-5.jpg']],
   'a1.3': [['face B, render oficial (pny/back)', 'pny/back.png'], ['face B, foto real (storagereview/sr-2)', 'storagereview/sr-2.jpg']],
-  'a1.4': [['face B e borda superior, render oficial (pny/3qtr-back-right)', 'pny/3qtr-back-right.png'], ['borda superior, foto real (storagereview/sr-3)', 'storagereview/sr-3.jpg']],
+  'a1.4': [['face A e borda superior, render oficial (pny/3qtr-top-right)', 'pny/3qtr-top-right.png'], ['borda superior, foto real (storagereview/sr-3)', 'storagereview/sr-3.jpg']],
   'a1.5': [['bracket e saídas, foto real (storagereview/sr-1)', 'storagereview/sr-1.jpg']],
-  'a2.8': [['verso do PCB no teardown (gn/gn-29)', 'gn/gn-29.jpg']],
+  'a2.8': [['frente do PCB, package e memória (sabareesh/wb-bare-pcb)', 'sabareesh/wb-bare-pcb.jpg'], ['cooler da placa irmã, derived (rtx5090/wccftech-cooler-1)', 'rtx5090/wccftech-cooler-1.jpg']],
   'a3.1': [['verso do PCB, memória e cabo flat (gn/gn-29)', 'gn/gn-29.jpg'], ['frente do PCB, package e memória (sabareesh/wb-bare-pcb)', 'sabareesh/wb-bare-pcb.jpg']],
 };
 
