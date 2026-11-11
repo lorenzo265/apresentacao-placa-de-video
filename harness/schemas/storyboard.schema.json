@@ -184,6 +184,25 @@
               },
               "ease": {
                 "type": "string"
+              },
+              "keys": {
+                "description": "Poses intermediárias da entrada (at em fração da duração), para um beat com vários estágios de desmontagem.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["at", "pos", "target"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "at": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+                    "pos": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+                    "target": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+                    "fov": { "type": "number", "minimum": 10, "maximum": 60 }
+                  }
+                }
+              },
+              "hold_orbit": {
+                "description": "Graus de azimute que a câmera gira em torno do alvo depois da entrada (plano de herói).",
+                "type": "number"
               }
             }
           },

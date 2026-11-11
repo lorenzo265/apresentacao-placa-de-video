@@ -41,12 +41,30 @@ export function orbita(a, b, k, out = {}) {
   out.fov = l(a.fov, b.fov);
   return out;
 }
-/** Tween de câmera em arco na timeline: escreve em S.cam a cada render (seek incluído). */
-function tweenCam(tl, S, de, para, dur, ease, at) {
+/**
+ * Tween de câmera em arco na timeline: escreve em S.cam a cada render (seek incluído).
+ * pontos (opcional): poses intermediárias [{at, ...cam}] com at em fração da duração; a curva de easing
+ * vale para o percurso inteiro e cada trecho é um arco entre poses vizinhas.
+ */
+function tweenCam(tl, S, de, para, dur, ease, at, pontos = []) {
   const p = { k: 0 };
-  const a = { ...de }, b = { ...para };
-  tl.fromTo(p, { k: 0 }, { k: 1, duration: dur, ease, onUpdate: () => orbita(a, b, p.k, S.cam) }, at);
+  const nos = [{ at: 0, ...de }, ...pontos, { at: 1, ...para }];
+  tl.fromTo(p, { k: 0 }, {
+    k: 1, duration: dur, ease,
+    onUpdate: () => {
+      let j = 1;
+      while (j < nos.length - 1 && p.k > nos[j].at) j++;
+      const a = nos[j - 1], b = nos[j];
+      orbita(a, b, Math.min(1, Math.max(0, (p.k - a.at) / Math.max(1e-6, b.at - a.at))), S.cam);
+    },
+  }, at);
 }
+/** Gira a câmera em torno do alvo (graus de azimute), para a volta lenta do plano de herói. */
+function giraAzimute(c, graus) {
+  const a = THREE_RAD * graus, dx = c.px - c.tx, dy = c.py - c.ty;
+  return { ...c, px: c.tx + dx * Math.cos(a) - dy * Math.sin(a), py: c.ty + dx * Math.sin(a) + dy * Math.cos(a) };
+}
+const THREE_RAD = Math.PI / 180;
 const boa = (e) => (typeof e === 'string' && gsap.parseEase(e) ? e : EASE_PADRAO);
 
 /** Seleciona os beats ready do corte, na ordem do array. */
@@ -139,7 +157,8 @@ export function constroiTimeline({ storyboard, corte, world, mergulho = null }) 
       const alvo = camDe(b.camera);
       const de = cam ?? alvo;
       if (i === 0) Object.assign(S.cam, alvo);
-      tweenCam(tl, S, de, alvo, dur, ease, start);
+      const pontos = (b.camera.keys ?? []).map((k) => ({ at: k.at, ...camDe({ fov: b.camera.fov, ...k }) }));
+      tweenCam(tl, S, de, alvo, dur, ease, start, pontos);
       const mixDe = mix ?? 0;
       if (mixDe !== 0) tl.fromTo(S, { mix: mixDe }, { mix: 0, duration: dur, ease: 'power1.inOut' }, start);
       cam = alvo; mix = 0;
@@ -187,6 +206,13 @@ export function constroiTimeline({ storyboard, corte, world, mergulho = null }) 
     if (b.flows?.length) tl.fromTo(S, { flow: 1 }, { flow: 0, duration: saida, ease: 'none' }, tSaida);
     if (via) tl.fromTo(S, { viaA: 1 }, { viaA: 0, duration: saida, ease: 'power1.in' }, tSaida);
     const end = tSaida + saida;
+    // plano de herói: volta lenta em torno do alvo durante a leitura (a acumulação de quadros não roda)
+    if (!diag && b.camera.hold_orbit) {
+      const fim = giraAzimute(cam, b.camera.hold_orbit);
+      const p = { k: 0 }, ini = { ...cam };
+      tl.fromTo(p, { k: 0 }, { k: 1, duration: end - tEntrada, ease: 'sine.inOut', onUpdate: () => orbita(ini, fim, p.k, S.cam) }, tEntrada);
+      cam = fim;
+    }
     entradas.push({ id: b.id, start, entrada: tEntrada, settle, end, level: b.level, beat: b, mergulho: mergulhoDe });
     cursor = end;
   });
