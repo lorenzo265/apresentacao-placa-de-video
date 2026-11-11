@@ -82,6 +82,13 @@ Hoje são 48 beats e cerca de 20 minutos. Proposta: **cerca de 34 beats e 18 a 1
 3. Ressalvas: tudo bem tirá-las da fala e guardá-las num bloco de Q&A neste arquivo (ou num campo novo, o que pede mudança de schema e do viewer, que não são meus)?
 4. Juntar beats muda ids e a lista de beats: preciso combinar com a sessão de câmera antes. Prefere que eu já negocie a lista acima com ela?
 
+## 5.1 Respostas do autor (2026-11-11)
+
+- Ressalvas saem da fala e vão para o bloco de Q&A deste arquivo: **sim**.
+- Fechar a lista de beats com a sessão de câmera: **sim**.
+- Enfoque: **manter a placa**, e a explicação foca **só no que o enunciado pede de forma explícita** (registradores, instruções, CISC ou RISC, MMU, interrupções, gerenciamento de memória, pipeline, cache). Leitura em confirmação, ver a conversa.
+- Formato da fala (roteiro ou tópicos): em aberto.
+
 ## 6. Combinado com a sessão de câmera
 
 Sessão irmã: `session_018iRo36DfXdjSBu15DhrohB`. Orquestradora: `session_018iRo36V6iZYhDLKo7AWJja`.
