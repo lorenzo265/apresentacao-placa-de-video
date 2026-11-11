@@ -1,0 +1,92 @@
+{
+  "descricao": "Os três caminhos desenhados na placa 3D (beats com overlay.path: a2.9 energia, a2.10 dados, a2.11 calor). Mapeamento de peças proposto pelo storyboard-director e aceito pela sessão principal em 2026-11-11; as peças de forma inferred já levam o selo 'provável' no beat. Cada caminho é uma árvore de trechos: um trecho é uma lista de pontos e pode nascer num ponto de outro trecho (de: 'trecho:índice'). Ponto: {no} é a posição de um nó do GLB (âncora, instância ou peça; com em, um ponto da caixa do nó), {peca, em} é um ponto da caixa das malhas próprias da peça (em = fração da caixa em x, y, z, no referencial do storyboard; padrão [0.5, 0.5, 0.5]). As caixas são lidas a cada quadro, então o traçado acompanha a explosão. marca: false tira o nó luminoso do ponto (ponto só de forma). fim: 'no' (nó luminoso) ou 'dissipa' (anéis que se abrem, sem direção: a face por onde o ar entra e sai é lacuna, airflow.direction).",
+  "estilo": {
+    "vel_px_s": 230,
+    "periodo_px": 210,
+    "cauda_px": [150, 100, 60],
+    "cauda_op": [0.16, 0.3, 0.55],
+    "nucleo_px": 20,
+    "halo_px": 70,
+    "revela_s": 2.2
+  },
+  "caminhos": {
+    "energy": {
+      "nome": "energia",
+      "notas": "Conector de 16 pinos, indutores das fases, estágios de potência, chip. O número e a posição das fases são proposta do grupo (inferred); o desenho passa pelos indutores do modelo, sem contar fases.",
+      "trechos": [
+        { "id": "cima", "pontos": [
+          { "peca": "power.connector" },
+          { "no": "power.inductors.17" },
+          { "no": "power.inductors.14", "marca": false },
+          { "no": "power.inductors.12" },
+          { "no": "power.vrm.gpu.13" },
+          { "no": "anchor.gpu.package.1" }
+        ] },
+        { "id": "direita", "de": "cima:0", "pontos": [
+          { "no": "power.inductors.24" },
+          { "no": "power.inductors.22", "marca": false },
+          { "no": "power.inductors.20" },
+          { "no": "power.vrm.gpu.20" },
+          { "no": "anchor.gpu.package.1" }
+        ] },
+        { "id": "memoria", "de": "direita:0", "pontos": [
+          { "no": "power.vrm.mem.4" }
+        ] }
+      ]
+    },
+    "data": {
+      "nome": "dados",
+      "notas": "Contatos PCIe do adaptador, conector de placa a placa J3, placa principal, chip, memória dos dois lados e, pelo cabo flat (proposta do grupo, provável), a placa de saídas. Entre o adaptador e o chip o traço passa pelo J3 e pela placa: o cabo flat não liga o adaptador ao chip.",
+      "trechos": [
+        { "id": "pcie", "pontos": [
+          { "no": "anchor.pcie.adapter.fingers" },
+          { "no": "anchor.pcie.adapter.j3" },
+          { "peca": "pcb.main", "em": [0.215, 0.084, 0.5] },
+          { "no": "anchor.gpu.package.1" }
+        ] },
+        { "id": "mem-frente", "de": "pcie:3", "pontos": [
+          { "no": "mem.front.3" }
+        ] },
+        { "id": "mem-tras", "de": "pcie:3", "pontos": [
+          { "no": "mem.back.8" }
+        ] },
+        { "id": "mem-cima", "de": "pcie:3", "pontos": [
+          { "no": "mem.front.13" }
+        ] },
+        { "id": "video", "de": "pcie:3", "pontos": [
+          { "peca": "pcb.main", "em": [0.0, 0.09, 0.5] },
+          { "no": "anchor.flex.dp.1" },
+          { "no": "anchor.io.board.1" },
+          { "no": "io.board.dp.3" }
+        ] }
+      ]
+    },
+    "heat": {
+      "nome": "calor",
+      "notas": "Chip, pasta térmica, base e câmara de vapor (derivada da 5090 FE e de um revisor), tubos de calor, aletas e ar. O interior do cooler é proposta do grupo (inferred). O fim é um anel que se abre nos ventiladores, sem seta: por qual face o ar entra e sai não tem fonte.",
+      "trechos": [
+        { "id": "nucleo", "pontos": [
+          { "no": "anchor.gpu.package.1" },
+          { "no": "anchor.gpu.tim.1" },
+          { "no": "anchor.cooler.base.1" },
+          { "no": "anchor.cooler.vapor_chamber.1" }
+        ] },
+        { "id": "esquerda", "de": "nucleo:3", "pontos": [
+          { "no": "cooler.heatpipes.3", "em": [1, 0.5, 0.5] },
+          { "no": "cooler.heatpipes.3", "em": [0, 0.5, 0.5], "marca": false },
+          { "no": "anchor.cooler.fins.1" },
+          { "no": "anchor.cooler.fan.1" }
+        ], "fim": "dissipa" },
+        { "id": "direita", "de": "nucleo:3", "pontos": [
+          { "no": "cooler.heatpipes.8", "em": [0, 0.5, 0.5] },
+          { "no": "cooler.heatpipes.8", "em": [1, 0.5, 0.5], "marca": false },
+          { "no": "anchor.cooler.fins.2" },
+          { "no": "anchor.cooler.fan.2" }
+        ], "fim": "dissipa" },
+        { "id": "centro", "de": "nucleo:3", "pontos": [
+          { "no": "anchor.cooler.fins.3" }
+        ], "fim": "dissipa" }
+      ]
+    }
+  }
+}

@@ -11,13 +11,13 @@ import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { STAGE_W, STAGE_H } from './layout.js';
-import { QUALIDADES, aplicaMateriais, criaEstudio, criaPos, preparaMaterial } from './lookdev.js';
+import { QUALIDADES, aplicaMateriais, amostraAcumulacao, criaEstudio, criaPos, preparaMaterial } from './lookdev.js';
 
 // O storyboard usa mm, Z para cima. O GLB vem em metros, Y para cima.
 THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 CameraControls.install({ THREE });
 
-export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null, qualidade = null, luz = null, capture = false }) {
+export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null, qualidade = null, luz = null, capture = false, acumula = null }) {
   const tc = tema?.cena ?? null;     // parâmetros de cena do tema; null = cena padrão
   const R = tc?.realista ?? null;    // modo realista (lookdev.js)
   // Qualidade: a pedida na URL; sem pedido, a média, com troca automática para a baixa se o
@@ -170,6 +170,15 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     c.no.getWorldPosition(vTmp).sub(c.p0);          // a explosão só translada os nós
     return { min: c.caixa.min.clone().add(vTmp), max: c.caixa.max.clone().add(vTmp) };
   }
+  /** Caixa de um nó qualquer (instância, peça com filhos) no estado atual, em mm; nó sem malha vira ponto. */
+  const bTmp = new THREE.Box3();
+  function caixaNo(nome) {
+    const o = acha(nome);
+    if (!o) return null;
+    bTmp.makeEmpty().expandByObject(o);
+    if (bTmp.isEmpty()) { o.getWorldPosition(vTmp); return { min: vTmp.clone(), max: vTmp.clone() }; }
+    return { min: bTmp.min.clone(), max: bTmp.max.clone() };
+  }
   /** Posição de um nó (âncora ou peça) em mm, no estado atual. */
   function pontoNo(nome) {
     const o = acha(nome);
@@ -187,7 +196,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
   if (R) montaPos();
   let nivelAtual = 0;
   const alvo = new THREE.Vector3();
-  const medida = { n: 0, t0: 0 };
+  const medida = { n: 0, soma: 0, ult: 0, pulou: true };
   /** Troca de qualidade em execução (só para baixo, pela medição automática). */
   function defineQualidade(nq) {
     if (!R || nq === nivelQ) return;
@@ -201,37 +210,181 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     montaPos();
     console.info(`[lookdev] qualidade ${nq}`);
   }
-  function desenha() {
-    if (!R) { renderer.render(scene, camera); return; }
-    estudio.atualiza(camera, nivelAtual);
-    if (pos) pos.render(camera.position.distanceTo(controls.getTarget(alvo)));
+
+  // ---- acumulação de quadros (modo realista, média e alta) ----
+  // Com a cena parada, cada quadro novo é uma amostra com deslocamento de subpixel, luz principal num
+  // disco e espiral da profundidade de campo girada; a tela mostra a média. A assinatura do estado
+  // (câmera, explosão, destaque, qualidade) diz se algo se mexeu: mexeu, recomeça da amostra 0, que é o
+  // quadro normal. Ao vivo, uma amostra por quadro até o alvo; depois disso nada é desenhado (a imagem
+  // fica no canvas, preserveDrawingBuffer). Na captura, o seek desenha de uma vez todas as amostras que
+  // faltam: a imagem é função só do estado, e a sequência de amostras é fixa.
+  const ac = { sig: null, n: 0 };
+  const idsFat = new WeakMap();
+  let proxIdFat = 1;
+  const idFat = (f) => { if (!f) return 0; if (!idsFat.has(f)) idsFat.set(f, proxIdFat++); return idsFat.get(f); };
+  let destaqueAtual = '';
+  const nAcumDe = () => (acumula != null ? acumula : QUALIDADES[nivelQ]?.acum ?? 0);
+  const r5 = (x) => Math.round(x * 1e5);
+  function assinatura() {
+    const p = camera.position, o = camera.quaternion;
+    return `${[p.x, p.y, p.z, o.x, o.y, o.z, o.w, camera.fov, nivelAtual].map(r5).join(',')}|${destaqueAtual}|${nivelQ}|${renderer.getPixelRatio()}`;
+  }
+  function amostra(k) {
+    const am = amostraAcumulacao(k, R.acumula);
+    estudio.atualiza(camera, nivelAtual, am?.luz ?? null);
+    if (pos) pos.render(camera.position.distanceTo(controls.getTarget(alvo)), k, am);
     else renderer.render(scene, camera);
+  }
+  /**
+   * Desenha o quadro. parado: a cena não se mexe neste instante (a captura sabe pela timeline; ao vivo
+   * vale a assinatura). Devolve true se desenhou algo.
+   */
+  function desenha({ parado = true } = {}) {
+    if (!R) { renderer.render(scene, camera); return true; }
+    camera.updateMatrixWorld(true);
+    const sig = assinatura();
+    const alvoN = pos && parado ? Math.max(1, nAcumDe()) : 1;
+    if (sig !== ac.sig || ac.n > alvoN) { ac.sig = sig; ac.n = 0; }
+    if (ac.n >= alvoN) { medida.pulou = true; return false; }
+    const ate = capture ? alvoN : ac.n + 1;
+    for (; ac.n < ate; ac.n++) amostra(ac.n);
+    pos?.exibe();
     if (autoQ && nivelQ === 'media') {
       // primeira medição: 20 quadros de aquecimento, depois 60 quadros; abaixo de 28 qps, baixa.
       // Máquina claramente lenta (abaixo de 10 qps nos 10 primeiros quadros medidos) decide logo.
+      // Só conta o intervalo entre dois quadros desenhados seguidos (parada da acumulação não conta).
       const t = performance.now();
-      medida.n++;
-      if (medida.n === 20) medida.t0 = t;
-      else if (medida.n === 30 && 10000 / (t - medida.t0) < 10) defineQualidade('baixa');
-      else if (medida.n === 80) {
-        const qps = 60000 / (t - medida.t0);
-        if (qps < 28) defineQualidade('baixa');
-        else console.info(`[lookdev] qualidade media mantida (${qps.toFixed(0)} qps)`);
+      if (!medida.pulou) {
+        medida.n++;
+        if (medida.n > 20) medida.soma += t - medida.ult;
+        if (medida.n === 30 && 10000 / medida.soma < 10) defineQualidade('baixa');
+        else if (medida.n === 80) {
+          const qps = 60000 / medida.soma;
+          if (qps < 28) defineQualidade('baixa');
+          else console.info(`[lookdev] qualidade media mantida (${qps.toFixed(0)} qps)`);
+        }
       }
+      medida.ult = t; medida.pulou = false;
     }
+    return true;
+  }
+
+  // ---- mergulho: pose da câmera que põe uma peça num retângulo da tela ----
+  const camTmp = new THREE.PerspectiveCamera(30, STAGE_W / STAGE_H, 1, 6000);
+  camTmp.up.set(0, 0, 1);
+  /** Cantos da face da peça voltada para fora da placa (normal: do centro do PCB para a peça, em z). */
+  function faceDe(id, ref = 'pcb.main') {
+    const c = caixaPeca(id);
+    if (!c) return null;
+    const r = caixaPeca(ref);
+    const zc = (c.min.z + c.max.z) / 2;
+    const sz = r ? Math.sign(zc - (r.min.z + r.max.z) / 2) || 1 : 1;
+    const z = sz > 0 ? c.max.z : c.min.z;
+    const cantos = [[c.min.x, c.min.y], [c.max.x, c.min.y], [c.max.x, c.max.y], [c.min.x, c.max.y]].map(([x, y]) => new THREE.Vector3(x, y, z));
+    return { cantos, centro: new THREE.Vector3((c.min.x + c.max.x) / 2, (c.min.y + c.max.y) / 2, z), normal: new THREE.Vector3(0, 0, sz) };
+  }
+  /** Retângulo envolvente (px do palco) de pontos em mm vistos por uma câmera; null se algum ficar atrás. */
+  function retTela(cam, pts) {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of pts) {
+      v.copy(p).project(cam);
+      if (v.z > 1) return null;
+      const sx = (v.x * 0.5 + 0.5) * STAGE_W, sy = (-v.y * 0.5 + 0.5) * STAGE_H;
+      x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx); y1 = Math.max(y1, sy);
+    }
+    return [x0, y0, x1 - x0, y1 - y0];
+  }
+  /**
+   * Pose de câmera (formato do storyboard: px..tz, fov) que olha a face externa da peça quase de frente
+   * (inclinação em graus a partir da normal, no azimute de `de`) e põe a largura da face, projetada, em
+   * rect = [x, y, w, h] (px do palco), centrada nele. Só vale no estado de explosão atual.
+   */
+  function poseMergulho({ peca, rect, fov = 30, inclinacao = 8, de = null }) {
+    const f = faceDe(peca);
+    if (!f) return null;
+    const az = new THREE.Vector3(1, -1, 0);
+    if (de) az.set(de.px - de.tx, de.py - de.ty, 0);
+    if (az.lengthSq() < 1e-6) az.set(0, -1, 0);
+    az.normalize();
+    const inc = (inclinacao * Math.PI) / 180;
+    const dir = f.normal.clone().multiplyScalar(Math.cos(inc)).addScaledVector(az, Math.sin(inc)).normalize();
+    camTmp.fov = fov; camTmp.updateProjectionMatrix();
+    const larg = Math.hypot(f.cantos[1].x - f.cantos[0].x, f.cantos[1].y - f.cantos[0].y);
+    let d = (larg / 2) / (Math.tan((fov * Math.PI) / 360) * (STAGE_W / STAGE_H) * (rect[2] / STAGE_W));
+    const T = f.centro.clone();
+    const dx = new THREE.Vector3(), dy = new THREE.Vector3();
+    for (let i = 0; i < 8; i++) {
+      camTmp.position.copy(T).addScaledVector(dir, d);
+      camTmp.lookAt(T);
+      camTmp.updateMatrixWorld(true);
+      const r = retTela(camTmp, f.cantos);
+      if (!r) return null;
+      d *= r[2] / rect[2];
+      // desloca o alvo no plano da tela para o centro da face cair no centro do retângulo
+      const mmPorPx = (2 * d * Math.tan((fov * Math.PI) / 360)) / STAGE_H;
+      dx.setFromMatrixColumn(camTmp.matrixWorld, 0);
+      dy.setFromMatrixColumn(camTmp.matrixWorld, 1);
+      const ex = (rect[0] + rect[2] / 2) - (r[0] + r[2] / 2), ey = (rect[1] + rect[3] / 2) - (r[1] + r[3] / 2);
+      T.addScaledVector(dx, -ex * mmPorPx).addScaledVector(dy, ey * mmPorPx);
+    }
+    const P = T.clone().addScaledVector(dir, d);
+    return { px: P.x, py: P.y, pz: P.z, tx: T.x, ty: T.y, tz: T.z, fov };
+  }
+  /**
+   * Mergulho: registra o afastamento das peças que ficam do lado de fora da face da peça (acima dela,
+   * na direção da normal), que esconderiam a peça da câmera que desce sobre ela. Elas saem para trás
+   * (contra o azimute da câmera anterior) e para cima, como mais um passo da explosão. Devolve o
+   * índice do grupo para aplicaEstado(..., {g, f}), ou null.
+   */
+  function preparaAfastamento({ peca, de = null, recuo = 300, sobe = 150, folga = 2 }) {
+    const f = faceDe(peca);
+    const no = acha(peca);
+    if (!f || !no || !estado) return null;
+    const anc = new Set();
+    for (let a = no; a; a = a.parent) anc.add(a);
+    const sz = f.normal.z;
+    const lista = [];
+    for (const [id, c] of caixas) {
+      if (anc.has(c.no)) continue;
+      let dentro = false;
+      for (let a = c.no.parent; a; a = a.parent) if (a === no) dentro = true;
+      if (dentro) continue;
+      const b = caixaPeca(id);
+      const baixo = sz > 0 ? b.min.z - f.centro.z : f.centro.z - b.max.z;
+      if (baixo >= folga) lista.push(c.no);
+    }
+    const set = new Set(lista);
+    const topo = lista.filter((o) => { for (let a = o.parent; a; a = a.parent) if (set.has(a)) return false; return true; });
+    if (!topo.length) return null;
+    const az = new THREE.Vector3(1, -1, 0);
+    if (de) az.set(de.px - de.tx, de.py - de.ty, 0);
+    if (az.lengthSq() < 1e-6) az.set(0, -1, 0);
+    az.normalize();
+    const D = az.multiplyScalar(-recuo).addScaledVector(f.normal, sobe);
+    // D em mm no mundo; o nó vive no GLB (metros, Y para cima, sob a raiz escalada): converte no registro
+    return { g: estado.registraAfastamento(topo, D), pecas: topo.map((o) => o.name) };
+  }
+  /** Caixa da peça num nível de explosão (aplica o nível; o próximo quadro reaplica o estado do tour). */
+  function caixaEm(id, nivel) {
+    if (estado) { estado.explode(nivel); estado.afasta(null); placa.updateMatrixWorld(true); }
+    return caixaPeca(id);
   }
 
   return {
     renderer, camera, controls, scene, blockout, avisos,
     qualidade: () => nivelQ, materiais: () => materiais, defineQualidade,
     temAncora: (n) => !!acha(n),
-    caixaPeca, pontoNo,
+    caixaPeca, caixaNo, pontoNo, caixaEm, faceDe, poseMergulho, preparaAfastamento,
+    /** Estado da acumulação (para os testes): amostras na média e o alvo. */
+    acumulacao: () => ({ n: ac.n, alvo: pos ? Math.max(1, nAcumDe()) : 1 }),
     temPeca: (n) => !!estado && estado.temPeca(n),
     /** Aplica explosão (nível 0 a 8, contínuo) e destaque (fatores prévio e atual, mistura hl). */
-    aplicaEstado(nivel, fPrev, fCur, hl) {
+    aplicaEstado(nivel, fPrev, fCur, hl, af = null) {
       nivelAtual = nivel;
+      destaqueAtual = `${idFat(fPrev)},${idFat(fCur)},${r5(hl)},${af ? `${af.g}:${r5(af.f)}` : ''}`;
       if (!estado) return;
       estado.explode(nivel);
+      estado.afasta(af);
       estado.destaque(fPrev, fCur, hl);
       placa.updateMatrixWorld(true);
     },
@@ -417,6 +570,17 @@ function criaEstado3d(raiz, realista = null) {
     }
   });
 
+  // Afastamento extra (mergulho): nós que saem do caminho da câmera, além da explosão.
+  // extra: nó -> { base (posição sem explosão), local (deslocamento total no referencial do pai), f }
+  const porNo = new Map(nos.map((n) => [n.o, n]));
+  const extra = new Map();
+  const poe = (o) => {
+    const n = porNo.get(o), x = extra.get(o);
+    if (n) o.position.copy(n.base).addScaledVector(n.off, n.p);
+    else if (x) o.position.copy(x.base);
+    if (x && x.f) o.position.addScaledVector(x.local, x.f);
+  };
+  const grupos = [];
   return {
     temPeca: (n) => pecas.has(n),
     explode(nivel) {
@@ -424,8 +588,28 @@ function criaEstado3d(raiz, realista = null) {
         const p = suave(Math.min(1, Math.max(0, nivel - (n.estagio - 1))));
         if (p === n.p) continue;
         n.p = p;
-        n.o.position.copy(n.base).addScaledVector(n.off, p);
+        poe(n.o);
       }
+    },
+    /** Registra um grupo de nós a afastar por D (mm, mundo); devolve o índice do grupo. */
+    registraAfastamento(lista, D) {
+      const m3 = new THREE.Matrix3();
+      const g = [];
+      for (const o of lista) {
+        if (extra.has(o)) continue;
+        m3.setFromMatrix4(new THREE.Matrix4().copy(o.parent.matrixWorld).invert());
+        extra.set(o, { base: porNo.get(o)?.base ?? o.position.clone(), local: D.clone().applyMatrix3(m3), f: 0 });
+        g.push(o);
+      }
+      grupos.push(g);
+      return grupos.length - 1;
+    },
+    /** Fração do afastamento de cada grupo (af = {g, f}; null = nenhum afastado). */
+    afasta(af) {
+      grupos.forEach((g, i) => {
+        const f = af && af.g === i ? af.f : 0;
+        for (const o of g) { const x = extra.get(o); if (x.f !== f) { x.f = f; poe(o); } }
+      });
     },
     /** Fatores de opacidade por malha para um conjunto de peças (ids) e de tags; null = nada esmaece. */
     fatoresDe(partes, tags) {

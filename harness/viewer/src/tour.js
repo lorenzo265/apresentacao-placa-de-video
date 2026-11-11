@@ -9,12 +9,52 @@ import { criaCabecalho } from './header.js';
 import { criaControles } from './controls.js';
 import { STAGE_W, STAGE_H, boxPlacement } from './layout.js';
 import { criaCotas } from './cotas.js';
+import { criaCaminhos } from './caminhos3d.js';
+import MERGULHO from './mergulho.json';
 
 const COR_CAMINHO = { energy: '#ffb020', data: '#35d0e6', heat: '#ff6a3d' };
 
 export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
   const { storyboard, textos, world, medidas } = dados;
-  const { tl, S, beats, duration } = constroiTimeline({ storyboard, corte, world });
+
+  // Retângulo de mundo (diagramas) na tela para um enquadramento {cx, cy, lw}, e o inverso: o
+  // enquadramento que põe um retângulo de mundo num retângulo da tela (escala uniforme pela largura).
+  const retNaTela = ([x, y, w, h], vb) => {
+    const vw = Math.exp(vb.lw), vh = vw * STAGE_H / STAGE_W, kk = STAGE_W / vw;
+    return [(x - (vb.cx - vw / 2)) * kk, (y - (vb.cy - vh / 2)) * kk, w * kk, h * kk];
+  };
+  const vbPara = ([x, y, w], [qx, qy, qw]) => {
+    const kk = qw / w, vw = STAGE_W / kk, vh = vw * STAGE_H / STAGE_W;
+    return { cx: x - qx / kk + vw / 2, cy: y - qy / kk + vh / 2, lw: Math.log(vw) };
+  };
+  /** Retângulo (px) com a proporção asp, centrado em r e ajustado por dentro dele. */
+  const ajustaDentro = (r, asp) => {
+    let w = r[2], h = w / asp;
+    if (h > r[3]) { h = r[3]; w = h * asp; }
+    return [r[0] + (r[2] - w) / 2, r[1] + (r[3] - h) / 2, w, h];
+  };
+  // Mergulho (src/mergulho.json): pose final da câmera 3D para o nó do diagrama terminar onde o
+  // enquadramento do beat o põe, com a peça projetada por baixo dele.
+  function mergulho(b, camAnt, nivel, vbAlvo) {
+    const cfg = MERGULHO.diagramas[b.view?.diagram];
+    const no = cfg && world.byId.get(cfg.no);
+    if (!cfg || !no || !cena.temPeca(cfg.peca)) return null;
+    cena.caixaEm(cfg.peca, nivel);
+    const f = cena.faceDe(cfg.peca);
+    if (!f) return null;
+    const [c0, c1, c2] = f.cantos;
+    const asp = Math.hypot(c1.x - c0.x, c1.y - c0.y) / Math.max(1e-6, Math.hypot(c2.x - c1.x, c2.y - c1.y));
+    const F = retNaTela(no.rect, vbAlvo);
+    // a peça projetada é o retângulo em que o nó (proporção dele) cabe por dentro
+    const W = no.rect[2] / no.rect[3] >= asp ? F[2] : F[3] * asp;
+    const H = W / asp;
+    const cam = cena.poseMergulho({ peca: cfg.peca, rect: [F[0] + F[2] / 2 - W / 2, F[1] + F[3] / 2 - H / 2, W, H], fov: cfg.fov ?? camAnt.fov, inclinacao: cfg.inclinacao_graus ?? 8, de: camAnt });
+    if (!cam) return null;
+    // o que fica sobre a peça (cooler, carcaça) sai do caminho da câmera
+    const afasta = cfg.afasta ? cena.preparaAfastamento({ peca: cfg.peca, de: camAnt, recuo: cfg.afasta.recuo_mm, sobe: cfg.afasta.sobe_mm }) : null;
+    return { cam, ease: cfg.ease, cfg, no, afasta };
+  }
+  const { tl, S, beats, duration } = constroiTimeline({ storyboard, corte, world, mergulho: cena.blockout ? null : mergulho });
   if (!beats.length) throw new Error(`corte "${corte}" não tem beats ready`);
 
   const camadaDiag = criaCamadaDiagramas(palco, world, tema?.diagramas ?? null);
@@ -22,6 +62,8 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
   const chamada = criaChamada(palco);
   const corLinha = tema?.linha ?? '#f1f4f8';
   const cabecalho = criaCabecalho(palco);
+  const caminhos = criaCaminhos(palco, cena);
+  if (!cena.blockout) caminhos.avisos.forEach((a) => console.warn(`[3D] ${a}`));
 
   const textoDe = (id) => {
     const t = textos.beats[id];
@@ -49,7 +91,7 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
         ult = cena.fatoresDe(partes, tags);
       }
       dims3d[i] = ult;
-      if (b.overlay) console.warn(`[3D] overlay ainda sem mapeamento de peças (beat ${b.id}, caminho ${b.overlay.path}); nada desenhado`);
+      if (b.overlay && !caminhos.tem(b.overlay.path)) console.warn(`[3D] caminho ${b.overlay.path} sem mapeamento em caminhos.json (beat ${b.id}); nada desenhado`);
     });
   }
 
@@ -105,18 +147,41 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
     const i = ativo(t), e = beats[i], b = e.beat;
     chamada.define(b, textoDe(b.id));
     const ocultar3d = mix >= 0.999;
+    // mergulho: na entrada do beat a câmera 3D anda mesmo com o canvas quase oculto (o diagrama segue a peça)
+    const mergulhando = !!e.mergulho && t < e.entrada && !cena.blockout;
     cena.renderer.domElement.style.visibility = ocultar3d ? 'hidden' : 'visible';
     cena.renderer.domElement.style.opacity = 1 - mix;
-    if (!ocultar3d) {
-      cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl);
+    if (!ocultar3d || mergulhando) {
+      const af = e.mergulho?.afasta ? { g: e.mergulho.afasta.g, f: q(S.afasta) } : null;
+      cena.aplicaEstado(expl, i > 0 ? dims3d[i - 1] : null, dims3d[i], hl, af);
       if (!livre) cena.ajustaCamera(cam);
-      cena.desenha();
+      // na captura, a cena só acumula quadros fora da entrada do beat (o estado 3D só muda nela)
+      if (!ocultar3d) cena.desenha({ parado: !capture || t > e.entrada + 1e-6 });
     }
+    if (mergulhando) {
+      // o nó do diagrama fica colado à peça projetada (proporção do nó, por dentro dela) e, no fim da
+      // entrada, passa suavemente para o enquadramento do beat
+      const { cfg, no } = e.mergulho;
+      const f = cena.faceDe(cfg.peca);
+      const pts = f?.cantos.map((p) => cena.projeta([p.x, p.y, p.z]));
+      if (pts && pts.every(Boolean)) {
+        const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+        const P = [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)];
+        const vm = vbPara(no.rect, ajustaDentro(P, no.rect[2] / no.rect[3]));
+        const tau = (t - e.start) / Math.max(1e-6, e.entrada - e.start);
+        const a0 = cfg.cola_ate ?? 0.8;
+        const u = Math.min(1, Math.max(0, (tau - a0) / Math.max(1e-6, 1 - a0)));
+        const w = u * u * (3 - 2 * u);
+        qVb = { cx: q(vm.cx + (vb.cx - vm.cx) * w), cy: q(vm.cy + (vb.cy - vm.cy) * w), lw: q(vm.lw + (vb.lw - vm.lw) * w) };
+      }
+    }
+    caminhos.atualiza({ caminho: !ocultar3d && b.level <= 1 ? b.overlay?.path ?? null : null, via: q(S.via), alfa: q(S.viaA) * (1 - mix), t });
     camadaDiag.atualiza({
-      vb, dims: dimsDe(i), dimsAnt: dimsDe(i - 1), hl,
+      vb: qVb, dims: dimsDe(i), dimsAnt: dimsDe(i - 1), hl,
       flowsAtivos: b.flows ?? [], flowAlpha: flow, t, visivel: mix,
       alvo: b.level >= 2 ? b.callout?.anchor ?? null : null,
-      vista: b.view?.diagram ?? null, vistaAnt: i > 0 ? beats[i - 1].beat.view?.diagram ?? null : null,
+      // vindo do 3D não havia diagrama na tela: os vizinhos já entram apagados (não há de onde apagar)
+      vista: b.view?.diagram ?? null, vistaAnt: i > 0 ? beats[i - 1].beat.view?.diagram ?? (beats[i - 1].beat.level <= 1 ? b.view?.diagram ?? null : null) : null,
     });
     cotas?.atualiza({ visivel: ocultar3d ? 0 : (1 - mix) * Math.max(0, 1 - expl / 0.25) });
     chamada.atualiza(b, ancoraDe(b), line, box, COR_CAMINHO[b.overlay?.path] ?? corLinha);
@@ -136,10 +201,10 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
   const tour = {
     ready: null,
     duration, fps: storyboard.fps, cut: corte,
-    beats: beats.map(({ id, start, settle, end, level }) => ({ id, start, settle, end, level })),
+    beats: beats.map(({ id, start, entrada, settle, end, level, mergulho: m }) => ({ id, start, entrada, settle, end, level, mergulho: !!m })),
     textoDe,
     /** Estado quantizado da cena 3D no instante atual (para os testes). */
-    estado: () => ({ expl: Math.round(S.expl * 1e6) / 1e6, mix: Math.round(S.mix * 1e6) / 1e6 }),
+    estado: () => ({ expl: Math.round(S.expl * 1e6) / 1e6, mix: Math.round(S.mix * 1e6) / 1e6, via: Math.round(S.via * 1e6) / 1e6, acum: cena.acumulacao?.() ?? null, cam: { ...S.cam }, vb: { ...qVb } }),
     seek,
     time: () => tl.time(),
     beatAtual: () => beats[ativo(tl.time())],

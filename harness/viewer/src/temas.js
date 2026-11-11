@@ -47,6 +47,9 @@ export const TEMAS = {
         realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)
         ao: { raio: 10, espessura: 4, intensidade: 0.9 },
         dof: { abertura: 7, maxCoc: 3, maxCocAlta: 5 },   // px do palco de 1920 x 1080
+        // acumulação com a cena parada (lookdev.js): largura do filtro em tenda (px do alvo) e raio
+        // angular da luz principal tratada como luz de área (sombra suave)
+        acumula: { filtro_px: 1.0, luz_graus: 5 },
       },
       cotas: false,
     },

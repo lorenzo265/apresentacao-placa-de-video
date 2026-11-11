@@ -4,6 +4,10 @@ import gsap from 'gsap';
 import { resolve, uniao } from './world.js';
 import { STAGE_W, STAGE_H, safeRect, BOX_IN, LINE_OUT_DEFAULT } from './layout.js';
 
+import CAMINHOS from './caminhos.json';
+
+const VIA_IN = CAMINHOS.estilo.revela_s;      // s para o caminho na placa se desenhar inteiro, depois da entrada
+
 const EASE_PADRAO = 'power2.inOut';
 const boa = (e) => (typeof e === 'string' && gsap.parseEase(e) ? e : EASE_PADRAO);
 
@@ -36,12 +40,19 @@ export function enquadra(world, beat) {
   return { cx, cy, lw: Math.log(vw) };
 }
 
-export function constroiTimeline({ storyboard, corte, world }) {
+/**
+ * mergulho(beat, camAnterior, nivel, vbAlvo): para um beat de diagrama que entra vindo do 3D, a pose de câmera
+ * 3D do mergulho (a câmera avança até a peça enquanto o diagrama entra) ou null. Configuração do
+ * viewer (src/mergulho.json), não do storyboard.
+ */
+export function constroiTimeline({ storyboard, corte, world, mergulho = null }) {
   const beats = beatsDoCorte(storyboard, corte);
   const S = {
     cam: { px: 0, py: 0, pz: 0, tx: 0, ty: 0, tz: 0, fov: 30 },
     vb: { cx: 0, cy: 0, lw: Math.log(1600) },
     mix: 0, hl: 1, line: 0, box: 0, flow: 0, expl: 0,
+    via: 0, viaA: 0,     // caminho na placa (overlay.path): avanço do traçado e opacidade
+    afasta: 0,           // mergulho: fração do afastamento das peças que tapam a peça-alvo
   };
   const tl = gsap.timeline({ paused: true, defaults: { immediateRender: false } });
   const entradas = [];
@@ -57,6 +68,8 @@ export function constroiTimeline({ storyboard, corte, world }) {
   beats.forEach((b, i) => {
     const start = cursor;
     const diag = b.level >= 2;
+    let mergulhoDe = null;
+    tl.set(S, { afasta: 0 }, start);
     let dur, ease;
     if (diag) {
       dur = b.view.duration; ease = boa(b.view.ease);
@@ -66,7 +79,21 @@ export function constroiTimeline({ storyboard, corte, world }) {
       const mixDe = mix ?? 1;
       if (i === 0) S.mix = 1;
       tl.fromTo(S.vb, { ...de }, { ...alvo, duration: dur, ease }, start);
-      if (mixDe !== 1) tl.fromTo(S, { mix: mixDe }, { mix: 1, duration: dur, ease: 'power1.inOut' }, start);
+      // mergulho: vindo do 3D, a câmera avança até a peça enquanto o diagrama entra alinhado a ela
+      const m = mixDe !== 1 && cam && mergulho ? mergulho(b, cam, nivel, alvo) : null;
+      if (mixDe !== 1) {
+        // no mergulho a fusão começa depois (a peça real fica à vista enquanto a câmera desce)
+        const [m0, m1] = m?.cfg?.mistura ?? [0, 1];
+        tl.fromTo(S, { mix: mixDe }, { mix: 1, duration: dur * (m1 - m0), ease: 'power1.inOut' }, start + dur * m0);
+      }
+      {
+        if (m) {
+          tl.fromTo(S.cam, { ...cam }, { ...m.cam, duration: dur, ease: boa(m.ease) }, start);
+          if (m.afasta) tl.fromTo(S, { afasta: 0 }, { afasta: 1, duration: dur * (m.cfg?.afasta_ate ?? 0.6), ease: 'power2.inOut' }, start);
+          mergulhoDe = { ...m, de: cam };
+          cam = m.cam;
+        }
+      }
       vb = alvo; mix = 1;
     } else {
       dur = b.camera.duration; ease = boa(b.camera.ease);
@@ -96,13 +123,21 @@ export function constroiTimeline({ storyboard, corte, world }) {
     if (c) tl.fromTo(S, { line: 0 }, { line: 1, duration: lineIn, ease: 'power2.out' }, tEntrada);
     tl.fromTo(S, { box: 0 }, { box: 1, duration: BOX_IN, ease: 'power1.out' }, tEntrada);
     if (b.flows?.length) tl.fromTo(S, { flow: 0 }, { flow: 1, duration: BOX_IN, ease: 'none' }, tEntrada);
+    // caminho na placa (overlay.path em beat 3D): o traço avança da origem ao fim depois da entrada
+    const via = b.level <= 1 && b.overlay?.path;
+    if (via) {
+      tl.set(S, { via: 0, viaA: 0 }, start);
+      tl.fromTo(S, { viaA: 0 }, { viaA: 1, duration: BOX_IN, ease: 'power1.out' }, tEntrada);
+      tl.fromTo(S, { via: 0 }, { via: 1, duration: VIA_IN, ease: 'power1.inOut' }, tEntrada);
+    } else tl.set(S, { via: 0, viaA: 0 }, start);
     const tSaida = settle + b.hold;
     const saida = c ? lineOut : LINE_OUT_DEFAULT;
     if (c) tl.fromTo(S, { line: 1 }, { line: 0, duration: saida, ease: 'power2.in' }, tSaida);
     tl.fromTo(S, { box: 1 }, { box: 0, duration: saida, ease: 'power1.in' }, tSaida);
     if (b.flows?.length) tl.fromTo(S, { flow: 1 }, { flow: 0, duration: saida, ease: 'none' }, tSaida);
+    if (via) tl.fromTo(S, { viaA: 1 }, { viaA: 0, duration: saida, ease: 'power1.in' }, tSaida);
     const end = tSaida + saida;
-    entradas.push({ id: b.id, start, settle, end, level: b.level, beat: b });
+    entradas.push({ id: b.id, start, entrada: tEntrada, settle, end, level: b.level, beat: b, mergulho: mergulhoDe });
     cursor = end;
   });
   tl.set({}, {}, cursor);        // fixa a duração

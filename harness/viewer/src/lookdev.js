@@ -13,11 +13,53 @@ import HDR_B64 from './ambiente-hdr.js';
 // ---------------------------------------------------------------------------------------------
 // Níveis de qualidade. "media" é o padrão: tem de rodar fluida num notebook com GPU integrada.
 // ---------------------------------------------------------------------------------------------
+// acum: quadros acumulados com a cena parada (média com deslocamento de subpixel, luz principal e
+// profundidade de campo variando a cada amostra); 0 desliga. ?acumula=N na URL troca o número.
 export const QUALIDADES = {
-  baixa: { pos: false, msaa: 0, sombra: 0, prMax: 1, tex: 256, fisico: false, ao: false, dof: 0 },
-  media: { pos: true, msaa: 4, sombra: 2048, prMax: 1.25, tex: 512, fisico: true, ao: false, dof: 12 },
-  alta: { pos: true, msaa: 4, sombra: 4096, prMax: 2, tex: 1024, fisico: true, ao: true, dof: 24 },
+  baixa: { pos: false, msaa: 0, sombra: 0, prMax: 1, tex: 256, fisico: false, ao: false, dof: 0, acum: 0 },
+  media: { pos: true, msaa: 4, sombra: 2048, prMax: 1.25, tex: 512, fisico: true, ao: false, dof: 12, acum: 32 },
+  alta: { pos: true, msaa: 4, sombra: 4096, prMax: 2, tex: 1024, fisico: true, ao: true, dof: 24, acum: 64 },
 };
+
+/** Número de quadros acumulados pedido na URL (?acumula=N, 0 desliga); null se não pediu. */
+export function acumulaDaUrl(params) {
+  const v = params.get('acumula');
+  if (v == null) return null;
+  const n = Math.round(Number(v));
+  if (!Number.isFinite(n) || n < 0) { console.warn(`[lookdev] acumula inválido: ${v}; usando o padrão da qualidade`); return null; }
+  return Math.min(256, n);
+}
+
+/** Sequência de Halton (base b), índice i >= 1: pontos bem espalhados em [0, 1), sempre os mesmos. */
+function halton(i, b) {
+  let f = 1, r = 0;
+  for (let k = i; k > 0; k = Math.floor(k / b)) { f /= b; r += f * (k % b); }
+  return r;
+}
+/** Filtro em tenda: uniforme em [0, 1) para [-1, 1], mais denso no centro (menos moiré que a caixa). */
+const tenda = (u) => (u < 0.5 ? Math.sqrt(2 * u) - 1 : 1 - Math.sqrt(2 - 2 * u));
+
+/**
+ * Parâmetros da amostra k da acumulação (k = 0 é o quadro normal, sem deslocamento). Só depende de k:
+ * a captura dá sempre a mesma média. jx, jy em px do alvo; luz em [-1, 1]^2 (disco); rot e fase da
+ * espiral da profundidade de campo.
+ */
+export function amostraAcumulacao(k, cfg) {
+  if (k === 0) return null;
+  const r = cfg?.filtro_px ?? 1;
+  // disco da luz por mapeamento concêntrico (bases 5 e 7, independentes das do pixel)
+  const a = 2 * halton(k, 5) - 1, b = 2 * halton(k, 7) - 1;
+  let lu = 0, lv = 0;
+  if (a || b) {
+    const [rr, th] = Math.abs(a) > Math.abs(b) ? [a, (Math.PI / 4) * (b / a)] : [b, Math.PI / 2 - (Math.PI / 4) * (a / b)];
+    lu = rr * Math.cos(th); lv = rr * Math.sin(th);
+  }
+  return {
+    jx: tenda(halton(k, 2)) * r, jy: tenda(halton(k, 3)) * r,
+    luz: [lu, lv],
+    rot: halton(k, 11) * 2 * Math.PI, fase: halton(k, 13),
+  };
+}
 
 /** Qualidade pedida na URL (?qualidade=alta|media|baixa); null se não pediu (vale o padrão e a escolha automática). */
 export function qualidadeDaUrl(params) {
@@ -636,11 +678,12 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
   scene.add(chao);
 
   const R = new THREE.Matrix4(), Ra = new THREE.Matrix4(), Rf = new THREE.Matrix4(), Rinv = new THREE.Matrix4();
-  const e = new THREE.Euler(), d = new THREE.Vector3();
+  const e = new THREE.Euler(), d = new THREE.Vector3(), eu = new THREE.Vector3(), ev = new THREE.Vector3();
+  const raioLuz = Math.tan(((cfg.acumula?.luz_graus ?? 0) * Math.PI) / 180);   // raio angular da luz de área
   return {
     centro,
     /** Atualiza o estúdio para a câmera e o nível de explosão do quadro (puro: só depende deles). */
-    atualiza(camera, explosao) {
+    atualiza(camera, explosao, luzAmostra = null) {
       d.subVectors(camera.position, centro);
       let phi = Math.atan2(d.y, d.x);
       if (Math.hypot(d.x, d.y) < 1e-3) phi = -Math.PI / 2;
@@ -649,7 +692,19 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
       Ra.makeRotationZ(phi + Math.PI / 2);
       Rf.makeRotationY(theta);
       R.multiplyMatrices(Ra, Rf);
-      for (const l of luzes) l.position.copy(l.userData.off).applyMatrix4(R).add(centro);
+      for (const l of luzes) {
+        l.position.copy(l.userData.off);
+        // acumulação: a luz que faz sombra varia num disco perpendicular a ela (luz de área): sombra suave
+        if (luzAmostra && l.castShadow && raioLuz > 0) {
+          const off = l.userData.off, dist = off.length();
+          eu.set(-off.y, off.x, 0);
+          if (eu.lengthSq() < 1e-6) eu.set(1, 0, 0);
+          eu.normalize();
+          ev.crossVectors(off, eu).normalize();
+          l.position.addScaledVector(eu, luzAmostra[0] * raioLuz * dist).addScaledVector(ev, luzAmostra[1] * raioLuz * dist);
+        }
+        l.position.applyMatrix4(R).add(centro);
+      }
       // three usa makeRotationFromEuler(-e) na consulta do ambiente: escolhe e para que isso dê R^-1
       Rinv.copy(R).invert();
       e.setFromRotationMatrix(Rinv);
@@ -673,9 +728,8 @@ void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(
 const FINAL_FS = `precision highp float;
 uniform sampler2D tCor; uniform sampler2D tProf;
 uniform vec2 uTexel; uniform float uFoco; uniform float uAbertura; uniform float uMaxCoc;
-uniform float uNear; uniform float uFar;
+uniform float uNear; uniform float uFar; uniform float uRot; uniform float uFase;
 #include <tonemapping_pars_fragment>
-#include <colorspace_pars_fragment>
 varying vec2 vUv;
 float vista( vec2 uv ) {
 	float d = texture2D( tProf, uv ).x;
@@ -689,8 +743,9 @@ void main() {
 		vec4 soma = c; float peso = 1.0;
 		for ( int i = 0; i < TAPS; i ++ ) {
 			float fi = float( i );
-			float r = sqrt( ( fi + 0.5 ) / float( TAPS ) ) * uMaxCoc;
-			float a = fi * 2.39996323;
+			// espiral de ouro; na acumulação, cada amostra gira a espiral e desloca os raios (uRot, uFase)
+			float r = sqrt( ( fi + uFase ) / float( TAPS ) ) * uMaxCoc;
+			float a = fi * 2.39996323 + uRot;
 			vec2 uv = vUv + vec2( cos( a ), sin( a ) ) * r * uTexel;
 			float z = vista( uv );
 			float ct = coc( z );
@@ -708,6 +763,19 @@ void main() {
 	#elif defined( ACES_FILMIC_TONE_MAPPING )
 		rgb = ACESFilmicToneMapping( rgb );
 	#endif
+	// sai em linear, já com tons (0 a 1) e alfa pré-multiplicado: é o que se acumula (média correta
+	// das bordas, sem o reflexo forte dominar); a passagem de exibição aplica sRGB e o pontilhado
+	gl_FragColor = vec4( rgb * a, a );
+}`;
+// Exibição: média acumulada (linear, pré-multiplicada) para a tela, em sRGB, com pontilhado fixo.
+const EXIBE_FS = `precision highp float;
+uniform sampler2D tAcum;
+#include <colorspace_pars_fragment>
+varying vec2 vUv;
+void main() {
+	vec4 c = texture2D( tAcum, vUv );
+	float a = clamp( c.a, 0.0, 1.0 );
+	vec3 rgb = a > 1e-4 ? c.rgb / c.a : vec3( 0.0 );
 	rgb = sRGBTransferOETF( vec4( rgb, 1.0 ) ).rgb;
 	// pontilhado ordenado de meio nível (fixo por pixel): sem faixas no degradê escuro, determinístico
 	vec2 p = floor( mod( gl_FragCoord.xy, 4.0 ) );
@@ -716,10 +784,18 @@ void main() {
 	gl_FragColor = vec4( rgb * a, a );
 }`;
 
+/**
+ * Pós-processamento com acumulação. render(foco, k, amostra): desenha a amostra k (0 = quadro normal)
+ * e a mistura na média (alvo HalfFloat, peso 1/(k+1) pela cor constante do blend, sem cópia de ida e
+ * volta); exibe() leva a média para a tela. A amostra desloca a projeção em subpixel (jx, jy), gira a
+ * espiral da profundidade de campo e desloca os raios.
+ */
 export function criaPos({ renderer, scene, camera, q, W, H, cfg }) {
   const prof = new THREE.DepthTexture(W, H);
   prof.type = THREE.UnsignedIntType;
   const rt = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, samples: q.msaa, depthTexture: prof });
+  // média das amostras (linear com tons, pré-multiplicada); só é lida pela exibição
+  const acum = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, depthBuffer: false });
   let gtao = null, rtAo = null;
   if (q.ao) {
     gtao = new GTAOPass(scene, camera, W, H);
@@ -737,31 +813,62 @@ export function criaPos({ renderer, scene, camera, q, W, H, cfg }) {
     uniforms: {
       tCor: { value: null }, tProf: { value: prof }, uTexel: { value: new THREE.Vector2(1 / W, 1 / H) },
       uFoco: { value: 500 }, uAbertura: { value: 0 }, uMaxCoc: { value: 1 }, uNear: { value: 1 }, uFar: { value: 6000 },
+      uRot: { value: 0 }, uFase: { value: 0.5 },
       toneMappingExposure: { value: 1 },
     },
     vertexShader: FINAL_VS, fragmentShader: FINAL_FS, depthTest: false, depthWrite: false,
   });
+  // mistura na média: novo * w + média * (1 - w), com w = 1/(k+1) na cor constante do blend
   mat.transparent = false;
-  mat.blending = THREE.NoBlending;
+  mat.blending = THREE.CustomBlending;
+  mat.blendEquation = mat.blendEquationAlpha = THREE.AddEquation;
+  mat.blendSrc = mat.blendSrcAlpha = THREE.ConstantAlphaFactor;
+  mat.blendDst = mat.blendDstAlpha = THREE.OneMinusConstantAlphaFactor;
   const quad = new FullScreenQuad(mat);
+  const matExibe = new THREE.RawShaderMaterial({
+    uniforms: { tAcum: { value: acum.texture } },
+    vertexShader: FINAL_VS, fragmentShader: EXIBE_FS, depthTest: false, depthWrite: false, blending: THREE.NoBlending,
+  });
+  const quadExibe = new FullScreenQuad(matExibe);
   const escala = W / 1920;                                    // CoC em px do palco lógico
+  const pm = camera.projectionMatrix.elements;
   return {
-    render(foco) {
+    render(foco, k = 0, am = null) {
+      // deslocamento de subpixel: soma na terceira coluna da projeção (e desfaz depois do desenho)
+      const s8 = pm[8], s9 = pm[9];
+      if (am) {
+        pm[8] += (2 * am.jx) / W; pm[9] += (2 * am.jy) / H;
+        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+      }
       renderer.setRenderTarget(rt);
       renderer.clear();
       renderer.render(scene, camera);
       let cor = rt.texture;
       if (gtao) { gtao.render(renderer, rtAo, rt); cor = rtAo.texture; }
+      if (am) {
+        pm[8] = s8; pm[9] = s9;
+        camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+      }
       const u = mat.uniforms;
       u.tCor.value = cor;
       u.uFoco.value = foco;
       u.uAbertura.value = cfg.dof.abertura * escala;
       u.uMaxCoc.value = Math.max(0.5, (q.dof > 12 ? cfg.dof.maxCocAlta : cfg.dof.maxCoc) * escala);
       u.uNear.value = camera.near; u.uFar.value = camera.far;
+      u.uRot.value = am ? am.rot : 0;
+      u.uFase.value = am ? am.fase : 0.5;
       u.toneMappingExposure.value = renderer.toneMappingExposure;
-      renderer.setRenderTarget(null);
+      mat.blendAlpha = 1 / (k + 1);                           // k = 0: substitui a média
+      renderer.setRenderTarget(acum);
+      const ac = renderer.autoClear;
+      renderer.autoClear = false;                             // a média não pode ser limpa
       quad.render(renderer);
+      renderer.autoClear = ac;
     },
-    dispose() { rt.dispose(); prof.dispose(); rtAo?.dispose(); gtao?.dispose(); mat.dispose(); quad.dispose(); },
+    exibe() {
+      renderer.setRenderTarget(null);
+      quadExibe.render(renderer);
+    },
+    dispose() { rt.dispose(); acum.dispose(); prof.dispose(); rtAo?.dispose(); gtao?.dispose(); mat.dispose(); matExibe.dispose(); quad.dispose(); quadExibe.dispose(); },
   };
 }
