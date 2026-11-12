@@ -58,6 +58,7 @@ export const TEMAS = {
         luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
+        aberto_ganho: 2.5,             // ganho de luz com a carcaça aberta (peças soltas legíveis sobre o fundo claro)
         contorno: 0.18,                // recorte de luz permanente nas bordas (Fresnel), em qualquer ângulo
         apaga: 0.92,                   // destaque: quanto as outras peças escurecem e perdem a cor
         realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)

@@ -652,8 +652,10 @@ function escuroDe(o, raiz) {
   return { min: caixa.min, max: caixa.max, trans: (r.transicao_mm ?? 1) / 1000, luz: r.luz ?? 0.1 };
 }
 
-/** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). */
+/** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). 'sobrepoe' (id do nó -> material) vence o slot do Blender: o aro da face B usa o slot anodizado da carcaça mas pede outro acabamento. */
 export function resolveMaterial(o, nomeMatGlb) {
+  // parafusos filhos do aro (fasteners.*) não herdam a sobreposição
+  if (!nomesDe(o).some((n) => /^fasteners\./.test(n))) for (const n of nomesDe(o)) if (TABELA.sobrepoe?.[n]) return { id: TABELA.sobrepoe[n], por: `sobreposição ${n}` };
   // slot de material do passo do Blender (nome listado em materiais_glb) é mais específico que a peça
   if (nomeMatGlb && TABELA.materiais_glb[nomeMatGlb]) return { id: TABELA.materiais_glb[nomeMatGlb], por: `material ${nomeMatGlb}` };
   for (const n of nomesDe(o)) {
@@ -667,7 +669,7 @@ export function resolveMaterial(o, nomeMatGlb) {
 
 const MASCARA_DBG = typeof location !== 'undefined' && new URLSearchParams(location.search).has('ldmascara');
 const MASCARA_POS = typeof location !== 'undefined' && new URLSearchParams(location.search).get('ldmascara') === 'pos';
-const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\nuniform float uContorno;\n#ifdef LD_ESCURO\nuniform vec3 uEscMin;\nuniform vec3 uEscMax;\nuniform float uEscTrans;\nuniform float uEscLuz;\nvarying vec3 vPosLd;\n#endif\n';
+const FRAG_PARS = 'uniform float uApaga;\nuniform float uRealce;\nuniform vec3 uRealceCor;\nuniform float uMicro;\nuniform float uEnvLd;\nuniform float uInteriorLd;\nuniform float uAbertoLd;\nuniform float uContorno;\nuniform float uGanhoLd;\nuniform float uGanhoMat;\n#ifdef LD_ESCURO\nuniform vec3 uEscMin;\nuniform vec3 uEscMax;\nuniform float uEscTrans;\nuniform float uEscLuz;\nvarying vec3 vPosLd;\n#endif\n';
 // Micro-sombra (a "micro shadowing" dos motores de tempo real, fórmula da HDRP): o mapa de sombra não
 // resolve cavidades de décimos de milímetro (frestas das grades e das aletas, fundo dos anéis), então a
 // oclusão assada também apaga a luz direta que chega rasante: sombra = sat(|N.L| + 2 ao² - 1). Superfície
@@ -690,7 +692,7 @@ void RE_Direct_Micro( IncidentLight directLight, const in vec3 geometryPosition,
 // ambiente não sabe da carcaça, então o interior visto pelas grades e por trás das pás acenderia. Com a
 // placa montada, toda a luz dessas peças cai para a fração 'interior' e volta a 1 conforme o desmonte
 // abre a carcaça (uAbertoLd, de 0 a 1: o uniforme ABERTO, que o estúdio atualiza a cada quadro).
-const FRAG_MICRO = `float interiorLd = mix( uInteriorLd, 1.0, uAbertoLd );
+const FRAG_MICRO = `float interiorLd = mix( uInteriorLd, 1.0, uAbertoLd ) * ( 1.0 + uGanhoLd * uGanhoMat );
 #ifdef LD_ESCURO
 	// região escura da peça (interior de abertura, 'escuros' da tabela), no espaço da própria malha:
 	// acompanha a peça na explosão; borda suave de uEscTrans
@@ -710,6 +712,8 @@ reflectedLight.directSpecular *= interiorLd;
 const ABERTO = { value: 1 };
 /** Recorte de luz permanente no contorno (Fresnel), para a carcaça preta não sumir no fundo em qualquer ângulo; vem de cfg.contorno. */
 const CONTORNO = { value: 0 };
+/** Ganho de luz com a carcaça aberta (vista explodida): cfg.aberto_ganho * ABERTO. As peças soltas ficavam escuras sobre o fundo claro. */
+const GANHO = { value: 0 };
 const FRAG_FIM = `#include <opaque_fragment>
 	{
 		// destaque realista: o resto escurece e perde a cor; a peça destacada ganha recorte de luz
@@ -729,7 +733,7 @@ const FRAG_FIM = `#include <opaque_fragment>
 
 /** Instala o trecho de shader do destaque (idempotente; refaz depois de material.clone()). */
 export function preparaMaterial(m, corRealce) {
-  m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 }, interior: { value: m.userData.interior ?? 1 } };
+  m.userData.ld = { apaga: { value: 0 }, realce: { value: 0 }, cor: { value: corRealce.clone() }, micro: { value: m.userData.micro ?? 0 }, env: { value: m.userData.env ?? 1 }, interior: { value: m.userData.interior ?? 1 }, ganho: { value: m.userData.ganho ?? 1 } };
   const esc = m.userData.escuro ?? null;      // { min, max (espaço da malha), trans, luz }
   m.onBeforeCompile = (sh) => {
     if (esc) {
@@ -746,12 +750,14 @@ export function preparaMaterial(m, corRealce) {
     sh.uniforms.uInteriorLd = m.userData.ld.interior;
     sh.uniforms.uAbertoLd = ABERTO;
     sh.uniforms.uContorno = CONTORNO;
+    sh.uniforms.uGanhoLd = GANHO;
+    sh.uniforms.uGanhoMat = m.userData.ld.ganho;
     sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>\n${FRAG_PARS}`)
       .replace('#include <lights_physical_pars_fragment>', `#include <lights_physical_pars_fragment>\n${FRAG_MICRO_PARS}`)
       .replace('#include <aomap_fragment>', FRAG_MICRO)
       .replace('#include <opaque_fragment>', FRAG_FIM);
   };
-  m.customProgramCacheKey = () => (esc ? 'lookdev-destaque-8-escuro' : 'lookdev-destaque-8');
+  m.customProgramCacheKey = () => (esc ? 'lookdev-destaque-9-escuro' : 'lookdev-destaque-9');
   return m;
 }
 
@@ -797,14 +803,14 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
         geo.userData.ldTile = tile;
       }
       // texturas presas à caixa da malha são por malha; as de repetição, por material
-      const chave = bbox ? `${id}|${bbox.tam.map((x) => x.toFixed(1)).join('x')}|${o.name}` : id;
+      const chave = bbox ? `${id}|${bbox.tam.map((x) => x.toFixed(1)).join('x')}${tx.compartilha ? '' : '|' + o.name}` : id;
       if (!cacheTex.has(chave)) {
         const sem = [...chave].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619), 2166136261);
         cacheTex.set(chave, GERADORES[tx.tipo](def, tx, q.tex, prng(sem), { valor, bbox }));
       }
       tex = cacheTex.get(chave);
     }
-    const fis = q.fisico && !!(def.anisotropia || def.verniz || tex?.aniso);
+    const fis = q.fisico && !!(def.anisotropia || def.verniz || tex?.aniso || def.especular != null);
     const M = fis ? THREE.MeshPhysicalMaterial : THREE.MeshStandardMaterial;
     const m = new M({ name: id, color: def.cor, metalness: def.metal, roughness: def.rug, envMapIntensity: def.env ?? 1 });
     if (tex) {
@@ -813,6 +819,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       if (tex.map) { m.map = tex.map; m.color.set(0xffffff); }
       if (tex.alfa) m.alphaTest = 0.45;       // decalque em película: só a tinta existe
     }
+    if (fis && def.especular != null) m.specularIntensity = def.especular;   // reflexo de dielétrico fosco abaixo do padrão (epóxi, máscara)
     if (fis && (def.anisotropia || tex?.aniso)) {
       m.anisotropy = def.anisotropia?.forca ?? tx?.cubo?.anisotropia ?? 0.5;
       if (tex?.aniso) m.anisotropyMap = tex.aniso;
@@ -827,7 +834,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       // cor, ORM, normal e oclusão assados no Blender; a tabela dá só o que o GLB não traz
       for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap']) if (orig[k]) m[k] = orig[k];
       if (orig.aoMap) m.aoMapIntensity = def.ao ?? 1;
-      if (orig.map) m.color.set(0xffffff);
+      if (orig.map) m.color.setScalar(def.ganho_mapa ?? 1);   // ganho > 1 clareia a cor assada sem rodar o Blender
       if (orig.roughnessMap) m.roughness = orig.roughness;
       if (orig.metalnessMap) m.metalness = orig.metalness;
       if (orig.normalMap) m.normalScale.copy(orig.normalScale);
@@ -837,6 +844,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
     if (orig?.aoMap || tex?.ao) m.userData.micro = def.micro_sombra ?? 0;
     if (def.env != null) m.userData.env = def.env;
     if (def.interior != null) m.userData.interior = def.interior;
+    if (def.ganho_aberto != null) m.userData.ganho = def.ganho_aberto;   // fração do ganho de luz da vista aberta (superfície que já reflete muito)
     const esc = escuroDe(o, raiz);
     if (esc) m.userData.escuro = esc;
     if (def.sobre_coplanar) {
@@ -1055,6 +1063,7 @@ export function criaEstudio({ renderer, scene, cfg, q, medidas, luz }) {
       // carcaça aberta: de TABELA.interior_aberto.de a .ate no nível de explosão (contínuo)
       const ab = TABELA.interior_aberto ?? { de: 1.5, ate: 3 };
       ABERTO.value = suave(clamp01((explosao - ab.de) / (ab.ate - ab.de)));
+      GANHO.value = (cfg.aberto_ganho ?? 0) * ABERTO.value;
       recebe.material.opacity = cfg.chao.sombra * fChao;
       contato.material.opacity = cfg.chao.contato.opacidade * fChao;
       chao.visible = fChao > 0.002;
