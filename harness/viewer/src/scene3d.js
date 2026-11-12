@@ -410,6 +410,67 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     return { g: estado.registraAfastamento(topo, D), pecas: topo.map((o) => o.name) };
   }
   /** Caixa da peça num nível de explosão (aplica o nível; o próximo quadro reaplica o estado do tour). */
+  /**
+   * Enquadramento automático de um estado da explosão: mantém a direção de vista (pos - target) e o
+   * fov do beat e acha a distância e o alvo que fazem a placa inteira (todas as malhas, no nível pedido)
+   * encher o retângulo livre rect = [x, y, w, h] em px do palco, com folga (fração de cada lado).
+   * Devolve { pos, target } em mm. Deixa a explosão no nível pedido (o quadro seguinte repõe o estado).
+   */
+  function enquadraNivel({ nivel, pos, target, fov, rect, folga = 0.04, pecas = null }) {
+    if (!estado) return null;
+    estado.explode(nivel); estado.afasta(null); estado.vitrine(null);
+    placa.updateMatrixWorld(true);
+    const pts = [];
+    const bb = new THREE.Box3();
+    // pecas: só as malhas dessas peças (e filhas); sem lista, a placa inteira
+    const raizes = pecas?.length ? pecas.map(acha).filter(Boolean) : [placa];
+    for (const raizP of raizes) raizP.traverse((o) => {
+      if (!o.isMesh || !o.visible) return;
+      if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+      bb.copy(o.geometry.boundingBox);
+      for (let i = 0; i < 8; i++) {
+        pts.push(new THREE.Vector3(i & 1 ? bb.max.x : bb.min.x, i & 2 ? bb.max.y : bb.min.y, i & 4 ? bb.max.z : bb.min.z).applyMatrix4(o.matrixWorld));
+      }
+    });
+    if (!pts.length) return null;
+    const T = new THREE.Vector3(...target);
+    const dir = new THREE.Vector3(...pos).sub(T).normalize();     // do alvo para a câmera
+    const f = dir.clone().negate();
+    const r = new THREE.Vector3().crossVectors(f, new THREE.Vector3(0, 0, 1));
+    if (r.lengthSq() < 1e-8) r.set(1, 0, 0);
+    r.normalize();
+    const u = new THREE.Vector3().crossVectors(r, f).normalize();
+    const tg = Math.tan(THREE.MathUtils.degToRad(fov) / 2), asp = STAGE_W / STAGE_H;
+    // retângulo livre em NDC, encolhido pela folga
+    const [rx, ry, rw, rh] = rect;
+    const fx = rw * folga, fy = rh * folga;
+    const nx0 = ((rx + fx) / STAGE_W) * 2 - 1, nx1 = ((rx + rw - fx) / STAGE_W) * 2 - 1;
+    const ny0 = 1 - ((ry + rh - fy) / STAGE_H) * 2, ny1 = 1 - ((ry + fy) / STAGE_H) * 2;
+    const caixa = new THREE.Box3().setFromPoints(pts);
+    T.copy(caixa.getCenter(new THREE.Vector3()));
+    let d = caixa.getSize(new THREE.Vector3()).length() / (2 * tg);
+    const rel = new THREE.Vector3();
+    for (let it = 0; it < 60; it++) {
+      const C = T.clone().addScaledVector(dir, d);
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (const p of pts) {
+        rel.copy(p).sub(C);
+        const z = Math.max(1e-3, rel.dot(f));
+        const x = rel.dot(r) / (z * tg * asp), y = rel.dot(u) / (z * tg);
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+      const s = Math.max((x1 - x0) / (nx1 - nx0), (y1 - y0) / (ny1 - ny0));
+      // desloca o alvo para centrar a projeção no retângulo (na distância do alvo), depois ajusta a distância
+      const dx = (x0 + x1) / 2 - (nx0 + nx1) / 2, dy = (y0 + y1) / 2 - (ny0 + ny1) / 2;
+      T.addScaledVector(r, dx * d * tg * asp * 0.8).addScaledVector(u, dy * d * tg * 0.8);
+      d *= Math.pow(s, 0.6);
+      if (Math.abs(s - 1) < 0.002 && Math.abs(dx) < 0.002 && Math.abs(dy) < 0.002) break;
+    }
+    const C = T.clone().addScaledVector(dir, d);
+    const r1 = (x) => Math.round(x * 10) / 10;
+    return { pos: C.toArray().map(r1), target: T.toArray().map(r1) };
+  }
+
   function caixaEm(id, nivel) {
     if (estado) { estado.explode(nivel); estado.afasta(null); placa.updateMatrixWorld(true); }
     return caixaPeca(id);
@@ -419,7 +480,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     renderer, camera, controls, scene, blockout, avisos,
     qualidade: () => nivelQ, materiais: () => materiais, defineQualidade,
     temAncora: (n) => !!acha(n),
-    caixaPeca, caixaNo, pontoNo, poseVitrine, caixaEm, faceDe, poseMergulho, preparaAfastamento,
+    caixaPeca, caixaNo, pontoNo, poseVitrine, enquadraNivel, caixaEm, faceDe, poseMergulho, preparaAfastamento,
     /** Estado da acumulação (para os testes): amostras na média e o alvo. */
     acumulacao: () => ({ n: ac.n, alvo: pos ? Math.max(1, nAcumDe()) : 1 }),
     temPeca: (n) => !!estado && estado.temPeca(n),
@@ -635,7 +696,10 @@ function criaEstado3d(raiz, realista = null) {
     const est = /^E([1-8])$/.exec(u.stage ?? '');
     const ex = u.explode_cad;
     if (est && ex && ex.distance > 0) {
-      nos.push({ o, base: o.position.clone(), estagio: Number(est[1]), off: gl(ex.dir, ex.distance), dist: ex.distance, atraso: atrasoDe.get(o.name) ?? 0, p: -1 });
+      const off = gl(ex.dir, ex.distance);
+      const dg = COREO.diagonal;
+      if (dg && ex.dir[2] < -0.5) off.add(gl(dg.dir, dg.k * ex.distance * -ex.dir[2]));
+      nos.push({ o, base: o.position.clone(), estagio: Number(est[1]), off, dist: ex.distance, atraso: atrasoDe.get(o.name) ?? 0, p: -1 });
     }
     // fixadores: nó fasteners.eN_* (sem deslocamento próprio) com uma malha por parafuso
     if (est && ex && /^fasteners\.e\d/.test(o.name ?? '')) {

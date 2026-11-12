@@ -196,9 +196,14 @@
                     "at": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
                     "pos": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
                     "target": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
-                    "fov": { "type": "number", "minimum": 10, "maximum": 60 }
+                    "fov": { "type": "number", "minimum": 10, "maximum": 60 },
+                    "enquadra": { "oneOf": [ { "type": "boolean" }, { "type": "object", "additionalProperties": false, "properties": { "folga": { "type": "number", "minimum": -0.5, "maximum": 0.4 }, "pecas": { "type": "array", "items": { "type": "string" } } } } ] }
                   }
                 }
+              },
+              "enquadra": {
+                "description": "Enquadramento automático: pos e target dão só a direção; distância e alvo saem da caixa da placa no nível de explosão do instante. true ou {folga}.",
+                "oneOf": [ { "type": "boolean" }, { "type": "object", "additionalProperties": false, "properties": { "folga": { "type": "number", "minimum": -0.5, "maximum": 0.4 }, "pecas": { "type": "array", "items": { "type": "string" } } } } ]
               },
               "explode_ate": {
                 "description": "Fração da entrada em que a explosão termina (padrão 1).",

@@ -500,13 +500,13 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          152,
-          -40,
-          -2
+          188,
+          -120,
+          4
         ],
         "target": [
-          152,
-          62,
+          188,
+          52,
           -42
         ],
         "fov": 30,
@@ -539,31 +539,37 @@
               60,
               -100
             ],
-            "fov": 32
+            "fov": 32,
+            "enquadra": {
+              "folga": 0.03
+            }
           },
           {
             "at": 0.78,
             "pos": [
-              560,
-              -760,
-              260
+              420,
+              -900,
+              180
             ],
             "target": [
-              110,
+              150,
               60,
               -90
             ],
-            "fov": 32
+            "fov": 32,
+            "enquadra": {
+              "folga": 0.03
+            }
           },
           {
             "at": 0.9,
             "pos": [
-              152,
+              188.0,
               -380,
               40
             ],
             "target": [
-              152,
+              188.0,
               62,
               -42
             ],
@@ -1049,9 +1055,9 @@
       "explode_state": "E8",
       "camera": {
         "pos": [
-          520,
-          -600,
-          300
+          330,
+          -900,
+          260
         ],
         "target": [
           150,
@@ -1061,7 +1067,10 @@
         "fov": 34,
         "duration": 4.0,
         "ease": "power2.inOut",
-        "hold_orbit": 40
+        "hold_orbit": 30,
+        "enquadra": {
+          "folga": 0.04
+        }
       },
       "hold": 8.0,
       "provenance": [
@@ -1094,7 +1103,13 @@
         ],
         "fov": 28,
         "duration": 3.0,
-        "ease": "power3.inOut"
+        "ease": "power3.inOut",
+        "enquadra": {
+          "pecas": [
+            "pcb.main"
+          ],
+          "folga": 0.02
+        }
       },
       "callout": {
         "anchor": "anchor.mem.back.3",
@@ -1321,12 +1336,12 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          274.2,
+          310.2,
           -185.0,
           36.7
         ],
         "target": [
-          115.2,
+          151.2,
           42.1,
           -37.5
         ],

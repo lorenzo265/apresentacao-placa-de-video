@@ -1,13 +1,13 @@
 // Junta tudo: timeline mestre, cena 3D, camada de diagramas, chamada, cabeçalho, controles.
 // Expõe window.__tour (ver README). O que aparece é função só de tl.time().
 import gsap from 'gsap';
-import { constroiTimeline } from './timeline.js';
+import { constroiTimeline, beatsDoCorte } from './timeline.js';
 import { resolve, uniao, fatoresDestaque } from './world.js';
 import { criaCamadaDiagramas } from './diagrams.js';
 import { criaChamada } from './callout.js';
 import { criaCabecalho } from './header.js';
 import { criaControles } from './controls.js';
-import { STAGE_W, STAGE_H, boxPlacement } from './layout.js';
+import { STAGE_W, STAGE_H, HEADER_H, boxPlacement, safeRect } from './layout.js';
 import { criaCotas } from './cotas.js';
 import { criaCaminhos } from './caminhos3d.js';
 import MERGULHO from './mergulho.json';
@@ -15,7 +15,8 @@ import MERGULHO from './mergulho.json';
 const COR_CAMINHO = { energy: '#ffb020', data: '#35d0e6', heat: '#ff6a3d' };
 
 export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
-  const { storyboard, textos, world, medidas } = dados;
+  const { textos, world, medidas } = dados;
+  const storyboard = enquadraAuto(dados.storyboard, corte, cena);
 
   // Retângulo de mundo (diagramas) na tela para um enquadramento {cx, cy, lw}, e o inverso: o
   // enquadramento que põe um retângulo de mundo num retângulo da tela (escala uniforme pela largura).
@@ -292,4 +293,37 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
     window.__tourReady = true;
   })();
   return tour;
+}
+
+/**
+ * Enquadramento automático (camera.enquadra e keys[].enquadra no storyboard): a pose escrita no beat dá só
+ * a direção de vista e o fov; distância e alvo saem da caixa da placa no nível de explosão daquele
+ * instante, para ela encher a área livre (fora da caixa de texto e do cabeçalho). Devolve uma cópia.
+ */
+function enquadraAuto(sb, corte, cena) {
+  if (cena.blockout || !cena.enquadraNivel) return sb;
+  const copia = JSON.parse(JSON.stringify(sb));
+  let beats;
+  try { beats = beatsDoCorte(copia, corte); } catch { return sb; }
+  const nivelDe = (e) => (e === 'assembled' ? 0 : Number(String(e).slice(1)));
+  // sem linha de chamada, a caixa (só título) fica no canto inferior esquerdo: a placa fica acima dela
+  const livre = (b) => (b.callout ? safeRect(b.callout) : [48, HEADER_H + 24, STAGE_W - 96, STAGE_H - HEADER_H - 24 - 210]);
+  const aplica = (alvo, cfg, nivel, fov, rect) => {
+    const r = cena.enquadraNivel({ nivel, pos: alvo.pos, target: alvo.target, fov, rect, folga: cfg?.folga ?? 0.04, pecas: cfg?.pecas ?? null });
+    if (r) { alvo.pos = r.pos; alvo.target = r.target; }
+  };
+  let nivel = 0;
+  for (const b of beats) {
+    if (b.level >= 2) continue;
+    const n1 = b.explode_state != null ? nivelDe(b.explode_state) : nivel;
+    const c = b.camera;
+    if (c) {
+      const ate = c.explode_ate ?? 1;
+      for (const k of c.keys ?? []) if (k.enquadra) aplica(k, k.enquadra, nivel + (n1 - nivel) * Math.min(1, k.at / ate), k.fov ?? c.fov, livre(b));
+      if (c.enquadra) aplica(c, c.enquadra, n1, c.fov, livre(b));
+    }
+    nivel = n1;
+  }
+  cena.aplicaEstado?.(0, null, null, 1);
+  return copia;
 }
