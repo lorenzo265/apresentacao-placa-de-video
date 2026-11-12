@@ -1067,9 +1067,9 @@
         "fov": 34,
         "duration": 4.0,
         "ease": "power2.inOut",
-        "hold_orbit": 30,
+        "hold_orbit": 20,
         "enquadra": {
-          "folga": 0.04
+          "folga": 0.0
         }
       },
       "hold": 8.0,
