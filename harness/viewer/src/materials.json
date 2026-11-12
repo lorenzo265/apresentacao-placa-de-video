@@ -148,8 +148,13 @@
         "pny/front",
         "storagereview/sr-4"
       ],
-      "nota": "Alumínio anodizado grafite, jateado: metal com refletância baixa e reflexo largo e suave. O grão do jato fica abaixo do pixel na distância do tour: só uma variação leve de rugosidade (mais que isso vira granulado). Nas fotos (storagereview/sr-2, sr-3) o aro e os braços do X leem grafite, mais escuros que o reflexo, com só o fio do chanfro claro. ganho_aberto 0,4: metal polido que reflete a caixa de luz do alto; na vista aberta a peça que olha para cima (grade solta da face B) saía a mais brilhante da cena.",
-      "ganho_aberto": 0.4
+      "nota": "Alumínio anodizado grafite, jateado: metal com refletância baixa e reflexo largo e suave. O grão do jato fica abaixo do pixel na distância do tour: só uma variação leve de rugosidade (mais que isso vira granulado). Nas fotos (storagereview/sr-2, sr-3) o aro e os braços do X leem grafite, mais escuros que o reflexo, com só o fio do chanfro claro. ganho_aberto 0,4: metal polido que reflete a caixa de luz do alto; na vista aberta a peça que olha para cima (grade solta da face B) saía a mais brilhante da cena. Tom: a cor assada no Blender é neutra; o multiplicador [0,88; 1; 1,18] dá o grafite azulado dos renders pny/* (autor, 2026-11-12: placa sem cor).",
+      "ganho_aberto": 0.4,
+      "ganho_mapa": [
+        0.88,
+        1.0,
+        1.18
+      ]
     },
     "carcaca.tampa_x": {
       "cor": "#0b0b0c",

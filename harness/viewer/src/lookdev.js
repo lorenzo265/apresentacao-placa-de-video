@@ -841,7 +841,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       // cor, ORM, normal e oclusão assados no Blender; a tabela dá só o que o GLB não traz
       for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap']) if (orig[k]) m[k] = orig[k];
       if (orig.aoMap) m.aoMapIntensity = def.ao ?? 1;
-      if (orig.map) m.color.setScalar(def.ganho_mapa ?? 1);   // ganho > 1 clareia a cor assada sem rodar o Blender
+      if (orig.map) { const g = def.ganho_mapa ?? 1; if (Array.isArray(g)) m.color.setRGB(g[0], g[1], g[2]); else m.color.setScalar(g); }   // número ou [r, g, b] (tom)   // ganho > 1 clareia a cor assada sem rodar o Blender
       if (orig.roughnessMap) m.roughness = orig.roughness;
       if (orig.metalnessMap) m.metalness = orig.metalness;
       if (orig.normalMap) m.normalScale.copy(orig.normalScale);
