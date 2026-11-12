@@ -31,6 +31,31 @@ copiaOuExemplo('storyboard', path.join(harness, 'story', 'storyboard.json'),
 copiaOuExemplo('beats', path.join(harness, 'content', 'pt-BR', 'beats.json'),
   path.join(ex, 'beats.example.json'), 'beats.json');
 
+// Modo Explorar: nomes e textos das peças (content/pt-BR/pecas.json) com o estágio, a procedência e a
+// ressalva de cada peça copiados de design/assembly.json. Sem os dois arquivos, o modo não aparece.
+{
+  const pPecas = path.join(harness, 'content', 'pt-BR', 'pecas.json');
+  const pAsm = path.join(harness, 'design', 'assembly.json');
+  manifest.pecas = false;
+  if (manifest.source.storyboard === 'real' && fs.existsSync(pPecas) && fs.existsSync(pAsm)) {
+    const src = JSON.parse(fs.readFileSync(pPecas, 'utf8'));
+    const asm = new Map(JSON.parse(fs.readFileSync(pAsm, 'utf8')).parts.map((p) => [p.id, p]));
+    const pecas = {};
+    for (const [id, p] of Object.entries(src.pecas)) {
+      const a = asm.get(id);
+      if (!a) throw new Error(`pecas.json: peça ${id} não existe no assembly`);
+      // peça sem estágio próprio herda o da peça-mãe (o chip sai com o PCB)
+      let est = null;
+      for (let x = a; x && !est; x = asm.get(x.parent)) est = x.stage;
+      pecas[id] = { ...p, estagio: est ? Number(est.slice(1)) : null, existe: a.exists_provenance, forma: a.shape_provenance,
+        ressalva: a.viewer_disclaimer ?? null, quantidade: a.count?.value ?? null };
+    }
+    fs.writeFileSync(path.join(out, 'pecas.json'), JSON.stringify({ camadas: src.camadas, pecas }, null, 1));
+    manifest.pecas = true;
+  }
+  manifest.source.pecas = manifest.pecas ? 'real' : 'absent';
+}
+
 // Diagramas: todos os diagrams/*.json reais; se não houver nenhum, os dois exemplos juntos.
 const dDir = path.join(harness, 'diagrams');
 const reais = fs.existsSync(dDir) ? fs.readdirSync(dDir).filter((f) => f.endsWith('.json') && !f.startsWith('_') && !f.startsWith('.')).sort().filter((f) => {

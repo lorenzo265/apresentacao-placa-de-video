@@ -29,6 +29,7 @@ if (manifest.glb) {
 }
 const dados = { 'data/manifest.json': manifest };
 for (const f of ['storyboard.json', 'beats.json', 'measurements.json']) dados[`data/${f}`] = leJson(`data/${f}`);
+if (manifest.pecas) dados['data/pecas.json'] = leJson('data/pecas.json');
 for (const d of manifest.diagrams) dados[`data/diagrams/${d.file}`] = leJson(`data/diagrams/${d.file}`);
 // "<" escapado: o JSON não pode fechar a tag <script> por acidente.
 const dadosTxt = JSON.stringify(dados).replace(/</g, '\\u003c');
