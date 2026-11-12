@@ -472,6 +472,13 @@ function texDecal(def, p, N, rnd, ctx) {
   }
   const larg = lw - x0 - m;
   let y = m;
+  if (p.borda_mm) {                                          // fio claro no contorno (aresta do epóxi): a peça lê como caixa de perto
+    g.save(); g.globalAlpha = p.borda_alfa ?? 0.4; g.lineWidth = mm(p.borda_mm);
+    g.strokeRect(mm(p.borda_mm) / 2, mm(p.borda_mm) / 2, lw - mm(p.borda_mm), lh - mm(p.borda_mm)); g.restore();
+  }
+  if (p.pino1_mm) {                                          // marca do pino 1 (círculo no canto), como no encapsulamento BGA
+    g.save(); g.globalAlpha = p.borda_alfa ?? 0.4; g.beginPath(); g.arc(mm(p.pino1_mm * 1.4), lh - mm(p.pino1_mm * 1.4), mm(p.pino1_mm / 2), 0, Math.PI * 2); g.fill(); g.restore();
+  }
   const texto = (t, x, yy, h, negrito) => {
     g.font = `${negrito ? 'bold ' : ''}${Math.round(h)}px sans-serif`;
     g.textBaseline = 'top';
@@ -654,8 +661,8 @@ function escuroDe(o, raiz) {
 
 /** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). 'sobrepoe' (id do nó -> material) vence o slot do Blender: o aro da face B usa o slot anodizado da carcaça mas pede outro acabamento. */
 export function resolveMaterial(o, nomeMatGlb) {
-  // parafusos filhos do aro (fasteners.*) não herdam a sobreposição
-  if (!nomesDe(o).some((n) => /^fasteners\./.test(n))) for (const n of nomesDe(o)) if (TABELA.sobrepoe?.[n]) return { id: TABELA.sobrepoe[n], por: `sobreposição ${n}` };
+  // parafusos filhos do aro (fasteners.*) e submalhas de substrato não herdam a sobreposição
+  if (!nomesDe(o).some((n) => /^fasteners\.|(^|\.)(substrato|substrate)(\.|$|_)/.test(n))) for (const n of nomesDe(o)) if (TABELA.sobrepoe?.[n]) return { id: TABELA.sobrepoe[n], por: `sobreposição ${n}` };
   // slot de material do passo do Blender (nome listado em materiais_glb) é mais específico que a peça
   if (nomeMatGlb && TABELA.materiais_glb[nomeMatGlb]) return { id: TABELA.materiais_glb[nomeMatGlb], por: `material ${nomeMatGlb}` };
   for (const n of nomesDe(o)) {
