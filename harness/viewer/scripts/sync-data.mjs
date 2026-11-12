@@ -47,6 +47,7 @@ copiaOuExemplo('beats', path.join(harness, 'content', 'pt-BR', 'beats.json'),
       // peça sem estágio próprio herda o da peça-mãe (o chip sai com o PCB)
       let est = null;
       for (let x = a; x && !est; x = asm.get(x.parent)) est = x.stage;
+      if (est && !a.stage) console.log(`sync-data: peça ${id} sem estágio próprio, herdou ${est} da peça-mãe`);
       pecas[id] = { ...p, estagio: est ? Number(est.slice(1)) : null, existe: a.exists_provenance, forma: a.shape_provenance,
         ressalva: a.viewer_disclaimer ?? null, quantidade: a.count?.value ?? null };
     }

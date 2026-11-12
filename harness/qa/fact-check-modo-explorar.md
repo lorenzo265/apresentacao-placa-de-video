@@ -2,7 +2,7 @@
 
 Agente: `fact-checker` (contexto separado de quem escreveu), em 2026-11-12. Objeto: `content/pt-BR/pecas.json`, primeira versão. Conferido contra `spec/card.spec.json`, `spec/sources/physical-card-sources.md`, `spec/references/index.md`, `design/assembly.json`, `content/pt-BR/beats.json`, `story/storyboard.json` e `plano/camera-gsap.md`. O auditor não reabriu as páginas das fontes nem viu as fotos.
 
-**Veredito da primeira passada: reprovado, com 5 erros de correção curta.** Todas as correções propostas foram aplicadas com o texto do auditor. **Falta a segunda passada** sobre o arquivo corrigido e sobre a tela pronta.
+**Veredito da primeira passada: reprovado, com 5 erros de correção curta.** Todas as correções propostas foram aplicadas com o texto do auditor. A segunda passada está abaixo.
 
 ## Erros (aplicados)
 
@@ -23,8 +23,25 @@ Agente: `fact-checker` (contexto separado de quem escreveu), em 2026-11-12. Obje
 - Mantidos, verdadeiros mas fracos fora do tour: `frame.shroud` com a1.6 (segunda frase fala da memória), `frame.face_b` com a1.3 (fala do ar), camada 4 com a2.4 (cita o grampo, que não está no modelo).
 - Passos que não batem por inteiro com o modelo: parafusos do passo 3 e grampo do passo 4 não estão modelados; o E6 inclui `flex.fan.*`, que são `inferred`.
 
+## Segunda passada (2026-11-12)
+
+`fact-checker`, sobre `pecas.json` corrigido e os textos fixos de `viewer/src/explorar.js`. Os 5 erros da primeira passada foram dados como corrigidos e a regra de tela como implementada. **Veredito: reprovado por 1 erro num texto fixo da tela; o resto, ressalvas.** Tudo aplicado com o texto do auditor, menos o item 7.
+
+| # | Achado | Aplicado |
+|---|---|---|
+| 1 (erro) | "Sem texto próprio: não achamos mais do que a ressalva abaixo nas fontes lidas" afirmava uma lacuna de fonte que não existe (falta texto auditado, não fonte) | "Esta peça ainda não tem texto auditado. Veja a ressalva abaixo." (a segunda frase só quando há ressalva) |
+| 2 | "Base da placa: não sai no teardown" | "Fica na placa: não é retirada nos 7 passos do teardown" |
+| 3 | Selo do E8 dizia "interior do cooler sem foto"; a base de contato aparece em foto | "Provável: do interior do cooler só a base de contato aparece em foto. Abertura da carcaça ilustrativa" |
+| 4 | Título da lista e "Como usar" punham a camada 8 na ordem do teardown; "provável" sumia com a camada fora | Título "Camadas 1 a 7 na ordem do teardown. A 8 é ilustrativa", texto de uso refeito, marca "fora, provável" |
+| 5 | Herança de estágio no `sync-data.mjs` sem aviso | O sync registra no log a peça que herdar estágio (hoje nenhuma herda) |
+| 6 | `_doc` dizia "beat já auditado", mas a2.2 a a2.6 só têm a primeira passada dos atos 0 a 3 | `_doc` corrigido |
+| 7 | Camada 1 ("As portas não saem com ele") e peça `io.bracket` com a1.5 ("com 4 portas") em cliques seguidos | Não mexido: o auditor não exige. Fica para o autor |
+| 8 | Câmara de vapor e tubos de calor sem a marca que `io.board` ganhou | "Câmara de vapor (deduzida)", "Tubos de calor (deduzidos)" |
+
+Depois destas correções ninguém reauditou: **falta a terceira passada**.
+
 ## Pendente
 
-1. Segunda passada do `fact-checker` sobre `pecas.json` corrigido.
+1. Terceira passada do `fact-checker` (textos fixos corrigidos) e segunda passada dos beats a2.2 a a2.6.
 2. `power.vrm.mem` não tem posição nem âncora no assembly: se não houver malha clicável, tirar da lista.
-3. Clique numa pá (`cooler.fan.*.blade`) deve cair no ventilador pai: conferido no código (sobe pela hierarquia do GLB), falta conferir na tela.
+3. Clique numa pá (`cooler.fan.*.blade`) deve cair no ventilador pai: conferido no código (sobe pela hierarquia do GLB), conferido na tela em 2026-11-12 (o clique na pá selecionou `cooler.fan.1`).

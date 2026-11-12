@@ -1,5 +1,5 @@
 {
-  "_doc": "Modo Explorar do viewer (harness/plano/modos.md). Nomes das camadas e das peças, e de onde vem a explicação de cada uma. Regra: a explicação é sempre o texto de um beat de beats.json já auditado (campo beat) ou um texto próprio (campo texto, com procedência), que passa pelo fact-checker antes de entrar. Estágio, procedência (exists e shape) e ressalva de cada peça não ficam aqui: o sync-data os copia de design/assembly.json. Na tela, o selo ao lado do nome da peça é sempre o da peça, o do beat fica junto do texto e a ressalva do assembly aparece sempre que existe. A ordem das camadas 1 a 7 é a do teardown (confirmed); a identificação das peças dos passos 1 e 2 e a contagem de sete são derived. A camada 8 não é do teardown: o interior é inferred e a abertura é illustrative. Auditoria: harness/qa/fact-check-modo-explorar.md.",
+  "_doc": "Modo Explorar do viewer (harness/plano/modos.md). Nomes das camadas e das peças, e de onde vem a explicação de cada uma. Regra: a explicação é sempre o texto de um beat de beats.json já auditado (campo beat; atos 0 a 3: primeira passada, segunda pendente) ou um texto próprio (campo texto, com procedência), que passa pelo fact-checker antes de entrar. Estágio, procedência (exists e shape) e ressalva de cada peça não ficam aqui: o sync-data os copia de design/assembly.json. Na tela, o selo ao lado do nome da peça é sempre o da peça, o do beat fica junto do texto e a ressalva do assembly aparece sempre que existe. A ordem das camadas 1 a 7 é a do teardown (confirmed); a identificação das peças dos passos 1 e 2 e a contagem de sete são derived. A camada 8 não é do teardown: o interior é inferred e a abertura é illustrative. Auditoria: harness/qa/fact-check-modo-explorar.md.",
   "camadas": [
     {
       "estagio": 1,
@@ -98,7 +98,7 @@
     "cooler.fins.2": { "nome": "Pilha de aletas" },
     "cooler.fins.3": { "nome": "Pilha central de aletas" },
     "cooler.base": { "nome": "Base do cooler" },
-    "cooler.vapor_chamber": { "nome": "Câmara de vapor" },
-    "cooler.heatpipes": { "nome": "Tubos de calor" }
+    "cooler.vapor_chamber": { "nome": "Câmara de vapor (deduzida)" },
+    "cooler.heatpipes": { "nome": "Tubos de calor (deduzidos)" }
   }
 }

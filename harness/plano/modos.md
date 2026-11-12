@@ -13,9 +13,9 @@ Dono: sessão de modos (branch `claude/apresentacao-modos`), aberta em 2026-11-1
 - O painel de notas (tecla N) lista os beats fora do corte e cobre meia tela.
 - Dois cortes (seminário com 28 beats, completo com 58 prontos) para a mesma apresentação.
 
-## 3. Proposta (aguardando o autor)
+## 3. Proposta (aprovada, ver seção 5)
 
-Página de rascunho com esboços das telas, enviada ao autor em 2026-11-12. **Nada implementado até a aprovação.**
+Página de rascunho com esboços das telas, enviada ao autor em 2026-11-12.
 
 ### 3.1 Modo Apresentação
 
@@ -49,6 +49,29 @@ Página de rascunho com esboços das telas, enviada ao autor em 2026-11-12. **Na
 
 - 2026-11-12: proposta enviada em resumo à orquestradora. Nada combinado ainda com a sessão de câmera; o modo Explorar vai precisar de uma função de estado por camada em `scene3d.js` (hoje a explosão é um nível contínuo único), a combinar com ela antes de mexer.
 
-## 5. Decisões do autor
+## 5. Decisões do autor (2026-11-12)
 
-(aguardando)
+O autor escolheu as quatro recomendações:
+
+1. Momentos: os 28 do corte do seminário nas setas, os outros 30 como extras no índice.
+2. Remoção no Explorar: ordem real com atalho.
+3. Entrada: abre direto na Apresentação; botão e tecla E levam ao Explorar; Esc volta ao momento.
+4. Tela do Explorar: lista de camadas à esquerda e painel à direita.
+
+## 6. Feito (2026-11-12)
+
+- Apresentação: `viewer/src/tour.js` (trilha principal e trilha de extras, fases andando, leitura e parado, câmera e diagrama livres com volta suave), `controls.js` (barra, índice, notas, teclado), `header.js` (contador "7 / 28" no lugar da seção).
+- Explorar: `viewer/src/explorar.js`, `content/pt-BR/pecas.json`, `viewer/src/modos.css`. Sem mudança em `scene3d.js`, `desmontagem.json`, storyboard nem nos arquivos de lookdev: remover uma camada é levar o nível de explosão que a cena já tem.
+- O que era o "botão que não funciona": a seta tocava a linha do tempo a partir do instante atual, então esperava o resto do `hold` do beat (até 28 s) antes de qualquer coisa se mexer. Agora a seta salta para o início da saída.
+- Teste: `tools/smoke-single.cjs` adaptado (momentos pela seta, pulo da animação, notas, índice, extra, Explorar). Passa no corte do seminário, por `file://` e sem rede.
+- Textos: duas passadas do `fact-checker` (`qa/fact-check-modo-explorar.md`), ambas reprovadas e corrigidas com o texto do auditor.
+
+## 7. Pendente
+
+- Terceira passada do `fact-checker` nos textos fixos corrigidos do Explorar, e segunda passada dos beats a2.2 a a2.6 (hoje `draft`, usados como explicação das camadas 2 a 6).
+- `visual-qa` da orquestradora nas telas dos dois modos (quem cria não aprova).
+- Ensaio numa máquina com GPU: aqui só houve render por software, abaixo de 1 quadro por segundo, então a fluidez das transições e do giro livre não foi vista.
+- "Ver de perto" mantém a direção em que o usuário olha; com a placa toda desmontada, outra peça pode ficar na frente.
+- Abrir um extra da desmontagem pelo índice mostra a placa no estado daquele beat, sem animação de passagem.
+- `smoke.cjs`, `capture.cjs` e as outras ferramentas de captura não foram rodadas depois da mudança (usam `seek`, cujo caminho não mudou; o cabeçalho agora mostra o contador no lugar de "Seção NN", o que muda os quadros capturados).
+- Decisão do autor: a peça `io.bracket` usa o texto a1.5 ("com 4 portas DisplayPort") e a camada 1 diz "As portas não saem com ele". O auditor não exige mudança.
