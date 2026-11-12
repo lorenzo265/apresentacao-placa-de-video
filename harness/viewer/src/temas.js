@@ -11,12 +11,15 @@ export const TEMAS = {
   // A. Keynote: preto profundo, um verde de acento, traço fino com brilho, luz correndo nos fluxos.
   keynote: {
     fundo: {
-      base: '#020303',
+      // Fundo de estúdio em cinza-azulado médio (pedido do autor em 2026-11-11: mais claro e com contraste):
+      // centro por volta de 130, bordas por volta de 50. A placa preta destaca-se por baixo (sombra de
+      // contato) e pelo recorte de luz nas bordas, não pelo fundo escuro.
+      base: '#23272b',
       halos: [
-        { x: 0.56, y: 0.42, r: 0.62, cor: [18, 24, 22], a: 1 },
-        { x: 0.56, y: 0.50, r: 0.30, cor: [24, 34, 26], a: 0.55 },
+        { x: 0.56, y: 0.44, r: 0.85, cor: [112, 119, 126], a: 1 },
+        { x: 0.56, y: 0.48, r: 0.45, cor: [150, 158, 165], a: 0.7 },
       ],
-      vinheta: 0.78,
+      vinheta: 0.55,
     },
     linha: '#8fdc2a',
     // Na placa, realismo acima de efeito (decisão do autor em 2026-11-10): sem contorno verde nem
@@ -24,7 +27,8 @@ export const TEMAS = {
     cena: {
       realista: {
         exposicao: 1.0,
-        ambiente: 0.45,                // intensidade do mapa de ambiente
+        balanco_K: 5800,
+        ambiente: 0.36,                // intensidade do mapa de ambiente
         // Ambiente no referencial canônico (câmera em -y olhando +y, acima da placa), unidades do
         // estúdio virtual: HDR escurecido da Poly Haven mais caixas de luz que desenham os reflexos.
         hdr: { K: 5600, i: 0.5 },
@@ -32,23 +36,29 @@ export const TEMAS = {
           // teto-fundo em quatro faixas de borda nítida (vãos a 8%): nas tampas do X, que são espelho
           // preto, o reflexo ganha bordas, como em storagereview/sr-2 e sr-5; nas superfícies foscas
           // a média fica perto da caixa lisa de antes (4,0 em 20 x 6)
-          { nome: 'teto-fundo', K: 5600, i: 4.4, pos: [0, 10, 11], tam: [20, 12], degrade: [0.02, 1], listras: [4, 0.5], vao: 0.08 },
+          { nome: 'teto-fundo', K: 5600, i: 4.8, pos: [0, 10, 11], tam: [20, 12], degrade: [0.02, 1], listras: [4, 0.5], vao: 0.08 },
           // zênite: caixa larga e fraca quase sobre a placa; nas vistas de frente as tampas do X ganham
           // o reflexo largo e escuro das fotos em vez de um preto morto
           { nome: 'zenite-tampas', K: 5600, i: 0.7, pos: [0, 3, 16], tam: [14, 8], degrade: [0.35, 1] },
           { nome: 'faixa-esquerda', K: 5600, i: 3.2, pos: [-13, -3, 5], tam: [2.4, 16] },
           { nome: 'faixa-direita', K: 6200, i: 2.2, pos: [13, 5, 4], tam: [2.4, 14] },
           { nome: 'frente-baixa', K: 5200, i: 0.5, pos: [0, -14, 1], tam: [16, 3] },
+          { nome: 'rebatedor', K: 5600, i: 8, pos: [0, -9, -8.5], tam: [30, 7], degrade: [1, 0.4] },
+          { nome: 'recorte-fundo', K: 6500, i: 14, pos: [0, 15, 2], tam: [28, 1.4] },
         ],
         // Luzes diretas (mm a partir do centro da placa, no mesmo referencial canônico)
         luzes: [
-          { papel: 'principal', K: 5400, i: 2.1, pos: [-420, -380, 640], sombra: true },
+          { papel: 'principal', K: 5400, i: 3.4, pos: [-420, -380, 640], sombra: true },
           { papel: 'preenchimento', K: 7200, i: 0.28, pos: [560, -320, 140] },
-          { papel: 'recorte', K: 5800, i: 2.4, pos: [160, 680, 260] },
+          { papel: 'recorte', K: 6500, i: 1.6, pos: [120, 700, 120] },
+          // segundo recorte, do outro lado e por trás: desenha o contorno da carcaça preta em qualquer azimute
+          // (o estúdio gira com a câmera) e na virada da face A para a B, quando a placa passa de quina
+          { papel: 'recorte-2', K: 6800, i: 0.8, pos: [-520, 640, 160] },
         ],
         luzFria: 7500, luzQuente: 3000,   // ?luz=fria|quente: conferência do material nas duas luzes
         virada: 60,                    // mm em z em torno do meio da espessura em que o estúdio vira de lado
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
+        contorno: 0.18,                // recorte de luz permanente nas bordas (Fresnel), em qualquer ângulo
         apaga: 0.92,                   // destaque: quanto as outras peças escurecem e perdem a cor
         realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)
         ao: { raio: 10, espessura: 4, intensidade: 0.9 },

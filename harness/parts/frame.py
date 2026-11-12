@@ -88,6 +88,7 @@ G = {
     "lam_pitch_b": (1.45, "derived", "passo das lâminas da grade da face B: cerca de 1,45 mm (pny/back)"),
     "lam_t_b": (0.6, "inferred", "espessura das lâminas da face B"),
     "lam_recess_b": (0.5, "inferred", "recuo das lâminas da face B em relação à moldura"),
+    "relief_floor_t": (0.1, "inferred", "espessura do fundo que fecha o rebaixo do E5 sob a grade da face B, encostado no fundo da cabeça do parafuso (N7)"),
     "adapter_clear": (0.5, "inferred", "folga do recorte da faixa do adaptador PCIe na face B, no aro e na fenda da parede inferior (o recorte aparece em gn-20, sem cota)"),
     "rim_screw_yz": ((22.86, 1.6), "inferred", "centro (y, z) do parafuso do aro (fasteners.e2_rim), com o eixo em x na ponta do bracket: y = iface_shroud_y_min + 9 (posição do blockout), z no meio do aro; sem foto (falta gn-16 em resolução maior, o quadro do vídeo da GN no passo 2 ou a ponta da placa sem o bracket)"),
     "rim_screw_head": ((2.4, 0.9), "inferred", "diâmetro e altura da cabeça do parafuso do aro; a cabeça fica de x = 0 até a altura, dentro do recuo da placa de extremidade (shroud_end_plate_recess), escondida pelo bracket"),
@@ -108,6 +109,10 @@ G = {
     "pad_h": (0.4, "inferred", "altura da placa lisa sobre o fundo do canal"),
     "pw_hood": (1.5, "inferred", "quanto a luva do túnel do conector de energia avança para trás da face de encaixe, em volta da boca do corpo (sem foto do interior)"),
     "pw_body_clear": (0.3, "inferred", "folga entre o corpo do conector e o furo do colar no fundo da luva (do lado da trava soma-se a altura da trava, p16_latch do io_parts.py)"),
+    "pw_mouth": ("boca", "inferred",
+                 "boca do túnel: um rebaixo retangular na ponta do canal, da profundidade do canal (shroud_channel_depth), que cobre o túnel do "
+                 "topo até o fundo do canal; a abertura fica um retângulo limpo no plano do fundo do canal, como em pny/3qtr-top-right (antes "
+                 "o contorno tinha um degrau onde o túnel a 45 graus cruzava a ponta do canal e o lábio de baixo dele: visual-qa-placa-final-2, N3)"),
     "pw_reach": (60.0, "inferred", "comprimento auxiliar do túnel ao longo da direção de encaixe, além da carcaça (só garante que o corte atravessa a parede; não é medida)"),
 }
 
@@ -203,6 +208,15 @@ def adapter_outline():
         sys.path.insert(0, here)
     import io_parts as IO
     return poly(IO.adapter_outline_xy())
+
+
+def adapter_outline_xy_pts():
+    """Contorno do adaptador como lista de pontos (x, y) (io_parts.py)."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    import io_parts as IO
+    return [tuple(map(float, p)) for p in IO.adapter_outline_xy()]
 
 
 def adapter_strip_cut():
@@ -413,7 +427,8 @@ def keepouts():
         "parede_da_ponta": (L - WALL, L, Y0, Y1, Z_FACE_B, T),
         "chapa_da_face_a": (0, L, Y0, Y1, T - T_A, T),
         # caixa da boca do túnel do conector na borda superior (o túnel corre a 45 graus para dentro)
-        "encaixe_do_conector": (power_tunnel_x_at(Y1, power_tunnel_half_width() + WALL), power_tunnel_x_at(Y1, -power_tunnel_half_width() - WALL),
+        "encaixe_do_conector": (power_tunnel_x_at(Y1 - M("shroud_channel_depth") - WALL, power_tunnel_half_width() + WALL),
+                                power_tunnel_x_at(Y1, -power_tunnel_half_width() - WALL),
                                 Y1 - M("shroud_channel_depth") - WALL, Y1, M("iface_shroud_power_opening_z_min") - WALL,
                                 M("iface_shroud_power_opening_z_max") + WALL),
         "fenda_do_adaptador": adapter_strip_cut()[:2] + (Y0, adapter_strip_cut()[3], M("iface_adapter_board_z_min") - g("adapter_clear"), adapter_strip_cut()[5]),
@@ -538,9 +553,17 @@ def build_shroud():
     s_face = M("power_connector_body_depth") / 2
     s_hood = s_face - g("pw_hood")
     canal_void = xz_extrude(rrect_xz(cx0, cx1, cz0, cz1, r), Y1 + 1, d + 1)
-    sleeve = (power_tunnel(WALL, s_hood - WALL, g("pw_reach")) & ext(O, Z_FACE_B, T)) - canal_void
-    body = body + sleeve
-    body = body - power_tunnel(0.0, s_hood - 1.0, g("pw_reach"))
+    # boca: rebaixo retangular da profundidade do canal sobre o túnel (x do lado de menor x do túnel no
+    # fundo do canal ao lado de maior x no topo), com uma cuba de parede WALL por baixo
+    mx0, mx1 = power_tunnel_x_at(floor_y, hw), power_tunnel_x_at(Y1, -hw)
+    mouth = box3(mx0, mx1, floor_y, Y1 + 1, oz0, oz1)
+    mouth_tub = (box3(mx0 - WALL, mx1 + WALL, floor_y - WALL, Y1, oz0 - WALL, oz1 + WALL) & ext(O, Z_FACE_B, T)) - canal_void
+    body = body + mouth_tub - mouth
+    # luva do túnel: peça à parte (submalha frame.shroud.tunel, para o lookdev pintar de preto o interior)
+    t_outer = power_tunnel(WALL, s_hood - WALL, g("pw_reach")) & ext(O, Z_FACE_B, T)
+    t_inner = power_tunnel(0.0, s_hood - 1.0, g("pw_reach"))
+    sleeve = t_outer - canal_void - mouth - t_inner
+    body = body - t_outer - t_inner
     # colar no fundo da luva: fecha o túnel em volta do corpo (de fora não se vê o PCB pelas folgas)
     c_ax, u_ax, n_ax = power_axis()
     bc = g("pw_body_clear")
@@ -558,7 +581,7 @@ def build_shroud():
     hole = slab(t_lo, t_pw, zb0, zb1) + slab(t_pw - 0.5, t_hi, zc_b - sense_z / 2 - bc, zc_b + sense_z / 2 + bc)
     t_hi_note = t_hi
     collar = power_tunnel(0.0, s_c0, s_c1) - hole
-    body = body + collar
+    tunnel_piece = sleeve + collar
     x_open = (power_tunnel_x_at(Y1, hw), power_tunnel_x_at(Y1, -hw))
     assert x_open[0] < ox < x_open[1], "a boca do túnel não contém iface_shroud_power_opening_x"
     assert abs((power_tunnel_x_at(Y1, 0.0)) - ox) < 0.05, "o eixo do conector não cruza o topo em iface_shroud_power_opening_x"
@@ -568,8 +591,12 @@ def build_shroud():
     note(pid, "luva de parede %.1f em volta do túnel, do topo até %.1f mm atrás da face de encaixe, recortada pelo vão do canal: de fora, pela abertura, só aparecem a face 2 x 6 e as paredes da luva (antes a abertura era um rasgo vertical sobre o canal e mostrava a lateral do corpo, componentes e o PCB: visual-qa-placa-final, achado 1)" % (WALL, g("pw_hood")))
     note(pid, "colar de %.1f mm no fundo da luva (s de %.2f a %.2f do centro do corpo), com furo no perfil do corpo mais %.1f de folga (parte de potência: t de %.2f a %.2f, z de %.2f a %.2f; faixa de sinal com a trava até t = %.2f, em %.1f mm de z): fecha as folgas entre o corpo e a luva (antes, pelo lado da faixa de sinal, via-se o PCB)" % (WALL, s_c0, s_c1, bc, t_lo, t_pw, zb0, zb1, t_hi_note, sense_z + 2 * bc))
     note(pid, "fendas do canal até x = %.2f (%.1f mm antes da luva, no fundo do canal)" % (sx1, g("slot_end_gap")))
+    note(pid, "boca do túnel: rebaixo retangular de x = %.2f a %.2f e z = %.2f a %.2f com o fundo no fundo do canal (y = %.2f), cuba de parede %.1f; a abertura vista de cima é um retângulo limpo no plano do fundo do canal (visual-qa-placa-final-2, N3)" % (
+        mx0, mx1, oz0, oz1, floor_y, WALL))
+    note(pid, "luva e colar do túnel numa submalha à parte, frame.shroud.tunel (paredes internas do túnel e moldura em volta da face do conector): acabamento preto no lookdev, como as outras aberturas")
     note(pid, "logotipo NVIDIA da borda superior não modelado (detalhe de superfície do passo do Blender)")
-    return drop_loose(body, pid)
+    tp = sorted(tunnel_piece.solids(), key=lambda so: -so.volume)
+    return drop_loose(body, pid), (tp[0] if len(tp) == 1 else Compound(tp))
 
 
 def face_b_regions():
@@ -598,6 +625,18 @@ def build_face_b():
     part = part - box3(*adapter_strip_cut())
     for r in reliefs(z1 + 1):
         part = part - r
+    # onde um rebaixo do E5 cai sob a grade, as lâminas voltam até o fundo da cabeça do parafuso (sem a folga
+    # cover_relief_clear) e um fundo fino fecha o rebaixo ali: de fora a grade continua com as mesmas lâminas e
+    # frestas sombreadas, sem deixar ver a cabeça (antes, quatro marcas que pny/back e gn-08 não mostram:
+    # visual-qa-placa-final-2, N7)
+    r5 = M("fastener_e5_head_diameter") / 2 + M("cover_relief_clear")
+    z_head = M("layer_center_covers") - M("fastener_e5_head_height")
+    n_floor = 0
+    for x, y in e5_heads():
+        disc = (Pos(x, y) * Circle(r5)) & wins
+        if disc.faces() and disc.area > 1e-3:
+            part = part + (lam & ext(disc, M("iface_cover_relief_e5_z_min") - 0.01, z_head)) + ext(disc, z_head - g("relief_floor_t"), z_head)
+            n_floor += 1
     # a face B não passa da pcb.plate (que começa em z = layer_center_covers)
     pcx, pcy = M("iface_pcb_center_x"), M("iface_pcb_center_y")
     ztop_plate = M("layer_center_covers")
@@ -610,6 +649,8 @@ def build_face_b():
     note(pid, "rebaixos por baixo (não aparecem de fora): sob as 4 cabeças de fasteners.e5_plate (diâmetro %.1f, fundo em z = %.1f) e sobre a aba do adaptador com a presilha e as cabeças do E4 (contorno da aba mais %.1f, fundo em z = %.1f)" % (
         M("fastener_e5_head_diameter") + 2 * M("cover_relief_clear"), M("iface_cover_relief_e5_z_min"), M("cover_relief_clear"), M("iface_cover_relief_adapter_z_min")))
     note(pid, "a parte da face B sobre a pcb.plate vai só até z = %.1f (face da placa), não até %.1f: escolha para não cruzar a pcb.plate" % (ztop_plate, z1))
+    note(pid, "%d rebaixos do E5 caem sob a grade (furos de canto do lado longe do bracket): ali as lâminas vão até z = %.1f (fundo da cabeça, sem folga) e um fundo de %.1f mm fecha o rebaixo; de fora só se veem as lâminas (N7); em gn-20 os 4 parafusos da pcb.plate aparecem sobre o X, não sob as grades: a posição dos furos (iface_plate_holes_*, inferred) é pendência do contrato" % (
+        n_floor, z_head, g("relief_floor_t")))
     note(pid, "divisão: as grades das duas pontas e o X ficam numa peça só, como no assembly; na placa real elas parecem fazer parte das carcaças das pontas (gn-27), sem foto da junção")
     return part
 
@@ -834,8 +875,10 @@ def anchor_check(pid, mesh):
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    shroud_body, tunnel_piece = build_shroud()
+    subs = {"frame.shroud": [("tunel", tunnel_piece, "preto fosco do interior das aberturas (luva e colar do túnel do conector)")]}
     shapes = {
-        "frame.shroud": [build_shroud()],
+        "frame.shroud": [shroud_body],
         "frame.face_b": [build_face_b()],
         "frame.center_covers": build_center_covers(),
         "frame.rim": [build_rim()],
@@ -847,10 +890,11 @@ def main():
     for pid in IDS:
         p = PARTS[pid]
         meshes = [to_mesh(s) for s in shapes[pid]]
-        mesh = trimesh.util.concatenate(meshes)
+        sub_meshes = [(nm, to_mesh(sh), ac) for nm, sh, ac in subs.get(pid, [])]
+        mesh = trimesh.util.concatenate(meshes + [m for _, m, _ in sub_meshes])
         ntri = int(len(mesh.faces))
         total_tris += ntri
-        closed = [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for m in meshes]
+        closed = [bool(m.is_watertight and m.is_winding_consistent and m.volume > 0) for m in meshes + [m for _, m, _ in sub_meshes]]
         lo, hi = mesh.bounds
         lo_all, hi_all = np.minimum(lo_all, lo), np.maximum(hi_all, hi)
         anchors = anchor_check(pid, mesh)
@@ -868,6 +912,8 @@ def main():
         spec = []
         if len(meshes) == 1:
             spec.append((pid, extras, meshes[0], None, None))
+            for nm, sm, ac in sub_meshes:
+                spec.append(("%s.%s" % (pid, nm), {"submesh": nm, "part": pid, "acabamento": ac, "shape_provenance": "inferred"}, sm, None, 0))
         else:
             extras["count"] = p["count"]["value"]
             extras["count_provenance"] = p["count"]["provenance"]
@@ -887,7 +933,7 @@ def main():
         write_glb(glb, spec, {"units": "m", "up": "+Y", "cad_units": "mm", "cad_up": "+Z",
                               "origin": "card.envelope_min", "map": "gltf = (x, z, -y) / 1000"})
         step = OUT / ("%s.step" % pid)
-        comp = shapes[pid][0] if len(shapes[pid]) == 1 else Compound(shapes[pid])
+        comp = shapes[pid][0] if len(shapes[pid]) == 1 and not subs.get(pid) else Compound(list(shapes[pid]) + [sh for _, sh, _ in subs.get(pid, [])])
         comp.label = pid
         export_step(comp, str(step))
         # releitura do GLB

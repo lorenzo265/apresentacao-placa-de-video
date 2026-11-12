@@ -2,10 +2,12 @@
   "beats": {
     "a0.1": {
       "headline": "Anatomia de uma GPU: da placa ao chip",
-      "caption": "Disciplina de Organização e Arquitetura de Computadores. Grupo Warp 32. Um tour pela NVIDIA RTX PRO 6000 Blackwell Workstation Edition, da placa até o interior do chip.",
-      "fala": "Somos o grupo Warp 32. Vamos abrir uma placa de vídeo profissional, peça por peça, até chegar ao chip.",
-      "source_line": "Tour do trabalho \"Estudo da arquitetura da GPU NVIDIA RTX PRO 6000 Blackwell (chip GB202)\", grupo Warp 32",
-      "claims": []
+      "caption": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition. Da placa ao interior do chip.",
+      "fala": "• Grupo Warp 32 • A placa: RTX PRO 6000 Blackwell, edição Workstation • Roteiro: abrir a placa, entrar no chip, cobrir cada item do enunciado • Selos na tela: confirmado, derivado, provável, ilustrativo",
+      "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition, p. 1 e 3",
+      "claims": [
+        "card.model_name"
+      ]
     },
     "a0.2": {
       "headline": "RTX PRO 6000 Blackwell Workstation Edition",
@@ -41,14 +43,15 @@
       "claims": []
     },
     "a1.1": {
-      "headline": "Dois ventiladores na mesma face",
-      "caption": "Numa face, dois ventiladores grandes. O datasheet fala em dois caminhos de ar axiais. Num ventilador axial, o ar segue a direção do eixo. A placa ocupa dois slots.",
-      "fala": "Começamos pela face dos ventiladores. São dois, na frente da placa, segundo a Gamers Nexus. O datasheet fala em dois caminhos de ar axiais. Num ventilador axial, o ar segue a direção do eixo. A placa ocupa dois slots.",
+      "headline": "Por fora: dois ventiladores, ar que atravessa",
+      "caption": "Dois ventiladores numa face. O ar atravessa a placa, e aberturas no topo lançam ar para cima.",
+      "fala": "• A placa por fora, só de passagem • Dois ventiladores, o ar atravessa a placa em vez de bater no PCB • Agora abrimos",
       "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 1 e 3",
       "claims": [
         "card.fans",
-        "card.airflow_pathways",
-        "card.slots"
+        "card.airflow_through",
+        "card.exhaust_slats",
+        "card.airflow_pathways"
       ]
     },
     "a1.2": {
@@ -115,12 +118,21 @@
     },
     "a2.1": {
       "headline": "Desmontagem na ordem de um teardown real",
-      "caption": "Seguimos o teardown da Gamers Nexus, em sete passos na nossa contagem. O primeiro a sair é o bracket de I/O, que o texto da fonte chama de back plate. A identificação vem das fotos.",
-      "fala": "Teardown é desmontar para ver o que há dentro. Seguimos o da Gamers Nexus, em sete passos na nossa contagem. Sai primeiro o bracket de I/O. O texto diz back plate, e a identificação como bracket é nossa, pelas fotos.",
-      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Identificação pelas fotos: leitura nossa",
+      "caption": "Seguimos o teardown da Gamers Nexus até o chip, coberto por pasta térmica.",
+      "fala": "• Ordem real, do teardown da Gamers Nexus • Saem bracket, moldura, tampas, adaptador PCIe, a placa que cobre o PCB, cabos flat e parafusos da mola, e por fim o PCB • No fim, o chip GB202 com pasta térmica",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Identificação das peças pelas fotos: leitura nossa",
       "claims": [
         "teardown.step_count",
-        "teardown.e1"
+        "teardown.e1",
+        "teardown.e7",
+        "card.thermal_interface",
+        "chip.name",
+        "teardown.e2",
+        "teardown.e3",
+        "teardown.e4",
+        "teardown.e5",
+        "teardown.e6",
+        "card.pcie_adapter_separate"
       ]
     },
     "a2.2": {
@@ -244,15 +256,18 @@
       ]
     },
     "a3.1": {
-      "headline": "16 chips de memória no verso",
-      "caption": "A Gamers Nexus contou 16 módulos de memória no verso do PCB. Nas fotos, 5 e 5 nas laterais do chip, 4 junto ao conector de energia e 2 na borda oposta.",
-      "fala": "Virando a placa, a memória GDDR7 aparece no verso do PCB. A fonte contou 16 módulos. Pelas fotos, cinco de cada lado do chip, quatro junto ao conector de energia e dois na borda oposta. Memória perto do chip encurta as trilhas, o que ajuda o sinal a 28 Gbps por pino.",
-      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Disposição: leitura nossa das fotos",
+      "headline": "96 GB de GDDR7, memória própria da placa",
+      "caption": "Memória própria da placa: 96 GB de GDDR7, num barramento de 512 bits.",
+      "fala": "• Gerenciamento de memória começa aqui: a placa tem memória própria • 16 chips no verso, 32 posições segundo o teardown • Em volta do chip, a 28 Gbps por pino",
+      "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 3. Whitepaper RTX PRO Blackwell v1.1, Tab. 4. Disposição: leitura nossa das fotos",
       "claims": [
-        "mem.back_modules",
-        "mem.back_layout",
+        "mem.capacity_gb",
         "mem.type",
-        "mem.pin_rate_gbps"
+        "mem.back_modules",
+        "mem.positions",
+        "mem.bus_bits",
+        "mem.pin_rate_gbps",
+        "mem.back_layout"
       ]
     },
     "a3.2": {
@@ -303,8 +318,8 @@
     },
     "a3.6": {
       "headline": "Por que os dados moram na placa",
-      "caption": "A memória local entrega 1.792 GB/s. O PCIe 5.0 x16 chega a cerca de 63 GB/s por direção. A diferença é de cerca de 28 vezes, conta nossa.",
-      "fala": "Por que os dados moram na placa? A memória local entrega 1.792 GB/s. O PCIe 5.0 de 16 pistas chega a cerca de 63 GB/s por direção. É cerca de 28 vezes menos, conta nossa. O 63 depende de uma codificação que só achamos em fonte secundária.",
+      "caption": "Memória local: 1.792 GB/s. PCIe 5.0 x16: cerca de 63 GB/s por direção. Cerca de 28 vezes menos.",
+      "fala": "• Banda da memória local contra banda do PCIe • A local é cerca de 28 vezes maior • Por isso compensa manter os dados na memória da placa durante o cálculo",
       "source_line": "Fonte: NVIDIA, datasheet, p. 3. PCI-SIG, comunicado sobre o PCIe 5.0 (2019). Razão e 63 GB/s: contas nossas",
       "claims": [
         "mem.bandwidth_gbs",
@@ -327,8 +342,8 @@
     },
     "a7.5": {
       "headline": "Remontagem e os quatro selos",
-      "caption": "A placa se remonta na ordem inversa. Cada afirmação do tour tem um selo: confirmado, derivado, provável ou ilustrativo. Eles separam fato, conta e proposta.",
-      "fala": "Montamos tudo de volta, na ordem inversa. Para fechar, os quatro selos. Confirmado é o que uma fonte oficial ou o teardown desta placa diz. Derivado é o que vem da placa irmã, conta nossa, leitura de foto ou o que só um revisor afirma. Provável é proposta do grupo, como o caminho do calor dentro do cooler e as fases de energia. Ilustrativo é desenho, como a planta do chip.",
+      "caption": "Confirmado, derivado, provável e ilustrativo: cada afirmação do tour tem o seu selo.",
+      "fala": "• A placa volta a se montar • Confirmado: fonte oficial ou teardown desta placa • Derivado: placa irmã, outra geração ou conta nossa • Provável: proposta do grupo • Ilustrativo: desenho • Obrigado, perguntas",
       "source_line": "",
       "claims": []
     },
@@ -340,12 +355,15 @@
       "claims": []
     },
     "t1.1": {
-      "headline": "A partir daqui é diagrama",
-      "caption": "As contagens são oficiais. O arranjo segue o diagrama de blocos da NVIDIA (whitepaper, Fig. 3), que é esquemático. A planta física do die não é pública.",
-      "fala": "Até aqui era a placa montada e desmontada. Daqui para dentro o que vemos é desenho. Os números, como quantos SMs e quantos controladores, vêm de documento da NVIDIA. O arranjo segue a Figura 3 do whitepaper, que é diagrama de blocos, não foto do silício. Onde cada bloco fica de verdade, a NVIDIA não publica. Dá para confiar na contagem, não na geografia.",
-      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 3 (p. 8), redesenhada e simplificada",
+      "headline": "Dentro do chip: daqui em diante, diagrama",
+      "caption": "Chip GB202, 750 mm² de silício. Contagens oficiais, arranjo esquemático.",
+      "fala": "• Daqui para dentro é desenho, não foto • Os números são da NVIDIA, a posição dos blocos é ilustrativa • Chip GB202, processo TSMC 4N",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 3 (p. 8), redesenhada, e Tab. 4",
       "claims": [
-        "chip.block_diagram"
+        "chip.block_diagram",
+        "chip.name",
+        "chip.die_area_mm2",
+        "chip.process"
       ]
     },
     "a4.1": {
@@ -362,15 +380,13 @@
     },
     "a4.2": {
       "headline": "12 GPCs, 94 TPCs, 188 SMs",
-      "caption": "O chip completo tem 12 GPCs de 8 TPCs, e cada TPC reúne 2 SMs. Nesta placa são 94 TPCs, logo 188 SMs e 24.064 núcleos CUDA.",
-      "fala": "Pense em três níveis de agrupamento. O GPC, Graphics Processing Cluster, é o maior. O TPC junta um PolyMorph Engine e 2 SMs. O SM é o processador de fato. As contas: 94 vezes 2 dão 188 SMs, e 188 vezes 128 dão 24.064 núcleos. Os 8 TPCs por GPC valem para o chip completo, 12 vezes 8 dão 96. Como os 94 se distribuem, a NVIDIA não diz.",
-      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e p. 9. Contas nossas",
+      "caption": "GPC agrupa TPCs, cada TPC tem 2 SMs. Nesta placa: 188 SMs e 24.064 núcleos CUDA.",
+      "fala": "• Três níveis: GPC, TPC e SM • O SM é quem executa as instruções • 188 SMs vezes 128 núcleos dão 24.064",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e p. 9",
       "claims": [
         "chip.gpc_count",
-        "chip.tpc_per_gpc",
         "chip.sm_per_tpc",
         "chip.tpc_count",
-        "chip.tpc_count_full",
         "chip.sm_count",
         "chip.cuda_cores",
         "sm.cuda_cores"
@@ -391,20 +407,17 @@
       ]
     },
     "a4.4": {
-      "headline": "L2 no centro, memória nas bordas",
-      "caption": "No desenho, o L2 de 128 MB fica no centro, compartilhado pelos GPCs. Nas bordas, 16 controladores de 32 bits falam com a GDDR7: 512 bits no total.",
-      "fala": "Compare com a cache de uma CPU. O L1 fica em cada SM, com 128 KB, e o L2 é único para os 12 GPCs. São 128 MB, um terço a mais que os 96 MB da RTX 6000 Ada, conta nossa. Cada controlador tem 32 bits. Dezesseis vezes 32 dão 512, a largura do barramento. A 28 Gbps por pino, são 1.792 GB/s.",
+      "headline": "L2 no centro, controladores de memória nas laterais",
+      "caption": "L2 de 128 MB no centro do diagrama. Nas laterais, 16 controladores de memória de 32 bits.",
+      "fala": "• Cache de dados em dois níveis no chip • L1 de 128 KB em cada SM, L2 de 128 MB no chip • 16 controladores de 32 bits dão os 512 bits do barramento",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, p. 9 e Tab. 4. Datasheet, p. 3. Posições ilustrativas",
       "claims": [
-        "chip.gpc_count",
         "chip.l2_kb",
-        "ada.l2_kb",
+        "sm.l1_shared_kb",
         "chip.mem_controllers",
         "chip.mem_controller_bits",
         "mem.bus_bits",
-        "mem.pin_rate_gbps",
-        "mem.bandwidth_gbs",
-        "sm.l1_shared_kb"
+        "chip.block_diagram"
       ]
     },
     "a4.5": {
@@ -420,19 +433,19 @@
     },
     "a5.1": {
       "headline": "Um warp tem 32 threads",
-      "caption": "Thread é uma linha de execução. A GPU as agrupa em warps de 32, aqui em grade 8 × 4. O tamanho é o mesmo em todas as arquiteturas-alvo.",
-      "fala": "O programador escreve o kernel como se fosse para uma thread e lança uma grade de blocos. O hardware agrupa as threads de cada bloco em warps. O PTX chama o tamanho de WARP_SZ e o fixa em 32 em todas as arquiteturas-alvo. Na CPU, o sistema operacional escalona cada thread. Aqui o escalonador trabalha com o warp. A grade 8 por 4 é só desenho.",
+      "caption": "O SM recebe blocos de threads e os divide em warps de 32.",
+      "fala": "• O programador escreve para uma thread e lança blocos • O hardware agrupa as threads em warps de 32 • Na CPU, o sistema operacional escalona threads. Aqui, o hardware escalona warps a cada ciclo",
       "source_line": "Fonte: NVIDIA, PTX ISA, seções 2.2.1 e 4.5.1. Guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.2",
       "claims": [
         "warp.size",
-        "sched.warp_scheduler",
-        "sched.block_to_warps"
+        "sched.block_to_warps",
+        "sched.warp_scheduler"
       ]
     },
     "a5.2": {
       "headline": "SIMT: uma instrução, 32 threads",
-      "caption": "No modelo SIMT, uma instrução vai para o warp e as 32 threads a executam juntas, cada uma com seu contador de programa e seus registradores. Até 48 warps por SM.",
-      "fala": "Quem viu SIMD na CPU vai achar a ideia parecida. Aqui, porém, cada thread tem o seu contador de programa e os seus registradores, e o escalonador emite a mesma instrução para as threads ativas do warp. Isso abre espaço para caminhos diferentes, tema do beat de divergência. O limite de 48 warps vale para a compute capability 12.0. Com vários warps, o escalonador escolhe a cada ciclo um que esteja pronto. Na nossa leitura, é assim que a espera de um warp pela memória fica escondida.",
+      "caption": "Uma instrução vai para as threads do warp. Cada thread tem contador de programa e registradores.",
+      "fala": "• Parecido com SIMD, mas cada thread guarda o próprio estado • Até 48 warps por SM • Provável, leitura nossa: enquanto um warp espera a memória, outro executa, e a espera fica escondida",
       "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.1.1. Guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.2",
       "claims": [
         "warp.size",
@@ -470,8 +483,8 @@
     },
     "a5.16": {
       "headline": "Divergência: o warp percorre os dois caminhos",
-      "caption": "Se 4 das 32 threads seguem outro caminho num desvio, o warp executa cada caminho tomado, desabilitando as threads que não estão nele.",
-      "fala": "As quatro threads laranja são o exemplo e também o logotipo do grupo, Warp 32. Num if, parte do warp segue um caminho e parte segue outro. O warp percorre os dois, e em cada passagem as threads do outro caminho ficam desabilitadas. O custo é somar o tempo dos dois caminhos. Desde a compute capability 7.0, diz o guia CUDA, a GPU guarda o estado por thread e reagrupa as threads ativas, que podem divergir e reconvergir em grupos menores que o warp. O hardware real é mais flexível que este desenho.",
+      "caption": "Num desvio, o warp executa cada caminho tomado e desliga as threads que não estão nele.",
+      "fala": "• Quando as threads divergem num if, o warp paga os dois caminhos • As quatro threads laranja são o exemplo e o logo do grupo • Desde a compute capability 7.0, cada thread tem estado próprio e as threads podem reconvergir em grupos menores que o warp",
       "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.1.1",
       "claims": [
         "warp.size",
@@ -480,14 +493,18 @@
       ]
     },
     "t2.1": {
-      "headline": "Um dos 188",
-      "caption": "Cada SM, o multiprocessador de streaming, tem os seus escalonadores, registradores e cache L1. É o que mais se parece com um núcleo de CPU.",
-      "fala": "Saímos do chip para um único SM. Há 188 deles e o desenho vale para qualquer um. Na analogia com a CPU, o SM lembra um núcleo: tem escalonador, banco de registradores e cache L1 próprios. A diferença é que ele executa warps de 32 threads, e não uma thread por vez.",
-      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Fig. 5 (p. 10)",
+      "headline": "Um dos 188 SMs",
+      "caption": "Cada SM tem escalonadores, registradores, L1 e 128 núcleos CUDA. Lembra um núcleo de CPU.",
+      "fala": "• Como um núcleo de CPU: escalonador, registradores e cache próprios • A diferença: executa warps de 32 threads • Também tem 4 Tensor Cores e 1 RT Core",
+      "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, p. 9, Fig. 5 (p. 10) e p. 11",
       "claims": [
         "chip.sm_count",
         "warp.size",
-        "sm.blocks"
+        "sm.blocks",
+        "sm.cuda_cores",
+        "sm.tensor_cores",
+        "sm.rt_cores",
+        "sm.l1_shared_kb"
       ]
     },
     "a5.4": {
@@ -506,37 +523,34 @@
       ]
     },
     "a5.5": {
-      "headline": "Quatro partições, cada uma com escalonador",
-      "caption": "O SM se divide em 4 partições. Cada uma tem o seu escalonador de warp, que escolhe qual warp avança e despacha 32 threads por ciclo. Pipeline: o número de estágios não é público.",
-      "fala": "O whitepaper não dá nome a essas quatro divisões. Partições é o nome que adotamos. Quatro partições vezes 32 threads por ciclo dão 128 por SM, o mesmo número dos núcleos CUDA. Na RTX 5080, medida por terceiros, uma instrução de inteiro ou FP32 leva 4 ciclos e a de FP64 cerca de 64. A NVIDIA diz só que, a cada ciclo de emissão, o escalonador escolhe um warp com threads prontas. O critério entre os prontos e o número de estágios do pipeline não são públicos.",
+      "headline": "Pipeline: quatro partições, quatro escalonadores",
+      "caption": "Cada partição despacha 32 threads por ciclo. Estágios do pipeline: não achamos nas fontes lidas.",
+      "fala": "• Pipeline, item do enunciado • A cada ciclo, o escalonador escolhe um warp pronto • Medido na RTX 5080: 4 ciclos para inteiro ou FP32 • Estágios do pipeline: não achamos nas fontes lidas",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5, p. 10. Guia de programação CUDA 13.5, 3.2.2.2. Latências: Jarmusch et al., Tab. III (RTX 5080)",
       "claims": [
         "sm.blocks",
         "sm.block_dispatch_threads_per_clk",
-        "sm.cuda_cores",
         "lat.int_fp_cycles",
-        "lat.fp64_cycles",
         "sched.warp_scheduler"
       ]
     },
     "a5.6": {
       "headline": "65.536 registradores por SM",
-      "caption": "Cada partição tem um banco de 16.384 registradores de 32 bits. Os quatro somam 65.536, ou 256 KB por SM.",
-      "fala": "Numa CPU, a troca de contexto salva os registradores na memória. Aqui os 256 KB do SM guardam os registradores de todos os warps residentes. Por isso, diz o guia CUDA, trocar de warp não tem custo: não há o que salvar. Na placa inteira são 48.128 KB, 188 vezes 256. Como o banco é organizado por dentro, em bancos e portas, não achamos fonte para a Blackwell.",
+      "caption": "Quatro bancos de 16.384 registradores de 32 bits: 256 KB por SM.",
+      "fala": "• Conjunto de registradores, item do enunciado • Na CPU, trocar de contexto salva os registradores na memória • Aqui cada warp residente já tem os seus, então trocar de warp não tem custo",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Fig. 5, p. 10. Blackwell Tuning Guide 13.5, 1.4.1.1. Guia de programação CUDA 13.5, 3.2.2.2",
       "claims": [
         "sm.blocks",
         "sm.block_regfile_entries",
         "sm.regfile_entries",
         "sm.regfile_kb",
-        "card.regfile_total_kb",
         "sched.warp_switch_no_cost"
       ]
     },
     "a5.7": {
-      "headline": "Registradores na listagem SASS real",
-      "caption": "Na listagem do SAXPY, R são registradores por thread, UR são uniformes, P são predicados e SR são especiais. O kernel usa 10 por thread e nenhum spill.",
-      "fala": "SAXPY calcula y recebe a vezes x mais y. A thread lê o próprio índice nos registradores especiais SR_TID.X e SR_CTAID.X, compara com n e grava o resultado em P0, um predicado. Se for verdadeiro, a thread sai com EXIT. Do caminho uniforme, UR, achamos só o nome das instruções, não o funcionamento. Spill seria guardar valores na memória por falta de registradores. Aqui, zero bytes.",
+      "headline": "Registradores numa listagem SASS real",
+      "caption": "R por thread, UR uniformes, P predicados, SR especiais. O SAXPY usa 10 por thread.",
+      "fala": "• Exemplo compilado por nós: SAXPY, y = a·x + y • SR_TID.X: a thread lê o próprio índice • P0 guarda a comparação com n • Zero spill: nenhum registrador foi para a memória",
       "source_line": "Fonte: experimento do grupo, SAXPY compilado para sm_120 (ptxas -v), harness/examples/saxpy-cu/",
       "claims": [
         "ex.saxpy.registers",
@@ -546,8 +560,8 @@
     },
     "a5.8": {
       "headline": "Até 255 registradores por thread",
-      "caption": "Uma thread pode pedir no máximo 255 registradores, e o SM tem 64K deles. Quanto mais cada thread usa, menos threads cabem ao mesmo tempo.",
-      "fala": "Conta nossa, sem a granularidade de alocação, que não levantamos. Se cada thread usar 255, um warp precisa de 8.160 registradores e cabem 8 warps, longe dos 48. Com os 10 do SAXPY, 48 warps ocupam 15.360 dos 65.536. Numa CPU, a ISA fixa quantos registradores existem. Aqui o compilador decide quantos cada thread usa, e isso limita a ocupação.",
+      "caption": "Quanto mais registradores cada thread usa, menos warps cabem no SM.",
+      "fala": "• Na CPU a ISA fixa os registradores, aqui o compilador decide quantos cada thread usa • Com 255 por thread cabem 8 warps, longe do máximo de 48 • Com os 10 do SAXPY, cabem os 48",
       "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.1.1. Contas nossas",
       "claims": [
         "sm.max_regs_per_thread",
@@ -559,8 +573,8 @@
     },
     "a5.9": {
       "headline": "Do CUDA C ao PTX e ao SASS",
-      "caption": "O PTX é a camada estável entre gerações. O SASS é o código da placa, para sm_120. No SAXPY, 20 instruções PTX viram 19 úteis em SASS.",
-      "fala": "O PTX é o que o compilador gera primeiro, e o ptxas ou o driver o traduz para o SASS da placa. Alguns passos somem, como o cvta. Outros se fundem: mul.wide e add viram IMAD.WIDE. Os parâmetros entram por LDC e LDCU, do banco de constantes. Duas cargas não têm par no PTX: LDC R1, no início, e LDCU.64 UR4. O que elas carregam não é documentado. Nossa hipótese, sem confirmação, é que a LDCU.64 carregue o descritor usado em desc[UR4].",
+      "caption": "PTX é a camada estável entre gerações. SASS é o código real da placa, sm_120.",
+      "fala": "• Conjunto de instruções, item do enunciado • O compilador gera PTX, o ptxas ou o driver traduz para SASS • No SAXPY, 20 instruções PTX viram 19 úteis em SASS • Exemplo: mul.wide e add viram um IMAD.WIDE",
       "source_line": "Fonte: experimento do grupo, harness/examples/saxpy-cu/ (nvcc 13.5, PTX 9.5, sm_120)",
       "claims": [
         "ex.saxpy.ptx_instructions",
@@ -571,8 +585,8 @@
     },
     "a5.10": {
       "headline": "Toda instrução tem 128 bits",
-      "caption": "Cada instrução SASS ocupa 16 bytes fixos, ou 128 bits. Na Volta, parte desses bits era controle de escalonamento. Para a Blackwell, o uso dos bits não é documentado.",
-      "fala": "Largura fixa é a marca clássica de RISC: o decodificador sabe onde cada instrução começa. Na Volta, medida por Jia e colegas, ao menos 91 bits são da instrução, ao menos 23 são controle de escalonamento e 14 parecem sem uso, o que soma 128. Na Volta, o compilador grava esse controle no binário. Na sm_120 só a largura está confirmada.",
+      "caption": "Cada instrução SASS ocupa 16 bytes fixos. Largura fixa é traço de RISC.",
+      "fala": "• Formato fixo: o decodificador sabe onde cada instrução começa • Na Volta, parte dos bits era de controle • Na Blackwell, do formato dos bits, só achamos a largura",
       "source_line": "Fonte: NVIDIA, CUDA Binary Utilities, ap. 7.1. Jia et al. (Volta), cap. 2",
       "claims": [
         "isa.instruction_bytes",
@@ -595,22 +609,24 @@
       ]
     },
     "a5.12": {
-      "headline": "SASS: RISC no formato, com extensões",
-      "caption": "Análise do grupo: formato fixo e carga e armazenamento apontam RISC. LDGSTS, TEX e HMMA são instruções de acelerador. A NVIDIA não classifica o SASS.",
-      "fala": "Pelo formato é RISC: instrução de tamanho fixo, memória por carga e armazenamento como regra, até 255 registradores por thread. Mas há instruções de acelerador: busca de textura, multiplicação de um bloco de matriz por warp e cópia assíncrona da global para a compartilhada, a LDGSTS. A NVIDIA não classifica o SASS. Esta é a análise do grupo. Sobre microcódigo, nada público.",
-      "source_line": "Fonte: análise do grupo sobre NVIDIA, CUDA Binary Utilities 13.5, tabela Blackwell and Rubin Instruction Set",
+      "headline": "RISC ou CISC: RISC com extensões",
+      "caption": "Análise do grupo: formato fixo e carga e armazenamento apontam RISC. HMMA, TEX e LDGSTS são extensões de acelerador.",
+      "fala": "• CISC ou RISC, item do enunciado • A favor de RISC: tamanho fixo, memória por carga e armazenamento como regra, até 255 registradores • Contra: um HMMA faz 2.048 multiplicações-acumulações • A NVIDIA não classifica. A conclusão é do grupo, provável",
+      "source_line": "Fonte: análise do grupo sobre NVIDIA, CUDA Binary Utilities 13.5 e PTX ISA, 6.2. Experimento do grupo, harness/examples/mma/ (sm_120). Contas nossas",
       "claims": [
         "isa.instruction_bytes",
         "sm.max_regs_per_thread",
         "isa.op.ldgsts",
         "isa.op.tex",
-        "isa.op.hmma"
+        "isa.op.hmma",
+        "ex.mma.hmma",
+        "isa.ptx_load_store"
       ]
     },
     "a5.13": {
       "headline": "A escada de memória",
-      "caption": "Do registrador à GDDR7, cada degrau é maior e mais lento. As latências são medidas na RTX 5080, não nesta placa.",
-      "fala": "Na 5080, medida por terceiros, a L1 leva de 30 a 40 ciclos, o L2 cerca de 358 e a memória global cerca de 877. Do L2 à memória, a latência é 2,4 vezes maior, conta nossa. Quem viu cache na matéria reconhece o padrão: quanto maior, mais lento. Associatividade, política de escrita e tamanho de linha dos caches desta placa, não achamos nas fontes lidas.",
+      "caption": "Do L1 à GDDR7, cada degrau é maior e mais lento. Latências medidas na RTX 5080.",
+      "fala": "• Mecanismo de cache, item do enunciado • L1: 30 a 40 ciclos, L2: cerca de 358, memória: cerca de 877 • Associatividade, política de escrita e tamanho de linha: não achamos nas fontes lidas",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4. Latências: Jarmusch et al., seção VI (RTX 5080)",
       "claims": [
         "sm.regfile_kb",
@@ -624,8 +640,8 @@
     },
     "a5.14": {
       "headline": "L1 e memória compartilhada dividem 128 KB",
-      "caption": "Os 128 KB do SM se dividem entre L1 e memória compartilhada. A parte da memória compartilhada, o carveout, é escolhida em tempo de execução: 0, 8, 16, 32, 64 ou 100 KB.",
-      "fala": "Memória compartilhada é a memória do SM que o programa endereça diretamente. A divisão não é fixa no chip: o carveout é escolhido em tempo de execução. Segundo o guia CUDA, na compute capability 12.0 ele pode ter 0, 8, 16, 32, 64 ou 100 KB. O guia de ajuste fala em 128 KB por SM, e a diferença entre os dois números não está explicada. Associatividade e política de substituição do L1, não achamos nas fontes lidas.",
+      "caption": "O programa escolhe, em tempo de execução, quanto do L1 vira memória compartilhada.",
+      "fala": "• Memória compartilhada: memória do SM que o programa endereça diretamente • A divisão com o L1 é escolhida em tempo de execução • Na compute capability 12.0: 0, 8, 16, 32, 64 ou 100 KB",
       "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.6. Blackwell Tuning Guide 13.5, 1.4.2.3. Whitepaper RTX PRO Blackwell v1.1, p. 9",
       "claims": [
         "mem.l1_carveout",
@@ -634,35 +650,36 @@
       ]
     },
     "a6.1": {
-      "headline": "Endereço virtual de 57 bits, 6 níveis",
-      "caption": "Segundo o driver oficial, a MMU da GPU traduz 57 bits em 6 níveis de tabela. As páginas vão de 4 KB a 512 MB.",
-      "fala": "MMU é a unidade que traduz endereço virtual em físico, como a da CPU. Os índices têm 1, 9, 9, 9 e 8 bits, mais 9 no último nível para página de 4 KB e 12 de deslocamento: 57 no total. Páginas de 2 MB e 512 MB terminam antes. Sobre a TLB, a cache de traduções, e sobre o espaço por programa, não achamos nada nas fontes lidas.",
+      "headline": "MMU: endereço virtual de 57 bits",
+      "caption": "A MMU da GPU traduz 57 bits em 6 níveis de tabela. Páginas de 4 KB a 512 MB.",
+      "fala": "• MMU, item do enunciado • Mesma ideia da CPU: endereço virtual vira físico por tabela de páginas • 6 níveis, segundo o driver oficial • TLB e espaço por programa: não achamos nas fontes lidas",
       "source_line": "Fonte: driver aberto da NVIDIA (open-gpu-kernel-modules): ctrl2080mc.h, uvm_hal.c, uvm_hopper_mmu.c, uvm_ampere_mmu.c",
       "claims": [
         "mmu.va_bits",
         "mmu.levels",
-        "mmu.index_bits",
-        "mmu.page_sizes"
+        "mmu.page_sizes",
+        "mmu.format_family",
+        "mmu.gb202_in_gb20x"
       ]
     },
     "a6.2": {
       "headline": "Falha de página: a CPU resolve",
-      "caption": "Segundo o driver oficial, a falha vai para um buffer e o canal não pode ser trocado até ser atendido (fault and stall). A CPU resolve um lote e a GPU repete o acesso.",
-      "fala": "Na CPU, a falha de página interrompe a instrução, o sistema operacional carrega a página e a instrução é repetida. Na GPU é parecido, mas quem resolve é o driver, na CPU. Canal, segundo o driver, é uma das filas de execução da GPU. Enquanto o driver não atende, esse canal não pode ser trocado e os outros esperam. Um acesso a endereço ilegal aparece no log como Xid 31, GPU memory page fault. Quantas entradas tem a TLB, não achamos em nenhuma fonte.",
-      "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_non_replayable_faults.c e uvm_gpu_replayable_faults.c. Catálogo de Xid",
+      "caption": "A falha vai para um buffer, o canal não pode ser trocado e o driver, na CPU, atende em lote.",
+      "fala": "• Como na CPU: falha, o sistema resolve, o acesso se repete • A diferença: quem resolve é o driver, na CPU, em lote • Memória virtual e interrupção trabalhando juntas",
+      "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_non_replayable_faults.c, uvm_gpu_replayable_faults.c, nv.c e uvm_gpu_isr.c. Catálogo de Xid",
       "claims": [
         "fault.stall",
         "fault.buffer_batch",
         "fault.replay",
-        "fault.replayable_blocks_preemption",
+        "cmd.channel",
         "irq.xid31",
-        "cmd.channel"
+        "irq.top_half"
       ]
     },
     "a6.3": {
       "headline": "Como a CPU entrega trabalho à GPU",
-      "caption": "No driver oficial, a CPU grava comandos num pushbuffer, aponta para eles numa entrada da GPFIFO do canal e avança o ponteiro PUT. A GPU lê a fila. Vale para os canais do próprio driver.",
-      "fala": "Isso é uma fila produtor e consumidor, como o buffer circular da matéria: a CPU produz avançando o PUT, e o GET marca até onde a GPU já concluiu. Canal, segundo o driver, é uma das filas de execução independentes da GPU. Só lemos os canais do próprio driver. O caminho de um programa CUDA comum não lemos. Supor o mesmo esquema é leitura nossa. O número de entradas no desenho é ilustrativo.",
+      "caption": "A CPU grava comandos numa fila e avança o ponteiro PUT. A GPU lê a fila.",
+      "fala": "• Fila produtor e consumidor, como o buffer circular da matéria • A CPU produz, a GPU consome • Lido nos canais do próprio driver. Para um programa CUDA comum, é provável",
       "source_line": "Fonte: driver aberto da NVIDIA, uvm_channel.h, uvm_channel.c e uvm_pushbuffer.h",
       "claims": [
         "cmd.channel",
@@ -672,17 +689,18 @@
     },
     "a6.4": {
       "headline": "Três mecanismos de interrupção",
-      "caption": "A GPU interrompe a CPU, o programa aborta com trap, ou a tarefa é preemptada (pausada para dar vez a outra; documentado na Pascal). Não achamos rotina de interrupção executada pelo próprio SM.",
-      "fala": "Interrupção é o aviso de um evento a quem sabe tratá-lo. Primeiro: a GPU interrompe a CPU por MSI-X, MSI ou linha legada, e o tratador do driver tem duas metades, uma curta e outra em thread do kernel. Segundo: trap aborta o programa e interrompe a CPU. Terceiro: preempção, documentada na Pascal. Provavelmente o SM não trata interrupções como uma CPU, mas é leitura nossa.",
-      "source_line": "Fonte: driver aberto da NVIDIA, nv.c e nv-msi.c. PTX ISA 9.5, 9.7.21.4. Catálogo de Xid. Whitepaper Tesla P100, p. 30",
+      "caption": "A GPU interrompe a CPU, o programa aborta com trap, ou a falha de página e a preempção param a tarefa.",
+      "fala": "• Interrupções, item do enunciado • GPU para CPU: MSI-X, MSI ou linha legada, tratador do driver em duas metades • trap aborta o programa • Preempção, documentada na Pascal • Provável, leitura nossa: o SM não trata interrupção como uma CPU",
+      "source_line": "Fonte: driver aberto da NVIDIA, nv.c, nv-msi.c, uvm_gpu_non_replayable_faults.c e uvm_gpu_replayable_faults.c. PTX ISA 9.5, 9.7.21.4. Catálogo de Xid. Whitepaper Tesla P100, p. 30",
       "claims": [
         "irq.modes",
         "irq.top_half",
         "irq.bottom_half",
         "irq.ptx_trap",
-        "irq.xid13",
-        "irq.xid31",
-        "sched.preemption_instruction_level"
+        "sched.preemption_instruction_level",
+        "fault.stall",
+        "fault.buffer_batch",
+        "fault.replay"
       ]
     },
     "a6.5": {
@@ -729,14 +747,21 @@
     },
     "a7.4": {
       "headline": "O que sabemos e o que falta",
-      "caption": "Para cada item do enunciado, a tabela mostra o que a fonte dá e onde ela para. Separamos o que não achamos publicado do que não levantamos.",
-      "fala": "O padrão é este. Tamanhos, contagens e formatos costumam ser públicos: a largura da instrução, os níveis da tabela de páginas, o tamanho das caches. O funcionamento interno costuma não ser: organização do banco de registradores, microcódigo, TLB, política dos caches, profundidade do pipeline. Lacuna declarada é resultado do trabalho, não falha dele.",
+      "caption": "Tamanhos e formatos, achamos. Do funcionamento interno, pouco.",
+      "fala": "• Público: largura da instrução, níveis da tabela de páginas, tamanho dos caches • Não achamos: estágios do pipeline, TLB, política dos caches, microcódigo • Lacuna declarada é resultado, não falha",
       "source_line": "Fonte: síntese do grupo a partir das fontes citadas em cada seção (whitepaper, guias CUDA, Binary Utilities, driver aberto, artigos de medição)",
       "claims": [
         "isa.instruction_bytes",
         "mmu.levels",
         "chip.l2_kb"
       ]
+    },
+    "a2.13": {
+      "headline": "A placa aberta",
+      "caption": "",
+      "fala": "• Pausa visual, sem fala • Daqui, a memória e depois o chip",
+      "source_line": "",
+      "claims": []
     }
   }
 }

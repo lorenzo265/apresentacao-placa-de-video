@@ -176,6 +176,18 @@ K = math.tan(ANG)
 XA = M("x_rib_cross_face_a_from_bracket_end")
 KO = FR.keepouts()
 AD_KO = KO["fenda_do_adaptador"]                  # faixa do adaptador PCIe (x0, x1, y0, y1, z0, z1)
+AD_POLY = FR.adapter_outline_xy_pts()            # contorno do adaptador (aba e lóbulo incluídos)
+
+
+def adapter_y_max(x0, x1):
+    """Maior y do contorno do adaptador na faixa de x de x0 a x1 (None se não passa ali)."""
+    P = AD_POLY
+    ys = [py for px, py in P if x0 <= px <= x1]
+    for (ax, ay), (bx, by) in zip(P, P[1:] + P[:1]):
+        for xc in (x0, x1):
+            if (ax - xc) * (bx - xc) < 0:
+                ys.append(ay + (by - ay) * (xc - ax) / (bx - ax))
+    return max(ys) if ys else None
 
 
 def neighbor_box(pid):
@@ -268,8 +280,16 @@ def ext_z(sk, z0, z1):
 
 
 def fin_solid(sk_yz, x0, t):
-    """Lâmina: esboço em coordenadas locais (u = y, v = z), extrudado de x0 a x0 + t."""
+    """Lâmina: esboço em coordenadas locais (u = y, v = z), extrudado de x0 a x0 + t (o sentido
+    da extrusão segue a normal do esboço, que pode sair invertida: ver fin_solid_at)."""
     return extrude(Plane.YZ.offset(x0) * sk_yz, t)
+
+
+def fin_solid_at(sk_yz, x0, t):
+    """Lâmina garantidamente de x0 a x0 + t (a da pilha central; as das pontas seguem como antes)."""
+    sol = fin_solid(sk_yz, x0, t)
+    dx = x0 - sol.bounding_box().min.X
+    return Pos(dx, 0, 0) * sol if abs(dx) > 1e-6 else sol
 
 
 # ---------------------------------------------------------------------------
@@ -380,12 +400,13 @@ def build_end_stack(n):
         lim0 = y_limits(x, FIN_Y0, FIN_Y1)
         lim1 = y_limits(x + T_FIN + (lc if collar else 0.0), FIN_Y0, FIN_Y1)
         y0, y1 = max(lim0[0], lim1[0]), min(lim0[1], lim1[1])
-        notch = x + T_FIN + (lc if collar else 0.0) > AD_KO[0] - CLR and x < AD_KO[1] + CLR
+        ad_y = adapter_y_max(x - CLR, x + T_FIN + (lc if collar else 0.0) + CLR)
+        notch = round(max(ad_y, AD_KO[3]) + CLR, 2) if ad_y is not None else None
         key = (round(y0, 3), round(y1, 3), collar, notch)
         if key not in cache:
             sk = rect(y0, y1, Z_F0, Z_F1)
             if notch:
-                sk = sk - rect(y0 - 1, AD_KO[3] + CLR, Z_F0 - 1, AD_KO[5] + CLR)
+                sk = sk - rect(y0 - 1, notch, Z_F0 - 1, AD_KO[5] + CLR)
             for i in range(5):
                 yy = pipe_y_stack(i)
                 assert yy - HD > y0 + 0.5 and yy + HD < y1 - 0.5, "furo do tubo fora da lâmina em x = %.2f" % x
@@ -407,17 +428,50 @@ def build_end_stack(n):
         note(pid, "começa em x = %.2f, depois da placa de portas (io.board) e da placa de extremidade da carcaça" % S[0])
     nn = sum(1 for _, k in fins if k[3])
     if nn:
-        note(pid, "%d lâminas com um entalhe no canto de baixo (y até %.2f, z até %.2f) para a faixa do adaptador PCIe, que desde 2026-11-11 fica no plano da pcb.plate (z %.2f a %.2f) e entra na pilha; forma do entalhe sem foto (inferred)" % (
+        note(pid, "%d lâminas com um entalhe no canto de baixo (y até %.2f, ou até o contorno do adaptador com a aba, z até %.2f) para a faixa do adaptador PCIe, que desde 2026-11-11 fica no plano da pcb.plate (z %.2f a %.2f) e entra na pilha; forma do entalhe sem foto (inferred)" % (
             nn, AD_KO[3] + CLR, AD_KO[5] + CLR, M("iface_adapter_board_z_min"), M("iface_adapter_board_z_max")))
     return fins, cache
 
 
+def fan_chord(x0, x1):
+    """Faixas em y, para a lâmina de x0 a x1, dentro do círculo de cada ventilador mais o duto
+    (frame.R_OPEN + parede + folga): ali a pilha central desce até o topo das pilhas das pontas
+    (Z_F1), sob o rotor e o suporte do motor, como as pilhas das pontas."""
+    rc = FR.R_OPEN + WALL + CLR
+    out = []
+    for fx in FR.FAN_X:
+        dx = 0.0 if x0 <= fx <= x1 else min(abs(x0 - fx), abs(x1 - fx))
+        if dx < rc:
+            h = math.sqrt(rc * rc - dx * dx)
+            out.append((FR.FAN_Y - h, FR.FAN_Y + h))
+    return out
+
+
+def tunnel_y_min(x0, x1):
+    """Menor y da luva do túnel do conector (frame.power_tunnel_xy com a parede e a folga, um
+    quadrilátero convexo) na faixa de x de x0 a x1; None se a luva não passa ali."""
+    s0 = M("power_connector_body_depth") / 2 - FR.g("pw_hood") - WALL
+    P = FR.power_tunnel_xy(WALL + CLR, s0, FR.g("pw_reach"))
+    ys = [py for px, py in P if x0 <= px <= x1]
+    for (ax, ay), (bx, by) in zip(P, P[1:] + P[:1]):
+        for xc in (x0, x1):
+            if (ax - xc) * (bx - xc) < 0:
+                ys.append(ay + (by - ay) * (xc - ax) / (bx - ax))
+    return min(ys) if ys else None
+
+
 def build_center_stack():
     pid = "cooler.fins.3"
+    # a pilha enche o vão entre as pilhas das pontas (sobre toda a cooler.base), com a folga CLR de cada
+    # lado: atrás das pás só aparecem aletas (visual-qa-placa-final-2, achado N5); fin_stack_center_length_x
+    # é a conta desse vão (inferred, justificativa visual em gn-02)
+    x_a, x_b = S1[1] + CLR, S2[0] - CLR
     lc = M("fin_stack_center_length_x")
-    n = int(math.floor((lc - T_FIN) / P_FIN + 1e-9)) + 1
+    assert abs(lc - (x_b - x_a)) < 0.1, "fin_stack_center_length_x (%.2f) diferente do vão entre as pilhas (%.2f)" % (lc, x_b - x_a)
+    n = int(math.floor((x_b - x_a - T_FIN) / P_FIN + 1e-9)) + 1
     span = (n - 1) * P_FIN + T_FIN
-    xs = [DCX - span / 2 + k * P_FIN for k in range(n)]
+    x_first = (x_a + x_b) / 2 - span / 2
+    xs = [x_first + k * P_FIN for k in range(n)]
     bw = g("c_x_band") / math.cos(ANG)            # meia faixa do X medida em y
     zs = Z_C_FULL - g("c_side_drop")
     zx = Z_C_FULL - g("c_x_drop")
@@ -430,6 +484,10 @@ def build_center_stack():
         if x + T_FIN > nx0 and x < nx1:
             y0 = max(y0, KO["entalhe"][3] + CLR)
         y1 = min(y_top_wall, Y1 - WALL - CLR)
+        ty = tunnel_y_min(x - CLR, x + T_FIN + CLR)
+        if ty is not None:
+            y1 = min(y1, ty)
+        chords = fan_chord(x, x + T_FIN)
         # degraus em y: |y - YC| - K |x - XA| = s
         d = K * abs(xm - XA)
         cuts = [d - bw, d + bw, d + bw + g("c_step"), d + bw + 2 * g("c_step")]
@@ -440,11 +498,18 @@ def build_center_stack():
                 if t < c:
                     return z
             return levels[-1]
-        # pontos de quebra em y (os dois lados de YC)
-        br = sorted({y0, y1} | {YC + sg * c for c in cuts for sg in (-1, 1) if y0 < YC + sg * c < y1})
+
+        def level_y(y):
+            z = level(abs(y - YC))
+            if any(c0 < y < c1 for c0, c1 in chords):
+                z = min(z, Z_F1)
+            return z
+        # pontos de quebra em y (os dois lados de YC e as cordas dos ventiladores)
+        br = sorted({y0, y1} | {YC + sg * c for c in cuts for sg in (-1, 1) if y0 < YC + sg * c < y1}
+                    | {yy for ch in chords for yy in ch if y0 < yy < y1})
         segs = []
         for a, b in zip(br[:-1], br[1:]):
-            segs.append((a, b, level(abs((a + b) / 2 - YC))))
+            segs.append((a, b, level_y((a + b) / 2)))
         zb = Z_TOP + g("c_seat_gap")
         pts = [(y0, zb)]
         for a, b, z in segs:
@@ -479,8 +544,11 @@ def build_center_stack():
     band = band & rect(x0, x1, y0p, y_top_wall)
     if CONN[0][0] - CLR < x1:
         band = band - rect(CONN[0][0] - CLR, x1 + 1, CONN[0][1] - CLR, Y1 + 5)
+    for fx in FR.FAN_X:
+        band = band - Pos(fx, FR.FAN_Y) * Circle(FR.R_OPEN + WALL + CLR)
     plate = ext_z(band, zp0, zp1)
-    note(pid, "%d lâminas de %.2f mm no passo de %.2f mm (fin_pitch, derived), de x = %.2f a %.2f (fin_stack_center_length_x = %.0f centrado no die, pendente de medida); assembly: %d" % (n, T_FIN, P_FIN, xs[0], xs[-1] + T_FIN, lc, PARTS[pid]["count"]["value"]))
+    note(pid, "%d lâminas de %.2f mm no passo de %.2f mm (fin_pitch, derived), de x = %.2f a %.2f: enchem o vão entre as pilhas das pontas sobre a cooler.base (fin_stack_center_length_x = %.2f, inferred: atrás das pás só aparecem aletas em gn-02; antes 64 centrado no die, e pelas pás do ventilador 2 apareciam os tubos e a moldura: visual-qa-placa-final-2, N5); assembly: %d" % (n, T_FIN, P_FIN, xs[0], xs[-1] + T_FIN, lc, PARTS[pid]["count"]["value"]))
+    note(pid, "dentro do círculo de cada ventilador mais o duto da carcaça (raio %.1f) as lâminas descem até z = %.1f, o topo das pilhas das pontas (layer_end_fan_ring), sob o rotor e o suporte do motor; recortadas em volta da luva do túnel do conector" % (FR.R_OPEN + WALL + CLR, Z_F1))
     note(pid, "recorte em X: sob as nervuras do X da face A (cruzamento em x_rib_cross_face_a, ângulo x_rib_angle_deg) as lâminas descem %.1f mm e recebem uma placa lisa de %.1f mm (o X liso da placa irmã, wccftech-cooler-3 e -4); cunhas laterais, vistas pelas janelas do X da face A, %.1f mm abaixo do topo; triângulos de cima e de baixo em 3 degraus de %.1f mm subindo para longe do cruzamento (gn-26, desta placa)" % (
         g("c_x_drop"), g("c_x_plate_t"), g("c_side_drop"), g("c_step_drop")))
     note(pid, "de z = %.2f (topo da câmara e da moldura mais um vão de %.2f, sem significado físico) a %.1f (chapa da face A menos c_top_gap); em y da borda da base até o fundo do canal da borda superior, recortada no entalhe PCIe e em volta do conector de energia" % (Z_TOP + g("c_seat_gap"), g("c_seat_gap"), Z_C_FULL))
@@ -496,6 +564,8 @@ def frame_sketch():
         ("canal da borda superior", (KO["canal"][0] - CLR, KO["canal"][1] + CLR, KO["canal"][2] - CLR, Y1 + 5)),
         ("conector de energia", (CONN[0][0] - CLR, CONN[1][0] + CLR, CONN[0][1] - CLR, Y1 + 5)),
         ("conector auxiliar", (AUX[0][0] - CLR, AUX[1][0] + CLR, AUX[0][1] - CLR, Y1 + 5)),
+        ("boca do túnel do conector (cuba da carcaça)", (KO["encaixe_do_conector"][0] - CLR, KO["encaixe_do_conector"][1] + CLR,
+                                                         KO["encaixe_do_conector"][2] - CLR, Y1 + 5)),
     ]
     for _, (a0, a1, b0, b1) in cuts:
         sk = sk - rect(a0, a1, b0, b1)
@@ -907,7 +977,7 @@ def main():
         report.setdefault("counts", {})[pid] = len(fins)
     # pilha central
     fins3, xplate = build_center_stack()
-    parts3 = [fin_solid(sk, x, T_FIN) for x, sk in fins3]
+    parts3 = [fin_solid_at(sk, x, T_FIN) for x, sk in fins3]
     meshes["cooler.fins.3"] = trimesh.util.concatenate([to_mesh(s, TESS["fin"]) for s in parts3] + [to_mesh(xplate, TESS["body"])])
     steps["cooler.fins.3"] = parts3 + [xplate]
     report["counts"]["cooler.fins.3"] = len(fins3)

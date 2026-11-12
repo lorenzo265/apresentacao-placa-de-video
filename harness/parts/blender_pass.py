@@ -72,11 +72,17 @@ MATS = HARNESS / "viewer" / "src" / "materials.json"
 CSV = HARNESS / "design" / "measurements.csv"
 FONTES = HARNESS / "viewer" / "node_modules" / "@fontsource" / "inter" / "files"
 
-VERSAO = 4                 # muda quando o que é assado muda (invalida o cache)
+VERSAO = 5                 # muda quando o que é assado muda (invalida o cache)
 AO_AMOSTRAS = 64
 AO_DIST_MM = 6.0
 BEVEL_MM = 0.4             # chanfro das arestas vivas (contrato: até 0,3 a 0,5 mm)
 BEVEL_AMOSTRAS = 16
+# Lâminas da grade (slot carcaca.grade): lâmina de 0,6 mm com chanfro de 0,4 mm cabe em 2 a 3 texels a
+# 2048 px na face B (cerca de 6,7 px/mm), e o normal map sai ondulado de perto (achado N8 da segunda
+# passada visual). As lâminas são geometria real e o chanfro delas não é visto a olho nu; o raio do Bevel
+# nesse slot é 0, o normal map fica plano ali (o PNG também encolhe) e a resolução da peça não sobe
+# (o orçamento de texturas está em 10,3 de 12 MB).
+SLOTS_SEM_CHANFRO = ("carcaca.grade",)
 MARGEM_PX = 8
 AO_SUAVE_PX = 1.2          # desfoque da oclusão (sigma, px) contra o ruído das 64 amostras
 NORMAL_SUAVE_PX = 0.7      # idem no mapa de normal do chanfro
@@ -573,7 +579,7 @@ def bl_materiais(ob, slots, idx_mat, img):
         nt = m.node_tree
         bsdf = nt.nodes.get("Principled BSDF")
         bev = nt.nodes.new("ShaderNodeBevel")
-        bev.inputs["Radius"].default_value = BEVEL_MM / 1000.0
+        bev.inputs["Radius"].default_value = 0.0 if nome in SLOTS_SEM_CHANFRO else BEVEL_MM / 1000.0
         bev.samples = BEVEL_AMOSTRAS
         nt.links.new(bev.outputs["Normal"], bsdf.inputs["Normal"])
         bsdf.inputs["Emission Strength"].default_value = 1.0
