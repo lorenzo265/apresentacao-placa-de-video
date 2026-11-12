@@ -403,7 +403,7 @@
       "rationale": "A ordem dos passos é a de qualquer cooler de câmara de vapor. A diferença de 10 °C para a placa irmã tem o sinal esperado: mais potência e pasta no lugar de metal líquido.",
       "alternatives_considered": ["ar em sentido inverso (entra pela face B): descartado pelo texto da GN ('pushes air straight through the card')"],
       "consistency_checks": {"thermal": "ordem de grandeza (Q9)"},
-      "viewer_disclaimer": "Caminho do calor provável. O estágio com o cooler aberto é didático: os ventiladores nunca saem nas fotos."
+      "viewer_disclaimer": "Caminho do calor provável. O estágio com o cooler aberto é didático: no teardown, os ventiladores não são retirados."
     },
     {
       "id": "pcb.main",

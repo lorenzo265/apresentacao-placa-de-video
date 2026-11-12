@@ -44,7 +44,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
       <div class="acoes"><button data-a="remontar">Remontar tudo</button><button data-a="desmontar">Desmontar tudo</button></div>
     </nav>
     <aside class="ex-painel ui"></aside>
-    <div class="ex-selo"><span class="selo s-inferred"><svg viewBox="0 0 16 16" width="22" height="22"><path d="${SELOS.inferred.icone}"/></svg>Provável: do interior do cooler só a base de contato aparece em foto. Abertura da carcaça ilustrativa</span></div>
+    <div class="ex-selo"><span class="selo s-inferred"><svg viewBox="0 0 16 16" width="22" height="22"><path d="${SELOS.inferred.icone}"/></svg>Provável: do interior do cooler, as fotos só mostram a base de contato e as aletas por fora. Abertura da carcaça ilustrativa</span></div>
     <p class="ex-dica">arraste: gira &middot; roda do mouse: aproxima &middot; clique: seleciona &middot; Delete: remove &middot; Z: recoloca a última &middot; Esc: volta</p>`;
   palco.appendChild(raiz);
   const painel = raiz.querySelector('.ex-painel');

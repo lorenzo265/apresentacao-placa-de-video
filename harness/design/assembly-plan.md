@@ -101,7 +101,7 @@ A ordem vem do teardown desta placa (Gamers Nexus). Os estágios E1 a E7 são `c
 | E6 | cabos flat e parafusos da mola de pressão | `flex.*`, `cooler.leaf_spring` | confirmed |
 | E7 | PCB principal, com a pasta térmica à vista | `pcb.main`, `gpu.package`, `mem.*`, `power.*` | confirmed |
 | (não sai) | carcaça, ventiladores e aletas ficam montados no teardown | `frame.shroud`, `frame.face_b`, `cooler.*` | confirmed (foto gn-29) |
-| E8 | cooler aberto: ventiladores, aletas, câmara de vapor | `cooler.*` | **inferred**: os ventiladores nunca saem nas fotos, e não há imagem do interior |
+| E8 | cooler aberto: ventiladores, aletas, câmara de vapor | `cooler.*` | **inferred**: no teardown, os ventiladores não são retirados, e do interior as fotos só mostram a base de contato e as aletas por fora |
 
 O estágio E8 é didático. O vídeo diz isso na tela.
 

@@ -71,3 +71,22 @@ Depois destas correções ninguém reauditou: **falta a terceira passada**.
 ### Correções aplicadas (orquestradora, 2026-11-12)
 
 Os três erros foram corrigidos com a redação sugerida, em `content/pt-BR/pecas.json` e nos dois `viewer_disclaimer` de `design/assembly.json`, depois `npm run sync`. A mesma frase ambígua aparecia em mais dois textos internos do assembly (racional de `cooler.fan.1` e o motivo do aviso de `cooler.base`), também corrigidos. Falta a quarta passada, só sobre esses itens.
+
+## Quarta passada (2026-11-12)
+
+`fact-checker`, em contexto separado, só sobre as correções da terceira passada. Conferido em `content/pt-BR/pecas.json`, `viewer/public/data/pecas.json`, `design/assembly.json` (os `viewer_disclaimer` de `cooler.fan.1` e `cooler.fan.2`, o racional de `cooler.fan.1` e o motivo do desvio de `cooler.base`) e nos textos fixos de `viewer/src/explorar.js`, contra `spec/references/index.md`, `design/proposal.md` e `spec/sources/physical-card-sources.md`. O auditor não abriu as fotos nem as páginas das fontes, não rodou o viewer nem o sync. O contexto do auditor só tinha leitura; a orquestradora transcreveu este bloco.
+
+**Veredito: aprovado com ressalvas.** Os 3 erros da terceira passada estão corrigidos, sem erro novo. Nenhuma correção obrigatória.
+
+### Ressalvas da quarta passada
+
+- R1 (recomendada). A caption da camada 8 e o selo do E8 diziam que do interior só a base de contato aparece em foto, mas o catálogo (seção i) lista três regiões de aletas visíveis por fora. Sugestão: "Do interior do cooler, as fotos desta placa só mostram a base de contato e as aletas por fora."
+- R2 (estilo, texto de tela). Ponto e vírgula nas ressalvas de `power.controller` e `cooler.fins.3`.
+- R3. A frase antiga "os ventiladores nunca saem nas fotos" continuava em `design/proposal.json`, `design/assembly-plan.md` e `spec/references/index.md`.
+- R4. A marca no nome não segue convenção única: "(deduzida)" quando a existência é deduzida, "(provável)" quando a incerteza é a função.
+- R5. O desvio de `cooler.fins.1` no assembly ainda dizia "42 (fins.3)", e a peça tem 78 lâminas.
+- Continuam abertas as ressalvas da terceira passada e o item 7 da segunda.
+
+### Correções aplicadas (orquestradora, 2026-11-12)
+
+R1 na caption da camada 8, no selo do E8 em `explorar.js` e no motivo do desvio de `cooler.base`. R2 trocando o ponto e vírgula por ponto. R3 nos três arquivos. R5 com a contagem nova (78, antes 42). R4 fica como regra: "(deduzida)" marca existência deduzida e "(provável)" marca função incerta. Depois, `npm run sync`.

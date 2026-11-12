@@ -634,7 +634,7 @@
       "explode": {"dir": [0, 0, -1], "distance": 0, "order": 7},
       "anchors": [],
       "fasteners": [],
-      "viewer_disclaimer": "Controlador visto em uma foto; a marcação e a quantidade não foram confirmadas."
+      "viewer_disclaimer": "Controlador visto em uma foto. A marcação e a quantidade não foram confirmadas."
     },
     {
       "id": "power.aux",
@@ -828,7 +828,7 @@
       "explode": {"dir": [0, 0, -1], "distance": 0, "order": 10},
       "anchors": [{"id": "anchor.cooler.fins.3", "pos": [152, 75.76, 27.35]}],
       "fasteners": [],
-      "viewer_disclaimer": "Pilha central vista em foto; o caminho do ar por ela é hipótese."
+      "viewer_disclaimer": "Pilha central vista em foto. O caminho do ar por ela é hipótese."
     }
   ],
   "known_deviations": [
@@ -840,13 +840,13 @@
     {"part": "pcb.main", "description": "O chip fica sob o cruzamento do X (x = 152) e o PCB vai de 99,98 a 218,05: as pilhas de aletas das pontas ficam com 99,98 e 86,75 mm.", "reason": "Conta do ponto 9 do relatório refeita com a escala corrigida. Centrar o PCB poria o chip a cerca de 145, a mais de 6 mm do X medido (151,5 a 152,5). A posição do J3 por gn-05 sugere o chip perto de 149; falta medir os contatos no pny/front e uma vista da ponta oposta."},
     {"part": "gpu.package", "description": "Package com o eixo longo no comprimento da placa (66,14 x 57,5); o die foi mantido mais comprido na altura.", "reason": "O eixo do package foi corrigido pela medição; a orientação do die vem de gn-42, lida pela mesma proposta que errou o package, e não foi remedida."},
     {"part": "power.connector", "description": "Distância do centro do conector à borda superior do PCB escolhida para o contrato (power_connector_center_y = 126,17), e centro deslocado 2,5 mm ao longo da direção de encaixe em relação à medida para a base das lâminas não cobrir o furo da mola.", "reason": "O relatório mede a posição ao longo do comprimento e o ângulo, mas não a profundidade do recorte em V; a forma da base das lâminas atrás do corpo é palpite do modelador de I/O."},
-    {"part": "cooler.fins.1", "description": "Aletas contadas pela geometria com o passo de 1,52 mm lido nas listras dos renders: 59 (fins.1), 57 (fins.2) e 42 (fins.3).", "reason": "Não contadas em foto; que as listras das grades em pny/back e pny/front sejam as próprias aletas é inferência (o modelador da carcaça leu 1,45 na face B)."},
+    {"part": "cooler.fins.1", "description": "Aletas contadas pela geometria com o passo de 1,52 mm lido nas listras dos renders: 59 (fins.1), 57 (fins.2) e 78 (fins.3, com a pilha central estendida em 2026-11-11; antes 42).", "reason": "Não contadas em foto; que as listras das grades em pny/back e pny/front sejam as próprias aletas é inferência (o modelador da carcaça leu 1,45 na face B)."},
     {"part": "cooler.base", "description": "A coluna roscada no furo de canto da pcb.plate em (211,34; 125,86) fica omitida.", "reason": "O indutor isolado da ponta (sabareesh) fica sobre esse furo mesmo depois da correção de escala; um dos quatro furos de canto não foi confirmado pelo visual-qa e este é o candidato."},
     {"part": "pcie.adapter", "description": "Adaptador no plano da pcb.plate (z 2,5 a 4,07), com recorte na pcb.plate e rebaixo na tampa inferior; J3 com altura combinada de 2,03 mm.", "reason": "Escolha de contrato de 2026-11-11 sem foto de perfil: a 0,93 não cabiam pele da tampa, cabeças e presilha entre a tampa e o adaptador. A diagonal da aba passa rente ao furo de canto da pcb.plate, o que sustenta a leitura."},
     {"part": "power.vrm.gpu", "description": "24 fases de núcleo e 24 indutores, quantidade representativa; a contagem visível de indutores 85N passa de 24.", "reason": "D4: nenhuma foto vista mostra as bordas inteiras e não achamos fonte com o número (Q7). Subir a quantidade é decisão humana."},
     {"part": "power.vrm.mem", "description": "4 fases de memória, quantidade representativa e sem posição.", "reason": "D4: nenhuma fonte desta placa."},
     {"part": "flex.dp", "description": "No E6 o cabo é modelado como translação para -z (para fora da face B).", "reason": "Na placa real a ponta do lado das portas continua presa na carcaça e o cabo só é erguido (gn-31, gn-32)."},
-    {"part": "cooler.base", "description": "O E8 separa peças soldadas (tubos nas aletas, câmara na base); a explosão não corresponde a uma desmontagem possível.", "reason": "Estágio didático com ordem inferred: no teardown, os ventiladores não são retirados, e do interior só a base de contato aparece nas fotos."},
+    {"part": "cooler.base", "description": "O E8 separa peças soldadas (tubos nas aletas, câmara na base); a explosão não corresponde a uma desmontagem possível.", "reason": "Estágio didático com ordem inferred: no teardown, os ventiladores não são retirados, e do interior as fotos só mostram a base de contato e as aletas por fora."},
     {"part": "pcie.adapter", "description": "Posição em z do adaptador escolhida para o contrato (iface_adapter_board_z_min = 2,5); a aba fica 0,93 mm abaixo dos chips do verso da borda dos contatos (mem.back.15), que ela cobre em parte no plano.", "reason": "Nenhuma fonte dá a posição do adaptador na espessura; o integrator confere a interferência."},
     {"part": "mem.pads", "description": "Pads térmicos sobre a memória e os indutores não estão no modelo.", "reason": "A peça está marcada a propor no plano e não tem item próprio na proposta aprovada."},
     {"part": "pcie.clamp", "description": "Presilha do slot não está no modelo; seus 4 parafusos estão em fasteners.e4_pcie.", "reason": "A peça está marcada a propor no plano e não tem item próprio na proposta aprovada."},
