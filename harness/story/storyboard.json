@@ -525,14 +525,17 @@
               55,
               10
             ],
-            "fov": 33
+            "fov": 33,
+            "enquadra": {
+              "folga": 0.03
+            }
           },
           {
             "at": 0.36,
             "pos": [
               430,
               -700,
-              330
+              420
             ],
             "target": [
               120,
@@ -545,11 +548,28 @@
             }
           },
           {
+            "at": 0.57,
+            "pos": [
+              520,
+              -760,
+              440
+            ],
+            "target": [
+              150,
+              60,
+              -90
+            ],
+            "fov": 32,
+            "enquadra": {
+              "folga": 0.03
+            }
+          },
+          {
             "at": 0.78,
             "pos": [
-              420,
-              -900,
-              180
+              450,
+              -820,
+              380
             ],
             "target": [
               150,
@@ -576,7 +596,14 @@
             "fov": 30
           }
         ],
-        "explode_ate": 0.8
+        "explode_ate": 0.8,
+        "enquadra": {
+          "pecas": [
+            "gpu.package",
+            "mem.front"
+          ],
+          "folga": 0.04
+        }
       },
       "callout": {
         "anchor": "anchor.gpu.tim.1",
@@ -1055,9 +1082,9 @@
       "explode_state": "E8",
       "camera": {
         "pos": [
-          330,
-          -900,
-          260
+          600,
+          -690,
+          450
         ],
         "target": [
           150,
@@ -1069,7 +1096,7 @@
         "ease": "power2.inOut",
         "hold_orbit": 20,
         "enquadra": {
-          "folga": 0.0
+          "folga": 0.03
         }
       },
       "hold": 8.0,
@@ -1092,24 +1119,18 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          253.6,
-          -159.6,
-          -182.7
+          420,
+          -620,
+          260
         ],
         "target": [
-          188.8,
-          82.1,
-          -38.2
+          180,
+          60,
+          140
         ],
         "fov": 28,
         "duration": 3.0,
-        "ease": "power3.inOut",
-        "enquadra": {
-          "pecas": [
-            "pcb.main"
-          ],
-          "folga": 0.02
-        }
+        "ease": "power3.inOut"
       },
       "callout": {
         "anchor": "anchor.mem.back.3",
@@ -1124,9 +1145,10 @@
       ],
       "speaker": "Arthur",
       "vitrine": {
-        "peca": "mem.back.3",
+        "peca": "pcb.main",
         "face": "-z",
-        "ocupa": 0.24
+        "inclina": 20,
+        "ocupa": 0.62
       }
     },
     {
@@ -1336,22 +1358,19 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          310.2,
-          -185.0,
-          36.7
+          -60,
+          -620,
+          260
         ],
         "target": [
-          151.2,
-          42.1,
-          -37.5
+          180,
+          60,
+          140
         ],
         "fov": 28,
         "duration": 3.0,
         "ease": "power3.inOut"
       },
-      "highlight": [
-        "gpu.package"
-      ],
       "callout": {
         "anchor": "anchor.mem.front.3",
         "box": "left-center",
@@ -1363,7 +1382,13 @@
         "confirmed",
         "derived"
       ],
-      "speaker": "Arthur"
+      "speaker": "Arthur",
+      "vitrine": {
+        "peca": "pcb.main",
+        "face": "+z",
+        "inclina": 20,
+        "ocupa": 0.62
+      }
     },
     {
       "id": "t1.1",

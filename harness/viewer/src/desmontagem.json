@@ -69,6 +69,10 @@
       0,
       0
     ],
-    "k": 0.9
+    "k": 0.7
+  },
+  "escala": {
+    "_doc": "Fator sobre as distâncias de explosão do assembly (direção de arte, illustrative): pilha mais compacta, peças maiores no quadro. A ordem e o lado de saída não mudam.",
+    "fator": 0.7
   }
 }
