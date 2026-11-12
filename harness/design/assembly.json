@@ -663,13 +663,13 @@
       "exists_provenance": "confirmed",
       "shape_provenance": "derived",
       "confidence": 0.6,
-      "rationale": "Ventilador do lado do bracket, na face A (teardown: 2 large fans on the front; gn-02, gn-26). Centro a 61,2 mm do bracket, remedido em 2026-11-10 no render pny/front por três métodos (aro e cubo; antes 58,5 pelo visual-qa e 61 em gn-05), e aro de 116,8 mm; rotor de 112,8 mm, cubo de 40 mm; altura centrada na carcaça por escolha de bloqueio. Ar da face A para a face B. Explode para +z (para fora da face A) só no E8, cuja ordem é inferred: os ventiladores nunca saem nas fotos. Fixação: não vista; preso à carcaça, que não sai no teardown.",
+      "rationale": "Ventilador do lado do bracket, na face A (teardown: 2 large fans on the front; gn-02, gn-26). Centro a 61,2 mm do bracket, remedido em 2026-11-10 no render pny/front por três métodos (aro e cubo; antes 58,5 pelo visual-qa e 61 em gn-05), e aro de 116,8 mm; rotor de 112,8 mm, cubo de 40 mm; altura centrada na carcaça por escolha de bloqueio. Ar da face A para a face B. Explode para +z (para fora da face A) só no E8, cuja ordem é inferred: no teardown, os ventiladores não são retirados. Fixação: não vista; preso à carcaça, que não sai no teardown.",
       "geometry": null,
       "measurements": ["fan_ring_outer_diameter", "fan_rotor_diameter", "fan_hub_diameter", "fan_axial_depth", "fan1_center_from_bracket_end", "fan_centers_distance", "iface_fan_center_y", "layer_end_fan_ring", "explode_gap"],
       "explode": {"dir": [0, 0, 1], "distance": 40, "order": 8},
       "anchors": [{"id": "anchor.cooler.fan.1", "pos": [61.2, 75.51, 40]}],
       "fasteners": [],
-      "viewer_disclaimer": "O estágio com o cooler aberto é didático: os ventiladores nunca saem nas fotos."
+      "viewer_disclaimer": "O estágio com o cooler aberto é didático: no teardown, os ventiladores não são retirados."
     },
     {
       "id": "cooler.fan.1.blade",
@@ -704,7 +704,7 @@
       "explode": {"dir": [0, 0, 1], "distance": 40, "order": 8},
       "anchors": [{"id": "anchor.cooler.fan.2", "pos": [243.3, 75.51, 40]}],
       "fasteners": [],
-      "viewer_disclaimer": "O estágio com o cooler aberto é didático: os ventiladores nunca saem nas fotos."
+      "viewer_disclaimer": "O estágio com o cooler aberto é didático: no teardown, os ventiladores não são retirados."
     },
     {
       "id": "cooler.fan.2.blade",
@@ -846,7 +846,7 @@
     {"part": "power.vrm.gpu", "description": "24 fases de núcleo e 24 indutores, quantidade representativa; a contagem visível de indutores 85N passa de 24.", "reason": "D4: nenhuma foto vista mostra as bordas inteiras e não achamos fonte com o número (Q7). Subir a quantidade é decisão humana."},
     {"part": "power.vrm.mem", "description": "4 fases de memória, quantidade representativa e sem posição.", "reason": "D4: nenhuma fonte desta placa."},
     {"part": "flex.dp", "description": "No E6 o cabo é modelado como translação para -z (para fora da face B).", "reason": "Na placa real a ponta do lado das portas continua presa na carcaça e o cabo só é erguido (gn-31, gn-32)."},
-    {"part": "cooler.base", "description": "O E8 separa peças soldadas (tubos nas aletas, câmara na base); a explosão não corresponde a uma desmontagem possível.", "reason": "Estágio didático com ordem inferred: os ventiladores nunca saem nas fotos e não há imagem do interior."},
+    {"part": "cooler.base", "description": "O E8 separa peças soldadas (tubos nas aletas, câmara na base); a explosão não corresponde a uma desmontagem possível.", "reason": "Estágio didático com ordem inferred: no teardown, os ventiladores não são retirados, e do interior só a base de contato aparece nas fotos."},
     {"part": "pcie.adapter", "description": "Posição em z do adaptador escolhida para o contrato (iface_adapter_board_z_min = 2,5); a aba fica 0,93 mm abaixo dos chips do verso da borda dos contatos (mem.back.15), que ela cobre em parte no plano.", "reason": "Nenhuma fonte dá a posição do adaptador na espessura; o integrator confere a interferência."},
     {"part": "mem.pads", "description": "Pads térmicos sobre a memória e os indutores não estão no modelo.", "reason": "A peça está marcada a propor no plano e não tem item próprio na proposta aprovada."},
     {"part": "pcie.clamp", "description": "Presilha do slot não está no modelo; seus 4 parafusos estão em fasteners.e4_pcie.", "reason": "A peça está marcada a propor no plano e não tem item próprio na proposta aprovada."},

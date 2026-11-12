@@ -48,7 +48,7 @@
       "nome": "Interior do cooler",
       "texto": {
         "headline": "Interior do cooler: provável",
-        "caption": "Não achamos fonte que mostre o interior do cooler desta placa. A câmara de vapor é derivada da RTX 5090 Founders Edition e de um revisor. Abrir a carcaça assim é ilustrativo: os ventiladores nunca saem nas fotos.",
+        "caption": "Do interior do cooler, só a base de contato aparece nas fotos desta placa. A câmara de vapor é derivada da RTX 5090 Founders Edition e de um revisor. Abrir a carcaça assim é ilustrativo: no teardown, os ventiladores não são retirados.",
         "source_line": "Fonte: Gamers Nexus, teardown (2025), fotos lidas por nós. NVIDIA, página da GeForce RTX 5090. Jon Peddie Research, análise da RTX PRO 6000 (2025)",
         "provenance": [
           "derived",
@@ -90,8 +90,8 @@
     "power.inductors": { "nome": "Indutores", "beat": "a2.9" },
     "power.vrm.gpu": { "nome": "Regulador de tensão do chip (provável)" },
     "power.vrm.mem": { "nome": "Regulador de tensão da memória (provável)" },
-    "power.controller": { "nome": "Controlador de energia" },
-    "power.aux": { "nome": "Conversores auxiliares" },
+    "power.controller": { "nome": "Controlador de energia (provável)" },
+    "power.aux": { "nome": "Conversores auxiliares (prováveis)" },
     "cooler.fan.1": { "nome": "Ventilador", "beat": "a1.1" },
     "cooler.fan.2": { "nome": "Ventilador", "beat": "a1.1" },
     "cooler.fins.1": { "nome": "Pilha de aletas" },

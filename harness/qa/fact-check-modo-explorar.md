@@ -45,3 +45,29 @@ Depois destas correções ninguém reauditou: **falta a terceira passada**.
 1. Terceira passada do `fact-checker` (textos fixos corrigidos) e segunda passada dos beats a2.2 a a2.6.
 2. `power.vrm.mem` não tem posição nem âncora no assembly: se não houver malha clicável, tirar da lista.
 3. Clique numa pá (`cooler.fan.*.blade`) deve cair no ventilador pai: conferido no código (sobe pela hierarquia do GLB), conferido na tela em 2026-11-12 (o clique na pá selecionou `cooler.fan.1`).
+
+## Terceira passada (2026-11-12)
+
+`fact-checker`, em contexto separado, sobre `pecas.json` e os textos fixos de `viewer/src/explorar.js` depois das correções da segunda passada. Conferido contra `spec/card.spec.json`, `design/assembly.json`, `design/proposal.md`, `spec/sources/physical-card-sources.md`, `spec/references/index.md`, `content/pt-BR/beats.json`, `story/storyboard.json` e `viewer/public/data/pecas.json`. O auditor não reabriu as páginas das fontes, não viu as fotos e não rodou o viewer. O contexto do auditor só tinha leitura; a orquestradora transcreveu este bloco.
+
+**Veredito: reprovado, com 3 erros de correção curta.** Os 5 erros da primeira passada e os itens 1 a 4, 6 e 8 da segunda estão corrigidos. O item 5 da segunda (aviso no `sync-data.mjs`) não foi conferido. O item 7 continua aberto, não obrigatório.
+
+| # | Achado | Correção obrigatória |
+|---|---|---|
+| 1 (erro) | Camada 8, caption: "Não achamos fonte que mostre o interior do cooler desta placa." contradiz o selo fixo da mesma tela, a ressalva da câmara de vapor e o catálogo (base de contato em gn-32, gn-34, gn-35, gn-39) | "Do interior do cooler, só a base de contato aparece nas fotos desta placa." |
+| 2 (erro) | Camada 8, caption: "os ventiladores nunca saem nas fotos" também se lê como "nunca aparecem nas fotos", o que é falso (gn-02, gn-26, gn-46). A mesma frase está no `viewer_disclaimer` de `cooler.fan.1` e `cooler.fan.2` | "Abrir a carcaça assim é ilustrativo: no teardown, os ventiladores não são retirados." No assembly: "O estágio com o cooler aberto é didático: no teardown, os ventiladores não são retirados." e rodar o sync |
+| 3 (erro) | `power.controller` ("Controlador de energia") e `power.aux` ("Conversores auxiliares"): o nome afirma a função como fato. A proposta diz "Leitura incerta" e "a reconferir" (Q10), e a seção 16 das fontes diz "sem valor de fato" | "Controlador de energia (provável)" e "Conversores auxiliares (prováveis)" |
+
+### Ressalvas da terceira passada
+
+- Camada 5 mostra o selo "Provável" (procedência de a2.5 no storyboard) sem conteúdo inferido na caption.
+- `gpu.package` com a2.12: "Na foto, ela só é legível em parte" é leitura nossa (`derived`) e o beat só declara `confirmed`. A nota de `chip.marking` no spec ("não foi lida em foto pelo grupo") contradiz o assembly ("lida em parte em gn-35, gn-42").
+- `mem.front`: os chips da frente são dedução. O selo e a ressalva cobrem; "(deduzida)" no nome ficaria coerente com `io.board`.
+- `mem.back` com a3.1: a caption não fala do verso.
+- Beats a2.2 a a2.6 estão `draft` no storyboard e sem segunda passada.
+- O `_doc` de `pecas.json` tem ponto e vírgula. Não vai para a tela.
+- `power.vrm.mem`: `caminhos.json` cita o nó `power.vrm.mem.4`, mas a malha clicável não foi conferida na tela.
+
+### Correções aplicadas (orquestradora, 2026-11-12)
+
+Os três erros foram corrigidos com a redação sugerida, em `content/pt-BR/pecas.json` e nos dois `viewer_disclaimer` de `design/assembly.json`, depois `npm run sync`. A mesma frase ambígua aparecia em mais dois textos internos do assembly (racional de `cooler.fan.1` e o motivo do aviso de `cooler.base`), também corrigidos. Falta a quarta passada, só sobre esses itens.
