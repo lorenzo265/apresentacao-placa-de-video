@@ -263,8 +263,9 @@
       "ref": [
         "rtx5090/wccftech-cooler-1"
       ],
-      "nota": "Alumínio com pintura preta. A textura imita as frestas entre aletas sobre a caixa do blockout (passo e espessura inferred, do CSV); some quando a pilha tiver geometria.",
-      "interior": 0.22
+      "nota": "Alumínio com pintura preta. A textura imita as frestas entre aletas sobre a caixa do blockout (passo e espessura inferred, do CSV); some quando a pilha tiver geometria. ganho_aberto 1.5: blocos de aletas quase pretos na vista explodida.",
+      "interior": 0.22,
+      "ganho_aberto": 1.5
     },
     "aluminio.jateado": {
       "cor": "#5a5c60",
@@ -401,8 +402,9 @@
         "rtx5090/pcgamesn-pcb-angle",
         "chiphell/pcb-a"
       ],
-      "nota": "Máscara de solda preta fosca com trilhas em relevo, vias e serigrafia branca. O desenho das trilhas é illustrative (o layout real não é público): é textura de superfície, não informação.",
-      "interior": 0.22
+      "nota": "Máscara de solda preta fosca com trilhas em relevo, vias e serigrafia branca. O desenho das trilhas é illustrative (o layout real não é público): é textura de superfície, não informação. ganho_aberto 1.8: PCB quase preto com a carcaça aberta e no destaque.",
+      "interior": 0.22,
+      "ganho_aberto": 1.8
     },
     "pcb.smd": {
       "cor": "#141516",
@@ -418,8 +420,9 @@
       "ref": [
         "sabareesh/wb-bare-pcb"
       ],
-      "nota": "Região de capacitores pequenos: corpos cerâmicos bege e terminais estanhados sobre a máscara (posições illustrative).",
-      "interior": 0.22
+      "nota": "Região de capacitores pequenos: corpos cerâmicos bege e terminais estanhados sobre a máscara (posições illustrative). ganho_aberto 1.6: componentes do PCB escuros na vista aberta.",
+      "interior": 0.22,
+      "ganho_aberto": 1.6
     },
     "pcb.contatos_pcie": {
       "cor": "#141516",

@@ -22,9 +22,12 @@
   --c-dados: #3fdcf0; --c-energia: #ffb31f; --c-calor: #ff5a3c; --c-controle: #b9c2c8;
 }
 /* cabeçalho flutuante, sem faixa */
-:root[data-tema=keynote] #cabecalho { background: transparent; height: 88px; font-size: 22px; }
-:root[data-tema=keynote] #cabecalho .trilha { gap: 16px; color: #5c656b; }
-:root[data-tema=keynote] #cabecalho .trilha i { color: #333a3f; }
+:root[data-tema=keynote] #cabecalho { background: transparent; height: 88px; font-size: 22px; isolation: isolate; }
+/* Faixa sob o cabeçalho: a geometria da placa (o cooler fica 40 mm acima do PCB e invade o topo nas vistas laterais) passa por trás do texto; degradê da cor do fundo (cerca de 85%) até transparente em 120 px */
+:root[data-tema=keynote] #cabecalho::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 120px; z-index: -1; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(16, 18, 21, .85) 0, rgba(16, 18, 21, .85) 28%, rgba(16, 18, 21, .55) 58%, rgba(16, 18, 21, .2) 82%, rgba(16, 18, 21, 0) 100%); }
+:root[data-tema=keynote] #cabecalho .trilha { gap: 16px; color: #8a949b; }
+:root[data-tema=keynote] #cabecalho .trilha i { color: #5a6269; }
 :root[data-tema=keynote] #cabecalho .trilha span.ativo { color: #fff; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; }
 :root[data-tema=keynote] #cabecalho .trilha span.ativo::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 10px var(--acento); }
 :root[data-tema=keynote] #cabecalho .secao { color: #8e979c; font-size: 18px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
