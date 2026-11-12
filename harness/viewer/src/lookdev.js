@@ -1089,6 +1089,7 @@ const FINAL_FS = `precision highp float;
 uniform sampler2D tCor; uniform sampler2D tProf;
 uniform vec2 uTexel; uniform float uFoco; uniform float uAbertura; uniform float uMaxCoc;
 uniform float uNear; uniform float uFar; uniform float uRot; uniform float uFase;
+uniform float uSat; uniform float uContr; uniform float uPivo;
 #include <tonemapping_pars_fragment>
 varying vec2 vUv;
 float vista( vec2 uv ) {
@@ -1123,6 +1124,14 @@ void main() {
 	#elif defined( ACES_FILMIC_TONE_MAPPING )
 		rgb = ACESFilmicToneMapping( rgb );
 	#endif
+	// gradação de cor após o tone mapping (o AgX dessatura e achata): saturação e contraste em torno de um pivô, em gama
+	{
+		vec3 v = pow( max( rgb, vec3( 0.0 ) ), vec3( 1.0 / 2.2 ) );
+		float l = dot( v, vec3( 0.2126, 0.7152, 0.0722 ) );
+		v = mix( vec3( l ), v, uSat );
+		v = max( ( v - uPivo ) * uContr + uPivo, vec3( 0.0 ) );
+		rgb = pow( v, vec3( 2.2 ) );
+	}
 	// sai em linear, já com tons (0 a 1) e alfa pré-multiplicado: é o que se acumula (média correta
 	// das bordas, sem o reflexo forte dominar); a passagem de exibição aplica sRGB e o pontilhado
 	gl_FragColor = vec4( rgb * a, a );
@@ -1175,6 +1184,7 @@ export function criaPos({ renderer, scene, camera, q, W, H, cfg }) {
       uFoco: { value: 500 }, uAbertura: { value: 0 }, uMaxCoc: { value: 1 }, uNear: { value: 1 }, uFar: { value: 6000 },
       uRot: { value: 0 }, uFase: { value: 0.5 },
       toneMappingExposure: { value: 1 },
+      uSat: { value: cfg.grade?.saturacao ?? 1 }, uContr: { value: cfg.grade?.contraste ?? 1 }, uPivo: { value: cfg.grade?.pivo ?? 0.4 },
     },
     vertexShader: FINAL_VS, fragmentShader: FINAL_FS, depthTest: false, depthWrite: false,
   });
