@@ -222,6 +222,8 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     const mPeca = new THREE.Matrix4().makeBasis(xp, u, n);
     const mCam = new THREE.Matrix4().makeBasis(dir, cimaCam, f.clone().negate());
     const qw = new THREE.Quaternion().setFromRotationMatrix(mCam.multiply(mPeca.transpose()));
+    // inclina: graus em torno do eixo horizontal da tela (a borda de cima recua), para uma vista 3/4
+    if (v.inclina) qw.premultiply(new THREE.Quaternion().setFromAxisAngle(dir, THREE.MathUtils.degToRad(-v.inclina)));
     return { pos: pos.toArray(), qw };
   }
   /** Posição de um nó (âncora ou peça) em mm, no estado atual. */
@@ -480,6 +482,8 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
     renderer, camera, controls, scene, blockout, avisos,
     qualidade: () => nivelQ, materiais: () => materiais, defineQualidade,
     temAncora: (n) => !!acha(n),
+    /** A peça dona da âncora (primeiro ancestral com nome que não é âncora) é a peça pedida? */
+    ancoraDaPeca: (nome, peca) => { let o = acha(nome)?.parent; while (o && (!o.name || o.name.startsWith('anchor.'))) o = o.parent; return o?.name === peca; },
     caixaPeca, caixaNo, pontoNo, poseVitrine, enquadraNivel, caixaEm, faceDe, poseMergulho, preparaAfastamento,
     /** Estado da acumulação (para os testes): amostras na média e o alvo. */
     acumulacao: () => ({ n: ac.n, alvo: pos ? Math.max(1, nAcumDe()) : 1 }),
@@ -696,9 +700,10 @@ function criaEstado3d(raiz, realista = null) {
     const est = /^E([1-8])$/.exec(u.stage ?? '');
     const ex = u.explode_cad;
     if (est && ex && ex.distance > 0) {
-      const off = gl(ex.dir, ex.distance);
+      const esc = COREO.escala?.fator ?? 1;
+      const off = gl(ex.dir, ex.distance * esc);
       const dg = COREO.diagonal;
-      if (dg && ex.dir[2] < -0.5) off.add(gl(dg.dir, dg.k * ex.distance * -ex.dir[2]));
+      if (dg && ex.dir[2] < -0.5) off.add(gl(dg.dir, dg.k * ex.distance * esc * -ex.dir[2]));
       nos.push({ o, base: o.position.clone(), estagio: Number(est[1]), off, dist: ex.distance, atraso: atrasoDe.get(o.name) ?? 0, p: -1 });
     }
     // fixadores: nó fasteners.eN_* (sem deslocamento próprio) com uma malha por parafuso
