@@ -1,4 +1,4 @@
-// Cabeçalho: trilha de nível, seção, barra de progresso; faixa fixa com o aviso dos diagramas.
+// Cabeçalho: trilha de nível, contador de momentos, barra de progresso; faixa fixa com o aviso dos diagramas.
 const NIVEIS = [['Placa', [0, 1]], ['Chip', [2]], ['SM', [3]], ['Conceito', [4]]];
 
 export function criaCabecalho(palco) {
@@ -19,12 +19,12 @@ export function criaCabecalho(palco) {
   let nivelAnt = -1, textoAnt = null;
 
   return {
-    atualiza({ beat, progresso, disclaimer, mix, blockoutVisivel }) {
+    atualiza({ beat, progresso, rotulo, disclaimer, mix, blockoutVisivel }) {
       if (beat.level !== nivelAnt) {
         nivelAnt = beat.level;
         NIVEIS.forEach(([, ls], i) => itens[i].classList.toggle('ativo', ls.includes(beat.level)));
       }
-      secao.textContent = `Seção ${beat.section}`;
+      if (secao.textContent !== rotulo) secao.textContent = rotulo;      // contador de momentos ("7 / 28") ou "Extra"
       barra.style.width = `${(progresso * 100).toFixed(2)}%`;
       if (disclaimer !== textoAnt) { textoAnt = disclaimer; aviso.textContent = disclaimer ?? ""; }
       aviso.style.opacity = mix;

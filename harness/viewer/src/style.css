@@ -61,17 +61,5 @@ body.capture #palco { left: 0; top: 0; transform: none; }
 .s-confirmed { color: #7fd6a0; } .s-derived { color: #8cb4ff; } .s-inferred { color: #e6c35c; } .s-illustrative { color: #b9a6e8; }
 .s-illustrative svg { fill: #b9a6e833; }
 
-/* controles e notas */
-#controles { position: absolute; right: 24px; bottom: 70px; display: flex; gap: 8px; align-items: center; padding: 8px; border-radius: 10px;
-  background: #0d1118f0; border: 1px solid #2f3947; z-index: 5; }
-#controles button, #controles select { height: 44px; min-width: 44px; padding: 0 12px; color: #e3e8ef; background: #1a2230; border: 1px solid #38455a; border-radius: 6px; font: 500 18px Inter, sans-serif; cursor: pointer; }
-#controles button:hover { background: #26324a; }
-#controles svg { fill: #e3e8ef; stroke: #e3e8ef; stroke-width: 1.5; stroke-linejoin: round; vertical-align: middle; }
-#controles select { max-width: 260px; }
-body.capture #controles, body.capture #notas { display: none; }
-#notas { position: absolute; left: 48px; top: 110px; width: 760px; max-height: 760px; overflow: auto; padding: 18px 26px; border-radius: 10px; z-index: 6;
-  background: #0b0e13f5; border: 1px solid #3a4658; font-size: 24px; }
-#notas[hidden] { display: none; }
-#notas h3 { margin: 0 0 10px; font-size: 28px; } #notas h4 { margin: 18px 0 6px; font-size: 22px; color: #9aa6b5; }
-#notas .fala { line-height: 1.4; } #notas ul { margin: 0; padding-left: 24px; }
+/* barra, índice, notas e modo Explorar: modos.css */
 #erro { position: fixed; inset: 20px; color: #ff9a8a; font: 20px "JetBrains Mono", monospace; white-space: pre-wrap; }
