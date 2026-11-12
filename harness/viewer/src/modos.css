@@ -1,0 +1,97 @@
+/* Interface dos dois modos (harness/plano/modos.md): barra discreta, índice, notas e modo Explorar.
+   Medidas em px do palco (1920 x 1080). Sem transições (regra do style.css). Nada disto aparece na captura. */
+.ui { --ac: var(--acento, #8ad42a); font-family: Inter, sans-serif; color: #e8edf0; }
+.ui button { font: 500 20px Inter, sans-serif; color: #dfe5e9; background: #ffffff0d; border: 1px solid #ffffff24; border-radius: 12px;
+  height: 48px; padding: 0 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+.ui button:hover { background: #ffffff1c; border-color: #ffffff40; }
+.ui button:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+.ui button svg { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.ui button.primario { background: var(--ac); border-color: var(--ac); color: #0c1404; font-weight: 700; }
+.ui button.primario:hover { background: #a2e64a; }
+.ui kbd { font: 500 15px "JetBrains Mono", monospace; padding: 1px 7px; border: 1px solid currentColor; border-radius: 6px; opacity: .6; }
+body.capture .ui, body.capture #explorar { display: none !important; }
+.ui[hidden], .ui [hidden], #explorar[hidden] { display: none !important; }
+
+/* ---- barra do modo Apresentação ---- */
+#barra { position: absolute; left: 48px; right: 48px; bottom: 64px; display: flex; justify-content: space-between; align-items: center; z-index: 5; pointer-events: none; }
+#barra .grupo { display: flex; gap: 10px; align-items: center; pointer-events: auto; padding: 8px; border-radius: 18px; background: #0a0d0fd0; border: 1px solid #ffffff1a; }
+#barra button[data-a=prev], #barra button[data-a=next] { width: 48px; padding: 0; justify-content: center; }
+#barra .extra { font-size: 20px; color: #c0adf0; padding: 0 12px; }
+body.ocioso #barra { visibility: hidden; }
+body.modo-explorar #barra { display: none; }
+
+/* ---- notas do apresentador (N) ---- */
+#notas { position: absolute; left: 48px; bottom: 140px; width: 900px; max-height: 520px; overflow: auto; padding: 22px 30px 24px; border-radius: 18px; z-index: 6;
+  background: #0a0d0ff2; border: 1px solid #ffffff24; box-shadow: 0 30px 70px #000000b0; font-size: 26px; }
+#notas .quem { margin: 0 0 12px; font-size: 20px; letter-spacing: .08em; text-transform: uppercase; color: var(--ac); font-weight: 600; display: flex; justify-content: space-between; }
+#notas .quem span { color: #8e979c; letter-spacing: 0; text-transform: none; font-weight: 500; }
+#notas .quem b { color: #fff; }
+#notas ul.fala { margin: 0; padding-left: 28px; line-height: 1.4; }
+#notas ul.fala li { margin: 4px 0; }
+#notas p.fala { margin: 0; color: #8e979c; }
+#notas .prox { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #ffffff14; font-size: 20px; color: #8e979c; }
+#notas .prox b { color: #dfe5e9; font-weight: 600; }
+body.modo-explorar #notas { display: none; }
+
+/* ---- índice dos momentos (M) ---- */
+#indice { position: absolute; inset: 0; z-index: 8; background: #07090bf5; padding: 44px 48px 40px; display: flex; flex-direction: column; gap: 22px; }
+#indice header { display: flex; align-items: baseline; gap: 28px; }
+#indice header h2 { margin: 0; font-size: 40px; letter-spacing: -.02em; color: #fff; }
+#indice header p { margin: 0; flex: 1; font-size: 20px; color: #8e979c; }
+#indice .colunas { flex: 1; min-height: 0; column-count: 4; column-gap: 28px; column-fill: auto; }
+#indice section { break-inside: avoid-column; margin: 0 0 18px; display: flex; flex-direction: column; gap: 4px; }
+#indice h3 { margin: 0 0 4px; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: var(--ac); font-weight: 600; }
+#indice .colunas button { width: 100%; height: auto; min-height: 34px; padding: 4px 12px; border-radius: 8px; justify-content: flex-start; text-align: left; white-space: normal;
+  font-size: 17px; line-height: 1.2; background: #ffffff08; border-color: transparent; gap: 12px; }
+#indice .colunas button i { font: 500 15px "JetBrains Mono", monospace; font-style: normal; min-width: 30px; color: #8e979c; }
+#indice .colunas button.extra { background: transparent; border: 1px dashed #ffffff22; color: #8e979c; }
+#indice .colunas button.extra i { min-width: 50px; font-size: 13px; }
+#indice .colunas button:hover { background: #ffffff1c; color: #fff; }
+#indice .colunas button.atual { border: 1px solid var(--ac); background: #8ad42a1c; color: #fff; }
+#indice .digitado { position: absolute; right: 48px; bottom: 36px; margin: 0; padding: 10px 20px; border-radius: 12px; background: var(--ac); color: #0c1404; font-size: 22px; font-weight: 700; }
+
+/* ---- modo Explorar ---- */
+body.modo-explorar #chamada, body.modo-explorar #caixa, body.modo-explorar #diagramas, body.modo-explorar #caminhos, body.modo-explorar #cabecalho,
+body.modo-explorar #aviso-diagrama, body.modo-explorar #selo-vitrine, body.modo-explorar #cotas, body.modo-explorar #indice { display: none !important; }
+#explorar { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+#explorar .ui { pointer-events: auto; }
+#explorar .ex-topo { position: absolute; left: 48px; right: 48px; top: 22px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
+#explorar .ex-topo h1 { margin: 0; font-size: 26px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 12px; }
+#explorar .ex-topo h1::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ac); box-shadow: 0 0 10px var(--ac); }
+#explorar .ex-topo button { pointer-events: auto; background: #0a0d0fd0; }
+#explorar .ex-camadas { position: absolute; left: 48px; top: 110px; width: 400px; padding: 20px 18px 18px; border-radius: 20px; background: #0a0d0fc4; border: 1px solid #ffffff1a; }
+#explorar .ex-camadas h2 { margin: 0 4px 12px; font-size: 14px; line-height: 1.4; letter-spacing: .1em; text-transform: uppercase; color: #8e979c; font-weight: 600; }
+#explorar .ex-camadas ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+#explorar .ex-camadas ol button { width: 100%; height: 54px; padding: 0 14px; justify-content: flex-start; gap: 14px; text-align: left; white-space: normal; line-height: 1.15; }
+#explorar .ex-camadas ol button i { font: 500 18px "JetBrains Mono", monospace; font-style: normal; color: #8e979c; min-width: 16px; }
+#explorar .ex-camadas ol button span { flex: 1; }
+#explorar .ex-camadas ol button em { font: 600 14px Inter, sans-serif; font-style: normal; letter-spacing: .08em; text-transform: uppercase; color: #f0c95a; }
+#explorar .ex-camadas ol button.fora { background: transparent; border-style: dashed; color: #7b858b; }
+#explorar .ex-camadas ol button.fora span { text-decoration: line-through; }
+#explorar .ex-camadas ol button.fora em { color: var(--ac); }
+#explorar .ex-camadas ol button.sel { border: 1px solid var(--ac); background: #8ad42a1c; color: #fff; }
+#explorar .ex-camadas .acoes { display: flex; gap: 8px; margin-top: 14px; }
+#explorar .ex-camadas .acoes button { flex: 1; justify-content: center; font-size: 18px; height: 44px; padding: 0 8px; }
+#explorar .ex-painel { position: absolute; right: 48px; top: 110px; width: 520px; max-height: 850px; overflow: auto; padding: 26px 30px 26px; border-radius: 20px;
+  background: #0a0d0fd8; border: 1px solid #8ad42a55; box-shadow: inset 0 1px 0 #ffffff14, 0 30px 70px #000000b0; }
+#explorar .ex-painel .selos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+#explorar .ex-painel .selo { font-size: 17px; }
+#explorar .ex-painel .olho { margin: 0 0 6px; font-size: 15px; letter-spacing: .12em; text-transform: uppercase; color: var(--ac); font-weight: 600; }
+#explorar .ex-painel h2 { margin: 0 0 14px; font-size: 38px; line-height: 1.08; letter-spacing: -.025em; color: #fff; }
+#explorar .ex-painel h3 { margin: 0 0 8px; font-size: 24px; line-height: 1.2; color: #fff; font-weight: 600; }
+#explorar .ex-painel .texto { margin: 0 0 12px; font-size: 22px; line-height: 1.4; color: #c9d1d5; }
+#explorar .ex-painel .texto.vazio { color: #8e979c; }
+#explorar .ex-painel .prov { margin: 0 0 12px; font: 500 15px "JetBrains Mono", monospace; color: #8e979c; }
+#explorar .ex-painel .ressalva { margin: 0 0 12px; padding: 10px 14px; border-left: 3px solid #f0c95a; background: #f0c95a12; font-size: 19px; line-height: 1.35; color: #e6dcc0; border-radius: 0 8px 8px 0; }
+#explorar .ex-painel .fonte { margin: 0 0 4px; padding-top: 10px; border-top: 1px solid #ffffff12; font-size: 16px; line-height: 1.3; color: #7b858b; }
+#explorar .ex-painel .acoes { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+#explorar .ex-painel .acoes .primario { height: 56px; justify-content: center; font-size: 22px; }
+#explorar .ex-painel .acoes .nota { margin: -2px 0 0; font-size: 17px; color: #8e979c; }
+#explorar .ex-painel .acoes .sec { display: flex; gap: 8px; flex-wrap: wrap; }
+#explorar .ex-painel .acoes .sec button { font-size: 18px; height: 44px; }
+#ex-linha { position: absolute; left: 0; top: 0; visibility: hidden; }
+#ex-linha .linha { fill: none; stroke: var(--acento, #8ad42a); stroke-width: 1.6px; stroke-linejoin: round; opacity: .9; }
+#ex-linha .ponto { fill: var(--acento, #8ad42a); }
+#explorar .ex-selo { position: absolute; left: 50%; bottom: 76px; transform: translateX(-50%); visibility: hidden; }
+#explorar .ex-selo .selo { background: #0b0e13e0; font-size: 18px; }
+#explorar .ex-dica { position: absolute; left: 48px; right: 48px; bottom: 26px; margin: 0; text-align: center; font-size: 18px; color: #7b858b; }

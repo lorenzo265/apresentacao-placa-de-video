@@ -7,9 +7,11 @@ import '@fontsource/jetbrains-mono/latin-500.css';
 import './kinds.css';
 import './style.css';
 import './temas.css';
+import './modos.css';
 import { buildWorld } from './world.js';
 import { criaCena } from './scene3d.js';
 import { criaTour } from './tour.js';
+import { criaExplorar } from './explorar.js';
 import { STAGE_W, STAGE_H } from './layout.js';
 import { criaChamada } from './callout.js';
 import { temaDaUrl, desenhaFundo } from './temas.js';
@@ -108,12 +110,22 @@ async function inicia() {
     await Promise.all(['500 20px Inter', '600 20px Inter', '400 20px "JetBrains Mono"', '500 20px "JetBrains Mono"']
       .map((f) => document.fonts.load(f)));
   }
-  const corte = params.get('cut') ?? (storyboard.cuts.completo ? 'completo' : Object.keys(storyboard.cuts)[0]);
+  // Momentos do modo Apresentação: os beats do corte do seminário. ?cut= ainda vale para as ferramentas
+  // (captura, testes); os beats prontos fora do corte viram extras, abertos pelo índice.
+  const cortes = storyboard.cuts;
+  const corte = params.get('cut') ?? (cortes.seminario ? 'seminario' : cortes.completo ? 'completo' : Object.keys(cortes)[0]);
   const tour = criaTour({ dados: { storyboard, textos, world, medidas }, palco, cena, capture, corte, tema });
   window.__tour = tour;
+  // Modo Explorar: só com o GLB (as camadas são os estágios do modelo) e com os dados das peças
+  if (!capture && !cena.blockout && manifest.pecas) {
+    const explorar = criaExplorar({ palco, cena, dados: await getJson('data/pecas.json'), textos, storyboard, tour });
+    tour.controles.ligaExplorar(explorar);
+    window.__explorar = explorar;
+  }
   await tour.ready;
   const beat = params.get('beat');
   if (beat) tour.goto(beat);
+  if (params.get('modo') === 'explorar') window.__explorar?.entra();
 }
 
 inicia().catch((e) => {

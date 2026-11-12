@@ -1,0 +1,104 @@
+{
+  "_doc": "Modo Explorar do viewer (harness/plano/modos.md). Nomes das camadas e das peças, e de onde vem a explicação de cada uma. Regra: a explicação é sempre o texto de um beat de beats.json já auditado (campo beat; atos 0 a 3: primeira passada, segunda pendente) ou um texto próprio (campo texto, com procedência), que passa pelo fact-checker antes de entrar. Estágio, procedência (exists e shape) e ressalva de cada peça não ficam aqui: o sync-data os copia de design/assembly.json. Na tela, o selo ao lado do nome da peça é sempre o da peça, o do beat fica junto do texto e a ressalva do assembly aparece sempre que existe. A ordem das camadas 1 a 7 é a do teardown (confirmed); a identificação das peças dos passos 1 e 2 e a contagem de sete são derived. A camada 8 não é do teardown: o interior é inferred e a abertura é illustrative. Auditoria: harness/qa/fact-check-modo-explorar.md.",
+  "camadas": [
+    {
+      "estagio": 1,
+      "nome": "Bracket",
+      "texto": {
+        "headline": "Primeiro sai o bracket",
+        "caption": "Primeiro passo: a Gamers Nexus diz que tirou a \"back plate\". Pelas fotos, a peça que sai é o bracket, a chapa lisa com as 4 aberturas das DisplayPort. As portas não saem com ele.",
+        "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Identificação da peça: leitura nossa das fotos",
+        "provenance": [
+          "derived"
+        ]
+      }
+    },
+    {
+      "estagio": 2,
+      "nome": "Aro externo",
+      "beat": "a2.2"
+    },
+    {
+      "estagio": 3,
+      "nome": "Tampas centrais",
+      "beat": "a2.3"
+    },
+    {
+      "estagio": 4,
+      "nome": "Adaptador PCIe",
+      "beat": "a2.4"
+    },
+    {
+      "estagio": 5,
+      "nome": "Placa que cobre o PCB",
+      "beat": "a2.5"
+    },
+    {
+      "estagio": 6,
+      "nome": "Cabos flat e mola de lâmina",
+      "beat": "a2.6"
+    },
+    {
+      "estagio": 7,
+      "nome": "PCB com o chip e a memória",
+      "beat": "a2.7"
+    },
+    {
+      "estagio": 8,
+      "nome": "Interior do cooler",
+      "texto": {
+        "headline": "Interior do cooler: provável",
+        "caption": "Não achamos fonte que mostre o interior do cooler desta placa. A câmara de vapor é derivada da RTX 5090 Founders Edition e de um revisor. Abrir a carcaça assim é ilustrativo: os ventiladores nunca saem nas fotos.",
+        "source_line": "Fonte: Gamers Nexus, teardown (2025), fotos lidas por nós. NVIDIA, página da GeForce RTX 5090. Jon Peddie Research, análise da RTX PRO 6000 (2025)",
+        "provenance": [
+          "derived",
+          "inferred",
+          "illustrative"
+        ]
+      }
+    }
+  ],
+  "pecas": {
+    "frame.shroud": { "nome": "Carcaça", "beat": "a1.6" },
+    "frame.face_b": { "nome": "Face das grades", "beat": "a1.3" },
+    "fasteners.end_plate": { "nome": "Parafusos da placa de extremidade" },
+    "io.board": { "nome": "Placa das saídas de vídeo (deduzida)" },
+    "io.board.dp": { "nome": "Saídas DisplayPort", "beat": "a3.7" },
+    "io.bracket": { "nome": "Bracket", "beat": "a1.5" },
+    "fasteners.e1_bracket": { "nome": "Parafusos do bracket" },
+    "frame.rim": { "nome": "Aro externo", "beat": "a2.2" },
+    "fasteners.e2_rim": { "nome": "Parafuso do aro" },
+    "frame.center_covers": { "nome": "Tampas centrais", "beat": "a2.3" },
+    "pcie.adapter": { "nome": "Adaptador PCIe", "beat": "a2.4" },
+    "fasteners.e4_pcie": { "nome": "Parafusos do adaptador PCIe" },
+    "pcb.plate": { "nome": "Placa que cobre o PCB", "beat": "a2.5" },
+    "fasteners.e5_plate": { "nome": "Parafusos da placa que cobre o PCB" },
+    "flex.dp": { "nome": "Cabo flat largo", "beat": "a2.6" },
+    "flex.fan.1": { "nome": "Cabo flat fino (provável)", "beat": "a2.6" },
+    "flex.fan.2": { "nome": "Cabo flat fino (provável)", "beat": "a2.6" },
+    "cooler.leaf_spring": { "nome": "Mola de lâmina", "beat": "a2.6" },
+    "fasteners.e6_spring": { "nome": "Parafusos da mola de lâmina", "beat": "a2.6" },
+    "pcb.main": { "nome": "PCB" },
+    "pcb.back_frame": { "nome": "Chapa de apoio da mola" },
+    "pcb.smd": { "nome": "Componentes pequenos" },
+    "gpu.package": { "nome": "Chip gráfico", "beat": "a2.12" },
+    "gpu.tim": { "nome": "Pasta térmica", "beat": "a2.7" },
+    "mem.back": { "nome": "Memória GDDR7 (verso)", "beat": "a3.1" },
+    "mem.front": { "nome": "Memória GDDR7 (frente)", "beat": "a3.2" },
+    "power.connector": { "nome": "Conector de energia", "beat": "a1.4" },
+    "io.aux_header": { "nome": "Conector auxiliar" },
+    "power.inductors": { "nome": "Indutores", "beat": "a2.9" },
+    "power.vrm.gpu": { "nome": "Regulador de tensão do chip (provável)" },
+    "power.vrm.mem": { "nome": "Regulador de tensão da memória (provável)" },
+    "power.controller": { "nome": "Controlador de energia" },
+    "power.aux": { "nome": "Conversores auxiliares" },
+    "cooler.fan.1": { "nome": "Ventilador", "beat": "a1.1" },
+    "cooler.fan.2": { "nome": "Ventilador", "beat": "a1.1" },
+    "cooler.fins.1": { "nome": "Pilha de aletas" },
+    "cooler.fins.2": { "nome": "Pilha de aletas" },
+    "cooler.fins.3": { "nome": "Pilha central de aletas" },
+    "cooler.base": { "nome": "Base do cooler" },
+    "cooler.vapor_chamber": { "nome": "Câmara de vapor (deduzida)" },
+    "cooler.heatpipes": { "nome": "Tubos de calor (deduzidos)" }
+  }
+}
