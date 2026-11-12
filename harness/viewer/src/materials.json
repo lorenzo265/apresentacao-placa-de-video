@@ -105,7 +105,7 @@
     },
     {
       "regex": "^mem\\.back\\.",
-      "material": "chip.memoria.verso180"
+      "material": "chip.memoria.verso"
     },
     {
       "regex": "^mem\\.",
@@ -148,12 +148,12 @@
         "pny/front",
         "storagereview/sr-4"
       ],
-      "nota": "Alumínio anodizado grafite, jateado: metal com refletância baixa e reflexo largo e suave. O grão do jato fica abaixo do pixel na distância do tour: só uma variação leve de rugosidade (mais que isso vira granulado). Nas fotos (storagereview/sr-2, sr-3) o aro e os braços do X leem grafite, mais escuros que o reflexo, com só o fio do chanfro claro. ganho_aberto 0,4: metal polido que reflete a caixa de luz do alto; na vista aberta a peça que olha para cima (grade solta da face B) saía a mais brilhante da cena. Tom: a cor assada no Blender é neutra; o multiplicador [0,88; 1; 1,18] dá o grafite azulado dos renders pny/* (autor, 2026-11-12: placa sem cor).",
+      "nota": "Alumínio anodizado grafite, jateado: metal com refletância baixa e reflexo largo e suave. O grão do jato fica abaixo do pixel na distância do tour: só uma variação leve de rugosidade (mais que isso vira granulado). Nas fotos (storagereview/sr-2, sr-3) o aro e os braços do X leem grafite, mais escuros que o reflexo, com só o fio do chanfro claro. ganho_aberto 0,4: metal polido que reflete a caixa de luz do alto; na vista aberta a peça que olha para cima (grade solta da face B) saía a mais brilhante da cena. Tom: a cor assada no Blender é neutra; o multiplicador [0,96; 1; 1,06] dá o grafite azulado dos renders pny/* (autor, 2026-11-12: placa sem cor).",
       "ganho_aberto": 0.4,
       "ganho_mapa": [
-        0.88,
+        0.96,
         1.0,
-        1.18
+        1.06
       ]
     },
     "carcaca.tampa_x": {
@@ -963,59 +963,11 @@
         "gn/gn-29",
         "gn/gn-30"
       ],
-      "nota": "Igual a chip.memoria, com a marcação espelhada em u (chip lido pelo lado oposto da UV plana). Usado pelo mem.back.3, o chip da vitrine do a3.1, que aparece na orientação certa.",
-      "ganho_aberto": 0.45
-    },
-    "chip.memoria.verso180": {
-      "cor": "#0a0b0c",
-      "metal": 0.0,
-      "rug": 0.62,
-      "especular": 0.3,
-      "env": 0.5,
-      "interior": 0.22,
-      "textura": {
-        "tipo": "decal",
-        "uv": "planar_bbox",
-        "compartilha": true,
-        "px_mm": 48,
-        "margem_mm": 0.9,
-        "espelha_u": false,
-        "tinta": {
-          "cor": "#a4a8ac",
-          "rug": 0.55
-        },
-        "blocos": [
-          {
-            "texto": "GDDR7",
-            "alt_mm": 2.4,
-            "negrito": true,
-            "espaco_mm": 0.8
-          },
-          {
-            "texto": "XXXXXXXX-XX",
-            "alt_mm": 1.3,
-            "espaco_mm": 0.4
-          },
-          {
-            "texto": "X0XX  XXXXXX",
-            "alt_mm": 1.3
-          }
-        ],
-        "borda_mm": 0.22,
-        "borda_alfa": 0.35,
-        "pino1_mm": 0.7,
-        "espelha_v": true
-      },
-      "ref": [
-        "gn/gn-29",
-        "gn/gn-30"
-      ],
-      "nota": "Chips do verso do PCB (mem.back.*, menos o da vitrine): a marcação gira 180 graus em relação ao chip.memoria.verso, porque no a3.1 a câmera olha o PCB por baixo e o texto saía de cabeça para baixo.",
+      "nota": "Igual a chip.memoria, com a marcação espelhada em u: os chips do verso do PCB (mem.back.*) são vistos pelo lado oposto da UV plana. Com a vitrine nova do a3.1 (PCB inteiro, verso) todos leem de pé; a variante girada 180 graus e a sobreposição fixa do mem.back.3 foram retiradas.",
       "ganho_aberto": 0.45
     }
   },
   "sobrepoe": {
-    "frame.rim": "carcaca.aro",
-    "mem.back.3": "chip.memoria.verso"
+    "frame.rim": "carcaca.aro"
   }
 }

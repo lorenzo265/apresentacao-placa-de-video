@@ -60,7 +60,7 @@ export const TEMAS = {
         chao: { folga: 1.5, sombra: 0.5, contato: { opacidade: 0.9, folga: 5, desfoque: 16, nucleo: 2.5 } },
         aberto_ganho: 2.5,             // ganho de luz com a carcaça aberta (peças soltas legíveis sobre o fundo claro)
         // gradação após o AgX (comentário do autor em 2026-11-12: placa dessaturada, sem vida): saturação e contraste em gama em torno do pivô
-        grade: { saturacao: 1.5, contraste: 1.2, pivo: 0.3 },
+        grade: { saturacao: 1.35, contraste: 1.2, pivo: 0.3 },
         contorno: 0.18,                // recorte de luz permanente nas bordas (Fresnel), em qualquer ângulo
         apaga: 0.8,                    // destaque: quanto as outras peças escurecem e perdem a cor (era 0,92: o PCB ficava quase preto no a3.6)
         realce: { cor: 0xeef8e6, forca: 0.2 },   // recorte de luz na peça destacada (branco com um toque do acento)
