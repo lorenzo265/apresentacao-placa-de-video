@@ -472,6 +472,13 @@ function texDecal(def, p, N, rnd, ctx) {
   }
   const larg = lw - x0 - m;
   let y = m;
+  if (p.borda_mm) {                                          // fio claro no contorno (aresta do epóxi): a peça lê como caixa de perto
+    g.save(); g.globalAlpha = p.borda_alfa ?? 0.4; g.lineWidth = mm(p.borda_mm);
+    g.strokeRect(mm(p.borda_mm) / 2, mm(p.borda_mm) / 2, lw - mm(p.borda_mm), lh - mm(p.borda_mm)); g.restore();
+  }
+  if (p.pino1_mm) {                                          // marca do pino 1 (círculo no canto), como no encapsulamento BGA
+    g.save(); g.globalAlpha = p.borda_alfa ?? 0.4; g.beginPath(); g.arc(mm(p.pino1_mm * 1.4), lh - mm(p.pino1_mm * 1.4), mm(p.pino1_mm / 2), 0, Math.PI * 2); g.fill(); g.restore();
+  }
   const texto = (t, x, yy, h, negrito) => {
     g.font = `${negrito ? 'bold ' : ''}${Math.round(h)}px sans-serif`;
     g.textBaseline = 'top';
@@ -654,8 +661,8 @@ function escuroDe(o, raiz) {
 
 /** Resolve o material da tabela para uma malha (ver a ordem em materials.json, "descricao"). 'sobrepoe' (id do nó -> material) vence o slot do Blender: o aro da face B usa o slot anodizado da carcaça mas pede outro acabamento. */
 export function resolveMaterial(o, nomeMatGlb) {
-  // parafusos filhos do aro (fasteners.*) não herdam a sobreposição
-  if (!nomesDe(o).some((n) => /^fasteners\./.test(n))) for (const n of nomesDe(o)) if (TABELA.sobrepoe?.[n]) return { id: TABELA.sobrepoe[n], por: `sobreposição ${n}` };
+  // parafusos filhos do aro (fasteners.*) e submalhas de substrato não herdam a sobreposição
+  if (!nomesDe(o).some((n) => /^fasteners\.|(^|\.)(substrato|substrate)(\.|$|_)/.test(n))) for (const n of nomesDe(o)) if (TABELA.sobrepoe?.[n]) return { id: TABELA.sobrepoe[n], por: `sobreposição ${n}` };
   // slot de material do passo do Blender (nome listado em materiais_glb) é mais específico que a peça
   if (nomeMatGlb && TABELA.materiais_glb[nomeMatGlb]) return { id: TABELA.materiais_glb[nomeMatGlb], por: `material ${nomeMatGlb}` };
   for (const n of nomesDe(o)) {
@@ -834,7 +841,7 @@ export function aplicaMateriais(raiz, { medidas, q, corRealce }) {
       // cor, ORM, normal e oclusão assados no Blender; a tabela dá só o que o GLB não traz
       for (const k of ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap']) if (orig[k]) m[k] = orig[k];
       if (orig.aoMap) m.aoMapIntensity = def.ao ?? 1;
-      if (orig.map) m.color.setScalar(def.ganho_mapa ?? 1);   // ganho > 1 clareia a cor assada sem rodar o Blender
+      if (orig.map) { const g = def.ganho_mapa ?? 1; if (Array.isArray(g)) m.color.setRGB(g[0], g[1], g[2]); else m.color.setScalar(g); }   // número ou [r, g, b] (tom)   // ganho > 1 clareia a cor assada sem rodar o Blender
       if (orig.roughnessMap) m.roughness = orig.roughness;
       if (orig.metalnessMap) m.metalness = orig.metalness;
       if (orig.normalMap) m.normalScale.copy(orig.normalScale);
@@ -1082,6 +1089,7 @@ const FINAL_FS = `precision highp float;
 uniform sampler2D tCor; uniform sampler2D tProf;
 uniform vec2 uTexel; uniform float uFoco; uniform float uAbertura; uniform float uMaxCoc;
 uniform float uNear; uniform float uFar; uniform float uRot; uniform float uFase;
+uniform float uSat; uniform float uContr; uniform float uPivo;
 #include <tonemapping_pars_fragment>
 varying vec2 vUv;
 float vista( vec2 uv ) {
@@ -1116,6 +1124,14 @@ void main() {
 	#elif defined( ACES_FILMIC_TONE_MAPPING )
 		rgb = ACESFilmicToneMapping( rgb );
 	#endif
+	// gradação de cor após o tone mapping (o AgX dessatura e achata): saturação e contraste em torno de um pivô, em gama
+	{
+		vec3 v = pow( max( rgb, vec3( 0.0 ) ), vec3( 1.0 / 2.2 ) );
+		float l = dot( v, vec3( 0.2126, 0.7152, 0.0722 ) );
+		v = mix( vec3( l ), v, uSat );
+		v = max( ( v - uPivo ) * uContr + uPivo, vec3( 0.0 ) );
+		rgb = pow( v, vec3( 2.2 ) );
+	}
 	// sai em linear, já com tons (0 a 1) e alfa pré-multiplicado: é o que se acumula (média correta
 	// das bordas, sem o reflexo forte dominar); a passagem de exibição aplica sRGB e o pontilhado
 	gl_FragColor = vec4( rgb * a, a );
@@ -1168,6 +1184,7 @@ export function criaPos({ renderer, scene, camera, q, W, H, cfg }) {
       uFoco: { value: 500 }, uAbertura: { value: 0 }, uMaxCoc: { value: 1 }, uNear: { value: 1 }, uFar: { value: 6000 },
       uRot: { value: 0 }, uFase: { value: 0.5 },
       toneMappingExposure: { value: 1 },
+      uSat: { value: cfg.grade?.saturacao ?? 1 }, uContr: { value: cfg.grade?.contraste ?? 1 }, uPivo: { value: cfg.grade?.pivo ?? 0.4 },
     },
     vertexShader: FINAL_VS, fragmentShader: FINAL_FS, depthTest: false, depthWrite: false,
   });

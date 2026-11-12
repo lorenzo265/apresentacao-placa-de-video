@@ -138,7 +138,25 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
       return [sx + (boxPlacement(c).side === 'left' ? -1 : 1) * larg / 2, sy];
     }
     if (!cena.temAncora(c.anchor)) { avisaUma(`[${b.id}] âncora ${c.anchor} não existe na cena 3D; sem linha`); return null; }
-    return cena.ancoraTela(c.anchor);
+    const a = cena.ancoraTela(c.anchor);
+    // âncora numa peça em vitrine: o ponto vai para a borda da peça voltada para a caixa, para não
+    // tapar a marcação dela
+    if (a && b.vitrine && cena.ancoraDaPeca?.(c.anchor, b.vitrine.peca)) {
+      const cx = cena.caixaNo(b.vitrine.peca);
+      if (cx) {
+        const xs = [];
+        for (let i = 0; i < 8; i++) {
+          const p = cena.projeta([i & 1 ? cx.max.x : cx.min.x, i & 2 ? cx.max.y : cx.min.y, i & 4 ? cx.max.z : cx.min.z]);
+          if (p) xs.push(p[0]);
+        }
+        if (xs.length) {
+          const dir = boxPlacement(c).side === 'left' ? -1 : 1;
+          const borda = dir > 0 ? Math.max(...xs) : Math.min(...xs);
+          return [borda - dir * 10, a[1]];
+        }
+      }
+    }
+    return a;
   }
   function focoDe(b) {
     if (b.level < 2 || !b.view) return null;

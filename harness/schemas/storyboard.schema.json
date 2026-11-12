@@ -142,6 +142,7 @@
               "cima": { "enum": ["+x", "-x", "+y", "-y", "+z", "-z"] },
               "ocupa": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
               "lado": { "type": "number", "minimum": -0.5, "maximum": 0.5 },
+              "inclina": { "type": "number", "minimum": -80, "maximum": 80 },
               "pos": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
               "giro": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
             }
