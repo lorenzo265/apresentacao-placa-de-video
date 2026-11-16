@@ -42,7 +42,7 @@ body.capture #palco { left: 0; top: 0; transform: none; }
 #caminhos .v-dissipa { fill: none; stroke: currentColor; stroke-width: 2px; }
 
 /* caixa de texto: o slide. Título e tópicos; sem selos nem linha de fonte. */
-#caixa { position: absolute; width: 700px; max-height: 880px; overflow: hidden; padding: 24px 32px 28px; border-radius: 10px;
+#caixa { position: absolute; width: 700px; max-height: 900px; overflow: hidden; padding: 24px 32px 28px; border-radius: 10px;
   background: #0d1118ee; border: 1px solid #2f3947; box-shadow: 0 8px 30px #0008; }
 #caixa.left { left: 48px; } #caixa.right { right: 48px; }
 #caixa.top { top: 112px; } #caixa.bottom { bottom: 76px; }

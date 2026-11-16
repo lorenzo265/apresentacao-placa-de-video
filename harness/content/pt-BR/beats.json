@@ -505,10 +505,10 @@
       "headline": "Resumo dos oito itens do enunciado",
       "pontos": [
         "**Registradores**: 65.536 por SM, até 255 por thread",
-        "**Instruções**: PTX e SASS. Cada instrução SASS tem 16 bytes",
-        "**CISC ou RISC**: conclusão do grupo, RISC com extensões de acelerador",
-        "**Pipeline**: 4 escalonadores por SM, 32 threads por ciclo cada",
-        "**Cache**: L1 de 128 KB por SM e L2 de 128 MB",
+        "**Instruções**: PTX e SASS, com 16 bytes por instrução SASS",
+        "**CISC ou RISC**: RISC com extensões (conclusão do grupo)",
+        "**Pipeline**: 4 escalonadores por SM",
+        "**Cache**: L1 de 128 KB e L2 de 128 MB",
         "**MMU**: 57 bits, 6 níveis, páginas de 4 KB a 512 MB",
         "**Memória**: 96 GB de GDDR7",
         "**Interrupções**: da GPU para a CPU, e trap"
@@ -763,12 +763,12 @@
       "topico": "Pipeline",
       "headline": "Pipeline: um escalonador por partição",
       "pontos": [
-        "**Pipeline**: a instrução passa por etapas, como numa linha de montagem. Num processador de livro-texto: buscar, decodificar, executar, guardar",
+        "**Pipeline**: instrução em etapas, como numa linha de montagem. No livro-texto: buscar, decodificar, executar, guardar",
         "Cada uma das **4 partições** do SM tem o seu **escalonador de warp**",
-        "A cada **ciclo**, o escalonador escolhe um warp pronto e despacha a instrução para as threads ativas dele (até **32**)",
-        "Trocar de warp **não tem custo**. Leitura do grupo: se um warp espera, outro entra no lugar",
-        "Medido em uma RTX 5080: **4 ciclos** para uma operação de inteiro ou FP32",
-        "Número de estágios do pipeline: **não achamos** nas fontes lidas"
+        "A cada **ciclo**, o escalonador despacha a instrução de um warp pronto às threads ativas (até **32**)",
+        "Trocar de warp **não tem custo**. Leitura do grupo: se um espera, outro entra",
+        "Medido em uma RTX 5080: **4 ciclos** para inteiro ou FP32",
+        "Número de estágios: **não achamos** nas fontes lidas"
       ],
       "fala": "Pipeline é a execução em etapas, como uma linha de montagem: buscar a instrução, decodificar, executar e guardar o resultado. Nesta GPU, cada uma das 4 partições do SM tem um escalonador de warp. A cada ciclo, ele escolhe um warp pronto e despacha a instrução para as 32 threads. Trocar de warp não tem custo, então, na nossa leitura, o escalonador tapa os buracos da linha com instruções de outros warps. Pesquisadores mediram 4 ciclos para inteiro ou FP32 numa RTX 5080. Quantos estágios o pipeline tem, não achamos nas fontes.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5 (p. 10). Guia de programação CUDA 13.5, 3.2.2.2. Latência de inteiro e FP32: Jarmusch et al., Tab. III (RTX 5080)",
@@ -1019,11 +1019,11 @@
       "headline": "Interrupções: três mecanismos",
       "pontos": [
         "**1. A GPU avisa a CPU** por MSI-X, MSI ou linha legada",
-        "- O tratador do driver tem duas metades: a primeira faz o mínimo na hora, a segunda faz o trabalho pesado depois",
+        "- O tratador do driver tem duas metades: a primeira faz o mínimo, a segunda faz o trabalho pesado depois",
         "**2. A instrução trap** aborta o programa e gera uma interrupção para a CPU",
-        "**3. A falha de página** segura o canal: ele não pode ser trocado e os outros esperam até o driver atender",
-        "Preempção (trocar um programa por outro): citada no driver, mas como funciona nesta placa **não achamos**",
-        "Tratador dentro do SM: **não achamos**. Leitura do grupo: os avisos vão ao driver, na CPU"
+        "**3. A falha de página** segura o canal: ele não pode ser trocado, e os outros esperam o driver",
+        "Preempção (trocar um programa por outro): **não achamos** como funciona nesta placa",
+        "Tratador dentro do SM: **não achamos**. Leitura do grupo: os avisos vão ao driver"
       ],
       "fala": "Interrupção é um aviso que faz o processador parar, rodar uma rotina de atendimento e voltar de onde parou. Nesta GPU, achamos três mecanismos. Primeiro, a GPU avisa a CPU por MSI-X ou MSI, e o tratador do driver faz o mínimo na hora e deixa o trabalho pesado para depois. Segundo, a instrução trap aborta o programa e gera uma interrupção para a CPU. Terceiro, uma falha de página segura o canal até o driver atender. Como a preempção funciona nesta placa e se há tratador dentro do SM, não achamos nas fontes, e nossa leitura é que os avisos vão ao driver, na CPU.",
       "source_line": "Fonte: driver aberto da NVIDIA, nv.c, nv-msi.c e uvm_gpu_non_replayable_faults.c. PTX ISA 9.5, 9.7.21.4. SM sem tratador: análise do grupo",
