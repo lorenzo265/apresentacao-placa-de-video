@@ -100,7 +100,7 @@
   },
   "a7.5": {
     "headline": "Os oito itens do enunciado nesta GPU",
-    "caption": "Os oito itens do enunciado, resumidos. Obrigado. Perguntas?. Obrigado. Perguntas?",
+    "caption": "Os oito itens do enunciado, resumidos. Obrigado. Perguntas?",
     "fala": "Registradores: cada SM tem 65.536 registradores de 32 bits, até 255 por thread, e trocar de warp não custa nada porque o estado de cada warp fica guardado no chip. Instruções: o SASS, o código de máquina desta GPU, tem instruções de tamanho fixo, 16 bytes cada, e a lista oficial tem 258 nomes, pela nossa contagem. CISC ou RISC: na análise do grupo, um RISC com extensões, porque o formato é fixo e a memória é acessada, como regra, por carga e armazenamento, mas há instruções como a HMMA, que multiplica um bloco de matriz de uma vez. Pipeline: cada SM tem 4 escalonadores de warp, cada um despachando 32 threads por ciclo, e o número de estágios não achamos nas fontes. Cache: 128 KB de L1 por SM, divididos com a memória compartilhada no tamanho que o programa escolher entre seis opções, e 128 MB de L2 para o chip todo, com a política dos caches fora das fontes. MMU e gerenciamento de memória: endereços virtuais de 57 bits em 6 níveis, páginas de 4 KB a 512 MB, e falhas de página resolvidas em lote pelo driver, na CPU. Interrupções: as que achamos vão da GPU para a CPU, por MSI-X ou MSI, pelo trap de um programa ou por uma falha de página, e dentro do SM não achamos tratador. Esse é o retrato da RTX PRO 6000 Blackwell que as fontes permitem, cada parte com o seu selo, e agora abrimos para perguntas.",
     "source_line": "Fonte: síntese do grupo a partir das fontes citadas em cada momento. RISC ou CISC: análise do grupo",
     "claims": [
