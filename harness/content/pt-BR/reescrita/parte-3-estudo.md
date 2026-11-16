@@ -168,3 +168,9 @@ Momento anterior (a5.12, Lorenzo): conclusão RISC com extensões, com carga e a
 1. *Afinal, é RISC ou CISC?* RISC com extensões, na análise do grupo (selo provável), aprovada pelo autor em 2026-11-10. A favor de RISC: tamanho fixo de 16 bytes, carga e armazenamento como regra, muitos registradores. Contra: HMMA, TEX e LDGSTS fazem muito trabalho numa instrução. A NVIDIA não classifica. Fontes: CUDA Binary Utilities 13.5, PTX ISA 6.2, experimento `harness/examples/mma/`.
 2. *A GPU tem MMU própria?* Sim. O catálogo de Xid diz que o Xid 31 é registrado quando a MMU da GPU reporta uma falha, e o driver programa a tabela de páginas dela. Fontes: catálogo de Xid e driver aberto.
 3. *Qual item ficou mais fraco?* Pipeline e cache: temos a estrutura e os tamanhos, mas o número de estágios e a política dos caches não estão nas fontes lidas (lacunas `pipeline.depth` e `cache.policy`).
+
+---
+
+## Nota sobre o corte do seminário (2026-11-16)
+
+As falas do seminário foram encurtadas para caber em 22 minutos (`harness/content/pt-BR/reescrita/final.json`). Desta parte, saiu do corte o momento **a6.3** (como a CPU entrega trabalho à GPU, a fila GPFIFO). A fala de a6.2 agora termina ligando a falha de página à interrupção. Se perguntarem como a CPU manda trabalho para a GPU, a resposta completa está em a6.3, acima. As falas completas, de todos os momentos, continuam aqui e servem para estudo e para responder perguntas.

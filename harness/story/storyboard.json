@@ -1077,7 +1077,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "explode_state": "E8",
       "camera": {
@@ -1395,7 +1395,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -1548,7 +1548,7 @@
       "act": 4,
       "section": "04",
       "level": 2,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.floorplan",
@@ -1712,41 +1712,37 @@
       "speaker": "João"
     },
     {
-      "id": "a5.5",
-      "act": 5,
-      "section": "06",
-      "level": 3,
+      "id": "a5.1",
+      "act": 4,
+      "section": "05",
+      "level": 4,
       "priority": 1,
       "status": "ready",
       "part": null,
-      "diagram": "chip.sm",
+      "diagram": "chip.warp",
       "view": {
-        "diagram": "chip.sm",
+        "diagram": "chip.warp",
         "focus": [
-          "sm.count.blocks",
-          "sm.block.0",
-          "sm.block.1",
-          "sm.block.2",
-          "sm.block.3"
+          "tag:thread",
+          "tag:counter"
         ],
-        "padding": 0.02,
-        "duration": 1.8,
-        "ease": "power2.inOut"
+        "padding": 0.05,
+        "duration": 3.0,
+        "ease": "power3.inOut"
       },
       "highlight": [
-        "tag:sched",
-        "sm.count.blocks"
+        "tag:thread",
+        "tag:warp-size"
       ],
       "callout": {
-        "anchor": "sm.block.1.sched",
+        "anchor": "warp.thread.7",
         "box": "right-top",
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
-        "derived",
         "illustrative"
       ],
       "speaker": "João"
@@ -1787,42 +1783,6 @@
       "speaker": "João"
     },
     {
-      "id": "a5.1",
-      "act": 4,
-      "section": "05",
-      "level": 4,
-      "priority": 1,
-      "status": "ready",
-      "part": null,
-      "diagram": "chip.warp",
-      "view": {
-        "diagram": "chip.warp",
-        "focus": [
-          "tag:thread",
-          "tag:counter"
-        ],
-        "padding": 0.05,
-        "duration": 3.0,
-        "ease": "power3.inOut"
-      },
-      "highlight": [
-        "tag:thread",
-        "tag:warp-size"
-      ],
-      "callout": {
-        "anchor": "warp.thread.7",
-        "box": "right-top",
-        "line_in": 0.8,
-        "line_out": 0.5
-      },
-      "hold": 26.0,
-      "provenance": [
-        "confirmed",
-        "illustrative"
-      ],
-      "speaker": "João"
-    },
-    {
       "id": "a5.2",
       "act": 4,
       "section": "05",
@@ -1855,6 +1815,46 @@
       "provenance": [
         "inferred",
         "confirmed",
+        "illustrative"
+      ],
+      "speaker": "João"
+    },
+    {
+      "id": "a5.5",
+      "act": 5,
+      "section": "06",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.sm",
+      "view": {
+        "diagram": "chip.sm",
+        "focus": [
+          "sm.count.blocks",
+          "sm.block.0",
+          "sm.block.1",
+          "sm.block.2",
+          "sm.block.3"
+        ],
+        "padding": 0.02,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:sched",
+        "sm.count.blocks"
+      ],
+      "callout": {
+        "anchor": "sm.block.1.sched",
+        "box": "right-top",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 29.0,
+      "provenance": [
+        "confirmed",
+        "derived",
         "illustrative"
       ],
       "speaker": "João"
@@ -1900,7 +1900,7 @@
       "act": 5,
       "section": "12",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.warp",
@@ -1972,7 +1972,7 @@
       "act": 5,
       "section": "07",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "chip.isa",
@@ -2395,7 +2395,7 @@
       "act": 6,
       "section": "11",
       "level": 4,
-      "priority": 1,
+      "priority": 2,
       "status": "ready",
       "part": null,
       "diagram": "sys.cmd",

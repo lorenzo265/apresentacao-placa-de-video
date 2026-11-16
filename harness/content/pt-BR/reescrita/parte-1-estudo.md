@@ -182,3 +182,9 @@ Quem fala: Vitor (a0.1 a a2.13), Arthur (a3.1 e a3.6), João (t1.1 a a4.4), segu
 1. *Qual a política do L2: associatividade, substituição, escrita?* Não achamos nas fontes lidas. O whitepaper dá só o tamanho (lacuna `cache.policy`).
 2. *Quanto a memória é mais lenta que o L2?* Medido numa placa da mesma geração, a RTX 5080: cerca de 358 ciclos para um acerto no L2 e cerca de 877 para a memória. Na nossa placa não foi medido, por isso o selo é derivado. Fonte: Jarmusch et al., seção VI (`lat.l2_cycles`, `lat.global_cycles`).
 3. *O L1 é só cache?* Não. Os 128 KB do SM são divididos entre cache L1 e memória compartilhada, que o programa usa diretamente, e o programa escolhe a divisão quando roda. Isso aparece no momento a5.14 (`sm.l1_shared_kb`, `mem.l1_carveout`).
+
+---
+
+## Nota sobre o corte do seminário (2026-11-16)
+
+As falas do seminário foram encurtadas para caber em 22 minutos (`harness/content/pt-BR/reescrita/final.json`). Desta parte, saíram do corte os momentos **a2.13** (placa aberta), **t1.1** (entrada no chip) e **a4.4** (planta do L2). A ressalva de que o diagrama é desenho, com contagens oficiais e posições ilustrativas, passou para a fala de a4.2. O L2 de 128 MB aparece em a5.13. As falas completas, de todos os momentos, continuam aqui e servem para estudo e para responder perguntas.

@@ -272,3 +272,9 @@ Fonte da tabela: seção 08 do roteiro (`vault/03-Roteiro/08 - Instruções PTX 
 **Cuidado na resposta**
 - As definições de CISC e RISC são de livro-texto. O grupo não registrou um livro como fonte (Hennessy e Patterson e Stallings não foram abertos). Se o professor pedir a referência, diga que são os critérios clássicos da disciplina.
 - Não diga que "toda ISA RISC atual tem cópia de memória para memória" ou coisa parecida: a seção 08 marca isso como argumento sem fonte registrada.
+
+---
+
+## Nota sobre o corte do seminário (2026-11-16)
+
+As falas do seminário foram encurtadas para caber em 22 minutos (`harness/content/pt-BR/reescrita/final.json`). Desta parte, saíram do corte os momentos **a5.16** (divergência) e **a5.7** (registradores na listagem SASS). A ideia essencial da divergência entrou numa frase de a5.2, e o SAXPY, com os seus 10 registradores por thread, é apresentado em a5.8. A ordem também mudou: a5.1 e a5.2 (warp e SIMT) vêm antes de a5.5 (pipeline). As falas completas, de todos os momentos, continuam aqui e servem para estudo e para responder perguntas.
