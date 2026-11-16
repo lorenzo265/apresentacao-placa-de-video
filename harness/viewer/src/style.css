@@ -42,20 +42,20 @@ body.capture #palco { left: 0; top: 0; transform: none; }
 #caminhos .v-dissipa { fill: none; stroke: currentColor; stroke-width: 2px; }
 
 /* caixa de texto: o slide. Título e tópicos; sem selos nem linha de fonte. */
-#caixa { position: absolute; width: 700px; max-height: 900px; overflow: hidden; padding: 24px 32px 28px; border-radius: 10px;
+#caixa { position: absolute; width: 740px; max-height: 920px; overflow: hidden; padding: 24px 32px 28px; border-radius: 10px;
   background: #0d1118ee; border: 1px solid #2f3947; box-shadow: 0 8px 30px #0008; }
 #caixa.left { left: 48px; } #caixa.right { right: 48px; }
-#caixa.top { top: 112px; } #caixa.bottom { bottom: 76px; }
+#caixa.top { top: 112px; } #caixa.bottom { bottom: 60px; }
 #caixa.center { top: 50%; transform: translateY(-50%); }
 #caixa .topico { margin: 0 0 6px; font-size: 20px; line-height: 1.2; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #8fa0bf; }
-#caixa h2 { margin: 0 0 16px; font-size: 44px; line-height: 1.1; font-weight: 700; letter-spacing: -.015em; }
+#caixa h2 { margin: 0 0 14px; font-size: 44px; line-height: 1.1; font-weight: 700; letter-spacing: -.015em; }
 #caixa .caption { margin: 0; font-size: 29px; line-height: 1.34; color: #d8dee8; }
 #caixa .pontos, #caixa .pontos ul { list-style: none; margin: 0; padding: 0; }
-#caixa .pontos > li { position: relative; margin: 0 0 14px; padding-left: 30px; font-size: 30px; line-height: 1.3; color: #e3e8ef; }
+#caixa .pontos > li { position: relative; margin: 0 0 13px; padding-left: 30px; font-size: 28px; line-height: 1.3; color: #e3e8ef; }
 #caixa .pontos > li:last-child { margin-bottom: 0; }
 #caixa .pontos > li::before { content: ""; position: absolute; left: 2px; top: .56em; width: 10px; height: 10px; border-radius: 2px; background: #8fa0bf; }
 #caixa .pontos ul { margin-top: 8px; }
-#caixa .pontos ul li { position: relative; margin: 0 0 6px; padding-left: 24px; font-size: 27px; line-height: 1.3; color: #c3cbd6; }
+#caixa .pontos ul li { position: relative; margin: 0 0 6px; padding-left: 24px; font-size: 26px; line-height: 1.3; color: #c3cbd6; }
 #caixa .pontos ul li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 12px; height: 2px; background: #8fa0bf; }
 #caixa strong { font-weight: 700; color: #fff; }
 

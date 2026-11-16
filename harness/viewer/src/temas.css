@@ -39,9 +39,9 @@
   box-shadow: inset 0 1px 0 #ffffff14, 0 0 0 4px #8ad42a0a, 0 0 40px #8ad42a14, 0 30px 70px #000000b0; }
 :root[data-tema=keynote] #caixa { padding: 28px 36px 30px; }
 :root[data-tema=keynote] #caixa .topico { color: var(--acento); letter-spacing: .18em; font-size: 19px; margin: 0 0 10px; }
-:root[data-tema=keynote] #caixa h2 { font-size: 46px; line-height: 1.06; letter-spacing: -.028em; color: #fff; margin: 0 0 20px; }
+:root[data-tema=keynote] #caixa h2 { font-size: 44px; line-height: 1.06; letter-spacing: -.028em; color: #fff; margin: 0 0 16px; }
 :root[data-tema=keynote] #caixa .caption { color: #c9d1d5; line-height: 1.38; }
-:root[data-tema=keynote] #caixa .pontos > li { color: #e6ebec; margin-bottom: 16px; padding-left: 32px; }
+:root[data-tema=keynote] #caixa .pontos > li { color: #e6ebec; margin-bottom: 14px; padding-left: 32px; }
 :root[data-tema=keynote] #caixa .pontos > li::before { background: var(--acento); box-shadow: 0 0 8px #8ad42a88; }
 :root[data-tema=keynote] #caixa .pontos ul li { color: #b9c2c7; }
 :root[data-tema=keynote] #caixa .pontos ul li::before { background: #5c7d2c; }
