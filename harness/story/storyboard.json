@@ -160,7 +160,7 @@
         "duration": 2.0,
         "ease": "power2.out"
       },
-      "hold": 34.0,
+      "hold": 45.0,
       "provenance": [
         "confirmed"
       ],
@@ -191,7 +191,7 @@
         "duration": 2.5,
         "ease": "power2.inOut"
       },
-      "hold": 32.0,
+      "hold": 34.0,
       "provenance": [
         "confirmed"
       ],
@@ -333,7 +333,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 40.0,
+      "hold": 45.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -457,7 +457,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 40.0,
+      "hold": 41.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -502,6 +502,50 @@
         "line_out": 0.5
       },
       "hold": 43.0,
+      "provenance": [
+        "confirmed",
+        "derived"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a1.7",
+      "act": 1,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "ready",
+      "part": "io.bracket",
+      "diagram": null,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          -516.3,
+          -159.9,
+          -151.1
+        ],
+        "target": [
+          25.8,
+          -14.7,
+          9.9
+        ],
+        "fov": 28,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "io.board.dp",
+        "tag:carcaca",
+        "io.bracket",
+        "pcie.adapter"
+      ],
+      "callout": {
+        "anchor": "anchor.io.bracket.1",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -673,7 +717,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 41.0,
+      "hold": 44.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1120,7 +1164,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 38.0,
+      "hold": 46.0,
       "provenance": [
         "confirmed"
       ],
@@ -1439,7 +1483,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 40.0,
+      "hold": 43.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1726,7 +1770,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 39.0,
+      "hold": 42.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1873,7 +1917,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 37.0,
+      "hold": 39.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -1913,7 +1957,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 40.0,
+      "hold": 45.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2115,7 +2159,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 40.0,
+      "hold": 44.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2151,7 +2195,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 33.0,
+      "hold": 39.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2268,7 +2312,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 37.0,
+      "hold": 40.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2307,7 +2351,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 38.0,
+      "hold": 39.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -2344,7 +2388,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 40.0,
+      "hold": 41.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2476,7 +2520,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 32.0,
+      "hold": 34.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2518,7 +2562,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 28.0,
+      "hold": 35.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2763,7 +2807,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 37.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "illustrative",
