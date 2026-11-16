@@ -1917,7 +1917,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 39.0,
+      "hold": 40.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2066,7 +2066,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 33.0,
+      "hold": 41.0,
       "provenance": [
         "confirmed",
         "illustrative"

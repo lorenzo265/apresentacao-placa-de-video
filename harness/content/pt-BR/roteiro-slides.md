@@ -174,7 +174,7 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 *Execução em warps*
 
 - **SIMT** (uma instrução, várias threads): as 32 threads do warp executam a **mesma instrução**, cada uma com os seus dados
-- Cada thread tem o seu **contador de programa**, que guarda qual é a próxima instrução dela (normalmente a mesma das outras 31), e os seus **registradores**
+- Cada thread tem o seu **contador de programa**, um registrador que guarda qual é a próxima instrução dela (normalmente a mesma das outras 31), e os seus **registradores**
 - **Divergência**: se as threads seguem caminhos diferentes num if, o warp executa **cada caminho** e desliga as threads que não estão nele
 - Cada SM mantém até **48 warps** ao mesmo tempo (1.536 threads)
 - Leitura do grupo: quando um warp espera a memória, o SM executa outro
@@ -198,13 +198,13 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 *Registradores*
 
-- **Registrador**: a memória mais rápida do processador, dentro do circuito. Guarda o número da conta em andamento
-- Cada registrador tem **32 bits**, 32 zeros e uns
-- Cada SM tem **65.536 registradores** = **256 KB**, em **4 bancos** de 16.384 (um por partição)
-- Na placa toda: 188 × 256 KB = **48.128 KB**
-- Cada warp mantém os seus registradores enquanto existir: **trocar de warp não custa nada**. Na CPU, trocar de tarefa copia os registradores para a memória
+- **Registrador**: a memória interna do processador, a mais rápida. Guarda uma **palavra**, aqui de **32 bits**
+- Na teoria, é um conjunto de **flip-flops** (memórias de 1 bit) que só guardam um valor novo quando o sinal **load** chega com o **clock**
+- Tem **nome**, não endereço: no código desta GPU, R0, R1, R2 e assim por diante
+- Cada SM tem **65.536 registradores** = **256 KB**, em **4 bancos** de 16.384. Na placa toda: **48.128 KB**
+- Cada warp mantém os seus registradores: **trocar de warp não custa nada**. Na CPU, trocar de tarefa copia os registradores para a memória
 
-**Fala:** Registrador é a memória mais rápida de um processador: fica dentro do circuito e guarda o número que está sendo usado numa conta. Aqui cada registrador tem 32 bits, e cada SM tem 65.536 deles, que dão 256 KB, em 4 bancos de 16.384, um por partição. Numa CPU, trocar de tarefa copia os registradores para a memória. Na GPU, cada warp fica com os seus registradores enquanto existir, então trocar de warp não custa nada.
+**Fala:** Registrador é a memória interna do processador, a mais rápida, e guarda uma palavra, que aqui tem 32 bits. Na teoria de circuitos digitais, um registrador é um conjunto de flip-flops, que são memórias de 1 bit, e ele só guarda um valor novo quando o sinal load chega junto com o clock, a batida do relógio do chip. Registrador tem nome e não endereço: no código desta GPU, R0, R1, R2. Cada SM tem 65.536 deles, que dão 256 KB, em 4 bancos de 16.384, um por partição, e na placa toda são 48.128 KB. Numa CPU, trocar de tarefa copia os registradores para a memória. Na GPU, cada warp fica com os seus registradores enquanto existir, então trocar de warp não custa nada. Como o banco é construído por dentro, bancos e portas, não achamos nas fontes.
 
 ## 18. Do CUDA C ao PTX e ao SASS (a5.9, Lorenzo)
 
@@ -363,4 +363,4 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 **Fala:** Resumindo os oito itens: registradores, 65.536 por SM e até 255 por thread. Instruções, PTX e SASS, e cada instrução SASS tem 16 bytes. CISC ou RISC, conclusão do grupo: RISC com extensões de acelerador. Pipeline, 4 escalonadores por SM despachando até 32 threads por ciclo cada. Cache, 128 KB de L1 por SM e 128 MB de L2. MMU, 57 bits em 6 níveis. Memória, 96 GB de GDDR7 e falhas de página resolvidas pelo driver. Interrupções, da GPU para a CPU. Obrigado, e abrimos para perguntas.
 
-Fala total: cerca de 2604 palavras.
+Fala total: cerca de 2667 palavras.
