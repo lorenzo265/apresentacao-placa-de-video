@@ -24,31 +24,12 @@ export function boxPlacement(callout) {
   return { side, vert };
 }
 
-// Celular (src/celular.js): a caixa de texto, o cabeçalho e a faixa saem do palco para painéis
-// nativos, então o palco inteiro fica livre para a placa e os diagramas. No computador fica false.
-let celular = false;
-export function usaLayoutCelular(v) { celular = !!v; }
-export const layoutCelular = () => celular;
-
 /** Retângulo da tela livre para o diagrama: tudo menos a coluna da caixa, o cabeçalho e a faixa. */
 export function safeRect(callout) {
-  if (celular) return [MARGIN, MARGIN, STAGE_W - 2 * MARGIN, STAGE_H - 2 * MARGIN];
-  return safeRectPC(callout);
-}
-
-/** O retângulo livre do computador (com a coluna da caixa), também no celular: é para ele que as câmeras
- *  3D do storyboard foram compostas. */
-export function safeRectPC(callout) {
   const { side } = boxPlacement(callout);
   const col = MARGIN + BOX_W + GAP;
   const y0 = HEADER_H + 24;
   const y1 = STAGE_H - DISC_H - 24;
   if (side === 'left') return [col, y0, STAGE_W - col - MARGIN, y1 - y0];
   return [MARGIN, y0, STAGE_W - col - MARGIN, y1 - y0];
-}
-
-/** Área livre para a placa 3D na composição do computador; sem linha de chamada, a caixa (só título) fica
- *  no canto inferior esquerdo e a placa fica acima dela. */
-export function rectLivre3d(callout) {
-  return callout ? safeRectPC(callout) : [48, HEADER_H + 24, STAGE_W - 96, STAGE_H - HEADER_H - 24 - 210];
 }

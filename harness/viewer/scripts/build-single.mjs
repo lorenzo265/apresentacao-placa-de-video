@@ -25,16 +25,7 @@ if (manifest.glb) {
   const json = JSON.parse(glb.subarray(20, 20 + tamJson).toString('utf8'));
   const exige = json.extensionsRequired ?? [];
   if (exige.includes('KHR_draco_mesh_compression')) throw new Error('o GLB usa compressão Draco, que o arquivo único não consegue decodificar; gere o GLB sem Draco');
-  // Em pedaços de 1 MB, um <script> cada: no celular, cada pedaço que chega avança a barra de
-  // carregamento (index.html, window.__carga); no computador __carga não existe e nada muda.
-  const b64 = glb.toString('base64');
-  const PEDACO = 1 << 20;
-  const n = Math.ceil(b64.length / PEDACO);
-  const partes = [];
-  for (let i = 0; i < n; i++) {
-    partes.push(`<script>window.__glbP.push("${b64.slice(i * PEDACO, (i + 1) * PEDACO)}");window.__carga&&window.__carga(${(0.08 + 0.5 * (i + 1) / n).toFixed(3)},"Carregando a placa: ${Math.round(100 * (i + 1) / n)}%")</script>`);
-  }
-  glbTxt = `<script>window.__glbP=[];</script>\n${partes.join('\n')}\n<script>window.__TOUR_GLB__=window.__glbP.join("");delete window.__glbP;</script>`;
+  glbTxt = `window.__TOUR_GLB__="${glb.toString('base64')}";`;
 }
 const dados = { 'data/manifest.json': manifest };
 for (const f of ['storyboard.json', 'beats.json', 'measurements.json']) dados[`data/${f}`] = leJson(`data/${f}`);
@@ -69,7 +60,7 @@ html = html.replace(mJs[0], () => '');
 // baixa se o notebook não aguentar). A URL ainda manda: ?tema=, ?qualidade=, ?tema=nenhum.
 const padraoTxt = 'window.__TOUR_PADRAO__={"tema":"keynote","qualidade":null};';
 html = html.replace('</body>', () =>
-  `<script>${padraoTxt}window.__TOUR_DATA__=${dadosTxt};window.__carga&&window.__carga(0.08,"Carregando os textos e diagramas")</script>\n${glbTxt}\n<script type="module">${js}</script>\n</body>`);
+  `<script>${padraoTxt}window.__TOUR_DATA__=${dadosTxt};${glbTxt}</script>\n<script type="module">${js}</script>\n</body>`);
 html = html.replace(/<link rel="modulepreload"[^>]*>\s*/g, '');
 
 const externo = html.match(/(?:src|href)="\.\/[^"]+"/g);

@@ -5,7 +5,7 @@
 // Textos: só os de beats.json (auditados) ou o texto próprio de pecas.json; procedência sempre à vista.
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { STAGE_W, STAGE_H, MARGIN, layoutCelular } from './layout.js';
+import { STAGE_W, STAGE_H } from './layout.js';
 
 const SELOS = {
   confirmed: { palavra: 'Confirmado', icone: 'M3,8 L7,12 L13,4' },
@@ -20,9 +20,7 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
 // Vista de partida: a do plano de herói do storyboard (a2.13), em mm. O enquadramento sai da caixa da placa.
 const VISTA = { pos: [330, -900, 260], target: [150, 60, -70], fov: 34 };
 // Área da tela livre para a placa: entre a lista de camadas e o painel da explicação.
-// No celular as listas saem do palco (painel inferior ou lateral, src/celular.js): o palco todo fica livre.
-const LIVRE_PC = [470, 110, 860, 850];
-const livreDoModo = () => (layoutCelular() ? [MARGIN, MARGIN, STAGE_W - 2 * MARGIN, STAGE_H - 2 * MARGIN] : LIVRE_PC);
+const LIVRE = [470, 110, 860, 850];
 const T_ULTIMO = 1.7, T_ATALHO = 0.55;      // s por camada: a pedida e as que saem antes dela
 
 export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
@@ -147,7 +145,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
   function enquadra(nivel, ids = null, suave = true) {
     const p = cena.camera.position;
     cena.controls.getTarget(vAlvo);
-    const r = cena.enquadraNivel({ nivel, pos: p.toArray(), target: vAlvo.toArray(), fov: cena.camera.fov, rect: livreDoModo(), folga: ids ? 0.16 : 0.05, pecas: ids });
+    const r = cena.enquadraNivel({ nivel, pos: p.toArray(), target: vAlvo.toArray(), fov: cena.camera.fov, rect: LIVRE, folga: ids ? 0.16 : 0.05, pecas: ids });
     if (r) cena.controls.setLookAt(...r.pos, ...r.target, suave);
   }
 
@@ -194,7 +192,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
     if (!ativo || !toque) return;
     const andou = Math.hypot(ev.clientX - toque[0], ev.clientY - toque[1]);
     toque = null;
-    if (andou > (ev.pointerType === 'touch' ? 12 : 5)) return;      // o dedo treme mais que o mouse
+    if (andou > 5) return;
     const id = pecaEm(ev);
     seleciona(id ? { tipo: 'peca', id } : null);
   });
@@ -244,7 +242,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
     const a = ancora ? cena.ancoraTela(ancora) : null;
     const r = painel.getBoundingClientRect(), pr = palco.getBoundingClientRect(), kx = STAGE_W / pr.width;
     const ex = (r.left - pr.left) * kx, ey = (r.top - pr.top) * kx + 64;
-    if (a && !layoutCelular() && a[0] > LIVRE_PC[0] - 60 && a[0] < ex - 20 && a[1] > 90 && a[1] < STAGE_H - 60) {
+    if (a && a[0] > LIVRE[0] - 60 && a[0] < ex - 20 && a[1] > 90 && a[1] < STAGE_H - 60) {
       linha.setAttribute('d', `M${a[0].toFixed(1)},${a[1].toFixed(1)} L${(ex - 56).toFixed(1)},${ey.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)}`);
       ponto.setAttribute('cx', a[0]); ponto.setAttribute('cy', a[1]);
       linha.parentNode.style.visibility = 'visible';
