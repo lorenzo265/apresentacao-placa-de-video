@@ -357,7 +357,7 @@
       "pontos": [
         "**Chip**: um circuito numa pastilha de silício, feito de **transistores**, chaves elétricas minúsculas. Este é o que faz os cálculos",
         "**92,2 bilhões** de transistores em **750 mm²** de silício (cerca de 123 milhões por mm²), gravados pelo processo de fabricação **TSMC 4N** (TSMC é a fábrica, 4N o nome da técnica)",
-        "**188 SMs** e **24.064 núcleos CUDA**, com **128 MB** de cache L2: partes que explicamos adiante",
+        "**188 SMs**, as unidades que executam as instruções, e **24.064 núcleos CUDA**, com **128 MB** de cache L2",
         "**Clock**, a batida do relógio do chip, de boost: **2.617 MHz**, cerca de 2,6 bilhões de ciclos por segundo",
         "Pico de **126 TFLOPS** em FP32: 126 trilhões de operações por segundo com números de ponto flutuante (com vírgula) de 32 bits"
       ],
@@ -767,14 +767,14 @@
       "topico": "Pipeline",
       "headline": "Pipeline: um escalonador por partição",
       "pontos": [
-        "**Pipeline**: a instrução passa por etapas, como numa linha de montagem, e várias ficam em andamento ao mesmo tempo. Num processador de livro-texto: buscar, decodificar (descobrir o que ela pede), executar, guardar",
-        "Cada uma das **4 partições** do SM tem o seu **escalonador de warp**",
-        "A cada **ciclo**, uma batida do relógio do chip, o escalonador despacha (manda executar) a instrução de um warp pronto às threads ativas (até **32**)",
+        "**SM**: a unidade do chip que executa as instruções (são 188), com **128 núcleos CUDA** em **4 partições**",
+        "O SM executa **warps**: grupos de **32 threads** (tarefas pequenas) que recebem a mesma instrução, cada uma com os seus dados",
+        "**Pipeline**: a instrução passa por etapas, como numa linha de montagem. No livro-texto: buscar, decodificar (ler o que ela pede), executar, guardar",
+        "Cada partição tem um **escalonador de warp**: a cada **ciclo** (batida do relógio) ele despacha a instrução de um warp pronto",
         "Trocar de warp **não tem custo**. Leitura do grupo: se um espera, outro entra",
-        "Uma conta de inteiro ou FP32 leva **4 ciclos** (latência medida numa RTX 5080)",
         "Número de estágios: **não achamos** nas fontes lidas"
       ],
-      "fala": "Pipeline é a execução em etapas, como uma linha de montagem: por exemplo buscar a instrução, decodificar, executar e guardar o resultado. Nesta GPU, cada uma das 4 partições do SM tem um escalonador de warp. A cada ciclo, ele escolhe um warp pronto e despacha a instrução para as threads ativas, até 32. Trocar de warp não tem custo, então, na nossa leitura, o escalonador tapa os buracos da linha com instruções de outros warps. Pesquisadores mediram 4 ciclos para inteiro ou FP32 numa RTX 5080. Quantos estágios o pipeline tem, não achamos nas fontes.",
+      "fala": "O SM, Streaming Multiprocessor, é a unidade do chip que executa as instruções, e a placa tem 188. Cada um tem 128 núcleos CUDA, divididos em 4 partições. O SM executa warps, que são grupos de 32 threads, pequenas tarefas que recebem a mesma instrução, cada uma com os seus dados. Pipeline é a execução em etapas, como uma linha de montagem: num processador de livro-texto, buscar a instrução, decodificar, que é ler o que ela pede, executar e guardar o resultado. Cada partição tem um escalonador de warp, que a cada ciclo, uma batida do relógio do chip, despacha a instrução de um warp pronto às threads ativas, até 32. Trocar de warp não tem custo, então, na nossa leitura, o escalonador tapa os buracos da linha com instruções de outros warps. Pesquisadores mediram 4 ciclos para uma conta de inteiro ou FP32 numa RTX 5080. Quantos estágios o pipeline tem, não achamos nas fontes.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5 (p. 10). Guia de programação CUDA 13.5, 3.2.2.2. Latência de inteiro e FP32: Jarmusch et al., Tab. III (RTX 5080)",
       "claims": [
         "sm.blocks",
@@ -782,7 +782,9 @@
         "warp.size",
         "sched.warp_scheduler",
         "sched.warp_switch_no_cost",
-        "lat.int_fp_cycles"
+        "lat.int_fp_cycles",
+        "chip.sm_count",
+        "sm.cuda_cores"
       ]
     },
     "a5.6": {
@@ -906,7 +908,7 @@
       "pontos": [
         "**CISC** (conjunto complexo de instruções): instruções complexas e de tamanho variável. Uma instrução pode ler a memória, calcular e gravar",
         "**RISC** (conjunto reduzido): instruções simples, de tamanho fixo. Só as de carga e armazenamento tocam a memória, e há muitos registradores",
-        "**A favor de RISC**: 16 bytes fixos, memória por carga e armazenamento (salvo exceções como a LDGSTS) e até 255 registradores por thread",
+        "**A favor de RISC**: instruções de **16 bytes (128 bits)** sempre, memória por carga e armazenamento (salvo exceções como a LDGSTS) e até 255 registradores por thread",
         "**Contra**: a **HMMA** multiplica um bloco de matriz numa só instrução, trabalho de acelerador",
         "A NVIDIA não classifica o SASS. **Conclusão do grupo: RISC no formato, com instruções de acelerador**"
       ],
@@ -1149,7 +1151,7 @@
         "**Placa-mãe**: a placa principal do computador, onde se ligam o processador, a memória e as outras placas",
         "A **placa de vídeo** se encaixa na placa-mãe. Leva a sua própria GPU, a sua própria **memória**, uma entrada de **energia** e saídas de **imagem** para o monitor",
         "Esta é a edição **Workstation**, para estações de trabalho: computadores de mesa para trabalho profissional pesado",
-        "Vamos ver a energia, os dados, a imagem, o que há por dentro, o chip e a memória"
+        "Vamos ver o que há por dentro da placa, o chip e como ele executa as tarefas"
       ],
       "fala": "A placa-mãe é a placa principal do computador, onde se ligam o processador, a memória e as outras placas. A placa de vídeo se encaixa nela e leva a sua própria GPU, a sua própria memória, uma entrada de energia e saídas de imagem para o monitor. Esta é a edição Workstation, feita para estações de trabalho, que são os computadores profissionais.",
       "source_line": "NVIDIA, datasheet, p. 1 e 3. Definição de placa-mãe: geral. Workstation: estações de trabalho (datasheet, p. 1)",

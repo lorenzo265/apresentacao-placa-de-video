@@ -26,6 +26,10 @@ Sessão de 2026-11-16, dia do seminário, a pedido do autor. Parte da branch `cl
 - `content/pt-BR/roteiro-slides.md`: os 25 slides e as falas em texto corrido, para ler e imprimir (gerado do `beats.json`).
 - `tools/smoke.cjs` e `tools/smoke-single.cjs`: conferem tópicos na tela, estouro da caixa e ausência de selo, fonte e faixa.
 
+## 2.1 Corte curto de 18 slides (decisão do autor, 2026-11-16, à tarde)
+
+O autor pediu para pular as partes iniciais e dali em diante só o necessário. Ficam 18 slides: a0.1, a0.5, a0.6, a2.1, a2.12, a3.1, a5.5, a5.6, a5.9, a5.8, a5.12, a5.13, a6.0, a6.1, a6.2, a6.4, a7.4 e a7.5. Passam a extras (índice, tecla M): a1.1, a1.4, a1.5, a1.7 (placa por fora, energia, dados, imagem), a3.6 (banda), a4.2, t2.1, a5.1, a5.2 (entrada no chip, SM, warp, SIMT), a5.10 (128 bits) e a5.14 (memória compartilhada), a5.17 (mapa da memória). **Pipeline (a5.5) e registradores (a5.6) ficam**, porque são itens do enunciado. Como o SM e o warp deixaram de ter slide, a5.5 os define em duas linhas. Para voltar ao corte de 30, basta pôr `priority` 1 nesses beats no `storyboard.json`. A tabela da seção 3 é a do corte de 30.
+
 ## 3. Nova ordem (30 momentos, cerca de 22 minutos)
 
 Segundo pedido do autor no mesmo dia: o público não sabe nada de placa de vídeo nem de arquitetura. A ordem parte do mais simples (o que é uma CPU, uma GPU e uma placa de vídeo) e define cada termo antes de usá-lo. Cada slide de conceito segue a mesma lógica: o que é, em qualquer processador, e depois o número desta GPU.
