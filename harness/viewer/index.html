@@ -2,13 +2,53 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Tour da RTX PRO 6000 Blackwell</title>
+  <style>
+    /* Carregamento com progresso: só no celular (src/celular.js); no computador fica escondido. */
+    #carga { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: #050607;
+      font-family: Inter, system-ui, sans-serif; color: #e8edf0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+    #carga[hidden] { display: none; }
+    #carga .carga-caixa { width: min(78vw, 360px); }
+    #carga .carga-titulo { margin: 0 0 4px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: #8ad42a; font-weight: 600; }
+    #carga .carga-nome { margin: 0 0 22px; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+    #carga .carga-barra { height: 4px; border-radius: 4px; background: #ffffff18; overflow: hidden; }
+    #carga .carga-barra i { display: block; height: 100%; width: 0; background: #8ad42a; border-radius: 4px; }
+    #carga .carga-texto { margin: 12px 0 0; font-size: 14px; color: #8e979c; }
+  </style>
 </head>
 <body>
   <div id="palco">
     <div id="cena3d"></div>
   </div>
+  <div id="carga" hidden role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Carregando a apresentação">
+    <div class="carga-caixa">
+      <p class="carga-titulo">Apresentação</p>
+      <p class="carga-nome">RTX PRO 6000 Blackwell</p>
+      <div class="carga-barra"><i></i></div>
+      <p class="carga-texto">Carregando</p>
+    </div>
+  </div>
+  <script>
+    // Celular: tela de toque pequena (ou ?celular=1; ?celular=0 desliga). Decidido aqui, antes dos dados
+    // embutidos, para o carregamento com progresso aparecer enquanto o arquivo de 20 MB chega.
+    (function () {
+      var p = new URLSearchParams(location.search), f = p.get('celular');
+      var c = p.get('capture') !== '1' && (f === '1' || (f !== '0' && matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) <= 600));
+      window.__CELULAR__ = c;
+      if (!c) return;
+      document.documentElement.classList.add('celular');
+      var el = document.getElementById('carga'), barra = el.querySelector('i'), texto = el.querySelector('.carga-texto');
+      el.hidden = false;
+      window.__carga = function (fr, t) {
+        if (fr == null) { el.hidden = true; return; }
+        fr = Math.max(0, Math.min(1, fr));
+        barra.style.width = (fr * 100).toFixed(1) + '%';
+        el.setAttribute('aria-valuenow', Math.round(fr * 100));
+        texto.textContent = t || ('Carregando ' + Math.round(fr * 100) + '%');
+      };
+    })();
+  </script>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

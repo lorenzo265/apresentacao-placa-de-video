@@ -17,7 +17,7 @@ import { QUALIDADES, aplicaMateriais, amostraAcumulacao, criaEstudio, criaPos, p
 THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 CameraControls.install({ THREE });
 
-export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null, qualidade = null, luz = null, capture = false, acumula = null }) {
+export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = null, qualidade = null, luz = null, capture = false, acumula = null, aoProgresso = undefined }) {
   const tc = tema?.cena ?? null;     // parâmetros de cena do tema; null = cena padrão
   const R = tc?.realista ?? null;    // modo realista (lookdev.js)
   // Qualidade: a pedida na URL; sem pedido, a média, com troca automática para a baixa se o
@@ -120,7 +120,7 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
       const embutido = window.__TOUR_GLB__;
       const gltf = embutido
         ? await loader.parseAsync(Uint8Array.from(atob(embutido), (c) => c.charCodeAt(0)).buffer, '')
-        : await loader.loadAsync('data/card.glb');
+        : await loader.loadAsync('data/card.glb', aoProgresso);
       // O GLTFLoader tira os pontos dos nomes ("gpu.die" vira "gpudie"); o nome original fica em userData.
       gltf.scene.traverse((o) => { if (o.userData?.name) o.name = o.userData.name; });
       // metros, Y para cima -> milímetros, Z para cima
@@ -274,7 +274,9 @@ export async function criaCena(container, { medidas, temGlb, pixelRatio, tema = 
   const r5 = (x) => Math.round(x * 1e5);
   function assinatura() {
     const p = camera.position, o = camera.quaternion;
-    return `${[p.x, p.y, p.z, o.x, o.y, o.z, o.w, camera.fov, nivelAtual].map(r5).join(',')}|${destaqueAtual}|${nivelQ}|${renderer.getPixelRatio()}`;
+    // camera.view: recorte do celular (src/celular.js); no computador é sempre null
+    const vw = camera.view?.enabled ? `|${[camera.view.offsetX, camera.view.offsetY, camera.view.width].map(r5).join(',')}` : '';
+    return `${[p.x, p.y, p.z, o.x, o.y, o.z, o.w, camera.fov, nivelAtual].map(r5).join(',')}|${destaqueAtual}|${nivelQ}|${renderer.getPixelRatio()}${vw}`;
   }
   function amostra(k) {
     const am = amostraAcumulacao(k, R.acumula);

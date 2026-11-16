@@ -8,14 +8,14 @@ import { criaCamadaDiagramas } from './diagrams.js';
 import { criaChamada } from './callout.js';
 import { criaCabecalho } from './header.js';
 import { criaControles } from './controls.js';
-import { STAGE_W, STAGE_H, HEADER_H, boxPlacement, safeRect } from './layout.js';
+import { STAGE_W, STAGE_H, boxPlacement, rectLivre3d } from './layout.js';
 import { criaCotas } from './cotas.js';
 import { criaCaminhos } from './caminhos3d.js';
 import MERGULHO from './mergulho.json';
 
 const COR_CAMINHO = { energy: '#ffb020', data: '#35d0e6', heat: '#ff6a3d' };
 
-export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
+export function criaTour({ dados, palco, cena, capture, corte, tema = null, movel = null }) {
   const { textos, world, medidas } = dados;
 
   // Retângulo de mundo (diagramas) na tela para um enquadramento {cx, cy, lw}, e o inverso: o
@@ -73,7 +73,7 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
 
   const camadaDiag = criaCamadaDiagramas(palco, world, tema?.diagramas ?? null);
   const cotas = tema?.cena?.cotas ? criaCotas(palco, cena, medidas) : null;
-  const chamada = criaChamada(palco);
+  const chamada = criaChamada(palco, movel ? { destino: movel.destinoLinha } : {});
   const corLinha = tema?.linha ?? '#f1f4f8';
   const cabecalho = criaCabecalho(palco);
   // selo da vitrine: só enquanto alguma peça está fora da posição (a procedência do beat não muda)
@@ -317,6 +317,43 @@ export function criaTour({ dados, palco, cena, capture, corte, tema = null }) {
       volta = null;
     });
     addEventListener('pointerup', () => { arrasto = null; });
+    // Toque (celular e tablet): um dedo desloca o diagrama (o arrasto acima), dois dedos aproximam em
+    // torno do ponto entre eles. Só ponteiros de toque: com mouse nada disto roda.
+    const dedos = new Map();
+    let pinca = null;
+    const centroDist = () => {
+      const [a, b] = [...dedos.values()];
+      const r = palco.getBoundingClientRect(), s = STAGE_W / r.width;
+      return { sx: ((a[0] + b[0]) / 2 - r.left) * s, sy: ((a[1] + b[1]) / 2 - r.top) * s, d: Math.max(1, Math.hypot(a[0] - b[0], a[1] - b[1])) };
+    };
+    palco.addEventListener('pointerdown', (ev) => {
+      if (ev.pointerType !== 'touch') return;
+      dedos.set(ev.pointerId, [ev.clientX, ev.clientY]);
+      if (dedos.size === 2 && diagNaTela()) {
+        arrasto = null;
+        const de = vbLivre ?? { ...qVb }, c = centroDist();
+        const vw = Math.exp(de.lw), vh = vw * STAGE_H / STAGE_W;
+        pinca = { de, d0: c.d, wx: de.cx - vw / 2 + c.sx * vw / STAGE_W, wy: de.cy - vh / 2 + c.sy * vh / STAGE_H };
+      }
+    });
+    addEventListener('pointermove', (ev) => {
+      if (ev.pointerType !== 'touch' || !dedos.has(ev.pointerId)) return;
+      dedos.set(ev.pointerId, [ev.clientX, ev.clientY]);
+      if (!pinca || dedos.size !== 2) return;
+      const c = centroDist();
+      const lw = Math.min(Math.log(40000), Math.max(Math.log(20), pinca.de.lw - Math.log(c.d / pinca.d0)));
+      const vw2 = Math.exp(lw), vh2 = vw2 * STAGE_H / STAGE_W;
+      vbLivre = { cx: pinca.wx + vw2 / 2 - c.sx * vw2 / STAGE_W, cy: pinca.wy + vh2 / 2 - c.sy * vh2 / STAGE_H, lw };
+      volta = null;
+    });
+    const soltaDedo = (ev) => {
+      if (ev.pointerType !== 'touch') return;
+      dedos.delete(ev.pointerId);
+      if (dedos.size < 2) pinca = null;
+      if (ev.type === 'pointercancel') arrasto = null;
+    };
+    addEventListener('pointerup', soltaDedo);
+    addEventListener('pointercancel', soltaDedo);
   }
 
   // ---- navegação ----
@@ -480,7 +517,7 @@ function enquadraAuto(sb, corte, cena) {
   try { beats = beatsDoCorte(copia, corte); } catch { return sb; }
   const nivelDe = (e) => (e === 'assembled' ? 0 : Number(String(e).slice(1)));
   // sem linha de chamada, a caixa (só título) fica no canto inferior esquerdo: a placa fica acima dela
-  const livre = (b) => (b.callout ? safeRect(b.callout) : [48, HEADER_H + 24, STAGE_W - 96, STAGE_H - HEADER_H - 24 - 210]);
+  const livre = (b) => rectLivre3d(b.callout);
   const aplica = (alvo, cfg, nivel, fov, rect) => {
     const r = cena.enquadraNivel({ nivel, pos: alvo.pos, target: alvo.target, fov, rect, folga: cfg?.folga ?? 0.04, pecas: cfg?.pecas ?? null });
     if (r) { alvo.pos = r.pos; alvo.target = r.target; }

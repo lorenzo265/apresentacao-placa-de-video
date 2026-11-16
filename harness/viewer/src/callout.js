@@ -10,7 +10,13 @@ const SELOS = {
   illustrative: { palavra: 'Ilustrativo', icone: 'M8,2 L14,8 L8,14 L2,8 Z' },            // losango
 };
 
-export function criaChamada(palco) {
+/**
+ * opcoes.destino (só no celular, src/celular.js): a caixa sai do palco para um painel nativo, e a linha
+ * vai até a borda do palco voltada para ele. Devolve { tipo: 'baixo' } (painel embaixo: a linha desce
+ * até a borda de baixo) ou { tipo: 'direita', y } (painel à direita, título na altura y do palco).
+ */
+export function criaChamada(palco, opcoes = {}) {
+  const destino = opcoes.destino ?? null;
   const svg = document.createElementNS(NS, 'svg');
   svg.id = 'chamada';
   svg.setAttribute('width', STAGE_W); svg.setAttribute('height', STAGE_H);
@@ -64,14 +70,21 @@ export function criaChamada(palco) {
     svg.style.visibility = 'visible';
     svg.style.setProperty('--cor-linha', cor);
     const [ax, ay] = ancora;
-    const { side } = boxPlacement(beat.callout);
-    const ex = side === 'left' ? ret[0] + ret[2] : ret[0];       // borda da caixa voltada para o centro
-    const ey = ret[1] + 46;                                       // altura do título
-    const dir = side === 'left' ? 1 : -1;
-    let cx = ex + dir * 56;                                       // onde a diagonal vira horizontal
-    if ((ax - cx) * dir < 0) cx = ax;                             // âncora entre o cotovelo e a caixa
-    const pts = [[ax, ay], [cx, ey], [ex, ey]];
-    const L = Math.hypot(cx - ax, ey - ay) + Math.abs(ex - cx);
+    const d = destino?.();
+    let pts, L;
+    if (d?.tipo === 'baixo') {
+      pts = [[ax, ay], [ax, STAGE_H]];
+      L = Math.max(1, STAGE_H - ay);
+    } else {
+      const side = d ? 'right' : boxPlacement(beat.callout).side;
+      const ex = d ? STAGE_W : side === 'left' ? ret[0] + ret[2] : ret[0];   // borda da caixa voltada para o centro
+      const ey = d ? d.y ?? ay : ret[1] + 46;                                      // altura do título
+      const dir = side === 'left' ? 1 : -1;
+      let cx = ex + dir * 56;                                       // onde a diagonal vira horizontal
+      if ((ax - cx) * dir < 0) cx = ax;                             // âncora entre o cotovelo e a caixa
+      pts = [[ax, ay], [cx, ey], [ex, ey]];
+      L = Math.hypot(cx - ax, ey - ay) + Math.abs(ex - cx);
+    }
     linha.setAttribute('d', `M${pts.map((p) => p.join(',')).join(' L')}`);
     linha.style.strokeDasharray = L;
     linha.style.strokeDashoffset = L * (1 - pLinha);

@@ -8,11 +8,13 @@ import './kinds.css';
 import './style.css';
 import './temas.css';
 import './modos.css';
+import './celular.css';
 import { buildWorld } from './world.js';
 import { criaCena } from './scene3d.js';
 import { criaTour } from './tour.js';
 import { criaExplorar } from './explorar.js';
-import { STAGE_W, STAGE_H } from './layout.js';
+import { STAGE_W, STAGE_H, usaLayoutCelular } from './layout.js';
+import { criaLayoutCelular } from './celular.js';
 import { criaChamada } from './callout.js';
 import { temaDaUrl, desenhaFundo } from './temas.js';
 import { qualidadeDaUrl, acumulaDaUrl } from './lookdev.js';
@@ -24,7 +26,12 @@ const capture = params.get('capture') === '1';
 const padrao = window.__TOUR_PADRAO__ ?? {};
 const tema = temaDaUrl(params, padrao.tema ?? null);     // null = visual padrão, sem nenhuma mudança
 const qualidade = qualidadeDaUrl(params) ?? padrao.qualidade ?? null;   // null = média com escolha automática
-const luz = params.get('luz');      // fria | quente: conferência de material (lookdev)
+const luz = params.get('luz');
+// Celular (decidido no index.html: tela de toque pequena, ou ?celular=1): layout próprio, qualidade baixa
+// e carregamento com progresso. No computador fica false e nada abaixo muda.
+const celular = !capture && window.__CELULAR__ === true;
+const carga = celular ? window.__carga ?? null : null;
+const respira = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));      // fria | quente: conferência de material (lookdev)
 // No arquivo único (npm run build:single) os dados vêm embutidos na página.
 const embutido = window.__TOUR_DATA__ ?? null;
 const getJson = async (u) => {
@@ -49,8 +56,11 @@ async function inicia() {
   }
 
   // Palco lógico de 1920x1080; no modo ao vivo é escalado para caber na janela.
+  const movel = celular ? criaLayoutCelular(palco) : null;
+  if (movel) usaLayoutCelular(true);
   let escala = 1;
   const ajusta = () => {
+    if (movel) { escala = movel.ajusta(); return; }
     escala = capture ? 1 : Math.min(innerWidth / STAGE_W, innerHeight / STAGE_H);
     palco.style.transform = capture ? 'none' : `translate(-50%, -50%) scale(${escala})`;
   };
@@ -63,12 +73,15 @@ async function inicia() {
   ]);
   const diagramas = await Promise.all(manifest.diagrams.map((d) => getJson(`data/diagrams/${d.file}`)));
   const world = buildWorld(storyboard, diagramas);
+  if (carga) { carga(0.62, 'Montando a placa 3D'); await respira(); }
   world.avisos.forEach((a) => console.warn(`[diagramas] ${a}`));
 
   const cena = await criaCena(document.getElementById('cena3d'), {
     medidas, temGlb: manifest.glb, pixelRatio: capture ? 1 : Math.min(2, devicePixelRatio * escala), tema,
-    qualidade: params.get('qualidade') ? qualidade : null, luz, capture, acumula: acumulaDaUrl(params),
+    qualidade: params.get('qualidade') ? qualidade : celular ? 'baixa' : null, luz, capture, acumula: acumulaDaUrl(params),
+    aoProgresso: carga && !window.__TOUR_GLB__ ? (e) => { if (e.total) carga(0.05 + 0.55 * e.loaded / e.total, `Carregando a placa: ${Math.round(100 * e.loaded / e.total)}%`); } : undefined,
   });
+  if (carga) { carga(0.85, 'Preparando a apresentação'); await respira(); }
   cena.avisos.forEach((a) => console.warn(`[3D] ${a}`));
   // Para os testes: diz se o GLB entrou e se uma peça existe pelo id do assembly.
   window.__cena = { glb: !cena.blockout, temAncora: cena.temAncora, avisos: cena.avisos, qualidade: cena.qualidade, materiais: cena.materiais, tema: tema?.nome ?? null,
@@ -114,7 +127,7 @@ async function inicia() {
   // (captura, testes); os beats prontos fora do corte viram extras, abertos pelo índice.
   const cortes = storyboard.cuts;
   const corte = params.get('cut') ?? (cortes.seminario ? 'seminario' : cortes.completo ? 'completo' : Object.keys(cortes)[0]);
-  const tour = criaTour({ dados: { storyboard, textos, world, medidas }, palco, cena, capture, corte, tema });
+  const tour = criaTour({ dados: { storyboard, textos, world, medidas }, palco, cena, capture, corte, tema, movel });
   window.__tour = tour;
   // Modo Explorar: só com o GLB (as camadas são os estágios do modelo) e com os dados das peças
   if (!capture && !cena.blockout && manifest.pecas) {
@@ -122,7 +135,9 @@ async function inicia() {
     tour.controles.ligaExplorar(explorar);
     window.__explorar = explorar;
   }
+  movel?.liga({ tour, explorar: window.__explorar ?? null, cena });
   await tour.ready;
+  carga?.(null);
   const beat = params.get('beat');
   if (beat) tour.goto(beat);
   if (params.get('modo') === 'explorar') window.__explorar?.entra();
@@ -130,6 +145,7 @@ async function inicia() {
 
 inicia().catch((e) => {
   console.error(e);
+  window.__carga?.(null);
   window.__tourErro = String(e.stack ?? e);
   document.body.insertAdjacentHTML('beforeend', `<pre id="erro">${String(e.message ?? e)}</pre>`);
 });

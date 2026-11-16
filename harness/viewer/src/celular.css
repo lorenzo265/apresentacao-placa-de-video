@@ -1,0 +1,177 @@
+/* Celular (src/celular.js). Todas as regras valem só sob html.celular, que só existe no celular:
+   no computador nada daqui se aplica. Medidas em px de CSS (fora do palco escalado).
+   Grade: retrato = cabeçalho, palco, painel do texto, barra; paisagem = palco à esquerda e, à direita,
+   cabeçalho, painel e barra. Áreas seguras com env(safe-area-inset-*) e altura com 100dvh. */
+
+html.celular, html.celular body { background: #050607; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+html.celular body { height: 100dvh; }
+html.celular #palco { position: fixed; touch-action: none; }
+html.celular body { position: fixed; inset: 0; width: 100%; overflow: hidden; }
+html.celular #palco canvas { touch-action: none; }
+html.celular .ui button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+html.celular .ui kbd { display: none; }
+
+#movel { display: none; }
+html.celular #movel { position: fixed; left: 0; top: 0; width: 100%; height: 100dvh; z-index: 3; display: grid; pointer-events: none;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+html.celular.retrato #movel { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) var(--painel-h, 45%) auto;
+  grid-template-areas: "topo" "area" "painel" "barra"; }
+html.celular.paisagem #movel { grid-template-columns: minmax(0, 1fr) clamp(250px, 37vw, 340px); grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "area topo" "area painel" "area barra"; }
+html.celular.paisagem.recolhido #movel { grid-template-columns: minmax(0, 1fr) 64px; }
+html.celular #movel > * { pointer-events: auto; min-width: 0; }
+html.celular #movel #m-area { grid-area: area; pointer-events: none; }
+
+/* ---- cabeçalho compacto ---- */
+html.celular #movel #cabecalho { grid-area: topo; position: relative; left: auto; top: auto; width: auto; height: 44px; padding: 0 14px;
+  font-size: 13px; background: #07090b; isolation: auto; pointer-events: none; gap: 10px; }
+html.celular #movel #cabecalho::before { display: none; }
+html.celular #movel #cabecalho .trilha { gap: 6px; flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }
+html.celular #movel #cabecalho .trilha span.ativo { gap: 5px; }
+html.celular #movel #cabecalho .trilha span.ativo::before { width: 6px; height: 6px; }
+html.celular #movel #cabecalho .secao { font-size: 12px; letter-spacing: .1em; white-space: nowrap; }
+html.celular #movel #cabecalho .progresso { left: 14px; width: calc(100% - 28px); bottom: 4px; height: 2px; }
+html.celular.paisagem #movel #cabecalho { padding: 0 12px; }
+html.celular.paisagem.recolhido #movel #cabecalho { display: none; }
+
+/* ---- painel do texto ---- */
+html.celular #movel #m-painel { grid-area: painel; display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  background: #0a0d0f; border-top: 1px solid #ffffff14; touch-action: pan-y; }
+html.celular.paisagem #movel #m-painel { border-top: none; border-left: 1px solid #ffffff14; }
+html.celular #movel .m-alca { flex: none; width: 100%; height: 24px; min-height: 24px; padding: 0; border: none; border-radius: 0; background: transparent;
+  display: flex; justify-content: center; align-items: center; cursor: grab; touch-action: none; }
+html.celular #movel .m-alca i { display: block; width: 44px; height: 5px; border-radius: 3px; background: #ffffff38; }
+html.celular #movel .m-alca::before { content: ""; position: absolute; left: 0; right: 0; height: 44px; }
+html.celular #movel .m-alca { position: relative; }
+html.celular #movel .m-rolagem { flex: 1; min-height: 0; overflow-y: auto; padding: 0 16px 14px; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+html.celular.paisagem #movel .m-rolagem { padding: 0 14px 10px; }
+
+/* caixa do texto, no fluxo do painel */
+html.celular #movel #caixa { position: static; width: auto; max-height: none; overflow: visible; margin: 0; padding: 0;
+  background: none; border: none; border-radius: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; color: var(--texto, #f4f7f5); }
+html.celular #movel #caixa::before, html.celular #movel #caixa::after { display: none; }
+html.celular #movel #caixa .selos { gap: 6px; }
+html.celular #movel .selo { font-size: 12px; padding: 2px 9px 2px 6px; gap: 4px; }
+html.celular #movel .selo svg { width: 14px; height: 14px; }
+html.celular #movel #caixa h2 { font-size: 21px; line-height: 1.15; letter-spacing: -.015em; margin: 9px 0 8px; }
+html.celular #movel #caixa .caption { font-size: 15.5px; line-height: 1.45; margin: 0 0 10px; }
+html.celular #movel #caixa .fonte { font-size: 12px; line-height: 1.35; padding-top: 8px; }
+html.celular.paisagem #movel #caixa h2 { font-size: 18px; margin: 6px 0 6px; }
+html.celular.paisagem #movel #caixa .caption { font-size: 14px; line-height: 1.4; }
+/* recolhido: só o título */
+html.celular.recolhido #movel #caixa .selos, html.celular.recolhido #movel #caixa .caption, html.celular.recolhido #movel #caixa .fonte { display: none; }
+html.celular.retrato.recolhido #movel #caixa h2 { margin: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.celular.retrato.recolhido #movel .m-rolagem { overflow: hidden; }
+html.celular.paisagem.recolhido #movel .m-rolagem { display: none; }
+html.celular.paisagem.recolhido #movel #m-painel .m-alca { flex: 1; height: auto; }
+html.celular.paisagem.recolhido #movel #m-painel .m-alca i { width: 5px; height: 44px; }
+html.celular.paisagem.recolhido #movel #m-painel .m-alca::before { display: none; }
+
+/* aviso do diagrama e selo da vitrine: sobre a borda de baixo do palco, em tamanho de leitura */
+html.celular #movel #aviso-diagrama { position: fixed; left: var(--palco-l); top: calc(var(--palco-t) + var(--palco-h)); bottom: auto; width: var(--palco-w); height: auto;
+  transform: translateY(-100%); padding: 4px 10px; font-size: 11px; line-height: 1.25; pointer-events: none; z-index: 1; }
+html.celular #movel #aviso-diagrama::before { width: 7px; height: 7px; margin-right: 8px; }
+html.celular #movel #selo-vitrine { position: fixed; left: calc(var(--palco-l) + var(--palco-w) / 2); top: calc(var(--palco-t) + var(--palco-h) - 6px); bottom: auto;
+  transform: translate(-50%, -100%); pointer-events: none; white-space: nowrap; z-index: 1; }
+
+/* ---- barra: botões de dedo (44 px ou mais) ---- */
+html.celular #movel #barra { grid-area: barra; position: relative; left: auto; right: auto; bottom: auto; display: flex; gap: 6px; align-items: center;
+  padding: 8px 10px; background: #07090b; border-top: 1px solid #ffffff14; z-index: 2; }
+html.celular body.ocioso #movel #barra { visibility: visible; }
+html.celular #movel #barra .grupo { display: contents; }
+html.celular #movel #barra button { height: 48px; min-width: 48px; padding: 0 10px; font-size: 15px; border-radius: 12px; justify-content: center; flex: 1 1 0; }
+html.celular #movel #barra button[data-a=prev], html.celular #movel #barra button[data-a=next] { flex: 0 0 52px; width: 52px; }
+html.celular #movel #barra button[data-a=prev] { order: 0; }
+html.celular #movel #barra button[data-a=indice] { order: 1; }
+html.celular #movel #barra button[data-a=notas] { order: 2; }
+html.celular #movel #barra button[data-a=explorar] { order: 3; }
+html.celular #movel #barra button[data-a=next] { order: 4; }
+html.celular #movel #barra button[data-a=centro] { display: none; }
+html.celular #movel #barra .extra { position: absolute; left: 10px; right: 10px; bottom: 100%; margin-bottom: 6px; padding: 6px 10px; border-radius: 10px;
+  background: #0a0d0fe8; border: 1px dashed #c0adf066; font-size: 13px; text-align: center; }
+html.celular.paisagem #movel #barra { flex-wrap: wrap; padding: 6px 8px; gap: 5px; border-top: 1px solid #ffffff14; }
+html.celular.paisagem #movel #barra button { height: 44px; font-size: 14px; padding: 0 6px; }
+html.celular.paisagem #movel #barra button[data-a=prev], html.celular.paisagem #movel #barra button[data-a=next] { flex: 0 0 46px; width: 46px; }
+html.celular.paisagem.recolhido #movel #barra { flex-direction: column; padding: 6px 8px; }
+html.celular.paisagem.recolhido #movel #barra button:not([data-a=prev]):not([data-a=next]), html.celular.paisagem.recolhido #movel #barra .extra { display: none; }
+html.celular.paisagem.recolhido #movel #barra button[data-a=prev], html.celular.paisagem.recolhido #movel #barra button[data-a=next] { flex: 0 0 48px; width: 46px; }
+html.celular.paisagem.recolhido #movel #barra button[data-a=next] { order: -1; }
+
+/* voltar ao enquadramento: botão redondo no canto do palco, só com a câmera na mão */
+html.celular #movel #m-centro { position: fixed; left: calc(var(--palco-l) + var(--palco-w) - 54px); top: calc(var(--palco-t) + 8px); width: 46px; height: 46px; padding: 0;
+  border-radius: 50%; justify-content: center; background: #0a0d0fd0; z-index: 2; }
+html.celular body.modo-explorar #movel #m-centro { display: none; }
+
+/* ---- índice: tela cheia, uma coluna ---- */
+html.celular #movel #indice { position: fixed; inset: 0; z-index: 8; gap: 12px; overflow: hidden;
+  padding: calc(env(safe-area-inset-top) + 14px) calc(env(safe-area-inset-right) + 14px) calc(env(safe-area-inset-bottom) + 10px) calc(env(safe-area-inset-left) + 14px); }
+html.celular #movel #indice header { flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+html.celular #movel #indice header h2 { font-size: 24px; }
+html.celular #movel #indice header p { order: 3; flex: 1 0 100%; font-size: 13px; }
+html.celular #movel #indice header button { margin-left: auto; height: 44px; font-size: 15px; }
+html.celular #movel #indice .colunas { column-count: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+html.celular.paisagem #movel #indice .colunas { column-count: 2; column-fill: balance; }
+html.celular #movel #indice section { margin-bottom: 14px; }
+html.celular #movel #indice h3 { font-size: 12px; }
+html.celular #movel #indice .colunas button { min-height: 44px; font-size: 15px; padding: 6px 12px; }
+html.celular #movel #indice .colunas button i { font-size: 13px; min-width: 26px; }
+html.celular #movel #indice .colunas button.extra i { font-size: 11px; min-width: 40px; }
+
+/* ---- notas: folha sobre o palco ---- */
+html.celular #movel #notas { position: fixed; left: calc(env(safe-area-inset-left) + 8px); right: calc(env(safe-area-inset-right) + 8px); width: auto;
+  top: calc(env(safe-area-inset-top) + 52px); bottom: auto; max-height: 62dvh; padding: 14px 16px; font-size: 15px; border-radius: 14px; z-index: 7; }
+html.celular.paisagem #movel #notas { right: auto; width: calc(100% - clamp(250px, 37vw, 340px) - 24px); top: calc(env(safe-area-inset-top) + 8px); max-height: 80dvh; }
+html.celular #movel #notas .quem { font-size: 12px; flex-wrap: wrap; gap: 4px 10px; }
+html.celular #movel #notas ul.fala { padding-left: 18px; }
+html.celular #movel #notas .prox { font-size: 13px; }
+
+/* ---- modo Explorar ---- */
+html.celular body.modo-explorar #movel #m-painel { display: none; }
+html.celular #movel #explorar { display: contents; }
+html.celular #movel #explorar[hidden] { display: none !important; }
+html.celular #movel #ex-linha { display: none; }
+html.celular #movel #explorar .ex-topo { grid-area: topo; position: relative; left: auto; right: auto; top: auto; height: 52px; padding: 0 10px 0 14px; gap: 10px;
+  background: #07090b; pointer-events: auto; }
+html.celular #movel #explorar .ex-topo h1 { font-size: 16px; white-space: nowrap; }
+html.celular #movel #explorar .ex-topo button { height: 44px; font-size: 14px; padding: 0 12px; }
+html.celular #movel #explorar .ex-folha { grid-row: 3 / 5; grid-column: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  background: #0a0d0f; border-top: 1px solid #8ad42a44; }
+html.celular.paisagem #movel #explorar .ex-folha { grid-row: 2 / 4; grid-column: 2; border-top: none; border-left: 1px solid #8ad42a44; }
+html.celular.paisagem #movel #explorar .ex-folha .m-alca { display: none; }
+html.celular #movel #explorar .ex-camadas { position: static; width: auto; flex: none; padding: 0 0 6px; border: none; border-radius: 0; background: none; }
+html.celular #movel #explorar .ex-camadas h2 { margin: 0 14px 6px; font-size: 11px; }
+html.celular #movel #explorar .ex-camadas ol { flex-direction: row; overflow-x: auto; gap: 6px; padding: 0 14px 4px; scroll-padding: 14px; overscroll-behavior: contain; scrollbar-width: none; }
+html.celular #movel #explorar .ex-camadas ol::-webkit-scrollbar { display: none; }
+html.celular #movel #explorar .ex-camadas ol li { flex: none; }
+html.celular #movel #explorar .ex-camadas ol button { width: auto; max-width: 210px; height: 48px; padding: 0 12px; gap: 8px; font-size: 14px; }
+html.celular #movel #explorar .ex-camadas ol button i { font-size: 14px; min-width: 10px; }
+html.celular #movel #explorar .ex-camadas ol button em { font-size: 10px; }
+html.celular #movel #explorar .ex-camadas .acoes { margin: 6px 14px 0; gap: 8px; }
+html.celular #movel #explorar .ex-camadas .acoes button { height: 44px; font-size: 14px; }
+html.celular.paisagem #movel #explorar .ex-camadas ol { flex-wrap: wrap; overflow: visible; }
+html.celular.paisagem #movel #explorar .ex-camadas ol button { height: 44px; max-width: none; }
+html.celular.paisagem #movel #explorar .ex-folha { overflow-y: auto; }
+html.celular #movel #explorar .ex-painel { position: static; width: auto; max-height: none; flex: 1 0 auto; overflow: visible; margin: 8px 10px 0; padding: 14px 16px 16px;
+  border-radius: 14px; box-shadow: none; }
+html.celular.retrato #movel #explorar .ex-folha { overflow-y: auto; overscroll-behavior: contain; }
+html.celular #movel #explorar .ex-painel .selos { margin-bottom: 8px; gap: 6px; }
+html.celular #movel #explorar .ex-painel .selo { font-size: 12px; }
+html.celular #movel #explorar .ex-painel .olho { font-size: 11px; margin-bottom: 4px; }
+html.celular #movel #explorar .ex-painel h2 { font-size: 22px; margin-bottom: 8px; }
+html.celular #movel #explorar .ex-painel h3 { font-size: 16px; margin-bottom: 6px; }
+html.celular #movel #explorar .ex-painel .texto { font-size: 15px; line-height: 1.45; }
+html.celular #movel #explorar .ex-painel .prov { font-size: 11px; }
+html.celular #movel #explorar .ex-painel .ressalva { font-size: 13.5px; padding: 8px 10px; }
+html.celular #movel #explorar .ex-painel .fonte { font-size: 12px; }
+html.celular #movel #explorar .ex-painel .acoes { margin-top: 12px; gap: 8px; }
+html.celular #movel #explorar .ex-painel .acoes .primario { height: 50px; font-size: 16px; }
+html.celular #movel #explorar .ex-painel .acoes .nota { font-size: 13px; }
+html.celular #movel #explorar .ex-painel .acoes .sec button { height: 44px; font-size: 14px; flex: 1 1 auto; justify-content: center; }
+html.celular #movel #explorar .ex-dica { position: static; flex: none; margin: 8px 14px 10px; font-size: 12px; text-align: center; }
+html.celular #movel #explorar .ex-selo { position: fixed; left: calc(var(--palco-l) + var(--palco-w) / 2); top: calc(var(--palco-t) + var(--palco-h) - 6px); bottom: auto;
+  transform: translate(-50%, -100%); width: max-content; max-width: calc(var(--palco-w) - 16px); }
+html.celular #movel #explorar .ex-selo .selo { font-size: 11px; white-space: normal; line-height: 1.25; }
+/* folha recolhida (retrato): só as camadas */
+html.celular.retrato.recolhido #movel #explorar .ex-painel, html.celular.retrato.recolhido #movel #explorar .ex-dica,
+html.celular.retrato.recolhido #movel #explorar .ex-camadas h2, html.celular.retrato.recolhido #movel #explorar .ex-camadas .acoes { display: none; }
+html.celular body.modo-explorar #movel #barra { display: none; }
