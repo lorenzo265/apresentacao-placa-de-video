@@ -11,7 +11,7 @@ Uma página web (Three.js) que:
 1. Apresenta a placa montada, com rotação lenta.
 2. Desmonta a placa em ordem lógica (a ordem real de um teardown).
 3. A cada peça: câmera cinematográfica aproxima, uma **linha de chamada** nasce de um ponto âncora da peça e vai até uma **caixa de texto** com a explicação, a explicação some e a próxima peça entra.
-4. Cada explicação traz um selo de **procedência** (confirmado, derivado, provável ou ilustrativo), para o espectador saber o que é fato e o que é proposta de engenharia.
+4. Cada afirmação tem **procedência** (confirmado, derivado, provável ou ilustrativo), registrada nos dados e nos relatórios do `fact-checker`. Desde 2026-11-16 (decisão do autor) o selo e a linha de fonte **não aparecem mais na tela**: o que é hipótese do grupo vem dito no próprio texto ("conclusão do grupo", "leitura do grupo", "não achamos nas fontes lidas").
 5. É exportada em vídeo por captura determinística, quadro a quadro, em mais de um corte (seminário, completo, teaser). O vídeo é entregável de primeira classe, com especificação e QA próprios em `story/video-plan.md`.
 6. Permite navegação livre depois do tour e roda de arquivo local, sem internet.
 
@@ -228,7 +228,7 @@ Este é um julgamento de projeto, não uma medição. Reavalie depois do piloto,
 ### 7.4 `content/pt-BR/<part>.md` (textos)
 Seções fixas: **O que é** | **O que faz** | **Como funciona** | **Nesta placa** | **Nível de confiança** (com o selo de procedência). Frontmatter com `part`, `provenance` e `claims` (lista de fatos do spec que o texto usa, o que o fact-checker confere).
 
-Esse é o texto longo (`body`), que aparece só no viewer. O texto de cada beat fica em `content/pt-BR/beats.json`, com `headline` (até 8 palavras), `caption` (até 35 palavras), `fala` (notas do apresentador) e `source_line` (a fonte que aparece na tela).
+Esse é o texto longo (`body`), que aparece só no viewer. O texto de cada beat fica em `content/pt-BR/beats.json`, com `topico` (item do enunciado, em letras pequenas acima do título), `headline` (até 8 palavras), `pontos` (os tópicos do slide, o que aparece na tela e o apresentador lê: até 8 tópicos e 110 palavras, `**negrito**` e subtópico com `- `), `fala` (apoio curto para as notas do apresentador) e `source_line` e `claims` (fonte e fatos do spec, só nos dados, não aparecem na tela). `caption` (até 35 palavras) só vale para beat sem `pontos`.
 
 ### 7.5 Mudanças de contrato da v0.2
 
