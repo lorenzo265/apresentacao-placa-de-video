@@ -1145,22 +1145,29 @@
       "explode_state": "E7",
       "camera": {
         "pos": [
-          297.8,
-          -219.3,
-          56.6
+          188,
+          -380,
+          40
         ],
         "target": [
-          114.6,
-          42.3,
-          -35.0
+          188,
+          62,
+          -42
         ],
-        "fov": 26,
+        "fov": 30,
         "duration": 3.0,
-        "ease": "power3.inOut"
+        "ease": "power3.inOut",
+        "enquadra": {
+          "pecas": [
+            "gpu.package",
+            "mem.front"
+          ],
+          "folga": 0.06
+        }
       },
       "callout": {
         "anchor": "anchor.gpu.package.1",
-        "box": "left-center",
+        "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
       },
@@ -1169,11 +1176,6 @@
         "confirmed"
       ],
       "speaker": "Vitor",
-      "vitrine": {
-        "peca": "gpu.package",
-        "face": "+z",
-        "ocupa": 0.4
-      },
       "highlight": [
         "gpu.package"
       ]
