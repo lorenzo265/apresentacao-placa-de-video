@@ -180,7 +180,7 @@
         "Em volta do chip ficam os **chips de memória**, explicados adiante",
         "A PCB fica entre duas **pilhas de aletas**: lâminas finas que passam o calor do chip para o ar. O conjunto que tira o calor é o **cooler**"
       ],
-      "fala": "Teardown é a desmontagem de um aparelho peça por peça, com fotos, e seguimos o de uma equipe que desmontou esta placa: saem, entre outras peças, o bracket, a moldura externa, as tampas do centro e o adaptador PCIe. No centro fica a placa de circuito, a PCB, onde o chip e os outros componentes são soldados. Nela estão o chip GB202 e, em volta dele, os chips de memória. A PCB fica entre duas pilhas de aletas, lâminas finas que passam o calor para o ar, e o conjunto que tira o calor se chama cooler.",
+      "fala": "Se abrimos a placa, no centro fica a placa de circuito, a PCB, entre duas pilhas de aletas, que são lâminas finas que passam o calor do chip para o ar. O conjunto que tira o calor se chama cooler. Na PCB está o chip GB202 e, em volta dele, os chips de memória.\n\nAs peças saem na ordem de um teardown, que é a desmontagem de um aparelho peça por peça, feita pela Gamers Nexus. A identificação das peças é leitura nossa das fotos.",
       "source_line": "Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). Identificação das peças pelas fotos: leitura nossa",
       "claims": [
         "teardown.step_count",
@@ -358,7 +358,7 @@
         "**Clock**, a batida do relógio do chip, de boost: **2.617 MHz**, cerca de 2,6 bilhões de ciclos por segundo",
         "Pico de **126 TFLOPS** em FP32: 126 trilhões de operações por segundo com números de ponto flutuante (com vírgula) de 32 bits"
       ],
-      "fala": "Este é o chip da placa, o GB202. Um chip é um circuito feito de transistores, chaves elétricas minúsculas, e este tem 92,2 bilhões deles em 750 milímetros quadrados de silício, gravados pelo processo de fabricação TSMC 4N. Ele tem 188 SMs, que somam 24.064 núcleos CUDA, e 128 megabytes de cache L2. O clock, a batida do relógio do chip, chega a 2.617 megahertz, e o pico é de 126 teraflops em precisão simples, sem contar os Tensor Cores. A marcação no chip, lida pela Gamers Nexus, é GB 202-870-A1.",
+      "fala": "Esse chip é a GPU. Um chip é um circuito feito de transistores, que são chaves elétricas minúsculas. O GB202 tem 92,2 bilhões deles em 750 milímetros quadrados de silício, gravados no processo de fabricação TSMC 4N.\n\nEle tem 188 SMs e 24.064 núcleos CUDA. O texto do whitepaper da NVIDIA fala em 192 SMs para o chip completo, mas a tabela desta placa dá 188 e fecha com os 24.064 núcleos. Nós adotamos 188.\n\nO clock de boost é de 2.617 megahertz, e o pico é de 126 teraflops em precisão simples, que são 126 trilhões de operações por segundo. É dentro dele que vamos olhar a partir de agora.",
       "source_line": "NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e p. 8 e 48. Gamers Nexus, teardown (2025), para a marcação. Densidade: conta nossa",
       "claims": [
         "chip.name",
@@ -384,7 +384,7 @@
         "**Barramento de 512 bits**: 512 linhas de dados em paralelo entre a memória e o GB202, por **16 controladores** de 32 bits",
         "**ECC** (código de correção de erros): bits extras corrigem um bit trocado por erro. Fica sempre ligado"
       ],
-      "fala": "Todo processador precisa de uma memória de trabalho, a RAM, onde ficam os dados enquanto ele calcula. Esta GPU tem memória própria, separada da memória do computador: 96 gigabytes de GDDR7, um tipo feito para placas de vídeo. No verso da placa há 16 chips, e o teardown fala em 32 posições no total. Eles se ligam ao chip por um barramento de 512 bits, formado por 16 controladores de 32 bits, que são os circuitos que pedem as leituras e escritas. A memória tem ECC, que corrige um bit trocado, e ele fica sempre ligado.",
+      "fala": "Todo processador precisa de uma memória de trabalho, a RAM, onde ficam os dados enquanto ele calcula. A GPU tem a sua, separada da memória do computador: 96 gigabytes de GDDR7, um tipo de memória feito para placas de vídeo.\n\nNo verso da placa há 16 chips de memória, e o teardown fala em 32 posições no total, que são os lugares para um chip. Os chips se ligam ao GB202 por uma interface de 512 bits, formada por 16 controladores de 32 bits. A memória tem ECC, um código que corrige um bit trocado por erro, e ele fica sempre ligado.\n\nÉ daqui que os dados saem para o chip.",
       "source_line": "NVIDIA, datasheet, p. 3, e whitepaper RTX PRO Blackwell v1.1, p. 8, p. 13 e Tab. 4. Gamers Nexus, teardown (2025)",
       "claims": [
         "mem.capacity_gb",
@@ -513,7 +513,7 @@
         "**Memória**: 96 GB de GDDR7",
         "**Interrupções**: da GPU para a CPU, e trap"
       ],
-      "fala": "Resumindo os oito itens: registradores, 65.536 por SM e até 255 por thread. Instruções, PTX e SASS, e cada instrução SASS tem 16 bytes. CISC ou RISC, conclusão do grupo: RISC com extensões de acelerador. Pipeline, 4 escalonadores por SM despachando até 32 threads por ciclo cada. Cache, 128 KB de L1 por SM e 128 MB de L2. MMU, 57 bits em 6 níveis. Memória, 96 GB de GDDR7 e falhas de página resolvidas pelo driver. Interrupções, da GPU para a CPU. Obrigado, e abrimos para perguntas.",
+      "fala": "Resumindo os oito itens. Registradores: 65.536 por SM, até 255 por thread. Instruções: PTX e SASS, de 16 bytes. CISC ou RISC: RISC com instruções de acelerador, conclusão do grupo. Pipeline: 4 escalonadores por SM, sem número de estágios. Cache: 128 KB de L1 e 128 MB de L2. Gerenciamento de memória: 96 GB de GDDR7. MMU: 57 bits e 6 níveis. Interrupções: da GPU para a CPU.\n\nObrigado. Abrimos para as perguntas.",
       "source_line": "Fonte: síntese do grupo a partir das fontes citadas em cada momento. RISC ou CISC: análise do grupo",
       "claims": [
         "sm.regfile_entries",
@@ -771,7 +771,7 @@
         "Trocar de warp **não tem custo**. Leitura do grupo: se um espera, outro entra",
         "Número de estágios: **não achamos** nas fontes lidas"
       ],
-      "fala": "O SM, Streaming Multiprocessor, é a unidade do chip que executa as instruções, e a placa tem 188. Cada um tem 128 núcleos CUDA, divididos em 4 partições. O SM executa warps, que são grupos de 32 threads, pequenas tarefas que recebem a mesma instrução, cada uma com os seus dados. Pipeline é a execução em etapas, como uma linha de montagem: num processador de livro-texto, buscar a instrução, decodificar, que é ler o que ela pede, executar e guardar o resultado. Cada partição tem um escalonador de warp, que a cada ciclo, uma batida do relógio do chip, despacha a instrução de um warp pronto às threads ativas, até 32. Trocar de warp não tem custo, então, na nossa leitura, o escalonador tapa os buracos da linha com instruções de outros warps. Pesquisadores mediram 4 ciclos para uma conta de inteiro ou FP32 numa RTX 5080. Quantos estágios o pipeline tem, não achamos nas fontes.",
+      "fala": "Agora, dentro do chip. A parte que importa é o SM: a unidade que recebe as tarefas, busca as instruções e as executa. São 188 no chip. Lembra um núcleo de CPU: tem escalonador, que escolhe o que executar, registradores, que guardam os números em uso, e cache L1, uma memória rápida. Cada SM tem 128 núcleos CUDA, em 4 partições.\n\nComo o trabalho chega? Quem programa a GPU escreve o código para uma só thread, uma execução do programa com os seus dados, e manda rodar milhares de vezes. O SM junta as threads em grupos de 32, os warps. As 32 threads de um warp executam a mesma instrução, cada uma com os seus dados.\n\nAgora o pipeline: executar a instrução em etapas, como numa linha de montagem. Num processador de livro-texto: buscar, decodificar, que é ler o que ela pede, executar e guardar o resultado. Várias instruções ficam em andamento ao mesmo tempo.\n\nNesta GPU, cada partição do SM tem o seu escalonador de warp. A cada ciclo, uma batida do relógio, ele escolhe um warp pronto e despacha a instrução às threads ativas, até 32. O clock de boost é de 2.617 megahertz: cerca de 2,6 bilhões de ciclos por segundo.\n\nTrocar de warp não tem custo. Na nossa leitura, quando um warp espera um dado da memória, o escalonador executa outro. Uma conta de inteiro ou FP32 leva 4 ciclos, mas esse valor foi medido numa RTX 5080, da mesma família, e não nesta placa.\n\nO que não achamos: quantos estágios o pipeline da Blackwell tem.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5 (p. 10). Guia de programação CUDA 13.5, 3.2.2.2. Latência de inteiro e FP32: Jarmusch et al., Tab. III (RTX 5080)",
       "claims": [
         "sm.blocks",
@@ -794,7 +794,7 @@
         "Cada SM tem **65.536 registradores** = **256 KB**, em **4 bancos** de 16.384. Na placa toda: **48.128 KB**",
         "Cada warp mantém os seus registradores: **trocar de warp não custa nada**. Na CPU, trocar de tarefa copia os registradores para a memória"
       ],
-      "fala": "Registrador é a memória interna do processador, a mais rápida, e guarda uma palavra, que aqui tem 32 bits. Na teoria de circuitos digitais, um registrador é um conjunto de flip-flops, que são memórias de 1 bit, e ele só guarda um valor novo quando o sinal load chega junto com o clock, a batida do relógio do chip. Registrador tem nome e não endereço: no código desta GPU, R0, R1, R2. Cada SM tem 65.536 deles, que dão 256 KB, em 4 bancos de 16.384, um por partição, e na placa toda são 48.128 KB. Numa CPU, trocar de tarefa copia os registradores para a memória. Na GPU, cada warp fica com os seus registradores enquanto existir, então trocar de warp não custa nada. Como o banco é construído por dentro, bancos e portas, não achamos nas fontes.",
+      "fala": "Registrador é a memória interna do processador, a mais rápida. Ele guarda uma palavra, que aqui tem 32 bits.\n\nNa teoria de circuitos digitais, um registrador é um conjunto de flip-flops, que são memórias de 1 bit. Ele só guarda um valor novo quando o sinal load chega junto com o clock, a batida do relógio. E registrador tem nome e não endereço: no código desta GPU aparecem R0, R1, R2 e assim por diante.\n\nCada SM tem 65.536 registradores de 32 bits. São 256 kilobytes, em 4 bancos de 16.384, um por partição. Na placa toda, 188 vezes 256 KB dão 48.128 KB.\n\nAqui há uma diferença importante para a CPU. Numa CPU, quando o sistema troca uma tarefa por outra, ele copia os registradores para a memória. Na GPU, cada warp mantém os seus registradores enquanto existir. Por isso trocar de warp não custa nada.\n\nO que não achamos: como o banco de registradores é construído por dentro, com bancos e portas. Há medidas de outras gerações, mas não da Blackwell.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Fig. 5 (p. 10). Blackwell Tuning Guide 13.5, 1.4.1.1. Guia de programação CUDA 13.5, 3.2.2.2",
       "claims": [
         "sm.blocks",
@@ -832,7 +832,7 @@
         "Com **255** por thread: 32 × 255 = 8.160 por warp, e só **8 warps** cabem no SM (conta nossa, o limite é 48)",
         "O **SAXPY** que compilamos usa **10** por thread, e aí cabem os **48 warps**"
       ],
-      "fala": "No código da GPU aparecem registradores R, de uso geral, UR, uniformes, P, predicados, que guardam um bit, e SR, especiais, como o que guarda o índice da thread. Numa CPU, o número de registradores é fixo. Na GPU, o compilador decide quantos cada thread usa, até 255. Só que os 65.536 registradores do SM são repartidos entre todos os warps: com 255 por thread, cabem só 8 warps, pela nossa conta simples. Com os 10 registradores do SAXPY, cabem os 48 warps. Com poucos warps, o escalonador tem menos opções de troca.",
+      "fala": "Voltando aos registradores, agora no código de verdade. No SASS aparecem quatro tipos: R, de uso geral, UR, uniformes, P, os predicados, que têm 1 bit e guardam verdadeiro ou falso, e SR, os especiais, como o que guarda o índice da thread.\n\nQuem decide quantos registradores cada thread usa é o compilador, o programa que traduz o código para a máquina. O máximo é 255 por thread. Só que os 65.536 registradores do SM são repartidos entre todos os warps. Com 255 por thread, o SM comporta só 8 warps, numa conta simples nossa, e o máximo é 48. O nosso SAXPY usa só 10 registradores por thread. Com ele, cabem os 48 warps.\n\nIsso importa porque, quanto mais warps no SM, mais opções o escalonador tem para trocar quando um espera. Por isso, na nossa leitura, o compilador tenta gastar poucos registradores.",
       "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.1.1. Experimento do grupo (SAXPY, ptxas -v). Contas nossas",
       "claims": [
         "sm.max_regs_per_thread",
@@ -853,7 +853,7 @@
         "O SASS pode mudar entre gerações: programa sem PTX não tem garantia de rodar em GPUs futuras",
         "Exemplo, o **SAXPY** (y = a·x + y): **20 instruções PTX** viram **19 instruções SASS** úteis"
       ],
-      "fala": "Conjunto de instruções é a lista de ordens que o processador entende. Na NVIDIA ele tem duas camadas. O PTX é uma máquina virtual, um processador descrito em documento, com instruções estáveis entre gerações. O SASS é o código de máquina de cada geração, nesta placa o sm_120, gerado a partir do PTX pelo ptxas ou pelo driver, o programa que controla a placa. No SAXPY, que compilamos, 20 instruções PTX viraram 19 instruções SASS úteis. A lista oficial da família Blackwell tem 258 mnemônicos, que contamos.",
+      "fala": "Conjunto de instruções é a lista de ordens que o processador entende, com o formato delas. Na NVIDIA ele tem duas camadas.\n\nA primeira é o PTX. É uma máquina virtual: um processador descrito em documento, com instruções estáveis entre gerações de GPU. O programa, escrito em CUDA C, vira PTX. A segunda é o SASS, que é o código de máquina de cada geração. O PTX é traduzido para SASS pelo ptxas, ou pelo driver, o programa que controla a placa. Nesta placa o alvo é o sm_120.\n\nPor que duas camadas? O PTX foi feito para ser estável entre gerações de GPU. O SASS é o de cada geração, e o guia da NVIDIA diz que sem o PTX embutido o programa não tem garantia de rodar em GPUs futuras.\n\nNós compilamos um exemplo de verdade: o SAXPY, que calcula y igual a a vezes x mais y, para cada posição de duas listas de números. Em PTX são 20 instruções. Em SASS são 19 úteis.",
       "source_line": "Fonte: experimento do grupo, harness/examples/saxpy-cu/ (nvcc 13.5, PTX 9.5, sm_120). NVIDIA, PTX ISA 9.5, 1.1 e 1.2. Guia de programação CUDA 13.5, 2.7. Guia CUDA C++ 12.9.1, 6.1.1.2. Contagem de mnemônicos: NVIDIA, CUDA Binary Utilities 13.5",
       "claims": [
         "ex.saxpy.ptx_instructions",
@@ -873,7 +873,7 @@
         "Na **Volta**, uma geração anterior, um estudo de 2018 contou ao menos **23 bits de controle**, avisos do **compilador** (o programa que traduz o código) ao escalonador",
         "Na Blackwell, só achamos documentada a **largura**, não os campos"
       ],
-      "fala": "Cada instrução SASS tem 16 bytes, ou 128 bits. Com tamanho fixo, o circuito sabe onde cada instrução começa sem decodificar a anterior, e decodificar é descobrir o que a instrução pede. Na nossa listagem os endereços andam sempre de 16 em 16. Um estudo de 2018 abriu os 128 bits da geração Volta e contou pelo menos 23 bits de controle, e estudos da Ampere e da Turing os descrevem como avisos do compilador ao escalonador: o compilador resolve parte da organização do pipeline e grava a solução na instrução. Na Blackwell só achamos documentada a largura.",
+      "fala": "E cada instrução SASS tem 16 bytes, ou 128 bits, sempre. Com tamanho fixo, o circuito sabe onde cada instrução começa sem precisar decodificar a anterior. Na nossa listagem, os endereços andam de 16 em 16.\n\nUm estudo de 2018 abriu os 128 bits da geração anterior, a Volta, e contou pelo menos 23 bits de controle: avisos do compilador ao escalonador. Na Blackwell, só achamos documentada a largura. Os campos dentro dos 128 bits não achamos.",
       "source_line": "Fonte: NVIDIA, CUDA Binary Utilities, ap. 7.1. Experimento do grupo (saxpy-cu, endereço 0x0100). Campos: Jia et al. (Volta), cap. 2. Huerta et al. (Ampere), seção 4",
       "claims": [
         "isa.instruction_bytes",
@@ -909,7 +909,7 @@
         "**Contra**: a **HMMA** multiplica um bloco de matriz numa só instrução, trabalho de acelerador",
         "A NVIDIA não classifica o SASS. **Conclusão do grupo: RISC no formato, com instruções de acelerador**"
       ],
-      "fala": "No CISC, uma instrução pode ser complexa e de tamanho variável, e pode ler a memória, calcular e gravar. No RISC, as instruções são simples, de tamanho fixo, só carga e armazenamento tocam a memória e há muitos registradores. Nesta GPU, três critérios apontam para RISC: 16 bytes fixos, memória por carga e armazenamento, salvo exceções como a LDGSTS, e até 255 registradores por thread. Contra, a HMMA multiplica um bloco de matriz numa só instrução, trabalho de um acelerador, que é um processador feito para um tipo de trabalho. A NVIDIA não classifica o SASS, então a conclusão é do grupo: RISC no formato, com instruções de acelerador.",
+      "fala": "São duas filosofias de conjunto de instruções. No CISC, as instruções são complexas e de tamanho variável, e uma só pode ler a memória, calcular e gravar. No RISC, as instruções são simples, de tamanho fixo, só as de carga e armazenamento tocam a memória, e há muitos registradores.\n\nUma coisa antes de tudo: a NVIDIA não classifica o SASS como CISC nem como RISC. Então a conclusão é do grupo, a partir dos critérios clássicos.\n\nA favor de RISC temos três coisas. Primeiro, as instruções têm 16 bytes fixos. Segundo, a memória é tocada, como regra, por instruções de carga e armazenamento, com exceções, como a LDGSTS, que copia da memória global para a compartilhada. No nosso SAXPY, as LDC e LDCU carregam os parâmetros, as LDG leem x e y, a STG grava, e a conta, a FFMA, usa só registradores. Terceiro, há muitos registradores: até 255 por thread.\n\nContra, há instruções que fazem muito trabalho de uma vez. A HMMA multiplica um bloco de matriz numa só instrução: 16 por 8 por 16, que dão, pela nossa conta, 2.048 multiplicações com soma. É uma instrução de acelerador, ou seja, de um processador feito para um tipo de trabalho.\n\nA nossa conclusão: RISC no formato e, como regra, no acesso à memória, com instruções de acelerador. Sobre microcódigo, não achamos nenhuma informação pública.",
       "source_line": "Fonte: análise do grupo sobre NVIDIA, CUDA Binary Utilities 13.5 (Blackwell and Rubin Instruction Set) e PTX ISA, 6.2. Blackwell Tuning Guide 13.5, 1.4.1.1. Experimento do grupo, harness/examples/mma/ (sm_120)",
       "claims": [
         "isa.instruction_bytes",
@@ -929,7 +929,7 @@
         "Quanto mais longe do SM, maior e mais lento",
         "Política de substituição (que dado sai quando o cache enche) e associatividade (onde cada dado pode ficar): **não achamos**"
       ],
-      "fala": "Cache é uma memória pequena e próxima de quem calcula, que guarda sozinha uma cópia dos dados usados há pouco, porque os programas costumam voltar aos mesmos dados. Cada SM tem 128 KB de L1, e o chip inteiro divide 128 MB de L2. Latência é o tempo até o dado chegar, e pesquisadores mediram numa RTX 5080, da mesma família, L1 em 30 a 40 ciclos, L2 em cerca de 358 e GDDR7 em cerca de 877. Como o cache decide o que guardar e o que descartar, não achamos nas fontes lidas.",
+      "fala": "Já vimos a memória da placa, de 96 gigabytes. Ela é grande, mas é o degrau mais lento. Por isso existe uma escada de memória. Do mais rápido ao mais lento: os registradores, o cache L1 e a memória compartilhada, o cache L2 e a GDDR7. Isso é a ordem do nosso diagrama.\n\nCache é uma memória pequena, perto de quem calcula, que guarda uma cópia dos dados usados há pouco, porque os programas costumam voltar aos mesmos dados. Cada SM tem 128 KB, divididos entre o cache L1 e a memória compartilhada, e o chip inteiro divide 128 MB de L2.\n\nA latência é o tempo até o dado chegar. Nos três degraus que foram medidos, ela cresce. Pesquisadores mediram numa RTX 5080, da mesma família: 30 a 40 ciclos no L1, cerca de 358 no L2 e cerca de 877 na memória global. Lembrando: não é medida desta placa.\n\nO que não achamos: a política do cache, ou seja, que dado sai quando ele enche, e a associatividade.",
       "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Tab. 4. Latências: Jarmusch et al., seção VI (RTX 5080, GB203)",
       "claims": [
         "isa.ptx_load_store",
@@ -968,7 +968,7 @@
         "O nosso texto escrito cita 49 bits e 5 níveis: era o formato da **Pascal**, uma geração de 2016",
         "**TLB** (cache das traduções recentes): tamanho e política **não achamos**"
       ],
-      "fala": "Segundo o código aberto do driver da NVIDIA, esta família usa endereços virtuais de 57 bits e tabelas de 6 níveis, no formato da Hopper. As páginas vão de 4 KB a 512 MB, e uma página grande encurta a busca: os 96 GB cabem em 192 páginas de 512 MB. O artigo cita 49 bits e 5 níveis, que era o formato da Pascal, de 2016. O tamanho e a política da TLB, o cache das traduções, não achamos.",
+      "fala": "Nesta GPU, segundo o código aberto do driver, o endereço virtual tem 57 bits e a tabela tem 6 níveis. As páginas têm 4 KB, 64 KB, 2 MB ou 512 MB, e os 96 GB cabem em 192 páginas de 512 MB. Uma correção: o nosso artigo escrito cita 49 bits. Era o formato da Pascal, de 2016, com 5 níveis. O driver atual usa o da Hopper.\n\nO que não achamos: o tamanho e a política da TLB, o cache das traduções recentes, e se cada programa tem o seu espaço de endereços. O código do driver mostra o que o software programa, e não o circuito.",
       "source_line": "Fonte: driver aberto da NVIDIA (open-gpu-kernel-modules): ctrl2080mc.h, uvm_hal.c, uvm_hopper_mmu.c, uvm_ampere_mmu.c. NVIDIA, Pascal MMU Format Changes. Contagem de páginas: conta nossa",
       "claims": [
         "mmu.va_bits",
@@ -992,7 +992,7 @@
         "Na CPU é parecido: o sistema operacional resolve e a instrução se repete",
         "Serve para trazer à GPU, sob demanda, uma página que ainda não está na memória dela"
       ],
-      "fala": "Uma falha de página acontece quando a MMU não encontra a página na tabela. Na CPU, o sistema operacional resolve e a instrução se repete. Aqui quem resolve também é software na CPU: o driver. Segundo o código aberto dele, a GPU anota a falha num buffer e avisa a CPU. O driver lê um lote de falhas, junta as repetidas e manda a GPU repetir os acessos. Pelo whitepaper da Pascal, isso permite trazer para a GPU, sob demanda, uma página que não estava na memória dela.",
+      "fala": "E se a MMU não encontra a página na tabela? É uma falha de página. Na CPU, o sistema operacional resolve e a instrução se repete.\n\nNesta GPU, quem resolve também é software na CPU: o driver. A GPU anota a falha num buffer, uma área de memória, e avisa a CPU. O driver lê um lote de falhas, junta as repetidas, atende e manda a GPU repetir os acessos.\n\nSegundo o whitepaper da geração Pascal, isso permite trazer para a GPU, sob demanda, uma página que ainda não está na memória dela. Falha de página, então, nem sempre é erro. Erro é o acesso a um endereço ilegal.",
       "source_line": "Fonte: driver aberto da NVIDIA, uvm_gpu_replayable_faults.c e uvm_gpu_isr.c. NVIDIA, whitepaper Tesla P100, p. 27",
       "claims": [
         "fault.buffer_batch",
@@ -1027,7 +1027,7 @@
         "**3. A falha de página** segura o canal, a fila de trabalho da GPU, até o driver atender",
         "**Não achamos**: a preempção (trocar uma tarefa por outra) nesta placa e o tratador dentro do SM. Leitura do grupo: os avisos vão ao driver"
       ],
-      "fala": "Interrupção é um aviso que faz o processador parar, rodar uma rotina de atendimento e voltar de onde parou. Nesta GPU, achamos três mecanismos. Primeiro, a GPU avisa a CPU por MSI-X ou MSI, e o tratador do driver faz o mínimo na hora e deixa o trabalho pesado para depois. Segundo, a instrução trap aborta o programa e gera uma interrupção para a CPU. Terceiro, uma falha de página segura o canal até o driver atender. Como a preempção funciona nesta placa e se há tratador dentro do SM, não achamos nas fontes, e nossa leitura é que os avisos vão ao driver, na CPU.",
+      "fala": "Uma interrupção é um aviso que faz o processador parar o que está fazendo, rodar uma rotina de atendimento, o tratador, e voltar de onde parou. Segundo o código aberto do driver, achamos três mecanismos nesta GPU.\n\nPrimeiro: a GPU avisa a CPU. Isso é feito por mensagens de interrupção, chamadas MSI-X ou MSI, ou, se não der, pela linha legada. O tratador do driver tem duas metades: a de cima faz o mínimo na hora, e a de baixo faz o trabalho pesado depois, para não segurar a CPU.\n\nSegundo: a instrução trap. Quando o programa a executa, ele aborta e gera uma interrupção para a CPU.\n\nTerceiro: a falha de página, que acabamos de ver. Ela segura o canal, que é a fila de trabalho da GPU: o canal não pode ser trocado e os outros esperam até o driver atender.\n\nO que não achamos: como funciona a preempção, que é trocar uma tarefa por outra no meio, nesta placa, e se existe tratador de interrupção dentro do SM. A nossa leitura é que os avisos vão ao driver, na CPU, e não são tratados dentro do SM.",
       "source_line": "Fonte: driver aberto da NVIDIA, nv.c, nv-msi.c e uvm_gpu_non_replayable_faults.c. PTX ISA 9.5, 9.7.21.4. SM sem tratador: análise do grupo",
       "claims": [
         "irq.modes",
@@ -1108,7 +1108,7 @@
         "Os documentos oficiais descrevem o que quem programa precisa saber, o driver mostra o que o software programa, e não como o circuito é por dentro, e os pesquisadores mediram outras placas",
         "O enunciado pede: item não público, dizer isso e explicar por quê"
       ],
-      "fala": "A tabela junta o que achamos para cada item e onde as fontes lidas param. Tamanhos, limites e formatos estão documentados. O funcionamento por dentro quase nunca está: estágios do pipeline, tamanho da TLB, política dos caches e microcódigo não achamos. Vemos três razões: os documentos oficiais descrevem o que quem programa precisa saber, o código do driver mostra o que o software programa, e não o circuito, e os pesquisadores mediram outras placas. É o que o enunciado pede: quando um item não é público, dizer isso e explicar por quê.",
+      "fala": "Para fechar. O que achamos foram tamanhos, limites e formatos: 65.536 registradores por SM, instruções de 16 bytes, endereços de 57 bits, 128 megabytes de L2.\n\nO que quase nunca achamos foi o funcionamento por dentro: estágios do pipeline, tamanho da TLB, política dos caches, microcódigo. Vemos três razões: os documentos oficiais descrevem o que quem programa precisa saber, o código do driver mostra o que o software programa e não o circuito, e os pesquisadores mediram outras placas. É o que o enunciado pede.",
       "source_line": "Fonte: síntese do grupo a partir das fontes de cada seção (whitepaper, guias CUDA, Binary Utilities, driver aberto, artigos de medição)",
       "claims": [
         "sm.regfile_entries",
@@ -1135,7 +1135,7 @@
         "Por isso a GPU aposta na **quantidade**: faz a mesma conta sobre muitos dados ao mesmo tempo",
         "Esta GPU tem **24.064 núcleos CUDA**, pequenas unidades de conta que não equivalem a núcleos de CPU. CUDA é o nome da NVIDIA para programar as suas GPUs"
       ],
-      "fala": "Todo computador tem um processador, o circuito que executa as instruções dos programas. A CPU é o processador principal e segue poucas tarefas de cada vez, decidindo caminhos depressa. A GPU nasceu para desenhar imagens: a tela é feita de pixels, e cada pixel pede quase a mesma conta com números diferentes. Por isso a GPU aposta na quantidade e faz a mesma conta sobre muitos dados ao mesmo tempo. Esta tem 24.064 núcleos CUDA, que são pequenas unidades de conta.",
+      "fala": "Primeiro, o básico. Todo computador tem um processador: o circuito que executa as instruções de um programa. O processador principal é a CPU. Ela segue poucas tarefas de cada vez e é boa em decidir caminhos depressa.\n\nA GPU nasceu para outra coisa: desenhar imagens. A tela é feita de pontinhos, os pixels, e cada pixel pede quase a mesma conta, só com números diferentes. Por isso a GPU faz a mesma conta sobre muitos dados ao mesmo tempo. Esta tem 24.064 núcleos CUDA, que são pequenas unidades de conta. CUDA é o nome que a NVIDIA dá à programação das suas GPUs.",
       "source_line": "NVIDIA, datasheet, p. 3, e whitepaper RTX PRO Blackwell v1.1, p. 9. Definições de CPU, GPU e pixel: gerais, do roteiro de estudo auditado",
       "claims": [
         "chip.cuda_cores"
@@ -1150,7 +1150,7 @@
         "Esta é a edição **Workstation**, para estações de trabalho: computadores de mesa para trabalho profissional pesado",
         "Vamos ver o que há por dentro da placa, o chip e como ele executa as tarefas"
       ],
-      "fala": "A placa-mãe é a placa principal do computador, onde se ligam o processador, a memória e as outras placas. A placa de vídeo se encaixa nela e leva a sua própria GPU, a sua própria memória, uma entrada de energia e saídas de imagem para o monitor. Esta é a edição Workstation, feita para estações de trabalho, que são os computadores profissionais.",
+      "fala": "A GPU vem numa placa de vídeo, que se encaixa na placa-mãe, a placa principal do computador. Esta placa leva a sua própria memória, de 96 gigabytes, uma entrada de energia e saídas de imagem. É a edição Workstation, para computadores profissionais, e usa até 600 watts.\n\nAgora vamos ver o que há por dentro dela.",
       "source_line": "NVIDIA, datasheet, p. 1 e 3. Definição de placa-mãe: geral. Workstation: estações de trabalho (datasheet, p. 1)",
       "claims": [
         "card.model_name"
@@ -1187,7 +1187,7 @@
         "A tradução usa **tabelas de páginas**: a memória é dividida em **páginas**, blocos de tamanho padronizado, e a tabela diz onde cada uma está",
         "A tabela é em **níveis**, como um endereço postal: estado, cidade, rua e número"
       ],
-      "fala": "Os programas usam endereços virtuais, e a MMU, unidade de gerenciamento de memória, traduz cada um para o endereço físico, a posição real do dado na memória. Numa CPU, isso separa um programa do outro e deixa o sistema guardar os dados onde houver espaço. A tradução é feita por páginas, blocos de tamanho fixo, numa tabela em níveis, como um endereço postal: estado, cidade, rua e número. No próximo slide vemos como isso é nesta GPU.",
+      "fala": "Agora, como a GPU acha um dado. Cada dado na memória tem um endereço, o número da sua posição. O programa usa um endereço virtual, e a MMU, a unidade de gerenciamento de memória, traduz para o endereço físico, a posição real. Numa CPU, isso separa um programa do outro e deixa o sistema guardar os dados onde houver espaço.\n\nA tradução usa tabelas de páginas: a memória é dividida em páginas, blocos de tamanho padronizado, e a tabela diz onde cada uma está. A tabela é em níveis, como um endereço postal: estado, cidade, rua e número.",
       "source_line": "NVIDIA, código aberto do driver (open-gpu-kernel-modules). Definições de endereço virtual, página e MMU: gerais, do roteiro de estudo auditado",
       "claims": [
         "mmu.va_bits",

@@ -21,8 +21,8 @@ body.ocioso #barra { visibility: hidden; }
 body.modo-explorar #barra { display: none; }
 
 /* ---- notas do apresentador (N) ---- */
-#notas { position: absolute; left: 48px; bottom: 140px; width: 900px; max-height: 520px; overflow: auto; padding: 22px 30px 24px; border-radius: 18px; z-index: 6;
-  background: #0a0d0ff2; border: 1px solid #ffffff24; box-shadow: 0 30px 70px #000000b0; font-size: 26px; }
+#notas { position: absolute; left: 48px; bottom: 140px; width: 1000px; max-height: 800px; overflow: auto; padding: 22px 30px 24px; border-radius: 18px; z-index: 6;
+  background: #0a0d0ff2; border: 1px solid #ffffff24; box-shadow: 0 30px 70px #000000b0; font-size: 24px; }
 #notas .quem { margin: 0 0 12px; font-size: 20px; letter-spacing: .08em; text-transform: uppercase; color: var(--ac); font-weight: 600; display: flex; justify-content: space-between; }
 #notas .quem span { color: #8e979c; letter-spacing: 0; text-transform: none; font-weight: 500; }
 #notas .quem b { color: #fff; }
