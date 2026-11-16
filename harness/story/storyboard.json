@@ -271,7 +271,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 22.0,
+      "hold": 29.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -357,7 +357,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 14.0,
+      "hold": 26.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -369,7 +369,7 @@
       "act": 1,
       "section": "01",
       "level": 0,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": "power.connector",
       "diagram": null,
@@ -395,7 +395,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 16.0,
+      "hold": 38.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -407,7 +407,7 @@
       "act": 1,
       "section": "01",
       "level": 0,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": "io.bracket",
       "diagram": null,
@@ -439,7 +439,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 12.0,
+      "hold": 24.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -482,7 +482,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 11.5,
+      "hold": 16.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -496,7 +496,7 @@
       "level": 1,
       "priority": 1,
       "status": "ready",
-      "part": "gpu.tim",
+      "part": "gpu.package",
       "explode_state": "E7",
       "camera": {
         "pos": [
@@ -606,7 +606,7 @@
         }
       },
       "callout": {
-        "anchor": "anchor.gpu.tim.1",
+        "anchor": "anchor.gpu.package.1",
         "box": "right-center",
         "line_in": 0.8,
         "line_out": 0.5
@@ -649,7 +649,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 10.0,
+      "hold": 11.0,
       "provenance": [
         "derived"
       ],
@@ -723,7 +723,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 13.0,
+      "hold": 16.0,
       "provenance": [
         "confirmed"
       ],
@@ -801,7 +801,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 13.0,
+      "hold": 15.0,
       "provenance": [
         "confirmed",
         "inferred"
@@ -842,7 +842,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 15.0,
+      "hold": 18.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -920,7 +920,7 @@
       "overlay": {
         "path": "energy"
       },
-      "hold": 15.5,
+      "hold": 31.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -969,7 +969,7 @@
       "overlay": {
         "path": "data"
       },
-      "hold": 15.0,
+      "hold": 22.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1019,7 +1019,7 @@
       "overlay": {
         "path": "heat"
       },
-      "hold": 16.0,
+      "hold": 28.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1032,7 +1032,7 @@
       "act": 2,
       "section": "02",
       "level": 1,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": "gpu.package",
       "diagram": null,
@@ -1058,7 +1058,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 11.0,
+      "hold": 25.0,
       "provenance": [
         "confirmed"
       ],
@@ -1182,7 +1182,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 16.0,
+      "hold": 24.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1223,7 +1223,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 16.5,
+      "hold": 19.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1262,7 +1262,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 12.0,
+      "hold": 13.0,
       "provenance": [
         "confirmed"
       ],
@@ -1299,7 +1299,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 11.0,
+      "hold": 13.0,
       "provenance": [
         "confirmed"
       ],
@@ -1377,7 +1377,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26.0,
+      "hold": 27.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1496,7 +1496,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 20.0,
+      "hold": 30.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1664,7 +1664,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 25.0,
+      "hold": 29.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1740,7 +1740,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26.0,
+      "hold": 34.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1811,7 +1811,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 31.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -1851,7 +1851,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 36.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -1887,7 +1887,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 25,
+      "hold": 28,
       "provenance": [
         "confirmed",
         "derived",
@@ -1960,7 +1960,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 32.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -2031,7 +2031,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 32.0,
+      "hold": 36.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2090,7 +2090,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 32.0,
+      "hold": 34.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2126,7 +2126,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 24.0,
+      "hold": 28.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2166,7 +2166,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 24,
+      "hold": 28,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2206,7 +2206,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 33.0,
+      "hold": 34.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2245,7 +2245,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 30.0,
+      "hold": 31.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2340,7 +2340,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 30.0,
+      "hold": 32.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2382,7 +2382,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26.0,
+      "hold": 27.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2479,7 +2479,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 34.0,
+      "hold": 39.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2627,7 +2627,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26.0,
+      "hold": 33.0,
       "provenance": [
         "confirmed",
         "illustrative",
@@ -2660,7 +2660,7 @@
         "duration": 5.0,
         "ease": "power2.inOut"
       },
-      "hold": 26.0,
+      "hold": 34.0,
       "provenance": [
         "confirmed",
         "derived",
