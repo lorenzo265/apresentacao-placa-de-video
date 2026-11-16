@@ -5,15 +5,12 @@
       "headline": "RTX PRO 6000 Blackwell: da placa ao chip",
       "pontos": [
         "**Grupo Warp 32**: Lorenzo Ruggini, Arthur Lincke, Thiago Karwinski, João Zamora e Vitor Amora",
-        "Tema: a **placa de vídeo** NVIDIA RTX PRO 6000 Blackwell, vista de fora até o interior do chip",
-        "Vamos explicar cada termo antes de usá-lo, do básico até o que o enunciado pede",
-        "**Roteiro**",
-        "- A placa de vídeo, por fora e por dentro",
-        "- O chip que calcula e a memória ao redor",
-        "- Como o chip executa tarefas: SM, warp e pipeline",
-        "- Registradores, instruções, CISC ou RISC, cache, MMU e interrupções"
+        "Tema: a **placa de vídeo** NVIDIA RTX PRO 6000 Blackwell, de fora até o interior do chip",
+        "Vamos explicar os **8 itens do enunciado**: registradores, conjunto de instruções, CISC ou RISC, pipeline, cache, gerenciamento de memória, MMU e interrupções",
+        "Em cada item: o que é, como é nesta GPU e o que **não achamos** nas fontes lidas",
+        "Cada termo é explicado antes de ser usado"
       ],
-      "fala": "Nosso tema é a placa de vídeo NVIDIA RTX PRO 6000 Blackwell. Vamos partir do mais simples, o que é uma placa de vídeo, e ir até o interior do chip, explicando cada termo antes de usá-lo. No caminho cobrimos os itens do enunciado: registradores, instruções, CISC ou RISC, pipeline, cache, gerenciamento de memória, MMU e interrupções.",
+      "fala": "Olá, nós somos o grupo Warp 32. Vamos apresentar a arquitetura de uma GPU real: a NVIDIA RTX PRO 6000 Blackwell.\n\nO enunciado pede que a gente explique oito itens de uma arquitetura: os registradores, o conjunto de instruções, se ela é CISC ou RISC, o pipeline, o cache, o gerenciamento de memória, a MMU e as interrupções.\n\nVamos explicar cada um com os números desta GPU. Começamos pelo básico e sempre dizemos o que cada palavra significa antes de usá-la.\n\nE uma combinação: quando uma informação não está nas fontes que lemos, nós vamos dizer isso claramente. É o que o enunciado pede.",
       "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition, p. 1 e 3, e whitepaper RTX PRO Blackwell v1.1, p. 9. Itens: enunciado da disciplina",
       "claims": [
         "card.model_name",

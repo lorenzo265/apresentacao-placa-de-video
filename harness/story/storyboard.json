@@ -2172,7 +2172,7 @@
       "act": 5,
       "section": "08",
       "level": 4,
-      "priority": 2,
+      "priority": 1,
       "status": "ready",
       "part": null,
       "diagram": "chip.isa",
