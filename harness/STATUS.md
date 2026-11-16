@@ -132,6 +132,9 @@ Nas telas, as quatro divisões do SM se chamam "partições", para não confundi
 
 Decisão do diretor do storyboard: o SM aparece **antes** do warp (a ordem na tela fica seção 04, 06, 05, 12, 07...), porque o warp está desenhado dentro do escalonador do SM e assim o zoom só desce. O roteiro escrito não muda.
 
+### Dois modos de visualização (2026-11-12)
+O viewer passou a ter o modo Apresentação (momentos pelas setas, índice, extras, notas) e o modo Explorar (camadas, remoção na ordem real, explicação por peça). Plano, decisões do autor, o que foi feito e as pendências em `plano/modos.md`. Teste: `node tools/smoke-single.cjs`. Auditoria dos textos: `qa/fact-check-modo-explorar.md` (falta a terceira passada).
+
 ### Fila da etapa de design (não fazer agora)
 Combinado com o autor em 2026-11-10: design e visualização vêm depois de a estrutura estar aprovada.
 

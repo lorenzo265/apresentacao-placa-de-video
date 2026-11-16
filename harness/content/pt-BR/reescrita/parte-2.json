@@ -1,0 +1,148 @@
+{
+  "t2.1": {
+    "headline": "Dentro de um dos 188 SMs",
+    "caption": "Cada SM tem escalonadores, registradores, cache L1 de 128 KB e 128 núcleos CUDA, em 4 partições. A placa tem 188 SMs.",
+    "fala": "Saímos da planta do chip e entramos em um dos 188 SMs, sigla de Streaming Multiprocessor, que é o bloco do chip que executa os programas. Um núcleo de processador comum repete sempre a mesma rotina: lê uma instrução, busca os números, faz a conta e guarda o resultado. O SM tem as peças dessa rotina, acesas na tela: o escalonador, que escolhe a próxima instrução, o banco de registradores, que guarda os números em uso, e o cache L1, uma memória pequena e rápida de 128 KB, perto das contas. A diferença está na quantidade: o SM tem 128 núcleos CUDA, e cada núcleo faz contas simples e trabalha, em cada ciclo, que é uma batida do relógio do chip, ou com número inteiro ou com número com vírgula, nunca com os dois ao mesmo tempo. Esses 128 núcleos estão divididos em 4 partições iguais, e cada partição tem o seu escalonador, o seu banco de registradores, 32 núcleos, conta nossa de 128 dividido por 4, e 1 Tensor Core, uma unidade que faz contas de matrizes. Embaixo, comum às quatro partições, fica o RT Core, a unidade de traçado de raios, usada em imagens 3D. Nossa leitura do porquê: a GPU aplica a mesma conta a muitos dados, e repetir muitas unidades simples é o jeito de fazer muitas contas ao mesmo tempo. Para entender como essas unidades recebem trabalho, começamos pelo escalonador e pelo pipeline.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, p. 9, Fig. 5 (p. 10) e p. 11",
+    "claims": [
+      "chip.sm_count",
+      "sm.blocks",
+      "sm.cuda_cores",
+      "sm.tensor_cores",
+      "sm.rt_cores",
+      "sm.l1_shared_kb"
+    ]
+  },
+  "a5.5": {
+    "headline": "Pipeline: uma linha de montagem de instruções",
+    "caption": "Cada uma das 4 partições escolhe um warp e despacha 32 threads por ciclo. Quantos estágios o pipeline tem: não achamos nas fontes lidas.",
+    "fala": "Pipeline é o jeito de executar instruções como numa linha de montagem, com postos: buscar a instrução, decodificar, que é entender o que ela pede, executar a conta e guardar o resultado. Enquanto uma instrução está na conta, a seguinte já está sendo decodificada, então vários postos trabalham ao mesmo tempo, mas se uma instrução precisa do resultado da anterior, ela espera, e a linha fica com um buraco. Na GPU, cada uma das 4 partições do SM tem o seu escalonador de warp, e warp é um grupo de 32 threads, que são pequenas tarefas, cada uma com os seus próprios dados. A cada ciclo, o escalonador escolhe um warp que está pronto e despacha a mesma instrução para as 32 threads dele, e com as quatro partições o SM despacha até 128 threads por ciclo, conta nossa. Numa placa irmã, a RTX 5080, pesquisadores mediram 4 ciclos até uma conta simples de inteiro ou de número com vírgula ficar pronta. O guia da NVIDIA diz que trocar de warp não tem custo, e nossa leitura é que o escalonador usa isso para tapar os buracos da linha com instruções de outros warps. Quantos estágios o pipeline tem e como o escalonador escolhe entre os warps prontos, não achamos nas fontes lidas: um estudo da geração Ampere descreve as etapas, mas não diz quantas são. Para entender de onde vêm tantos warps prontos, vamos olhar o warp de perto.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 5 (p. 10). Guia de programação CUDA 13.5, 3.2.2.2. Latência: Jarmusch et al., Tab. III (RTX 5080). Etapas: Huerta et al. (Ampere). Conta nossa: 4 × 32",
+    "claims": [
+      "sm.blocks",
+      "sm.block_dispatch_threads_per_clk",
+      "warp.size",
+      "sched.warp_scheduler",
+      "sched.warp_switch_no_cost",
+      "lat.int_fp_cycles"
+    ]
+  },
+  "a5.1": {
+    "headline": "Um warp: 32 threads que andam juntas",
+    "caption": "O programa é escrito para uma thread e lançado em blocos. O SM divide cada bloco em warps de 32 threads com números seguidos.",
+    "fala": "Quem programa a GPU escreve o código pensando numa única thread, por exemplo: pegue o elemento número i de um vetor e multiplique por 2. Depois manda rodar esse mesmo código milhares de vezes, e cada cópia, que é uma thread, recebe um número diferente, então cada uma cuida de um elemento. As threads são lançadas em blocos, e o SM que recebe um bloco o divide em warps de 32 threads com números seguidos: o primeiro warp leva as threads de 0 a 31, o segundo, de 32 a 63, e assim por diante. Os 32 quadrados da tela são as threads de um warp, e a documentação da NVIDIA fixa o warp em 32 threads em todas as arquiteturas que ela cobre. Numa CPU, quem decide qual thread roda em cada momento é o sistema operacional, que é um programa, e na GPU essa escolha é feita pelo próprio circuito, o escalonador de warp, a cada ciclo. A vantagem de agrupar, na nossa leitura, é dividir o custo de controle: a instrução é buscada e decodificada uma vez e serve para 32 threads. As quatro threads laranja no canto vão mostrar, daqui a pouco, o que acontece quando o warp precisa tomar uma decisão. Antes disso, vamos ver como uma só instrução serve para 32 threads que têm dados diferentes.",
+    "source_line": "Fonte: NVIDIA, PTX ISA, 2.2.1 e 4.5.1. Guia de programação CUDA 13.5, 3.2.2.2",
+    "claims": [
+      "warp.size",
+      "sched.block_to_warps",
+      "sched.warp_scheduler"
+    ]
+  },
+  "a5.2": {
+    "headline": "SIMT: uma instrução, 32 threads",
+    "caption": "O escalonador manda uma instrução e as 32 threads do warp a executam, cada uma com os seus dados. Cada SM mantém até 48 warps.",
+    "fala": "Imagine um professor que dita uma conta para 32 alunos, e cada aluno faz a conta com os números do seu próprio caderno. A NVIDIA chama esse modelo de SIMT, sigla em inglês para uma instrução, muitas threads: o escalonador manda uma instrução, e as 32 threads do warp a executam, cada uma com os seus dados. Existe um modelo parecido, o SIMD, uma instrução, muitos dados, em que uma instrução opera sobre uma fileira de números de uma vez. Segundo o guia de programação da NVIDIA, no SIMT cada thread guarda o seu próprio estado: os seus registradores e o seu contador de programa, que marca em que instrução ela está. Na nossa leitura, essa é a diferença que importa em relação ao SIMD. Aqui a comparação com a sala de aula deixa de valer, porque cada thread pode, se os seus dados pedirem, seguir por outro trecho do programa. Cada SM mantém até 48 warps ao mesmo tempo, ou 1.536 threads, conta nossa, e o estado de todos eles fica guardado dentro do chip. A vantagem, na nossa leitura de como o guia descreve o escalonador, é que quando um warp para esperando um dado da memória, o escalonador passa para outro warp que já tem o que precisa, e o SM não fica parado. Quando as threads de um mesmo warp seguem caminhos diferentes, acontece a divergência, que as quatro threads laranja vão mostrar agora.",
+    "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.2. Blackwell Tuning Guide 13.5, 1.4.1.1. Conta nossa: 48 × 32",
+    "claims": [
+      "warp.size",
+      "simt.per_thread_state",
+      "sm.max_warps",
+      "sm.max_threads",
+      "sched.warp_scheduler",
+      "sched.warp_switch_no_cost"
+    ]
+  },
+  "a5.16": {
+    "headline": "Divergência: o warp percorre os dois caminhos",
+    "caption": "Quando as threads de um warp discordam num if, o warp executa um caminho e depois o outro. As threads fora do caminho ficam desligadas.",
+    "fala": "Todo programa tem decisões do tipo se isso for verdade, faça aquilo, senão, faça outra coisa, e em programação isso se chama desvio, ou if. Numa CPU, cada thread decide sozinha, mas num warp as 32 threads executam a mesma instrução e cada uma decide com os seus próprios dados, então elas podem discordar. Na tela, as threads de 0 a 27 seguiram um caminho, e as quatro laranja, de 28 a 31, seguiram o outro. Segundo o guia de programação da NVIDIA, o warp executa cada caminho tomado, um depois do outro, e desliga as threads que não estão naquele caminho. O custo é o tempo: enquanto as quatro laranja trabalham, as outras 28 esperam paradas, e o warp gasta o tempo dos dois caminhos. Desde a compute capability 7.0, que é o número que a NVIDIA usa para cada geração de GPU, e esta placa é 12.0, cada thread tem o seu próprio contador de programa, e a GPU pode reagrupar as threads ativas e juntá-las de novo em grupos menores que o warp. A lição para quem programa, na nossa leitura, é fazer as threads de um mesmo warp seguirem o mesmo caminho sempre que der. As quatro threads laranja também são o logo do nosso grupo, o Warp 32, e cada uma delas guarda os seus valores em registradores, que são o próximo assunto.",
+    "source_line": "Fonte: NVIDIA, guia de programação CUDA 13.5, 3.2.2.1 e 3.2.2.1.1. Compute capability: página CUDA GPUs da NVIDIA",
+    "claims": [
+      "warp.size",
+      "simt.divergence",
+      "simt.independent_scheduling",
+      "isa.compute_capability"
+    ]
+  },
+  "a5.6": {
+    "headline": "Registradores: 65.536 em cada SM",
+    "caption": "Quatro bancos de 16.384 registradores de 32 bits: 256 KB por SM. Cada warp tem os seus registradores, então trocar de warp não tem custo.",
+    "fala": "Um registrador é a memória mais rápida de um processador: uma pequena caixa dentro do próprio circuito, que guarda um número enquanto ele está sendo usado numa conta. As contas pegam os números nos registradores e devolvem o resultado num registrador, porque buscar na memória principal leva muito mais tempo, como vamos ver na parte de memória. Nesta GPU, cada registrador tem 32 bits, e cada uma das 4 partições do SM tem um banco com 16.384 registradores, como mostra a figura oficial. Somando os quatro bancos, são 65.536 registradores por SM, ou 256 KB, o dobro dos 128 KB do cache L1 do mesmo SM. Numa CPU, quando o sistema operacional troca uma thread por outra, ele copia os registradores da que sai para a memória e traz os da que entra. Na GPU, segundo o guia da NVIDIA, o banco é repartido entre os warps que estão no SM, cada warp fica com os seus registradores enquanto existir, e por isso trocar de warp não tem custo. Nossa leitura é que esse é o motivo de o banco ser tão grande: ele guarda ao mesmo tempo o estado de dezenas de warps. Para ver esses registradores num programa de verdade, compilamos um exemplo pequeno e olhamos o código que a placa executa.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 9 e Fig. 5 (p. 10). Blackwell Tuning Guide 13.5, 1.4.1.1. Guia de programação CUDA 13.5, 3.2.2.2",
+    "claims": [
+      "sm.blocks",
+      "sm.block_regfile_entries",
+      "sm.regfile_entries",
+      "sm.regfile_kb",
+      "sm.l1_shared_kb",
+      "sched.warp_switch_no_cost"
+    ]
+  },
+  "a5.7": {
+    "headline": "Registradores num programa de verdade",
+    "caption": "No código de máquina do SAXPY: R por thread, UR uniformes, P para condições e SR especiais. O programa usa 10 registradores por thread.",
+    "fala": "O exemplo é o SAXPY, um programa curto que, para cada posição de dois vetores, faz y receber a vezes x mais y, e nós o compilamos para o alvo desta placa, o sm_120, com as ferramentas oficiais da NVIDIA. A coluna da direita é o SASS, o código de máquina que a placa executa, e nele cada registrador aparece com uma letra que diz o tipo. R são os registradores comuns, um conjunto para cada thread: R2 recebe o valor de x daquela thread e R7, o valor de y. UR é o que a documentação chama de registrador uniforme, e, segundo um estudo da geração Ampere, ele guarda um valor igual para o warp inteiro, como aqui o UR6, que, pela nossa leitura, guarda o número a, e a instrução FFMA calcula UR6 vezes R2 mais R7 numa só operação. SR são registradores especiais que o próprio hardware preenche: na instrução S2R, cada thread lê o seu número dentro do bloco, SR_TID.X, e a instrução IMAD usa esse número para calcular qual elemento do vetor é dela. P é um registrador de predicado, que guarda o resultado de uma comparação: a linha em destaque, ISETP, compara esse índice com o tamanho do vetor e grava a resposta em P0, e a linha seguinte encerra as threads que passaram do fim. O compilador informou 10 registradores por thread e zero bytes de spill, que é quando faltam registradores e valores precisam ir para a memória, que é bem mais lenta. Esse número 10 importa, porque decide quantos warps cabem no SM ao mesmo tempo.",
+    "source_line": "Fonte: experimento do grupo, SAXPY compilado para sm_120 (nvcc 13.5, ptxas -v), harness/examples/saxpy-cu/. CUDA Binary Utilities 13.5. Registrador uniforme: Huerta et al. (Ampere)",
+    "claims": [
+      "ex.saxpy.registers",
+      "ex.saxpy.spill_bytes",
+      "isa.target",
+      "isa.op.ldcu"
+    ]
+  },
+  "a5.8": {
+    "headline": "Mais registradores por thread, menos warps",
+    "caption": "O compilador escolhe quantos registradores cada thread usa, até 255. Com 255 cabem só 8 warps no SM, com os 10 do SAXPY cabem os 48.",
+    "fala": "Numa CPU, a quantidade de registradores é fixa e faz parte da definição do processador, então todo programa vê o mesmo número. Na GPU, quem decide quantos registradores cada thread usa é o compilador, e o limite oficial é de 255 por thread. Só que os quatro bancos do SM somam 65.536 registradores, e esse total é repartido entre todos os warps que estão no SM. Faça a conta: um warp de 32 threads com 255 registradores cada gasta 8.160 registradores, e 65.536 dividido por 8.160 dá só 8 warps no SM, conta nossa, que ignora regras de arredondamento da alocação que não achamos nas fontes lidas. Já o SAXPY, com 10 registradores por thread, gasta 320 por warp, e daria para mais de 200 warps, mas aí vale outro limite oficial: no máximo 48 warps por SM. Com só 8 warps, o escalonador tem menos opções para trocar quando um warp para esperando a memória, e por isso, na nossa leitura, o compilador tenta gastar poucos registradores. É uma troca: mais registradores por thread evitam o spill, e menos registradores deixam caber mais warps. Esses registradores aparecem dentro das instruções, e o próximo passo é o conjunto de instruções em si.",
+    "source_line": "Fonte: NVIDIA, Blackwell Tuning Guide 13.5, 1.4.1.1. Experimento do grupo (SAXPY, ptxas -v). Contas nossas",
+    "claims": [
+      "sm.max_regs_per_thread",
+      "sm.regfile_entries",
+      "warp.size",
+      "sm.max_warps",
+      "ex.saxpy.registers"
+    ]
+  },
+  "a5.9": {
+    "headline": "Do código em C ao código da máquina",
+    "caption": "O PTX é estável entre gerações e o SASS é o código desta placa. No SAXPY, 20 instruções PTX viram 19 instruções SASS úteis.",
+    "fala": "Conjunto de instruções é a lista de ordens que um processador entende, como somar, comparar, ler da memória ou pular para outro ponto do programa. Na NVIDIA, ele existe em duas camadas, e a tela mostra as duas lado a lado, depois do código em C. A primeira é o PTX, que a documentação chama de máquina virtual: um processador descrito no papel, com um conjunto de instruções estável entre gerações de GPU. A segunda é o SASS, o código de máquina de uma geração específica, que nesta placa se chama sm_120, e quem traduz o PTX para o SASS é a ferramenta ptxas ou o próprio driver da placa. As duas camadas existem porque o SASS é feito para uma geração, e o guia da NVIDIA avisa que um programa entregue sem PTX não tem garantia de rodar em GPUs futuras. No SAXPY, as 20 instruções PTX viraram 19 instruções SASS úteis: duas conversões de endereço sumiram, uma multiplicação e duas somas de endereço viraram duas IMAD.WIDE, e apareceram duas instruções sem par no PTX, cuja função não achamos documentada. As setas ligam cada linha PTX à instrução SASS que ela virou, e a última instrução útil é o EXIT, que encerra a thread. Agora vamos abrir uma dessas instruções SASS e ver o que ela tem por dentro.",
+    "source_line": "Fonte: experimento do grupo, harness/examples/saxpy-cu/ (nvcc 13.5, PTX 9.5, sm_120). NVIDIA, PTX ISA 9.5, 1.1 e 1.2. Guia de programação CUDA 13.5, 2.7. Guia CUDA C++ 12.9.1, 6.1.1.2",
+    "claims": [
+      "ex.saxpy.ptx_instructions",
+      "ex.saxpy.sass_useful",
+      "isa.target",
+      "isa.ptx_version"
+    ]
+  },
+  "a5.10": {
+    "headline": "Toda instrução tem o mesmo tamanho: 128 bits",
+    "caption": "Cada instrução SASS ocupa 16 bytes, ou 128 bits. Com tamanho fixo, o circuito sabe onde cada instrução começa sem decodificar a anterior.",
+    "fala": "Toda instrução, no fim, é uma sequência de bits, zeros e uns, e um processador pode usar instruções de tamanho variável ou de tamanho fixo. Com tamanho variável, o circuito precisa ler parte da instrução para saber onde ela termina e a próxima começa, e com tamanho fixo ele já sabe de antemão. Nesta placa, todas as instruções SASS têm 16 bytes, ou 128 bits: a documentação da NVIDIA diz isso, e na nossa listagem os endereços andam sempre de 16 em 16. Na tela está a instrução FFMA do SAXPY, escrita como as duas palavras de 64 bits que a ferramenta mostra. Um estudo de 2018 sobre a geração Volta abriu os 128 bits das instruções daquela geração: pelo menos 91 são a instrução em si, pelo menos 23 são bits de controle, que são avisos do compilador para o escalonador, e 14 parecem sem uso. Ou seja, o compilador resolve antes parte da organização do pipeline e grava a solução dentro da instrução, e um estudo de 2025 sobre a geração Ampere descreve esses avisos, como um contador que diz quanto tempo o warp deve esperar. Na Blackwell, só achamos documentada a largura de 128 bits, e por isso a figura marca os bits de controle desta placa como não documentados. Tamanho fixo é uma das marcas dos processadores RISC, e isso leva à pergunta do enunciado: esta GPU é RISC ou CISC.",
+    "source_line": "Fonte: NVIDIA, CUDA Binary Utilities, ap. 7.1. Experimento do grupo (saxpy-cu, endereço 0x0100). Campos: Jia et al. (Volta), cap. 2. Huerta et al. (Ampere), seção 4",
+    "claims": [
+      "isa.instruction_bytes",
+      "isa.target",
+      "isa.volta.instruction_bits_min",
+      "isa.volta.control_bits_min",
+      "isa.volta.unused_bits"
+    ]
+  },
+  "a5.12": {
+    "headline": "RISC ou CISC: RISC com extensões de acelerador",
+    "caption": "Análise do grupo: tamanho fixo e memória acessada por carga e armazenamento, como regra, apontam RISC. Instruções de matriz e de textura são extensões de acelerador.",
+    "fala": "CISC e RISC são duas filosofias de projeto de conjunto de instruções. CISC quer dizer Complex Instruction Set Computer, computador com conjunto de instruções complexo: uma só instrução pode ler a memória, fazer a conta e gravar o resultado, e as instruções têm tamanhos diferentes. RISC quer dizer Reduced Instruction Set Computer, computador com conjunto de instruções reduzido: cada instrução faz uma coisa simples, todas têm o mesmo tamanho, só as instruções de carga e de armazenamento tocam a memória, e as contas acontecem entre muitos registradores. Usamos esses critérios na tabela, e três deles apontam para RISC: as instruções têm 16 bytes fixos, a memória global e a compartilhada são acessadas, como regra, por instruções de carga e armazenamento, como LDG e STG, e cada thread pode usar até 255 registradores. Dois pontos afastam do RISC clássico: a HMMA, que compilamos, faz o warp inteiro multiplicar um bloco de matriz nos Tensor Cores, 2.048 multiplicações com soma numa só instrução, pela nossa conta de 16 vezes 8 vezes 16, e a LDGSTS e a UTMALDG, pela descrição oficial, copiam da memória global para a compartilhada, de memória para memória. A quantidade, 258 instruções na lista oficial pela nossa contagem, não decide, porque o reduzido de RISC fala da simplicidade de cada instrução, e sobre microcódigo não achamos nada nas fontes lidas. Nas fontes que lemos, a NVIDIA não classifica o SASS, então esta é a conclusão do grupo: é RISC no formato e na regra de acesso à memória, com instruções próprias de acelerador, e nossa leitura do porquê é que um formato fixo é simples de decodificar a cada ciclo, enquanto as instruções grandes fazem numa ordem só um trabalho que pediria muitas instruções simples. Essas instruções de carga buscam dados na memória, e quanto tempo isso leva depende de onde o dado está, que é o assunto da hierarquia de memória e dos caches.",
+    "source_line": "Fonte: análise do grupo sobre NVIDIA, CUDA Binary Utilities 13.5 (Blackwell and Rubin Instruction Set) e PTX ISA, 6.2. Blackwell Tuning Guide 13.5, 1.4.1.1. Experimento do grupo, harness/examples/mma/ (sm_120). Contas nossas",
+    "claims": [
+      "isa.instruction_bytes",
+      "isa.ptx_load_store",
+      "sm.max_regs_per_thread",
+      "isa.op.hmma",
+      "ex.mma.hmma",
+      "isa.op.ldgsts",
+      "isa.op.utmaldg",
+      "isa.op.tex",
+      "isa.sass_mnemonics"
+    ]
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "a0.1": {
+    "headline": "O que é uma GPU, e o roteiro",
+    "caption": "Uma GPU faz a mesma conta sobre muitos dados ao mesmo tempo. Esta tem 24.064 núcleos CUDA.",
+    "fala": "Uma GPU, sigla em inglês para unidade de processamento gráfico, é um processador feito para fazer a mesma conta sobre muitos dados ao mesmo tempo. Ela nasceu para desenhar imagens: a imagem da tela é feita de muitos pontinhos, os pixels, e cada pixel pede quase a mesma conta, só que com números diferentes. A CPU, o processador principal do computador, é feita para seguir poucas tarefas de cada vez e decidir caminhos depressa, enquanto a GPU aposta na quantidade: esta placa tem 24.064 núcleos CUDA, que são pequenas unidades de conta. Por isso a GPU hoje serve para duas coisas: mandar imagem para os monitores, pelas quatro saídas de vídeo desta placa, e fazer contas em massa para outros programas, como os de inteligência artificial. A placa que vamos abrir é a NVIDIA RTX PRO 6000 Blackwell, edição Workstation, feita para computadores de trabalho profissional. Dentro do chip, vamos responder aos itens do enunciado: pipeline, registradores, conjunto de instruções, se é CISC ou RISC, cache, gerenciamento de memória, MMU e interrupções. Cada afirmação aparece com um selo, confirmado, derivado, provável ou ilustrativo, e quando algo não está nas fontes que lemos, nós dizemos. O caminho começa pela placa por fora, passa por dentro dela e pela memória, e termina dentro do chip.",
+    "source_line": "Fonte: NVIDIA, datasheet da RTX PRO 6000 Blackwell Workstation Edition, p. 1 e 3, e whitepaper RTX PRO Blackwell v1.1, p. 9 e p. 25 (Tensor Cores e AI Management Processor). Itens: enunciado da disciplina",
+    "claims": [
+      "card.model_name",
+      "chip.cuda_cores",
+      "card.dp_outputs",
+      "sm.tensor_cores",
+      "chip.amp_isa"
+    ]
+  },
+  "a1.1": {
+    "headline": "Por fora: ar, energia e dados",
+    "caption": "600 W de potência total viram calor, e dois ventiladores empurram o ar através da placa. A energia entra pelo topo, os dados pela borda de baixo.",
+    "fala": "Por fora, a placa ocupa dois slots, que são as vagas de encaixe de placas no gabinete do computador. A potência total dela é de 600 W, o dobro dos 300 W da geração anterior desta linha, a RTX 6000 Ada, e praticamente toda essa energia termina virando calor. Para tirar esse calor, há dois ventiladores numa face, e o ar atravessa a placa de um lado ao outro em vez de bater na placa de circuito, que se chama PCB. A NVIDIA chama esse projeto de double flow through, fluxo duplo atravessado, com dois caminhos de ar, e a Gamers Nexus, que desmontou esta placa, diz que as aberturas do topo lançam ar para cima e para longe. A energia entra por um conector de 16 pinos na borda de cima. Os dados entram pela borda de baixo, que encaixa no PCIe 5.0 de 16 pistas, o barramento que liga a placa ao resto do computador, com 16 ligações de dados trabalhando juntas. A imagem sai pelas quatro saídas DisplayPort, na chapa do fundo, chamada bracket. Para ver o que há dentro, vamos desmontar a placa na mesma ordem de quem a abriu.",
+    "source_line": "Fonte: NVIDIA, datasheet, p. 1 e 3, guia rápido, p. 8 e 10, e whitepaper RTX PRO Blackwell v1.1, Tab. 4. Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025)",
+    "claims": [
+      "card.slots",
+      "card.tgp_w",
+      "ada.tgp_w",
+      "card.fans",
+      "card.airflow_through",
+      "card.thermal",
+      "card.airflow_pathways",
+      "card.exhaust_slats",
+      "card.power_connector",
+      "card.power_connector_position",
+      "card.pcie",
+      "card.dp_outputs",
+      "card.bracket_layout"
+    ]
+  },
+  "a2.1": {
+    "headline": "Desmontando na ordem de um teardown real",
+    "caption": "Sete passos, na ordem do teardown desta placa feito pela Gamers Nexus. No fim, o chip GB202 coberto de pasta térmica.",
+    "fala": "Teardown é a desmontagem de um aparelho peça por peça, com fotos, e aqui seguimos a ordem do teardown que a Gamers Nexus fez desta mesma placa, em sete passos. Primeiro saem o bracket, um aro externo preso por um único parafuso e as tampas do centro. Depois sai o adaptador PCIe: os contatos que encaixam no computador ficam numa peça separada, um adaptador de pinagem própria, segundo a Gamers Nexus. Em seguida saem uma placa que cobre o circuito, os cabos flat, que são cabos finos e chatos, e os parafusos de uma mola de lâmina. Por fim sai a PCB, que fica no centro, entre as duas pilhas de aletas, as lâminas finas que passam o calor para o ar. Na PCB está o chip GB202, coberto de pasta térmica, que preenche as pequenas falhas entre o chip e o cooler para o calor passar melhor. A Gamers Nexus esperava metal líquido, que a RTX 5090 Founders Edition usa, e achou pasta, o que mostra que uma placa parecida é pista, não prova. Agora vemos a placa inteira aberta.",
+    "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, anúncio da GeForce RTX 5090 Founders Edition. Identificação das peças pelas fotos: leitura nossa",
+    "claims": [
+      "teardown.step_count",
+      "teardown.e1",
+      "teardown.e2",
+      "teardown.e3",
+      "teardown.e4",
+      "teardown.e5",
+      "teardown.e6",
+      "teardown.e7",
+      "card.pcie_adapter_separate",
+      "pcb.position",
+      "chip.name",
+      "card.thermal_interface",
+      "ref5090.thermal_interface"
+    ]
+  },
+  "a2.13": {
+    "headline": "A placa aberta: energia, dados e calor",
+    "caption": "Três caminhos atravessam a placa: energia, dados e calor. O interior do cooler é proposta nossa.",
+    "fala": "Com a placa toda aberta, dá para resumir o que ela faz em três caminhos. A energia entra pelo conector de 16 pinos e passa por fileiras de indutores, que vemos nas fotos da PCB, antes de chegar ao chip, mas como esse circuito de energia é organizado não achamos nas fontes lidas. Os dados entram pelo PCIe, vão ao chip e à memória, e a imagem sai pelas quatro saídas de vídeo. O calor sai do chip, passa pela pasta térmica para o cooler e é levado pelo ar dos ventiladores. O interior do cooler que aparece aqui é proposta nossa, provável, porque nenhum teardown que lemos abre o cooler desta placa. Dos três caminhos, o dos dados é o que interessa à arquitetura, e ele começa na memória.",
+    "source_line": "Fonte: Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025). NVIDIA, datasheet, p. 3. Interior do cooler: proposta do grupo",
+    "claims": [
+      "card.power_connector",
+      "vrm.inductor_row",
+      "card.pcie",
+      "card.dp_outputs",
+      "card.thermal_interface",
+      "card.airflow_through",
+      "card.fans"
+    ]
+  },
+  "a3.1": {
+    "headline": "A memória própria da placa: 96 GB",
+    "caption": "96 GB de GDDR7 só para a GPU, ligados ao chip por 512 bits. No verso, 16 chips, de 32 posições no total.",
+    "fala": "Todo processador precisa de uma memória de trabalho, onde ficam os dados e os programas enquanto ele calcula, como a mesa onde se espalham os papéis de uma tarefa. Aqui começa o gerenciamento de memória, item do enunciado: esta GPU tem a sua própria memória, separada da memória do computador, com 96 GB do tipo GDDR7, uma memória feita para placas de vídeo. São 96 GB, o dobro dos 48 GB da geração anterior desta linha, a RTX 6000 Ada. No verso da placa, que está na tela, a Gamers Nexus contou 16 chips de memória, e ela fala em 32 posições no total. Se as 32 posições tiverem chip, cada um guarda 3 GB, porque 32 vezes 3 dá 96, mas essa conta é da própria fonte, e 24 chips de 4 GB também fechariam. Os chips se ligam ao processador por um barramento de 512 bits, ou seja, 512 bits de dados transferidos em paralelo, divididos entre 16 controladores de memória de 32 bits, que são os circuitos do chip que conversam com a memória. A memória tem ECC, um código de correção de erros: bits extras guardados junto com os dados permitem achar e corrigir um bit trocado, e nesta placa o ECC fica sempre ligado. Ter memória na própria placa tem um motivo, a velocidade, que comparamos a seguir.",
+    "source_line": "Fonte: NVIDIA, datasheet, p. 3, e whitepaper RTX PRO Blackwell v1.1, p. 8, p. 13 e Tab. 4. Gamers Nexus, teardown da RTX PRO 6000 Blackwell (2025)",
+    "claims": [
+      "mem.capacity_gb",
+      "mem.type",
+      "ada.mem_gb",
+      "mem.back_modules",
+      "mem.positions",
+      "mem.chip_gb",
+      "mem.bus_bits",
+      "chip.mem_controllers",
+      "chip.mem_controller_bits",
+      "mem.ecc"
+    ]
+  },
+  "a3.6": {
+    "headline": "Por que os dados moram na placa",
+    "caption": "Memória da placa: 1.792 GB/s. Ligação com o computador, PCIe 5.0 x16: cerca de 63 GB/s por sentido, 28 vezes menos.",
+    "fala": "Banda é a quantidade de dados que passa por segundo, como a vazão de um cano: quanto mais largo o cano e mais rápida a água, mais litros por segundo. A memória da placa tem 512 bits de largura e cada pino de dados transmite 28 gigabits por segundo, e 512 vezes 28, dividido por 8 bits por byte, dá 1.792 GB/s. A GDDR7 consegue isso em parte com uma técnica chamada PAM3: cada sinal usa três níveis de tensão em vez de dois, e assim carrega 1,5 bit por ciclo. Nesta face, em volta do chip, ficam mais chips de memória, e que sejam 16 é dedução nossa, que só vale se todas as posições tiverem chip: 32 posições menos os 16 do verso. Já a ligação com o resto do computador, o PCIe 5.0 de 16 pistas, leva cerca de 63 GB/s em cada sentido, pela nossa conta a partir dos 32 GT/s, 32 bilhões de transferências por segundo, de cada pista. A memória da placa é, então, cerca de 28 vezes mais rápida que o caminho até o computador, também conta nossa. A consequência, na nossa leitura, é a regra de projeto: copiar os dados para a placa uma vez e fazer as contas aqui dentro, sem ir e voltar a cada passo. Quem faz essas contas é o chip GB202, onde entramos agora.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Tab. 4 e p. 12, e datasheet, p. 3. PCI-SIG, comunicado sobre o PCIe 5.0 (2019). Gamers Nexus, teardown (2025). 63 GB/s, razão e chips da frente: contas nossas",
+    "claims": [
+      "mem.bus_bits",
+      "mem.pin_rate_gbps",
+      "mem.bandwidth_gbs",
+      "mem.signaling",
+      "mem.positions",
+      "mem.back_modules",
+      "card.pcie",
+      "pcie.gen5_lane_gts",
+      "pcie.x16_gbs_per_direction",
+      "card.mem_vs_pcie_ratio",
+      "chip.name"
+    ]
+  },
+  "t1.1": {
+    "headline": "Dentro do chip: daqui em diante, diagrama",
+    "caption": "Chip GB202: 750 mm² de silício e 92,2 bilhões de transistores. Contagens oficiais, posições ilustrativas.",
+    "fala": "Agora entramos no chip GB202, e daqui em diante a tela mostra desenho, não foto. Um chip é uma pastilha de silício, chamada die, coberta de transistores, que são chaves elétricas minúsculas que ligam e desligam e, juntas, formam os circuitos de conta e de memória. Este die tem 750 mm², a área de um quadrado de cerca de 2,7 cm de lado, e 92,2 bilhões de transistores, cerca de 123 milhões em cada milímetro quadrado, contas nossas. Ele é fabricado pela TSMC no processo 4N, e o 4 é o nome do processo, não a medida de alguma peça do circuito. O desenho refaz o diagrama de blocos oficial da NVIDIA: as contagens são oficiais, mas a posição física de cada bloco no die não achamos nas fontes lidas, então as posições são ilustrativas. Para a matéria, o que importa é como os blocos se organizam e se ligam, e é isso que o diagrama mostra. Começamos pelos blocos que fazem as contas.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, Fig. 3 (p. 8), redesenhada, e Tab. 4. Lado do quadrado e densidade: contas nossas",
+    "claims": [
+      "chip.name",
+      "chip.die_area_mm2",
+      "chip.transistors_billion",
+      "chip.process",
+      "chip.block_diagram"
+    ]
+  },
+  "a4.2": {
+    "headline": "Caixas dentro de caixas: GPC, TPC e SM",
+    "caption": "12 GPCs, 94 TPCs, 2 SMs por TPC: 188 SMs. Cada SM tem 128 núcleos CUDA, 24.064 no total.",
+    "fala": "A organização do chip é de caixas dentro de caixas, e a caixa maior é o GPC, Graphics Processing Cluster, que aparece 12 vezes. Dentro dos GPCs ficam os TPCs, e cada TPC tem 2 SMs, então os 94 TPCs desta placa dão 188 SMs. O SM, Streaming Multiprocessor, é a unidade que recebe os grupos de tarefas, busca as instruções e as executa. Cada SM tem 128 núcleos CUDA, e 188 vezes 128 dá os 24.064 núcleos da ficha técnica. Um núcleo CUDA não é um núcleo como o de uma CPU: é uma unidade de conta que, a cada ciclo, faz uma operação de ponto flutuante de 32 bits, o jeito de guardar números com vírgula, ou uma operação de inteiro de 32 bits. Repetir o mesmo SM muitas vezes é o que dá força à GPU, porque cada SM trabalha num pedaço diferente dos dados ao mesmo tempo. O chip completo tem 192 SMs, mas a tabela desta placa e a contagem de núcleos dão 188, e o motivo da diferença não achamos nas fontes lidas. Esses 188 SMs dividem uma memória rápida, o L2, que no diagrama fica no centro e vem a seguir.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, p. 9, p. 11 e Tab. 4, e datasheet, p. 3. Guia de programação CUDA 13.5, 3.2.2.2",
+    "claims": [
+      "chip.gpc_count",
+      "chip.tpc_count",
+      "chip.sm_per_tpc",
+      "chip.sm_count",
+      "sm.cuda_cores",
+      "chip.cuda_cores",
+      "chip.sm_count_full",
+      "sched.block_to_warps",
+      "sm.blocks"
+    ]
+  },
+  "a4.4": {
+    "headline": "L2 no centro, controladores nas laterais",
+    "caption": "L2 de 128 MB no centro, dividido por todos os GPCs. 16 controladores de 32 bits formam os 512 bits até a memória.",
+    "fala": "Cache é uma memória pequena e rápida, perto de quem calcula, que guarda cópias dos dados usados há pouco. É como deixar na mesa os livros que você está usando em vez de ir à biblioteca toda vez, com uma diferença: a cache guarda cópias, e o original continua na memória da placa. No centro do diagrama fica o L2, uma cache de 128 MB que todos os GPCs dividem. Ele é o segundo nível, porque cada SM ainda tem a sua cache L1, de até 128 KB, que veremos ao abrir o SM. Nas laterais do diagrama ficam os 16 controladores de memória, cada um com 32 bits de largura, e 16 vezes 32 dá os 512 bits do barramento até os chips GDDR7. As linhas na tela mostram esse caminho: quando um dado não está no L2, ele é buscado na memória da placa por um dos controladores. Um L2 grande significa, em geral, menos viagens até essa memória, que é mais lenta, e a geração anterior, a RTX 6000 Ada, tinha 96 MB de L2. Agora vamos abrir um dos 188 SMs, onde as instruções são de fato executadas.",
+    "source_line": "Fonte: NVIDIA, whitepaper RTX PRO Blackwell v1.1, p. 8, p. 9 e Tab. 4, e datasheet, p. 3. Memória mais lenta que o L2: Jarmusch et al. (RTX 5080). Posições ilustrativas",
+    "claims": [
+      "chip.l2_kb",
+      "chip.block_diagram",
+      "sm.l1_shared_kb",
+      "chip.mem_controllers",
+      "chip.mem_controller_bits",
+      "mem.bus_bits",
+      "mem.type",
+      "ada.l2_kb",
+      "lat.l2_cycles",
+      "lat.global_cycles",
+      "chip.sm_count"
+    ]
+  }
+}

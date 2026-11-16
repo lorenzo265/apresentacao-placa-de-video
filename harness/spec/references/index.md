@@ -276,7 +276,7 @@ A única imagem quase ortogonal é a **foto da TechPowerUp capturada em gn-05**.
 - O ângulo exato do conector de energia e os contatos de sinal.
 - A placa que carrega as DisplayPort, e se ela é separada.
 - A outra ponta do cabo flat.
-- O interior do cooler: os ventiladores nunca saem, e não aparecem heatpipes, câmara de vapor nem as pilhas de aletas por dentro. Não há estágio E8 em foto.
+- O interior do cooler: no teardown, os ventiladores não são retirados, e não aparecem heatpipes, câmara de vapor nem as pilhas de aletas por dentro. Não há estágio E8 em foto.
 - A espessura da placa (nenhuma vista de topo ortogonal).
 - O parafuso de E2 e os tipos de cabeça de vários parafusos.
 - Qual placa é a PRO 6000 em gn-12.

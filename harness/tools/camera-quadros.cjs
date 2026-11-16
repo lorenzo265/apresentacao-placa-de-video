@@ -19,7 +19,7 @@ const arg = (k, d = null) => (args.includes(`--${k}`) ? args[args.indexOf(`--${k
   try {
     const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
     page.on('pageerror', (e) => console.log('erro:', e.message));
-    await page.goto(`${url}?capture=1&cut=${cut}&acumula=0${arg('q') ? '&qualidade=' + arg('q') : ''}`);
+    await page.goto(`${url}?capture=1&cut=${cut}&acumula=0&tema=${arg("tema", "keynote")}${arg('q') ? '&qualidade=' + arg('q') : ''}`);
     await page.waitForFunction('window.__tour && window.__tour.duration > 0 || window.__tourErro', null, { timeout: 120000 });
     await page.evaluate('window.__tour.ready');
     const beats = await page.evaluate('window.__tour.beats');

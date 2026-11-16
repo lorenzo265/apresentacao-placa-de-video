@@ -41,3 +41,7 @@ Dono: sessão de câmera (branch `claude/apresentacao-camera-gsap`). Texto dos b
 - Fusões de beats: vale a câmera do beat que fica.
 - Luz, contraste e fundo: ficam com a orquestradora (lookdev). Nas capturas, a carcaça escura se perde no fundo escuro.
 - Capturas: `node harness/tools/camera-quadros.cjs --beats a2.1,a2.13 --fracs 0.25,0.5,1,1.5`.
+
+## 6. Aprovação
+
+- 2026-11-11: segundo a sessão de roteiro, o autor aprovou o roteiro conciso e este plano (a2.1 com a desmontagem inteira, herói a2.13, câmera dos beats fundidos): "aceito o proposto, está melhor, faça". O ensaio com cronômetro fica com o autor. Falta a passada do `visual-qa` (orquestradora).

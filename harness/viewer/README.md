@@ -14,11 +14,29 @@ npm run preview      # serve o dist/ para ver o build
 
 O `scripts/sync-data.mjs` copia para `public/data/` (não versionado) `story/storyboard.json`, `content/pt-BR/beats.json`, `diagrams/<id>.json` (ignora `README.md`, scripts e arquivos que não sejam diagrama; se o storyboard for o de exemplo, usa também os diagramas de exemplo, para o conjunto casar; `SYNC_REAL_DIAGRAMS=1` força os reais), `build/card.glb` e `design/measurements.csv` (vira `measurements.json`). O que faltar é trocado pelo exemplo de `schemas/examples/`; `data/manifest.json` diz o que é `real` e o que é `examples`. Depois do build não precisa de internet. Precisa de um servidor HTTP local (qualquer um): abrir `index.html` por `file://` não funciona, porque o navegador bloqueia módulos e `fetch`.
 
-Parâmetros da URL: `?cut=seminario` (padrão `completo`), `?capture=1` (sem controles, palco fixo de 1920 x 1080, sem laço de animação), `?beat=<id>` (começa no fim da chamada do beat), `?acumula=N` (quadros acumulados com a cena parada no modo realista; 0 desliga; ver abaixo).
+Parâmetros da URL: `?cut=completo` (padrão `seminario`; é o corte que vira os momentos das setas, e as ferramentas de teste e captura o passam sempre), `?modo=explorar` (abre no modo Explorar), `?capture=1` (sem controles, palco fixo de 1920 x 1080, sem laço de animação), `?beat=<id>` (começa no fim da chamada do beat), `?acumula=N` (quadros acumulados com a cena parada no modo realista; 0 desliga; ver abaixo).
 
 Temas de estilo: `?tema=keynote|estudio|blueprint` (o autor escolheu o Keynote em 2026-11-10; ele é o padrão do arquivo único, ver abaixo). No servidor de desenvolvimento, sem `?tema` o viewer é o de sempre (conferido quadro a quadro contra as capturas anteriores). `?leve=1` desliga os efeitos caros do tema (desfoque da caixa, brilho do nó-alvo, halos). Parâmetros em `src/temas.js` (fundo, luzes, materiais, arestas, sombra de contato, raio de canto, fluxos), estilo em `src/temas.css` (só regras sob `:root[data-tema]`), cotas da placa montada no tema blueprint em `src/cotas.js` (só medidas auditadas de `measurements.json`). Capturas e folhas de contato: `node harness/tools/estilo.cjs` (grava `harness/dist/estilo/`); quadros por segundo ao vivo: `node harness/tools/estilo.cjs --perf`. Os dois smokes aceitam `--tema <nome>`.
 
-Teclado: setas (beat anterior e próximo), espaço (tocar e pausar), `N` (notas do apresentador: `speaker`, `fala` e beats `draft` e `blocked`). Em beat 3D com o tour pausado dá para orbitar com o mouse; ao avançar, a câmera volta ao storyboard.
+## Dois modos (plano e decisões do autor em `harness/plano/modos.md`)
+
+**Apresentação** (`src/tour.js`, `src/controls.js`): anda como slide. Os momentos são os beats do corte do seminário, na ordem do storyboard. Os beats prontos fora do corte são **extras**: ficam fora do caminho das setas e abrem pelo índice.
+
+| Tecla | O que faz |
+|---|---|
+| seta para a direita, espaço, Enter, PageDown (clicker) | próximo momento, e para. No meio da animação, pula para o fim dela |
+| seta para a esquerda, PageUp | momento anterior, já montado |
+| `M` | índice dos momentos por ato; clique, ou número e Enter. Extras em tracejado |
+| `N` | notas: quem fala, tópicos da `fala`, título do próximo momento |
+| `R` | devolve a câmera (ou o diagrama) ao enquadramento do momento |
+| `E` | modo Explorar |
+| Home, End | primeiro e último momento |
+
+Girar e aproximar valem a qualquer hora, menos durante a transição: arrastar e roda do mouse na placa (camera-controls) e nos diagramas (deslocar e aproximar em torno do cursor). O momento não muda; `R` ou a próxima seta voltam ao enquadramento com uma transição de 0,6 s. Não existe mais tocar sozinho nem seletor de corte. Ao chegar a um momento, a linha do tempo segue pelo `hold` (volta do plano de herói, pulsos dos fluxos) e para no fim dele; os pulsos continuam por um relógio de ambiente. A seta seguinte não espera o resto do `hold`. Num extra, qualquer seta volta ao momento de onde se saiu. A barra de botões some com o mouse parado por 3,5 s.
+
+**Explorar** (`src/explorar.js`, dados em `content/pt-BR/pecas.json`): a placa sob controle de quem assiste. À esquerda as 8 camadas (estágios E1 a E8), à direita a explicação da peça ou camada selecionada. Clique na placa seleciona a peça (raio contra as malhas; sobe pela hierarquia do GLB até um id de `pecas.json`). **Ordem real com atalho**: o estado é sempre "camadas 1 a k fora", que é o nível de explosão do tour, então a animação é a de `desmontagem.json`, sem código novo na cena. Remover a camada k tira antes as da frente (0,55 s cada, 1,7 s a pedida); recolocar a k recoloca antes as que saíram depois. Teclas: Delete remove, `Z` recoloca a última, setas para cima e para baixo escolhem a camada, Enter alterna, Esc ou `E` volta à apresentação no momento em que ela estava. A câmera reenquadra a cada mudança mantendo a direção em que o usuário olha (`enquadraNivel`). Procedência: para peça, selos da existência e da forma (do assembly), a procedência do beat junto do texto e a ressalva do assembly sempre; para camada, os selos do texto. Com a camada 8 fora aparece o selo de provável. Só existe com GLB e fora da captura. `window.__explorar`: `entra()`, `sai()`, `estado()`, `seleciona()`, `remove(k)`, `recoloca(k)`, `vaiNivel(n)`.
+
+O `sync-data` junta `pecas.json` com o estágio, a procedência e a ressalva de cada peça de `design/assembly.json` em `data/pecas.json`. Estilo dos dois modos: `src/modos.css`.
 
 ## Testar e capturar
 
@@ -70,7 +88,7 @@ cd harness/viewer && npm run build:single        # gera harness/dist/tour.html
 node harness/tools/smoke-single.cjs [--cut seminario] [--no-build]
 ```
 
-`harness/dist/tour.html` leva código, estilos, fontes e dados embutidos. Abre no tema Keynote e na qualidade média com escolha automática (padrão gravado pelo `build-single.mjs` em `window.__TOUR_PADRAO__`); a URL ainda manda: `?tema=estudio`, `?tema=nenhum` (visual sem tema), `?qualidade=alta`. Abre com dois cliques, sem servidor e sem internet. Teclas: seta para a direita e para a esquerda, espaço, `N` para as notas. O corte se troca no seletor da barra ou com `?cut=seminario` no fim do endereço. O `smoke-single` abre o arquivo por `file://` com a rede desligada, confere que abriu no tema Keynote (ou no pedido por `--tema`; `--tema nenhum` para o visual sem tema), que nada é pedido de fora, que as fontes carregam, que a seta leva a cada beat e que o título na tela é o de `beats.json`. Se `harness/build/card.glb` existir (gerado por `harness/parts/integrate.py`; ou o `card_final.glb` do passo do Blender, quando for do `card.glb` atual), ele vai embutido em base64 e o teste confere que carregou e que as peças respondem pelo id do assembly. O arquivo único só aceita GLB sem compressão Draco (meshopt pode). Sem GLB, o 3D é o marcador desenhado pelo próprio viewer.
+`harness/dist/tour.html` leva código, estilos, fontes e dados embutidos. Abre no tema Keynote e na qualidade média com escolha automática (padrão gravado pelo `build-single.mjs` em `window.__TOUR_PADRAO__`); a URL ainda manda: `?tema=estudio`, `?tema=nenhum` (visual sem tema), `?qualidade=alta`. Abre com dois cliques, sem servidor e sem internet. Abre no modo Apresentação; teclas na seção "Dois modos". O `smoke-single` abre o arquivo por `file://` com a rede desligada, confere que abriu no tema Keynote (ou no pedido por `--tema`; `--tema nenhum` para o visual sem tema), que nada é pedido de fora, que as fontes carregam, que a seta leva a cada momento (e a segunda seta pula a animação), que o título na tela é o de `beats.json`, e exercita notas, índice, um extra e o modo Explorar (remover a camada 4, clique na placa, volta ao momento). Se `harness/build/card.glb` existir (gerado por `harness/parts/integrate.py`; ou o `card_final.glb` do passo do Blender, quando for do `card.glb` atual), ele vai embutido em base64 e o teste confere que carregou e que as peças respondem pelo id do assembly. O arquivo único só aceita GLB sem compressão Draco (meshopt pode). Sem GLB, o 3D é o marcador desenhado pelo próprio viewer.
 
 ## Modo realista da placa (tema Keynote, `src/lookdev.js`)
 
@@ -119,13 +137,13 @@ O passo do Blender (ARCHITECTURE.md, seção 5.2) recebe o GLB ou o STEP da peç
 
 ## API `window.__tour`
 
-`ready` (Promise; também `window.__tourReady = true`), `duration`, `fps`, `cut`, `beats` (`{id, start, entrada, settle, end, level, mergulho}`; `entrada` é o fim da entrada do beat), `seek(t)` (posiciona a timeline e desenha um quadro de forma síncrona), `play()`, `pause()`, `next()` (toca até o `settle` do próximo beat e pausa), `prev()`, `goto(id)`, `time()`, `estado()` (`{expl, mix, via, acum, cam, vb}`: explosão, mistura e traçado do caminho quantizados, amostras da acumulação `{n, alvo}`, câmera 3D e enquadramento do diagrama, para teste), `probe(id)` (`{anchor, focus, box, captionOverflow, headline}` em pixels do palco; só vale para o beat ativo; `anchor` vale também nos beats 3D).
+`ready` (Promise; também `window.__tourReady = true`), `duration`, `fps`, `cut`, `beats` (`{id, start, entrada, settle, end, level, mergulho}`; `entrada` é o fim da entrada do beat), `seek(t)` (posiciona a timeline e desenha um quadro de forma síncrona), `play()`, `pause()`, `next()` (vai ao próximo momento e para; no meio da transição pula para o fim), `prev()`, `goto(id)` (quadro fixo, para teste), `irPara(id)` (momento ou extra, como o índice), `momento()` (`{idx, total, fase, extra, livre, suspenso}`; `fase` é `andando`, `leitura` ou `parado`), `extras` (ids dos beats prontos fora do corte), `recentra()`, `suspende()` e `retoma()` (modo Explorar), `time()`, `estado()` (`{expl, mix, via, acum, cam, vb}`: explosão, mistura e traçado do caminho quantizados, amostras da acumulação `{n, alvo}`, câmera 3D e enquadramento do diagrama, para teste), `probe(id)` (`{anchor, focus, box, captionOverflow, headline}` em pixels do palco; só vale para o beat ativo; `anchor` vale também nos beats 3D).
 
 ## Onde mexer
 
 - Estilo dos `kind` dos diagramas: `src/kinds.css` (classe `k-<kind>`; kind desconhecido cai no estilo de `frame`).
 - Caixa, cabeçalho, controles: `src/style.css`. Constantes de layout e de nível de detalhe: `src/layout.js`.
-- Módulos: `world.js` (espaço único e `embed`), `diagrams.js` (camada SVG), `scene3d.js`, `timeline.js`, `callout.js`, `header.js`, `controls.js`, `tour.js` (junta tudo).
+- Módulos: `world.js` (espaço único e `embed`), `diagrams.js` (camada SVG), `scene3d.js`, `timeline.js`, `callout.js`, `header.js`, `controls.js` (barra, índice, notas, teclado), `explorar.js`, `tour.js` (junta tudo).
 
 ## Decisões que vale conhecer
 
