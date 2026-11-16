@@ -1,5 +1,5 @@
 # Roteiro do seminário: falas finais
-Os 22 momentos do corte do seminário, na ordem das setas do tour. Cerca de 2.850 palavras, perto de 20 minutos em voz alta. A explicação completa de cada momento, as palavras novas e as perguntas com resposta estão nos roteiros de estudo (partes 1 a 3, no fim deste arquivo).
+Os 22 momentos do corte do seminário, na ordem das setas do tour. Cerca de 2.880 palavras, perto de 20 minutos em voz alta. A explicação completa de cada momento, as palavras novas e as perguntas com resposta estão nos roteiros de estudo (partes 1 a 3, no fim deste arquivo).
 
 ## 1. O que é uma GPU, e o roteiro (a0.1)
 
@@ -117,7 +117,7 @@ Os 22 momentos do corte do seminário, na ordem das setas do tour. Cerca de 2.85
 
 **Na tela:** Análise do grupo: tamanho fixo e memória acessada, como regra, por carga e armazenamento apontam RISC. A HMMA, de matriz, é extensão de acelerador.
 
-**Fala:** No CISC, conjunto de instruções complexo, uma só instrução pode ler a memória, fazer a conta e gravar o resultado, e os tamanhos variam. No RISC, conjunto reduzido, cada instrução é simples, todas têm o mesmo tamanho, só carga e armazenamento, que leem e gravam, tocam a memória, e há muitos registradores. Nesta GPU, três critérios apontam para RISC: 16 bytes fixos por instrução, memória acessada, como regra, por carga e armazenamento, e até 255 registradores por thread. Mas a HMMA, que compilamos, multiplica um bloco de matriz numa só instrução. A NVIDIA não classifica o SASS nas fontes que lemos, então a conclusão é do grupo: RISC no formato e no acesso à memória, com instruções de acelerador. Nossa leitura: o formato fixo é simples de decodificar, e as instruções grandes fazem o trabalho de muitas simples.
+**Fala:** No CISC, conjunto de instruções complexo, uma só instrução pode ler a memória, fazer a conta e gravar o resultado, e os tamanhos variam. No RISC, conjunto reduzido, cada instrução é simples, todas têm o mesmo tamanho, só carga e armazenamento, que leem e gravam, tocam a memória, e há muitos registradores. Nesta GPU, três critérios apontam para RISC: 16 bytes fixos por instrução, memória acessada, como regra, por carga e armazenamento, e até 255 registradores por thread. Mas a HMMA, que compilamos, multiplica um bloco de matriz numa só instrução. A NVIDIA não classifica o SASS nas fontes que lemos, então a conclusão é do grupo: RISC no formato e na regra de acesso à memória, com instruções de acelerador. Nossa leitura: o formato fixo é simples de decodificar, e as instruções grandes fazem o trabalho de muitas simples.
 
 *Fonte: análise do grupo sobre NVIDIA, CUDA Binary Utilities 13.5 (Blackwell and Rubin Instruction Set) e PTX ISA, 6.2. Blackwell Tuning Guide 13.5, 1.4.1.1. Experimento do grupo, harness/examples/mma/ (sm_120)*
 
@@ -149,7 +149,7 @@ Os 22 momentos do corte do seminário, na ordem das setas do tour. Cerca de 2.85
 
 **Na tela:** A GPU anota a falha num buffer. O driver, na CPU, resolve um lote de falhas e manda a GPU repetir o acesso.
 
-**Fala:** Uma falha de página acontece quando a MMU procura um endereço e a página não está na tabela. Numa CPU, o processador para o programa, o sistema operacional resolve e a instrução é repetida. Nesta GPU, quem resolve também é software na CPU: o driver. Segundo o código aberto dele, a GPU anota a falha numa área de memória, o buffer de falhas, e avisa a CPU. O driver lê um lote de falhas, junta as repetidas e manda a GPU repetir os acessos. Para que serve: segundo o whitepaper da Pascal, de 2016, a falha permite trazer para a GPU, sob demanda, uma página que não está na memória dela. Esse aviso chega à CPU por uma interrupção, o próximo assunto.
+**Fala:** Uma falha de página acontece quando a MMU procura um endereço e a página não está na tabela. Numa CPU, o processador para o programa, o sistema operacional resolve e a instrução é repetida. Nesta GPU, quem resolve também é software na CPU: o driver. Segundo o código aberto dele, a GPU anota a falha numa área de memória, o buffer de falhas, e avisa a CPU. O driver lê um lote de falhas, junta as repetidas e manda a GPU repetir os acessos. Para que serve: segundo o whitepaper da Pascal, de 2016, a falha permite trazer para a GPU, sob demanda, uma página que não está na memória dela. E o aviso da falha, segundo o driver, chega à CPU por uma interrupção, o próximo assunto.
 
 *Fonte: driver aberto da NVIDIA, uvm_gpu_replayable_faults.c e uvm_gpu_isr.c. NVIDIA, whitepaper Tesla P100, p. 27*
 
@@ -157,7 +157,7 @@ Os 22 momentos do corte do seminário, na ordem das setas do tour. Cerca de 2.85
 
 **Na tela:** A GPU avisa a CPU por mensagem, o programa aborta com trap, ou a tarefa para no meio. Tratador dentro do SM: não achamos.
 
-**Fala:** Uma interrupção é um aviso que faz o processador parar, rodar uma rotina de atendimento, o tratador, e voltar de onde parou, como a campainha, que evita ir à porta toda hora. Nesta GPU, achamos três mecanismos. No primeiro, a GPU avisa a CPU por MSI-X ou MSI, mensagens de interrupção, e o tratador do driver faz o mínimo na hora e deixa o trabalho pesado para depois, para não segurar a CPU. No segundo, o programa executa a instrução trap, que aborta e gera uma interrupção para a CPU. No terceiro, a tarefa para no meio, por falha de página ou por preempção, a troca de um programa por outro. Tratador dentro do SM não achamos em nenhuma fonte, e nossa leitura, provável, é que os avisos vão ao driver, na CPU.
+**Fala:** Uma interrupção é um aviso que faz o processador parar, rodar uma rotina de atendimento, o tratador, e voltar de onde parou, como a campainha, que evita ir à porta toda hora. Nesta GPU, achamos três mecanismos. No primeiro, a GPU avisa a CPU por MSI-X ou MSI, mensagens de interrupção, e o tratador do driver faz o mínimo na hora e deixa o trabalho pesado para depois, para não segurar a CPU. No segundo, o programa executa a instrução trap, que aborta e gera uma interrupção para a CPU. No terceiro, a tarefa para no meio por uma falha de página, até o driver atender. O driver também cita a preempção, a troca de um programa por outro, mas como ela funciona nesta placa não achamos nas fontes lidas. Tratador dentro do SM não achamos em nenhuma fonte, e nossa leitura, provável, é que os avisos vão ao driver, na CPU.
 
 *Fonte: driver aberto da NVIDIA, nv.c, nv-msi.c e uvm_gpu_non_replayable_faults.c. PTX ISA 9.5, 9.7.21.4. SM sem tratador: análise do grupo*
 
