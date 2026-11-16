@@ -3,9 +3,9 @@
 export const STAGE_W = 1920;
 export const STAGE_H = 1080;
 export const HEADER_H = 88;     // cabeçalho com trilha de nível e progresso
-export const DISC_H = 52;       // faixa fixa do aviso "diagrama ilustrativo"
+export const DISC_H = 0;        // sem faixa de aviso: o diagrama usa a altura toda
 export const MARGIN = 48;       // margem da caixa de texto
-export const BOX_W = 620;       // largura da caixa de texto
+export const BOX_W = 700;       // largura da caixa de texto (slide com tópicos)
 export const GAP = 36;          // folga entre a caixa e o diagrama
 
 // Tempos fixos da chamada (segundos)

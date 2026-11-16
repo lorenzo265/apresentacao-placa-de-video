@@ -83,6 +83,13 @@ async function main() {
     const h = await titulo();
     if (!textos[id]) falhas.push(`${id}: sem texto`);
     else if (h !== textos[id].headline) falhas.push(`${id}: título na tela "${h}" difere de "${textos[id].headline}"`);
+    {
+      const dom = await page.evaluate(() => ({ lis: [...document.querySelectorAll('#caixa .pontos li')].map((l) => { const c = l.cloneNode(true); c.querySelectorAll('ul').forEach((u) => u.remove()); return c.textContent; }), selo: !!document.querySelector('#caixa .selo, #caixa .fonte'), estouro: document.getElementById('caixa').scrollHeight > document.getElementById('caixa').clientHeight + 1 }));
+      const esperado = (textos[id]?.pontos ?? []).map((p) => p.replace(/^-\s+/, '').replace(/\*\*/g, ''));
+      if (esperado.length && JSON.stringify(dom.lis) !== JSON.stringify(esperado)) falhas.push(`${id}: tópicos na tela diferem de beats.json`);
+      if (dom.selo) falhas.push(`${id}: a caixa mostra selo ou fonte`);
+      if (dom.estouro) falhas.push(`${id}: o texto estoura a caixa`);
+    }
     if (i % 6 === 0 || i === info.beats.length - 1) await page.screenshot({ path: path.join(FRAMES, `${id}.png`) });
   }
   // seta para a esquerda: momento anterior, já montado
@@ -122,7 +129,7 @@ async function main() {
     await page.click('#explorar .ex-camadas button[data-k="4"]');
     const sel = await page.evaluate(() => document.querySelector('#explorar .ex-painel h2')?.textContent);
     if (!sel) falhas.push('a camada 4 não abriu a explicação');
-    if (!(await page.evaluate(() => document.querySelector('#explorar .ex-painel .selo')))) falhas.push('a explicação da camada 4 não tem selo de procedência');
+    if (await page.evaluate(() => document.querySelector('#explorar .ex-painel .selo, #explorar .ex-painel .fonte'))) falhas.push('o painel da camada 4 mostra selo ou fonte');
     await page.click('#explorar .ex-painel button[data-a="remover"]');
     await page.waitForFunction(() => { const e = window.__explorar.estado(); return e.alvo === 4 && e.nivel === 4; }, null, { timeout: 170000 });
     const fora = await page.evaluate(() => [...document.querySelectorAll('#explorar .ex-camadas button.fora')].map((b) => b.dataset.k).join(','));
@@ -140,7 +147,7 @@ async function main() {
       const e = await ex();
       if (e.sel?.tipo !== 'peca') falhas.push(`o clique na placa não selecionou uma peça (${JSON.stringify(e.sel)})`);
       else console.log(`smoke-single: clique na placa selecionou ${e.sel.id}`);
-      if (!(await page.evaluate(() => document.querySelector('#explorar .ex-painel .selo')))) falhas.push('a peça clicada não mostra selo de procedência');
+      if (await page.evaluate(() => document.querySelector('#explorar .ex-painel .selo, #explorar .ex-painel .fonte'))) falhas.push('a peça clicada mostra selo ou fonte');
     }
     await page.screenshot({ path: path.join(FRAMES, 'explorar.png') });
     await page.click('#explorar .ex-camadas button[data-k="4"]');

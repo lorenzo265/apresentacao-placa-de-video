@@ -2,6 +2,10 @@
 
 Página que executa o tour guiado por `story/storyboard.json`: placa 3D (níveis 0 e 1) e diagramas SVG (níveis 2 a 4). Não tem conteúdo embutido: textos, rótulos e posições vêm dos JSON. Versões fixadas em `package.json`: three 0.170.0, gsap 3.15.1, camera-controls 3.1.2, vite 8.3.7, fontes por `@fontsource/inter` e `@fontsource/jetbrains-mono` 5.3.0.
 
+## O slide (caixa de texto)
+
+A caixa é um slide: kicker (`topico`), título (`headline`) e lista de tópicos (`pontos`), todos de `content/pt-BR/beats.json`. `**negrito**` destaca número ou termo, e um tópico que começa com `- ` é subtópico do anterior. Beat sem `pontos` (formato antigo) mostra o `caption` como parágrafo. Sem selos de procedência, sem linha de fonte, sem faixa de aviso do diagrama e sem selo da vitrine (decisão de 2026-11-16, `plano/apresentacao-slides.md`). `source_line` e `claims` ficam nos dados. A fala (`fala`) só aparece nas notas (tecla N), em parágrafos.
+
 ## Rodar
 
 ```
@@ -45,7 +49,7 @@ node harness/tools/smoke.cjs [--cut completo] [--acumula 2]   # percorre todos o
 node harness/tools/capture.cjs --cut completo [--fps 30] [--beats a4.2,a5.5] [--out harness/dist]
 ```
 
-O smoke abre com `acumula=2` (padrão do teste, para caber no tempo com render por software; `--acumula N` troca) e confere, por beat: console sem erro, `headline` igual ao de `beats.json`, limites de palavras e regra do tempo de leitura, caption sem estouro e com corpo de 28 px, caixa dentro da tela, âncora na tela e fora da caixa, foco inteiro na tela e fora da caixa, e determinismo (mesmo instante, com um `seek` no meio, dá PNG idêntico). A captura grava `harness/dist/capture/<corte>/<beat>/%05d.png`, pula o beat se o hash (beat, texto, diagramas, GLB, bundle) não mudou e monta `harness/dist/tour-<corte>.mp4`.
+O smoke abre com `acumula=2` (padrão do teste, para caber no tempo com render por software; `--acumula N` troca) e confere, por beat: console sem erro, `headline` igual ao de `beats.json`, limites de palavras dos tópicos e regra do tempo de leitura, texto sem estouro da caixa e com corpo de pelo menos 28 px, nenhum selo, linha de fonte ou faixa de aviso na tela, caixa dentro da tela, âncora na tela e fora da caixa, foco inteiro na tela e fora da caixa, e determinismo (mesmo instante, com um `seek` no meio, dá PNG idêntico). A captura grava `harness/dist/capture/<corte>/<beat>/%05d.png`, pula o beat se o hash (beat, texto, diagramas, GLB, bundle) não mudou e monta `harness/dist/tour-<corte>.mp4`.
 
 ```
 node harness/tools/smoke.cjs --fixture3d       # beats 3D reais: usa schemas/examples/fixture3d.*.example.json

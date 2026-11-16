@@ -1,14 +1,19 @@
 // Linha de chamada (SVG em pixels do palco) e caixa de texto (DOM).
+// A caixa é o slide: um título e uma lista de tópicos (campo `pontos` de beats.json). Sem selos de
+// procedência e sem linha de fonte na tela (ficam nos dados e nos relatórios de auditoria).
 import { STAGE_W, STAGE_H, boxPlacement } from './layout.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
-const SELOS = {
-  confirmed: { palavra: 'Confirmado', icone: 'M3,8 L7,12 L13,4' },                       // visto
-  derived: { palavra: 'Derivado', icone: 'M3,4 L13,4 M3,8 L13,8 M3,12 L9,12' },         // conta
-  inferred: { palavra: 'Provável', icone: 'M5,6 Q5,3 8,3 Q11,3 11,6 Q11,8 8,9 L8,10 M8,12.5 L8,13' }, // interrogação
-  illustrative: { palavra: 'Ilustrativo', icone: 'M8,2 L14,8 L8,14 L2,8 Z' },            // losango
-};
+/** Texto com **negrito** vira nós de DOM (sem innerHTML: o conteúdo nunca é lido como HTML). */
+function preenche(el, texto) {
+  el.textContent = '';
+  String(texto).split('**').forEach((trecho, i) => {
+    if (!trecho) return;
+    if (i % 2) { const b = document.createElement('strong'); b.textContent = trecho; el.appendChild(b); }
+    else el.appendChild(document.createTextNode(trecho));
+  });
+}
 
 export function criaChamada(palco) {
   const svg = document.createElementNS(NS, 'svg');
@@ -28,15 +33,32 @@ export function criaChamada(palco) {
 
   const caixa = document.createElement('div');
   caixa.id = 'caixa';
-  caixa.innerHTML = `<div class="selos"></div><h2></h2><p class="caption"></p><p class="fonte"></p>`;
+  caixa.innerHTML = `<p class="topico"></p><h2></h2><ul class="pontos"></ul><p class="caption"></p>`;
   palco.appendChild(caixa);
   const q = (s) => caixa.querySelector(s);
   let atual = null;       // beat cujo conteúdo está na caixa
   let ret = [0, 0, 0, 0]; // retângulo da caixa em px do palco
+  let yTitulo = 46;       // altura (px do palco, relativa ao topo da caixa) do meio da primeira linha do título
 
-  function selo(p) {
-    const s = SELOS[p];
-    return `<span class="selo s-${p}"><svg viewBox="0 0 16 16" width="22" height="22"><path d="${s.icone}"/></svg>${s.palavra}</span>`;
+  /** Lista de tópicos: "- texto" é subtópico do tópico anterior; **negrito** destaca. */
+  function montaPontos(pontos) {
+    const ul = q('.pontos');
+    ul.textContent = '';
+    let sub = null;
+    for (const p of pontos) {
+      const filho = /^-\s+/.test(p);
+      if (filho && ul.lastElementChild) {
+        if (!sub) { sub = document.createElement('ul'); ul.lastElementChild.appendChild(sub); }
+        const li = document.createElement('li');
+        preenche(li, p.replace(/^-\s+/, ''));
+        sub.appendChild(li);
+      } else {
+        sub = null;
+        const li = document.createElement('li');
+        preenche(li, p);
+        ul.appendChild(li);
+      }
+    }
   }
 
   /** Coloca o conteúdo do beat e mede a caixa (só quando o beat muda). */
@@ -45,15 +67,22 @@ export function criaChamada(palco) {
     atual = beat;
     const { side, vert } = boxPlacement(beat.callout);
     caixa.className = `${side} ${vert}`;
-    q('.selos').innerHTML = (beat.provenance ?? []).map(selo).join('');
+    const pontos = Array.isArray(texto.pontos) ? texto.pontos : [];
+    q('.topico').textContent = texto.topico ?? '';
+    q('.topico').style.display = texto.topico ? '' : 'none';
     q('h2').textContent = texto.headline;
-    q('.caption').textContent = texto.caption;
-    q('.fonte').textContent = texto.source_line;
-    q('.fonte').style.display = texto.source_line ? '' : 'none';
+    montaPontos(pontos);
+    q('.pontos').style.display = pontos.length ? '' : 'none';
+    // sem tópicos (beat de extra, ainda no formato antigo): a legenda aparece como parágrafo
+    q('.caption').textContent = pontos.length ? '' : texto.caption ?? '';
+    q('.caption').style.display = pontos.length || !texto.caption ? 'none' : '';
     const r = caixa.getBoundingClientRect();
     const pr = palco.getBoundingClientRect();
     const k = pr.width / STAGE_W;
     ret = [(r.left - pr.left) / k, (r.top - pr.top) / k, r.width / k, r.height / k];
+    const h = q('h2').getBoundingClientRect();
+    const alturaLinha = parseFloat(getComputedStyle(q('h2')).lineHeight) || 48;
+    yTitulo = (h.top - r.top) / k + alturaLinha / 2;
   }
 
   /** Desenha a linha do anchor [x,y] (px do palco) até a caixa, com um cotovelo. */
@@ -66,7 +95,7 @@ export function criaChamada(palco) {
     const [ax, ay] = ancora;
     const { side } = boxPlacement(beat.callout);
     const ex = side === 'left' ? ret[0] + ret[2] : ret[0];       // borda da caixa voltada para o centro
-    const ey = ret[1] + 46;                                       // altura do título
+    const ey = ret[1] + yTitulo;                                  // altura do título
     const dir = side === 'left' ? 1 : -1;
     let cx = ex + dir * 56;                                       // onde a diagonal vira horizontal
     if ((ax - cx) * dir < 0) cx = ax;                             // âncora entre o cotovelo e a caixa
@@ -85,6 +114,8 @@ export function criaChamada(palco) {
     anel.setAttribute('cx', ax); anel.setAttribute('cy', ay); anel.setAttribute('r', 15 * r);
   }
 
-  function overflow() { return caixa.scrollHeight > caixa.clientHeight + 1 || q('.caption').scrollWidth > q('.caption').clientWidth + 1; }
+  function overflow() {
+    return caixa.scrollHeight > caixa.clientHeight + 1 || [...caixa.querySelectorAll('li, .caption')].some((e) => e.scrollWidth > e.clientWidth + 1);
+  }
   return { caixa, define, atualiza, ret: () => ret, overflow };
 }

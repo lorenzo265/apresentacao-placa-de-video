@@ -8,8 +8,6 @@
 #fundo, #cotas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; }
 
 :root[data-tema] #palco, :root[data-tema] #cena3d { background: transparent; }
-/* aviso do diagrama: duas linhas cabem na faixa de 52 px (sem tema, o texto longo sai da faixa) */
-:root[data-tema] #aviso-diagrama { line-height: 1.15; }
 :root[data-tema] #chamada .halo { display: inline; fill: none; stroke: var(--cor-linha); stroke-linecap: round; stroke-linejoin: round; }
 :root[data-tema] #chamada .mira { fill: none; stroke: var(--cor-linha); stroke-linecap: round; }
 
@@ -33,20 +31,21 @@
 :root[data-tema=keynote] #cabecalho .secao { color: #8e979c; font-size: 18px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; }
 :root[data-tema=keynote] #cabecalho .progresso { left: 48px; width: 1824px; bottom: 6px; height: 2px; background: #ffffff12; border-radius: 2px; }
 :root[data-tema=keynote] #cabecalho .barra { background: var(--acento); box-shadow: 0 0 8px #8ad42aaa; border-radius: 2px; }
-:root[data-tema=keynote] #aviso-diagrama { background: #000000b0; border-top: 1px solid #ffffff10; color: #9aa3a8; font-size: 21px; }
-:root[data-tema=keynote] #aviso-diagrama::before { background: #5c656b; width: 10px; height: 10px; }
 :root[data-tema=keynote] #aviso-blockout { border: 1px solid #ffffff26; border-radius: 99px; color: #8e979c; background: #00000080; font-size: 20px; padding: 6px 18px; }
 
 /* caixa em vidro escuro, borda fina luminosa */
 :root[data-tema=keynote] #caixa { padding: 26px 32px 26px; border-radius: 20px; background: #0a0d0fc4; border: 1px solid #8ad42a55;
   backdrop-filter: blur(16px) saturate(1.15);
   box-shadow: inset 0 1px 0 #ffffff14, 0 0 0 4px #8ad42a0a, 0 0 40px #8ad42a14, 0 30px 70px #000000b0; }
-:root[data-tema=keynote] #caixa h2 { font-size: 46px; line-height: 1.06; letter-spacing: -.028em; color: #fff; margin: 14px 0 12px; }
+:root[data-tema=keynote] #caixa { padding: 28px 36px 30px; }
+:root[data-tema=keynote] #caixa .topico { color: var(--acento); letter-spacing: .18em; font-size: 19px; margin: 0 0 10px; }
+:root[data-tema=keynote] #caixa h2 { font-size: 46px; line-height: 1.06; letter-spacing: -.028em; color: #fff; margin: 0 0 20px; }
 :root[data-tema=keynote] #caixa .caption { color: #c9d1d5; line-height: 1.38; }
-:root[data-tema=keynote] #caixa .fonte { color: #7b858b; border-top-color: #ffffff12; }
-:root[data-tema=keynote] .selo { border-width: 1px; font-size: 19px; padding: 3px 12px 3px 8px; background: #ffffff08; }
-:root[data-tema=keynote] .s-confirmed { color: #7fe3ad; } :root[data-tema=keynote] .s-derived { color: #8fb8ff; }
-:root[data-tema=keynote] .s-inferred { color: #f0c95a; } :root[data-tema=keynote] .s-illustrative { color: #c0adf0; }
+:root[data-tema=keynote] #caixa .pontos > li { color: #e6ebec; margin-bottom: 16px; padding-left: 32px; }
+:root[data-tema=keynote] #caixa .pontos > li::before { background: var(--acento); box-shadow: 0 0 8px #8ad42a88; }
+:root[data-tema=keynote] #caixa .pontos ul li { color: #b9c2c7; }
+:root[data-tema=keynote] #caixa .pontos ul li::before { background: #5c7d2c; }
+:root[data-tema=keynote] #caixa strong { color: #fff; }
 
 /* linha de chamada fina com brilho */
 :root[data-tema=keynote] #chamada .linha { stroke-width: 1.6px; }
@@ -99,8 +98,6 @@
 :root[data-tema=estudio] #cabecalho .secao { color: #c4c9cf; font-weight: 500; }
 :root[data-tema=estudio] #cabecalho .progresso { left: 48px; width: 1824px; bottom: 4px; height: 3px; background: #ffffff1a; border-radius: 3px; }
 :root[data-tema=estudio] #cabecalho .barra { background: #f2f3f5; border-radius: 3px; }
-:root[data-tema=estudio] #aviso-diagrama { background: #141518d0; border-top: none; color: #c4c9cf; font-size: 21px; }
-:root[data-tema=estudio] #aviso-diagrama::before { background: #8d939b; width: 10px; height: 10px; }
 :root[data-tema=estudio] #aviso-blockout { border: none; border-radius: 99px; color: #2b2f35; background: #e9ebeecc; font: 600 18px Inter, sans-serif; padding: 7px 18px; letter-spacing: .02em; }
 
 /* cartão claro, como ficha de produto */
@@ -108,13 +105,11 @@
   box-shadow: 0 2px 4px #00000040, 0 18px 40px #00000059, 0 40px 90px #00000040; }
 :root[data-tema=estudio] #caixa h2 { font-size: 44px; line-height: 1.08; letter-spacing: -.024em; color: #0c0e11; margin: 14px 0 10px; }
 :root[data-tema=estudio] #caixa .caption { color: #2a2f36; line-height: 1.38; }
-:root[data-tema=estudio] #caixa .fonte { color: #5c6470; border-top-color: #00000014; }
-:root[data-tema=estudio] .selo { border: none; font-size: 19px; padding: 4px 12px 4px 9px; }
-:root[data-tema=estudio] .s-confirmed { color: #0f7a45; background: #0f7a4516; }
-:root[data-tema=estudio] .s-derived { color: #1f52c4; background: #1f52c414; }
-:root[data-tema=estudio] .s-inferred { color: #8f6200; background: #c08a0022; }
-:root[data-tema=estudio] .s-illustrative { color: #6440bb; background: #6440bb16; }
-:root[data-tema=estudio] .s-illustrative svg { fill: #6440bb33; }
+:root[data-tema=estudio] #caixa .topico { color: #5c6470; }
+:root[data-tema=estudio] #caixa .pontos > li { color: #1c2026; }
+:root[data-tema=estudio] #caixa .pontos > li::before { background: #2a2f36; }
+:root[data-tema=estudio] #caixa .pontos ul li { color: #3d444d; }
+:root[data-tema=estudio] #caixa strong { color: #000; }
 
 :root[data-tema=estudio] #chamada .linha { stroke-width: 2px; }
 :root[data-tema=estudio] #chamada .halo { stroke: #000; stroke-width: 6px; opacity: .25; }
@@ -171,8 +166,6 @@
 :root[data-tema=blueprint] #cabecalho .secao { color: #cfe2ff; font-weight: 500; letter-spacing: .14em; }
 :root[data-tema=blueprint] #cabecalho .progresso { height: 3px; background: #0b2244; }
 :root[data-tema=blueprint] #cabecalho .barra { background: var(--tinta); }
-:root[data-tema=blueprint] #aviso-diagrama { background: #061327e8; border-top: 1px solid #8fb4e84d; color: #b5cdf0; font-size: 21px; }
-:root[data-tema=blueprint] #aviso-diagrama::before { background: none; border: 1.5px solid #cfe2ff; width: 10px; height: 10px; }
 :root[data-tema=blueprint] #aviso-blockout { border: 1px dashed #8fb4e8; border-radius: 0; color: #cfe2ff; background: #061327cc; text-transform: uppercase; font-size: 18px; letter-spacing: .08em; }
 
 /* caixa como carimbo de prancha: canto vivo, marcas de canto */
@@ -183,10 +176,9 @@
 :root[data-tema=blueprint] #caixa::after { right: 0; bottom: 0; border-right-width: 3px; border-bottom-width: 3px; }
 :root[data-tema=blueprint] #caixa h2 { font-size: 42px; line-height: 1.1; font-weight: 700; letter-spacing: -.015em; color: #f4f8ff; margin: 14px 0 10px; }
 :root[data-tema=blueprint] #caixa .caption { color: #cddcf3; }
-:root[data-tema=blueprint] #caixa .fonte { color: #8fa9d0; font: 400 18px/1.4 "JetBrains Mono", monospace; border-top: 1px dashed #8fb4e866; }
-:root[data-tema=blueprint] .selo { border-radius: 2px; border-width: 1px; font: 500 17px "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .06em; padding: 3px 10px 3px 6px; }
-:root[data-tema=blueprint] .s-confirmed { color: #7fe8b0; } :root[data-tema=blueprint] .s-derived { color: #9cc4ff; }
-:root[data-tema=blueprint] .s-inferred { color: #ffd36a; } :root[data-tema=blueprint] .s-illustrative { color: #cdb8ff; }
+:root[data-tema=blueprint] #caixa .topico { color: #8fb4e8; font-family: "JetBrains Mono", monospace; }
+:root[data-tema=blueprint] #caixa .pontos > li { color: #cddcf3; }
+:root[data-tema=blueprint] #caixa .pontos > li::before { background: #cfe2ff; border-radius: 0; }
 
 :root[data-tema=blueprint] #chamada .linha { stroke-width: 1.5px; }
 :root[data-tema=blueprint] #chamada .ponto { fill: none; stroke: var(--cor-linha); stroke-width: 2px; }

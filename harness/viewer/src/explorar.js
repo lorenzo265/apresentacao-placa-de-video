@@ -2,19 +2,11 @@
 // ler a explicação; remover e recolocar tocam a desmontagem que o tour já usa (desmontagem.json).
 // Ordem real com atalho: o estado é sempre "camadas 1 a k fora", que é o nível de explosão do tour.
 // Remover a camada k tira antes as que estão na frente; recolocar a k recoloca antes as que saíram depois.
-// Textos: só os de beats.json (auditados) ou o texto próprio de pecas.json; procedência sempre à vista.
+// Textos: só os de beats.json (auditados) ou o texto próprio de pecas.json. Sem selos nem linha de fonte na tela.
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { STAGE_W, STAGE_H } from './layout.js';
 
-const SELOS = {
-  confirmed: { palavra: 'Confirmado', icone: 'M3,8 L7,12 L13,4' },
-  derived: { palavra: 'Derivado', icone: 'M3,4 L13,4 M3,8 L13,8 M3,12 L9,12' },
-  inferred: { palavra: 'Provável', icone: 'M5,6 Q5,3 8,3 Q11,3 11,6 Q11,8 8,9 L8,10 M8,12.5 L8,13' },
-  illustrative: { palavra: 'Ilustrativo', icone: 'M8,2 L14,8 L8,14 L2,8 Z' },
-};
-const selo = (p, rotulo = '') => (SELOS[p]
-  ? `<span class="selo s-${p}"><svg viewBox="0 0 16 16" width="22" height="22"><path d="${SELOS[p].icone}"/></svg>${rotulo}${SELOS[p].palavra}</span>` : '');
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 // Vista de partida: a do plano de herói do storyboard (a2.13), em mm. O enquadramento sai da caixa da placa.
@@ -44,7 +36,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
       <div class="acoes"><button data-a="remontar">Remontar tudo</button><button data-a="desmontar">Desmontar tudo</button></div>
     </nav>
     <aside class="ex-painel ui"></aside>
-    <div class="ex-selo"><span class="selo s-inferred"><svg viewBox="0 0 16 16" width="22" height="22"><path d="${SELOS.inferred.icone}"/></svg>Provável: do interior do cooler, as fotos só mostram a base de contato e as aletas por fora. Abertura da carcaça ilustrativa</span></div>
+    <div class="ex-selo">Interior do cooler: estimativa do grupo. As fotos só mostram a base de contato e as aletas por fora. A abertura da carcaça é ilustração.</div>
     <p class="ex-dica">arraste: gira &middot; roda do mouse: aproxima &middot; clique: seleciona &middot; Delete: remove &middot; Z: recoloca a última &middot; Esc: volta</p>`;
   palco.appendChild(raiz);
   const painel = raiz.querySelector('.ex-painel');
@@ -66,7 +58,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
     if (item.texto) return { ...item.texto, beat: null };
     if (!item.beat || !textos.beats[item.beat]) return null;
     const t = textos.beats[item.beat];
-    return { headline: t.headline, caption: t.caption, source_line: t.source_line, provenance: beatSb.get(item.beat)?.provenance ?? [], beat: item.beat };
+    return { headline: t.headline, caption: t.caption, pontos: t.pontos, beat: item.beat };
   }
   const camadaSel = () => (sel?.tipo === 'camada' ? sel.k : sel ? pecas[sel.id]?.estagio ?? null : null);
 
@@ -83,14 +75,9 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
     const item = sel.tipo === 'camada' ? cam : pecas[sel.id];
     const ex = explicacao(item);
     const fora = k != null && alvo >= k;
-    let olho, selos;
-    if (sel.tipo === 'camada') {
-      olho = k <= 7 ? `Passo ${k} de 7 do teardown` : 'Além do teardown';
-      selos = (ex?.provenance ?? []).map((p) => selo(p)).join('');
-    } else {
-      olho = k ? `Na camada ${k}: ${esc(cam.nome)}` : 'Fica na placa: não é retirada nos 7 passos do teardown';
-      selos = selo(item.existe, 'Peça: ') + selo(item.forma, 'Forma: ');
-    }
+    let olho;
+    if (sel.tipo === 'camada') olho = k <= 7 ? `Passo ${k} de 7 do teardown` : 'Além do teardown';
+    else olho = k ? `Na camada ${k}: ${esc(cam.nome)}` : 'Fica na placa: não é retirada nos 7 passos do teardown';
     // ação: sempre sobre a camada (a peça soldada sai com a camada dela)
     let acao = '';
     if (k != null) {
@@ -101,14 +88,15 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
     }
     const noSlide = ex?.beat && prontos.has(ex.beat)
       ? `<button data-a="slide" data-id="${ex.beat}">${numero.has(ex.beat) ? `Na apresentação: momento ${numero.get(ex.beat)}` : 'Na apresentação: extra'}</button>` : '';
+    const corpo = !ex ? `<p class="texto vazio">Esta peça ainda não tem texto auditado.${item.ressalva ? ' Veja a ressalva abaixo.' : ''}</p>`
+      : Array.isArray(ex.pontos) && ex.pontos.length
+        ? `<ul class="texto-pontos">${ex.pontos.map((x) => `<li>${esc(x).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')}</li>`).join('')}</ul>`
+        : `<p class="texto">${esc(ex.caption)}</p>`;
     painel.innerHTML = `
-      <div class="selos">${selos}</div>
       <p class="olho">${olho}</p>
       <h2>${esc(item.nome)}</h2>
-      ${ex ? `<h3>${esc(ex.headline)}</h3><p class="texto">${esc(ex.caption)}</p>` : `<p class="texto vazio">Esta peça ainda não tem texto auditado.${item.ressalva ? ' Veja a ressalva abaixo.' : ''}</p>`}
-      ${sel.tipo === 'peca' && ex?.provenance?.length ? `<p class="prov">Texto: ${ex.provenance.map((p) => SELOS[p]?.palavra.toLowerCase()).join(', ')}</p>` : ''}
+      ${ex ? `<h3>${esc(ex.headline)}</h3>` : ''}${corpo}
       ${sel.tipo === 'peca' && item.ressalva ? `<p class="ressalva">${esc(item.ressalva)}</p>` : ''}
-      ${ex?.source_line ? `<p class="fonte">${esc(ex.source_line)}</p>` : ''}
       <div class="acoes">${acao}<div class="sec"><button data-a="perto">Ver de perto</button>${noSlide}</div></div>`;
   }
   function desenhaLista() {
@@ -116,7 +104,7 @@ export function criaExplorar({ palco, cena, dados, textos, storyboard, tour }) {
     for (const [n, b] of botoes) {
       b.classList.toggle('fora', alvo >= n);
       b.classList.toggle('sel', n === k);
-      b.querySelector('em').textContent = alvo >= n ? (n === 8 ? 'fora, provável' : 'fora') : n === 8 ? 'provável' : '';
+      b.querySelector('em').textContent = alvo >= n ? 'fora' : '';
     }
   }
 

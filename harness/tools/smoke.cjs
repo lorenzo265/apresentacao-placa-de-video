@@ -130,8 +130,10 @@ async function main() {
       await page.evaluate((t) => window.__tour.seek(t), e.settle);
       const pr = await page.evaluate((id) => window.__tour.probe(id), e.id);
       const est = await page.evaluate(() => {
-        const c = document.querySelector('#caixa .caption');
-        return { fonte: parseFloat(getComputedStyle(c).fontSize) };
+        // corpo do texto: o primeiro tópico (ou a legenda, no formato antigo)
+        const c = document.querySelector('#caixa .pontos > li') ?? document.querySelector('#caixa .caption');
+        const sel = ['.selo', '.fonte', '.selos'].filter((q) => document.querySelector(`#caixa ${q}`));
+        return { fonte: parseFloat(getComputedStyle(c).fontSize), proibidos: sel, avisoFaixa: !!document.getElementById('aviso-diagrama') };
       });
       await page.screenshot({ path: path.join(FRAMES, `${e.id}.png`) });
       let ok = true;
@@ -141,12 +143,17 @@ async function main() {
       else {
         if (pr.headline !== tx.headline) f(`headline "${pr.headline}" difere de beats.json "${tx.headline}"`);
         if (palavras(tx.headline) > 8) f(`headline com ${palavras(tx.headline)} palavras (máx. 8)`);
-        if (palavras(tx.caption) > 35) f(`caption com ${palavras(tx.caption)} palavras (máx. 35)`);
-        const minimo = 0.4 * palavras(tx.caption) + 2;
+        const tela = tx.pontos?.length ? tx.pontos.map((p) => p.replace(/\*\*/g, '')) : [tx.caption ?? ''];
+        const nPal = tela.reduce((n, p) => n + palavras(p), 0);
+        if (tx.pontos?.length ? nPal > 110 : nPal > 35) f(`texto da tela com ${nPal} palavras`);
+        if (tx.pontos?.length > 8) f(`${tx.pontos.length} tópicos (máx. 8)`);
+        const minimo = 0.4 * nPal + 2;
         if (b.hold < minimo) f(`hold ${b.hold} s menor que a regra de leitura (${minimo.toFixed(1)} s)`);
       }
       if (pr.captionOverflow) f('o texto estoura a caixa');
-      if (est.fonte < 28) f(`corpo do caption com ${est.fonte}px (mín. 28)`);
+      if (est.fonte < 28) f(`corpo do texto com ${est.fonte}px (mín. 28)`);
+      if (est.proibidos.length) f(`a caixa tem elemento de selo ou fonte: ${est.proibidos.join(', ')}`);
+      if (est.avisoFaixa) f('a faixa de aviso do diagrama voltou');
       const [bx, by, bw, bh] = pr.box;
       if (bx < 0 || by < 0 || bx + bw > 1920 || by + bh > 1080) f(`caixa fora da tela [${pr.box.map(Math.round)}]`);
       if (fixture && b.level <= 1) {

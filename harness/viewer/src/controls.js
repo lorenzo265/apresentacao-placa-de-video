@@ -32,11 +32,15 @@ export function criaControles(palco, tour) {
   palco.appendChild(notas);
   function atualizaNotas() {
     const m = tour.momento(), b = tour.beatAtual(), t = tour.textoDe(b.id);
-    const topicos = (t.fala ?? '').split('•').map((x) => x.trim()).filter(Boolean);
+    // fala: parágrafos separados por linha em branco; um texto antigo com • vira lista
+    const fala = (t.fala ?? '').trim();
+    const topicos = fala.includes('•') ? fala.split('•').map((x) => x.trim()).filter(Boolean) : [];
+    const paragrafos = topicos.length ? [] : fala.split(/\n{2,}/).map((x) => x.trim()).filter(Boolean);
     const prox = !m.extra && m.idx + 1 < m.total ? tour.textoDe(tour.beats[m.idx + 1].id).headline : null;
     notas.innerHTML = `
       <p class="quem">${m.extra ? 'Extra' : `Momento ${m.idx + 1} de ${m.total}`} <span>fala de <b>${esc(b.beat.speaker ?? 'sem responsável')}</b></span></p>
-      ${topicos.length ? `<ul class="fala">${topicos.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : '<p class="fala">(sem fala registrada)</p>'}
+      ${topicos.length ? `<ul class="fala">${topicos.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`
+        : paragrafos.length ? paragrafos.map((x) => `<p class="fala">${esc(x)}</p>`).join('') : '<p class="fala vazia">(sem fala registrada)</p>'}
       ${prox ? `<p class="prox">A seguir: <b>${esc(prox)}</b></p>` : ''}`;
     notas.dataset.id = b.id;
   }

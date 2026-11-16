@@ -17,28 +17,40 @@
         "type": "object",
         "required": [
           "headline",
-          "caption",
           "fala",
-          "source_line",
           "claims"
         ],
         "additionalProperties": false,
         "properties": {
+          "topico": {
+            "type": "string",
+            "description": "item do enunciado ou parte da apresentação, em letras pequenas acima do título (ex.: Registradores)"
+          },
           "headline": {
             "type": "string",
             "minLength": 1,
             "description": "até 8 palavras (conferido por tools/validate.py)"
           },
+          "pontos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "o slide: tópicos que aparecem na tela e que o apresentador lê. Até 8 tópicos e 110 palavras no total (conferido por tools/validate.py). **negrito** destaca; um tópico que começa com \"- \" é subtópico do anterior"
+          },
           "caption": {
             "type": "string",
-            "description": "até 35 palavras (conferido por tools/validate.py)"
+            "description": "formato antigo (parágrafo único). Só vale para beat sem pontos; até 35 palavras (conferido por tools/validate.py)"
           },
           "fala": {
-            "type": "string"
+            "type": "string",
+            "description": "apoio curto para as notas do apresentador (tecla N); parágrafos separados por linha em branco"
           },
           "source_line": {
             "type": "string",
-            "description": "a fonte mostrada na tela; vazio só em beat sem número"
+            "description": "fonte do texto, só nos dados e nos relatórios: não aparece na tela"
           },
           "claims": {
             "type": "array",
@@ -52,7 +64,19 @@
             "type": "string",
             "description": "caminho do texto longo em content/pt-BR/"
           }
-        }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "pontos"
+            ]
+          },
+          {
+            "required": [
+              "caption"
+            ]
+          }
+        ]
       }
     }
   }

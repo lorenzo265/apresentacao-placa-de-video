@@ -19,7 +19,10 @@ HARNESS = Path(__file__).resolve().parent.parent
 SCHEMAS = HARNESS / "schemas"
 
 MAX_HEADLINE_WORDS = 8
-MAX_CAPTION_WORDS = 35
+MAX_CAPTION_WORDS = 35   # só no formato antigo (beat sem pontos)
+MAX_POINTS = 8
+MAX_POINTS_WORDS = 110
+MAX_POINT_WORDS = 32
 SECONDS_PER_WORD = 0.4   # regra de leitura de story/video-plan.md, seção 6
 READING_MARGIN_S = 2.0
 
@@ -48,13 +51,33 @@ def schema_errors(name, data):
         yield f"{where}: {err.message}"
 
 
+def texto_da_tela(text):
+    """Palavras que aparecem na caixa: tópicos (sem a marca de negrito) ou, no formato antigo, a legenda."""
+    if text.get("pontos"):
+        return sum(words(p.replace("**", "")) for p in text["pontos"])
+    return words(text.get("caption", ""))
+
+
 def check_beats_text(beats):
     for beat_id, text in beats["beats"].items():
         if words(text["headline"]) > MAX_HEADLINE_WORDS:
             yield f"{beat_id}: headline com mais de {MAX_HEADLINE_WORDS} palavras"
-        if words(text["caption"]) > MAX_CAPTION_WORDS:
+        pontos = text.get("pontos")
+        if pontos:
+            if len(pontos) > MAX_POINTS:
+                yield f"{beat_id}: {len(pontos)} tópicos (máx. {MAX_POINTS})"
+            if texto_da_tela(text) > MAX_POINTS_WORDS:
+                yield f"{beat_id}: tópicos com {texto_da_tela(text)} palavras (máx. {MAX_POINTS_WORDS})"
+            for p in pontos:
+                if p.count("**") % 2:
+                    yield f"{beat_id}: negrito aberto em \"{p[:40]}\""
+                if words(p) > MAX_POINT_WORDS:
+                    yield f"{beat_id}: tópico com mais de {MAX_POINT_WORDS} palavras: \"{p[:40]}\""
+        elif words(text.get("caption", "")) > MAX_CAPTION_WORDS:
             yield f"{beat_id}: caption com mais de {MAX_CAPTION_WORDS} palavras"
-        if re.search(r"\d", text["headline"] + text["caption"]) and not text["source_line"].strip():
+        # a fonte não aparece na tela, mas todo número precisa ter a sua nos dados (regra do projeto)
+        tela = text["headline"] + " ".join(pontos or []) + text.get("caption", "")
+        if re.search(r"\d", tela) and not text.get("source_line", "").strip():
             yield f"{beat_id}: texto com número e sem source_line"
 
 
@@ -112,7 +135,7 @@ def check_storyboard(story, beats, spec, diagram_ids):
         if beats is not None and text is None:
             yield f"{b['id']}: beat pronto sem texto em beats.json"
         if text is not None:
-            need = words(text["caption"]) * SECONDS_PER_WORD + READING_MARGIN_S
+            need = texto_da_tela(text) * SECONDS_PER_WORD + READING_MARGIN_S
             if b["hold"] < need:
                 yield f"{b['id']}: hold de {b['hold']} s, a leitura pede {need:.1f} s"
             if spec is not None:
