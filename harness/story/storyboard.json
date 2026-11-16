@@ -128,9 +128,71 @@
         "duration": 2.0,
         "ease": "power2.out"
       },
-      "hold": 28.0,
+      "hold": 38.0,
       "provenance": [
         "derived",
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a0.5",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": null,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          560,
+          -330,
+          420
+        ],
+        "target": [
+          45,
+          80,
+          10
+        ],
+        "fov": 28,
+        "duration": 2.0,
+        "ease": "power2.out"
+      },
+      "hold": 34.0,
+      "provenance": [
+        "confirmed"
+      ],
+      "speaker": "Vitor"
+    },
+    {
+      "id": "a0.6",
+      "act": 0,
+      "section": "01",
+      "level": 0,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": null,
+      "explode_state": "assembled",
+      "camera": {
+        "pos": [
+          -230,
+          -330,
+          400
+        ],
+        "target": [
+          50,
+          85,
+          0
+        ],
+        "fov": 30,
+        "duration": 2.5,
+        "ease": "power2.inOut"
+      },
+      "hold": 32.0,
+      "provenance": [
         "confirmed"
       ],
       "speaker": "Vitor"
@@ -271,7 +333,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -439,7 +501,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 24.0,
+      "hold": 43.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -611,7 +673,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 27.0,
+      "hold": 41.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1058,7 +1120,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26.0,
+      "hold": 38.0,
       "provenance": [
         "confirmed"
       ],
@@ -1138,7 +1200,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 28.0,
+      "hold": 45.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1377,7 +1439,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1496,7 +1558,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 30.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1664,7 +1726,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 29.0,
+      "hold": 39.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1740,7 +1802,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 35.0,
+      "hold": 39.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1811,7 +1873,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 31.0,
+      "hold": 37.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -1960,7 +2022,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 32.0,
+      "hold": 33.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1998,43 +2060,6 @@
       "hold": 29.0,
       "provenance": [
         "confirmed",
-        "illustrative"
-      ],
-      "speaker": "Lorenzo"
-    },
-    {
-      "id": "a5.8",
-      "act": 5,
-      "section": "07",
-      "level": 4,
-      "priority": 1,
-      "status": "ready",
-      "part": null,
-      "diagram": "chip.isa",
-      "view": {
-        "diagram": "chip.isa",
-        "focus": [
-          "isa.count.ptx",
-          "isa.count.reg_sm"
-        ],
-        "padding": 0.3,
-        "duration": 1.8,
-        "ease": "power2.inOut"
-      },
-      "highlight": [
-        "tag:reg-limit",
-        "isa.count.regs"
-      ],
-      "callout": {
-        "anchor": "isa.count.reg_sm",
-        "box": "right-center",
-        "line_in": 0.8,
-        "line_out": 0.5
-      },
-      "hold": 36.0,
-      "provenance": [
-        "confirmed",
-        "derived",
         "illustrative"
       ],
       "speaker": "Lorenzo"
@@ -2090,7 +2115,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 34.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2126,7 +2151,44 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 28.0,
+      "hold": 33.0,
+      "provenance": [
+        "confirmed",
+        "derived",
+        "illustrative"
+      ],
+      "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.8",
+      "act": 5,
+      "section": "07",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.isa",
+      "view": {
+        "diagram": "chip.isa",
+        "focus": [
+          "isa.count.ptx",
+          "isa.count.reg_sm"
+        ],
+        "padding": 0.3,
+        "duration": 1.8,
+        "ease": "power2.inOut"
+      },
+      "highlight": [
+        "tag:reg-limit",
+        "isa.count.regs"
+      ],
+      "callout": {
+        "anchor": "isa.count.reg_sm",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 42.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2206,7 +2268,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 36.0,
+      "hold": 37.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2214,6 +2276,43 @@
         "derived"
       ],
       "speaker": "Lorenzo"
+    },
+    {
+      "id": "a5.17",
+      "act": 5,
+      "section": "09",
+      "level": 3,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "chip.memhier",
+      "view": {
+        "diagram": "chip.memhier",
+        "focus": [
+          "memh.step.regs",
+          "memh.step.l1",
+          "memh.step.l2",
+          "memh.step.dram"
+        ],
+        "padding": 0.05,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:step"
+      ],
+      "callout": {
+        "anchor": "memh.step.l2",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 38.0,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Arthur"
     },
     {
       "id": "a5.13",
@@ -2245,7 +2344,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 31.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2283,12 +2382,49 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 28.0,
+      "hold": 30.0,
       "provenance": [
         "confirmed",
         "illustrative"
       ],
       "speaker": "Arthur"
+    },
+    {
+      "id": "a6.0",
+      "act": 6,
+      "section": "10",
+      "level": 4,
+      "priority": 1,
+      "status": "ready",
+      "part": null,
+      "diagram": "sys.mmu",
+      "view": {
+        "diagram": "sys.mmu",
+        "focus": [
+          "mmu.head",
+          "mmu.page"
+        ],
+        "padding": 0.03,
+        "duration": 2.8,
+        "ease": "power3.inOut"
+      },
+      "highlight": [
+        "tag:va",
+        "tag:level",
+        "tag:page"
+      ],
+      "callout": {
+        "anchor": "mmu.page",
+        "box": "right-center",
+        "line_in": 0.8,
+        "line_out": 0.5
+      },
+      "hold": 40.0,
+      "provenance": [
+        "confirmed",
+        "illustrative"
+      ],
+      "speaker": "Thiago"
     },
     {
       "id": "a6.1",
@@ -2382,7 +2518,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 27.0,
+      "hold": 28.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2479,7 +2615,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 43.0,
+      "hold": 44.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2627,7 +2763,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 33.0,
+      "hold": 37.0,
       "provenance": [
         "confirmed",
         "illustrative",
