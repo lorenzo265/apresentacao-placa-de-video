@@ -78,7 +78,7 @@ Passam a extras (índice, tecla M): a2.13 (placa aberta), t1.1, a4.4, a5.16 (div
 
 - `python3 harness/tools/validate.py`: ok.
 - `node harness/tools/smoke-single.cjs --cut seminario`: ver resultado em `harness/STATUS.md` ou no commit.
-- Auditoria de fatos do texto novo pelo `fact-checker` (agente separado): relatório em `harness/qa/fact-check-slides.md`.
+- Auditoria de fatos do texto novo pelo `fact-checker` (agente separado): aprovado com ressalvas, quatro erros de redação e as ressalvas aplicadas. Relatório em `harness/qa/fact-check-slides.md`.
 - Visual: aqui só havia o GLB de blockout (sem o detalhe do Blender). O enquadramento das cenas reaproveitadas é o de antes. **Conferir na máquina do autor** os slides 3, 4, 5 e 6, que usam cenas 3D que o corte de hoje cedo não tinha.
 
 ## 6. Pendente

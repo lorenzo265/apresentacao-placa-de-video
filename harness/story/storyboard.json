@@ -395,7 +395,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 38.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -611,7 +611,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 26.0,
+      "hold": 27.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1058,7 +1058,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 25.0,
+      "hold": 26.0,
       "provenance": [
         "confirmed"
       ],
@@ -1377,7 +1377,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 27.0,
+      "hold": 29.0,
       "provenance": [
         "confirmed",
         "derived"
@@ -1740,7 +1740,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 34.0,
+      "hold": 35.0,
       "provenance": [
         "confirmed",
         "illustrative"
@@ -1851,7 +1851,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 36.0,
+      "hold": 40.0,
       "provenance": [
         "confirmed",
         "derived",
@@ -2206,7 +2206,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 34.0,
+      "hold": 36.0,
       "provenance": [
         "inferred",
         "confirmed",
@@ -2479,7 +2479,7 @@
         "line_in": 0.8,
         "line_out": 0.5
       },
-      "hold": 39.0,
+      "hold": 43.0,
       "provenance": [
         "inferred",
         "confirmed",

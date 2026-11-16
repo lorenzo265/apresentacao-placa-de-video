@@ -24,21 +24,21 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - Tamanho: **12 pol (305 mm)** de comprimento por **5,4 pol (137 mm)** de altura, em **2 slots**
 - Potência total: **600 W**. A geração anterior, a RTX 6000 Ada, tem 300 W
 - Memória de **96 GB GDDR7** com ECC. Interface **PCIe 5.0 x16**
-- **2 ventiladores** empurram o ar através da placa, e as aberturas do topo lançam o ar para cima
+- **2 ventiladores** empurram o ar através da placa, e as aberturas anguladas do topo lançam ar para cima
 
-**Fala:** Por fora, a placa ocupa dois slots e mede cerca de 305 por 137 milímetros. Consome até 600 watts, tem 96 gigabytes de memória GDDR7 e se liga ao computador por PCIe 5.0 de 16 pistas. Dois ventiladores empurram o ar através da placa, e as aberturas do topo lançam o ar para cima. Praticamente toda a energia consumida vira calor, e é isso que a refrigeração precisa tirar.
+**Fala:** Por fora, a placa ocupa dois slots e mede cerca de 305 por 137 milímetros. Consome até 600 watts, tem 96 gigabytes de memória GDDR7 e se liga ao computador por PCIe 5.0 de 16 pistas. Dois ventiladores empurram o ar através da placa, e as aberturas anguladas do topo lançam ar para cima. Como em qualquer chip, quase toda a energia elétrica consumida vira calor, e é isso que a refrigeração precisa tirar.
 
 ## 3. Energia: conector de 16 pinos, borda de cima (a1.4, Vitor)
 
 *A placa*
 
 - A energia entra por **1 conector de 16 pinos**, na **borda de cima** da placa
-- Dos 16 pinos, **12 levam potência** (6 de +12 V e 6 de retorno) e **4 levam sinal**
+- Pela norma do conector, **12 pinos levam potência** (6 de +12 V e 6 de retorno) e **4 levam sinal**
 - A placa vem com um **adaptador**: **4 conectores de 8 pinos** da fonte ligam no conector de 16 pinos
-- Pela norma, cada conector de 8 pinos fornece até **150 W**: 4 × 150 W = **600 W**, a potência total da placa
+- Pela norma, cada conector de 8 pinos fornece até **150 W**. Conta nossa: 4 × 150 W = **600 W**, o mesmo valor da potência total da placa
 - Em 12 V, 600 W são cerca de **50 A** (600 ÷ 12)
 
-**Fala:** A energia entra por um único conector de 16 pinos, na borda de cima. Doze pinos levam potência e quatro levam sinal. A placa vem com um adaptador que liga quatro conectores de 8 pinos da fonte nesse conector. Pela norma, cada conector de 8 pinos fornece até 150 watts, então os quatro dão 600 watts, a potência total da placa.
+**Fala:** A energia entra por um único conector de 16 pinos, na borda de cima. Pela norma do conector, doze pinos levam potência e quatro levam sinal. A placa vem com um adaptador que liga quatro conectores de 8 pinos da fonte nesse conector. Pela norma, cada conector de 8 pinos fornece até 150 watts, e a nossa conta dá 600 watts para os quatro, o mesmo valor da potência total da placa.
 
 ## 4. Dados pelo PCIe, imagem pelo DisplayPort (a1.5, Vitor)
 
@@ -46,21 +46,21 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 - **Dados**: entram e saem pelo **PCIe 5.0 x16**, nos contatos da **borda de baixo**, que encaixam na placa-mãe
 - Esses contatos ficam num **adaptador PCIe separado** da placa de circuito
-- **Imagem**: sai por **4 saídas DisplayPort 2.1b**, no **bracket**, a chapa metálica da traseira do gabinete
+- **Imagem**: sai por **4 saídas DisplayPort 2.1b**, no **bracket**, a chapa da traseira do gabinete
 - O padrão DisplayPort 2.1b chega a **80 Gbps**
 
-**Fala:** Os dados entram e saem pelo PCIe 5.0 de 16 pistas, nos contatos da borda de baixo, que encaixam na placa-mãe. Esses contatos ficam num adaptador separado da placa de circuito. A imagem sai por quatro saídas DisplayPort 2.1b, no bracket, que é a chapa metálica da traseira do gabinete. O padrão chega a 80 gigabits por segundo.
+**Fala:** Os dados entram e saem pelo PCIe 5.0 de 16 pistas, nos contatos da borda de baixo, que encaixam na placa-mãe. Esses contatos ficam num adaptador separado da placa de circuito. A imagem sai por quatro saídas DisplayPort 2.1b, no bracket, que é a chapa da traseira do gabinete. O padrão chega a 80 gigabits por segundo.
 
 ## 5. Por dentro da placa (a2.1, Vitor)
 
 *A placa*
 
-- Abrimos a placa na ordem do teardown da Gamers Nexus: saem o bracket, a moldura, as tampas e o adaptador PCIe
-- No centro fica a **placa de circuito (PCB)**, entre duas **pilhas de aletas** de metal que passam o calor para o ar
+- Para abrir a placa saem, entre outras peças, o bracket, a moldura, as tampas e o adaptador PCIe. Identificação das peças: leitura nossa das fotos
+- No centro fica a **placa de circuito (PCB)**, entre duas **pilhas de aletas** que passam o calor para o ar
 - Na PCB está o chip **GB202**
 - Em volta do chip ficam os **chips de memória** GDDR7
 
-**Fala:** Agora abrimos a placa, na ordem do teardown da Gamers Nexus: saem, entre outras peças, o bracket, a moldura externa, as tampas do centro e o adaptador PCIe. No centro fica a placa de circuito, entre duas pilhas de aletas de metal que passam o calor para o ar. Na PCB está o chip GB202, e em volta dele ficam os chips de memória.
+**Fala:** Agora abrimos a placa, na ordem do teardown da Gamers Nexus: saem, entre outras peças, o bracket, a moldura externa, as tampas do centro e o adaptador PCIe. No centro fica a placa de circuito, entre duas pilhas de aletas que passam o calor para o ar. Na PCB está o chip GB202, e em volta dele ficam os chips de memória.
 
 ## 6. O chip GB202 (a2.12, Vitor)
 
@@ -70,7 +70,7 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - Processo de fabricação **TSMC 4N**
 - **188 SMs** e **24.064 núcleos CUDA**, com **128 MB** de cache L2
 - Clock de boost de **2.617 MHz** e pico de **126 TFLOPS** em FP32 (126 trilhões de operações por segundo)
-- Marcação impressa no chip: GB 202-870-A1
+- Marcação no chip, lida pela Gamers Nexus: GB 202-870-A1
 
 **Fala:** Este é o chip da placa, o GB202. São 92,2 bilhões de transistores em 750 milímetros quadrados, fabricados no processo TSMC 4N. Ele tem 188 SMs, que somam 24.064 núcleos CUDA, e 128 megabytes de cache L2. Com o clock de boost de 2.617 megahertz, chega a um pico de 126 teraflops em precisão simples, sem contar os Tensor Cores. A memória se liga a ele por um barramento de 512 bits.
 
@@ -90,11 +90,11 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 *Gerenciamento de memória*
 
 - **Memória da placa**: 28 Gbps por pino × 512 bits ÷ 8 = **1.792 GB/s**
-- **PCIe 5.0 x16**: 32 GT/s por pista × 16 pistas, cerca de **63 GB/s** em cada sentido
+- **PCIe 5.0 x16**: 32 GT/s × 16 pistas ÷ 8 = 64 GB/s, cerca de **63 GB/s** com a codificação, em cada sentido
 - A memória da placa é cerca de **28 vezes mais rápida** que o PCIe
 - Conclusão do grupo: copiar os dados para a placa uma vez e calcular lá dentro
 
-**Fala:** Banda é quanto dado passa por segundo. A memória da placa chega a 1.792 gigabytes por segundo, e o PCIe leva cerca de 63 por sentido, então a memória é cerca de 28 vezes mais rápida. Por isso o programa copia os dados para a placa uma vez e faz as contas lá dentro. Quem faz as contas é o chip, e agora vamos entrar nele.
+**Fala:** Banda é quanto dado passa por segundo. A memória da placa chega a 1.792 gigabytes por segundo, e o PCIe leva cerca de 63 por sentido, então a memória é cerca de 28 vezes mais rápida. Por isso, na nossa leitura, compensa copiar os dados para a placa uma vez e fazer as contas lá dentro. Quem faz as contas é o chip, e agora vamos entrar nele.
 
 ## 9. Dentro do chip: GPCs, TPCs e SMs (a4.2, João)
 
@@ -106,13 +106,13 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - Cada SM tem **128 núcleos CUDA**: 188 × 128 = **24.064**
 - **L2** de **128 MB** no centro do chip e **16 controladores de memória** nas laterais
 
-**Fala:** Daqui em diante a tela mostra desenho, não foto: as contagens são oficiais, mas a posição dos blocos é ilustrativa. O chip tem 12 GPCs. Cada GPC agrupa TPCs, e cada TPC tem 2 SMs, que são quem executa as instruções. São 94 TPCs, então 188 SMs, e como cada SM tem 128 núcleos CUDA, são 24.064 no total. No centro fica o cache L2 de 128 megabytes, e nas laterais ficam os 16 controladores de memória.
+**Fala:** Daqui em diante a tela mostra desenho, não foto: as contagens são oficiais, mas a posição dos blocos é ilustrativa. O chip tem 12 GPCs. Cada GPC agrupa TPCs, e cada TPC tem 2 SMs, que são quem executa as instruções. São 94 TPCs, então 188 SMs, e como cada SM tem 128 núcleos CUDA, são 24.064 no total. A Tabela 4 do whitepaper dá 188 SMs, e o texto fala em 192 para o chip completo: adotamos 188, que fecha com os 24.064. No centro fica o cache L2 de 128 megabytes, e nas laterais ficam os 16 controladores de memória.
 
 ## 10. Dentro de um SM (t2.1, João)
 
 *O SM*
 
-- Tem as peças de um núcleo de CPU: **escalonador**, **registradores** e **cache L1**
+- Lembra um núcleo de CPU: tem **escalonador**, **registradores** e **cache L1**
 - A diferença é a quantidade: **128 núcleos CUDA**, em **4 partições**
 - Cada partição tem o seu **escalonador de warp**, o seu **banco de registradores** e **1 Tensor Core** (unidade de contas com matrizes)
 - No SM também há **1 RT Core** e **4 unidades de textura**
@@ -124,8 +124,8 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 *Execução em warps*
 
-- **Thread**: uma pequena tarefa com os seus dados, por exemplo multiplicar o elemento i de um vetor por 2
-- O programa é escrito para **uma thread** e lançado em **blocos** com milhares de threads
+- **Thread**: uma execução do programa com os seus dados, por exemplo multiplicar o elemento i de um vetor por 2
+- O programa é escrito para **uma thread** e lançado milhares de vezes, em **blocos** de threads
 - O SM divide cada bloco em **warps de 32 threads**, com números seguidos: 0 a 31, 32 a 63 e assim por diante
 - Os 32 quadrados do desenho são um warp
 - Leitura do grupo: a instrução é buscada **uma vez** e serve para as 32 threads
@@ -148,10 +148,10 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 *Pipeline*
 
-- **Pipeline**: a instrução passa por etapas (buscar, decodificar, executar, guardar), como numa linha de montagem
+- **Pipeline**: a instrução passa por etapas, como numa linha de montagem. Num processador de livro-texto: buscar, decodificar, executar, guardar
 - Cada uma das **4 partições** do SM tem o seu **escalonador de warp**
-- A cada **ciclo**, o escalonador escolhe um warp pronto e despacha a instrução para as **32 threads** dele
-- Trocar de warp **não tem custo**: se um warp espera, outro entra no lugar
+- A cada **ciclo**, o escalonador escolhe um warp pronto e despacha a instrução para as threads ativas dele (até **32**)
+- Trocar de warp **não tem custo**. Leitura do grupo: se um warp espera, outro entra no lugar
 - Medido em uma RTX 5080: **4 ciclos** para uma operação de inteiro ou FP32
 - Número de estágios do pipeline: **não achamos** nas fontes lidas
 
@@ -176,7 +176,7 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - No código SASS: **R** (uso geral), **UR** (uniformes), **P** (predicados) e **SR** (especiais, como SR_TID.X, o índice da thread)
 - O **compilador** decide quantos registradores cada thread usa, até **255**. Na CPU, a ISA fixa o conjunto
 - Os **65.536** registradores do SM são repartidos entre todos os warps
-- Com **255** por thread: 32 × 255 = 8.160 por warp, e só **8 warps** cabem no SM (o limite é 48)
+- Com **255** por thread: 32 × 255 = 8.160 por warp, e só **8 warps** cabem no SM (conta nossa, o limite é 48)
 - O SAXPY que compilamos usa **10** por thread, e aí cabem os **48 warps**
 
 **Fala:** No código da GPU aparecem registradores R, de uso geral, UR, uniformes, P, predicados, e SR, especiais, como o que guarda o índice da thread. Numa CPU, o número de registradores é fixo. Na GPU, o compilador decide quantos cada thread usa, até 255. Só que os 65.536 registradores do SM são repartidos entre todos os warps: com 255 por thread, cabem só 8 warps, pela nossa conta simples. Com os 10 registradores do SAXPY, cabem os 48 warps. Com poucos warps, o escalonador tem menos opções de troca.
@@ -189,7 +189,7 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - O **ptxas** (ou o driver) traduz o PTX para **SASS**, o código de máquina desta placa, o **sm_120**
 - O SASS muda a cada geração: programa sem PTX não tem garantia de rodar em GPUs futuras
 - Exemplo, o SAXPY (y = a·x + y): **20 instruções PTX** viram **19 instruções SASS** úteis
-- A lista oficial do sm_120 tem **258 mnemônicos**, contados por nós
+- A lista oficial da família Blackwell tem **258 mnemônicos**, contados por nós
 
 **Fala:** Conjunto de instruções é a lista de ordens que o processador entende. Na NVIDIA ele tem duas camadas. O PTX é uma máquina virtual, com instruções estáveis entre gerações. O SASS é o código de máquina de cada geração, nesta placa o sm_120, gerado a partir do PTX pelo ptxas ou pelo driver. No SAXPY, que compilamos, 20 instruções PTX viraram 19 instruções SASS úteis.
 
@@ -203,7 +203,7 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - Na **Volta**, um estudo de 2018 achou ao menos **23 bits de controle**: avisos do compilador ao escalonador
 - Na Blackwell, só achamos documentada a **largura**, não os campos
 
-**Fala:** Cada instrução SASS tem 16 bytes, ou 128 bits. Com tamanho fixo, o circuito sabe onde cada instrução começa sem decodificar a anterior, e na nossa listagem os endereços andam sempre de 16 em 16. Um estudo de 2018 abriu os 128 bits da geração Volta e achou pelo menos 23 bits de controle: o compilador resolve parte da organização do pipeline e grava a solução na instrução. Na Blackwell só achamos documentada a largura.
+**Fala:** Cada instrução SASS tem 16 bytes, ou 128 bits. Com tamanho fixo, o circuito sabe onde cada instrução começa sem decodificar a anterior, e na nossa listagem os endereços andam sempre de 16 em 16. Um estudo de 2018 abriu os 128 bits da geração Volta e contou pelo menos 23 bits de controle, e estudos da Ampere e da Turing os descrevem como avisos do compilador ao escalonador: o compilador resolve parte da organização do pipeline e grava a solução na instrução. Na Blackwell só achamos documentada a largura.
 
 ## 18. RISC ou CISC: RISC com extensões (a5.12, Lorenzo)
 
@@ -211,11 +211,11 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 - **CISC**: instruções complexas e de tamanho variável. Uma instrução pode ler a memória, calcular e gravar
 - **RISC**: instruções simples, de tamanho fixo. Só carga e armazenamento tocam a memória, e há muitos registradores
-- **A favor de RISC**: 16 bytes fixos, memória por carga e armazenamento como regra e até 255 registradores por thread
+- **A favor de RISC**: 16 bytes fixos, memória por carga e armazenamento (salvo exceções como a LDGSTS) e até 255 registradores por thread
 - **Contra**: a HMMA multiplica um bloco de matriz numa só instrução
 - A NVIDIA não classifica o SASS. **Conclusão do grupo: RISC no formato, com instruções de acelerador**
 
-**Fala:** No CISC, uma instrução pode ser complexa e de tamanho variável, e pode ler a memória, calcular e gravar. No RISC, as instruções são simples, de tamanho fixo, só carga e armazenamento tocam a memória e há muitos registradores. Nesta GPU, três critérios apontam para RISC: 16 bytes fixos, memória por carga e armazenamento como regra e até 255 registradores por thread. Contra, a HMMA multiplica um bloco de matriz numa só instrução. A NVIDIA não classifica o SASS, então a conclusão é do grupo: RISC no formato, com instruções de acelerador.
+**Fala:** No CISC, uma instrução pode ser complexa e de tamanho variável, e pode ler a memória, calcular e gravar. No RISC, as instruções são simples, de tamanho fixo, só carga e armazenamento tocam a memória e há muitos registradores. Nesta GPU, três critérios apontam para RISC: 16 bytes fixos, memória por carga e armazenamento, salvo exceções como a LDGSTS, e até 255 registradores por thread. Contra, a HMMA multiplica um bloco de matriz numa só instrução. A NVIDIA não classifica o SASS, então a conclusão é do grupo: RISC no formato, com instruções de acelerador.
 
 ## 19. Cache: a escada de memória (a5.13, Arthur)
 
@@ -235,9 +235,9 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 
 - O **L1** e a **memória compartilhada** são os mesmos **128 KB** por SM
 - O cache L1 é **automático**. Na memória compartilhada, o **programa** escolhe o que guardar: um bloco de threads copia ali, uma vez, o que todos vão usar
-- A divisão é escolhida em **tempo de execução**: **0, 8, 16, 32, 64 ou 100 KB** de compartilhada, e o resto fica como L1
+- A divisão é escolhida em **tempo de execução**. Segundo o guia CUDA, a compartilhada pode ter **0, 8, 16, 32, 64 ou 100 KB**
 
-**Fala:** O cache é automático, mas a memória compartilhada é o contrário: um espaço dentro do SM em que o próprio programa escolhe o que guardar. Na GPU, quem a usa em conjunto é um bloco de threads. Nesta placa, o L1 e a memória compartilhada são os mesmos 128 KB por SM, e o programa escolhe quanto vira compartilhada: 0, 8, 16, 32, 64 ou 100 KB. O resto fica como L1. Falta ver como a GPU encontra o endereço de cada dado.
+**Fala:** O cache é automático, mas a memória compartilhada é o contrário: um espaço dentro do SM em que o próprio programa escolhe o que guardar. Na GPU, quem a usa em conjunto é um bloco de threads. Nesta placa, o L1 e a memória compartilhada são os mesmos 128 KB por SM, e o programa escolhe quanto vira compartilhada: 0, 8, 16, 32, 64 ou 100 KB. O Tuning Guide fala em 128 KB por SM para essa mesma geração, e a diferença para os 100 KB do guia CUDA não está explicada. Falta ver como a GPU encontra o endereço de cada dado.
 
 ## 21. MMU: endereço virtual de 57 bits (a6.1, Thiago)
 
@@ -270,11 +270,11 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 - **1. A GPU avisa a CPU** por MSI-X, MSI ou linha legada
   - O tratador do driver tem duas metades: a primeira faz o mínimo na hora, a segunda faz o trabalho pesado depois
 - **2. A instrução trap** aborta o programa e gera uma interrupção para a CPU
-- **3. A falha de página** para a tarefa até o driver atender
+- **3. A falha de página** segura o canal: ele não pode ser trocado e os outros esperam até o driver atender
 - Preempção (trocar um programa por outro): citada no driver, mas como funciona nesta placa **não achamos**
 - Tratador dentro do SM: **não achamos**. Leitura do grupo: os avisos vão ao driver, na CPU
 
-**Fala:** Interrupção é um aviso que faz o processador parar, rodar uma rotina de atendimento e voltar de onde parou. Nesta GPU, achamos três mecanismos. Primeiro, a GPU avisa a CPU por MSI-X ou MSI, e o tratador do driver faz o mínimo na hora e deixa o trabalho pesado para depois. Segundo, a instrução trap aborta o programa e gera uma interrupção para a CPU. Terceiro, uma falha de página para a tarefa até o driver atender. Preempção e tratador dentro do SM não achamos nas fontes, e nossa leitura é que os avisos vão ao driver, na CPU.
+**Fala:** Interrupção é um aviso que faz o processador parar, rodar uma rotina de atendimento e voltar de onde parou. Nesta GPU, achamos três mecanismos. Primeiro, a GPU avisa a CPU por MSI-X ou MSI, e o tratador do driver faz o mínimo na hora e deixa o trabalho pesado para depois. Segundo, a instrução trap aborta o programa e gera uma interrupção para a CPU. Terceiro, uma falha de página segura o canal até o driver atender. Como a preempção funciona nesta placa e se há tratador dentro do SM, não achamos nas fontes, e nossa leitura é que os avisos vão ao driver, na CPU.
 
 ## 24. O que achamos e o que falta (a7.4, Vitor)
 
@@ -293,14 +293,14 @@ Gerado de `content/pt-BR/beats.json` e `story/storyboard.json` em 2026-11-16. É
 *Resumo*
 
 - **Registradores**: 65.536 por SM, até 255 por thread
-- **Instruções**: PTX e SASS (16 bytes cada)
-- **CISC ou RISC**: RISC com extensões de acelerador
+- **Instruções**: PTX e SASS. Cada instrução SASS tem 16 bytes
+- **CISC ou RISC**: conclusão do grupo, RISC com extensões de acelerador
 - **Pipeline**: 4 escalonadores por SM, 32 threads por ciclo cada
 - **Cache**: L1 de 128 KB por SM e L2 de 128 MB
 - **MMU**: 57 bits, 6 níveis, páginas de 4 KB a 512 MB
 - **Memória**: 96 GB de GDDR7
 - **Interrupções**: da GPU para a CPU, e trap
 
-**Fala:** Resumindo os oito itens: registradores, 65.536 por SM e até 255 por thread. Instruções, PTX e SASS, com 16 bytes cada. CISC ou RISC, na nossa análise RISC com extensões de acelerador. Pipeline, 4 escalonadores por SM despachando 32 threads por ciclo cada. Cache, 128 KB de L1 por SM e 128 MB de L2. MMU, 57 bits em 6 níveis. Memória, 96 GB de GDDR7 e falhas de página resolvidas pelo driver. Interrupções, da GPU para a CPU. Obrigado, e abrimos para perguntas.
+**Fala:** Resumindo os oito itens: registradores, 65.536 por SM e até 255 por thread. Instruções, PTX e SASS, e cada instrução SASS tem 16 bytes. CISC ou RISC, conclusão do grupo: RISC com extensões de acelerador. Pipeline, 4 escalonadores por SM despachando 32 threads por ciclo cada. Cache, 128 KB de L1 por SM e 128 MB de L2. MMU, 57 bits em 6 níveis. Memória, 96 GB de GDDR7 e falhas de página resolvidas pelo driver. Interrupções, da GPU para a CPU. Obrigado, e abrimos para perguntas.
 
-Fala total: cerca de 1940 palavras.
+Fala total: cerca de 2029 palavras.

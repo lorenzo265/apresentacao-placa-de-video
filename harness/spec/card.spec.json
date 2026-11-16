@@ -1009,6 +1009,13 @@
       "note": "\"Here’s a close look at the removed PCIe adapter.\" e \"The card’s PCIe slot is connected via a customized pinout adapter.\" O que os cabos flat ligam: lacuna pcb.flat_cables_link. Classe: teardown da própria placa (regra de harness/ARCHITECTURE.md, seção 3); trecho conferido pelo fact-checker em 2026-11-10 por extração dirigida, sem leitura humana da página inteira."
     },
     {
+      "id": "card.pcie_edge_position",
+      "value": "contatos PCIe na borda de encaixe, oposta à borda superior onde fica o conector de energia",
+      "provenance": "derived",
+      "source": "spec/sources/standards-sources.md",
+      "note": "Derivado: o guia rápido (p. 10) põe o conector de energia na borda superior, e pela norma PCIe CEM 3.0 os contatos ficam na borda de encaixe da placa, oposta a ela. Nenhuma foto ou texto desta placa diz 'borda inferior'; é a mesma orientação do conector de energia 'na borda de cima'."
+    },
+    {
       "id": "pcb.position",
       "value": "no centro da placa, entre as duas pilhas de aletas",
       "provenance": "derived",
